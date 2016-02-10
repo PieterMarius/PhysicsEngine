@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{45BC9A44-8517-4BC3-81DC-C7007D248F8C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>PhysicsEngine</RootNamespace>
+    <AssemblyName>PhysicsEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\CollisionEngine\CollisionEngine.csproj">
+      <Project>{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}</Project>
+      <Name>CollisionEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectDefinition\SimulationObjectDefinition.csproj">
+      <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
+      <Name>SimulationObjectDefinition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LCPSolver\LCPSolver.csproj">
+      <Project>{38021940-DA65-406D-A9FF-7739B85913F5}</Project>
+      <Name>LCPSolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+      <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
+      <Name>PhysicsEngineMathUtility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="InertiaTensor.cs" />
+    <Compile Include="PhysicsEngine.cs" />
+    <Compile Include="Contact.cs" />
+    <Compile Include="SimulationParameters.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+</Project>

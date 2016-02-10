@@ -1,0 +1,13 @@
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/obj/x86/Debug/PhysicsEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/obj/x86/Debug/PhysicsEngine.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/CollisionEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/CollisionEngine.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/ObjectDefinition.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/ObjectDefinition.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/LCPSolver.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/LCPSolver.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MathUtility.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MathUtility.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/PhysicsEngine.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/PhysicsEngine.dll

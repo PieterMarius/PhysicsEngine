@@ -1,0 +1,169 @@
+﻿using System;
+using PhysicsEngineMathUtility;
+
+namespace MonoPhysicsEngine
+{
+	public class SimulationParameters
+	{
+		#region Simulation Parameters Properties
+
+		/// <summary>
+		/// Gets the time step.
+		/// </summary>
+		/// <value>The time step.</value>
+		public double TimeStep { get; private set; }
+
+		/// <summary>
+		/// Gets the CFM stabilization parameter.
+		/// </summary>
+		/// <value>The CF.</value>
+		public double CFM { get; private set; }
+
+		/// <summary>
+		/// Gets the baumgarte stabilization parameter.
+		/// </summary>
+		/// <value>The baum stabilization.</value>
+		public double BaumStabilization { get; private set; }
+
+		//velocità lineare al di sotto del quale un oggetto viene considerato fermo
+		/// <summary>
+		/// Gets the linear velocity tolerance for object disabling.
+		/// </summary>
+		/// <value>The linear vel disable.</value>
+		public double LinearVelDisable { get; private set; }
+
+		/// <summary>
+		/// Gets the angular velocity tolerance for object disable.
+		/// </summary>
+		/// <value>The angular vel disable.</value>
+		public double AngularVelDisable { get; private set; }
+
+		/// <summary>
+		/// Gets the shift parmeters to static friction tolerance.
+		/// </summary>
+		/// <value>The shift to static friction tolerance.</value>
+		public double ShiftToStaticFrictionTolerance { get; private set; }
+
+		/// <summary>
+		/// Gets the velocity tolerance stabilization parameter.
+		/// </summary>
+		/// <value>The velocity tolerance stabilization.</value>
+		public double VelocityToleranceStabilization { get; private set; }
+
+		/// <summary>
+		/// Discrete Continuos Collision Detection.
+		/// </summary>
+		/// <value><c>true</c> if discrete CC; otherwise, <c>false</c>.</value>
+		public bool DiscreteCCD { get; private set; }
+
+		/// <summary>
+		/// Gets the collision distance.
+		/// </summary>
+		/// <value>The collision distance.</value>
+		public double CollisionDistance { get; private set; }
+
+		/// <summary>
+		/// Gets the external force.
+		/// </summary>
+		/// <value>The external force.</value>
+		public Vector3 ExternalForce { get; private set; }
+
+		/// <summary>
+		/// Gets the max thread number.
+		/// </summary>
+		/// <value>The max thread number.</value>
+		public int MaxThreadNumber { get; private set; }
+
+		#endregion
+
+		#region Constructors
+
+		public SimulationParameters ()
+		{
+			this.TimeStep = 0.015;
+			this.CFM = 0.001;
+			this.BaumStabilization = 6.6;
+			this.LinearVelDisable = 0.0;
+			this.AngularVelDisable = 0.0;
+			this.ShiftToStaticFrictionTolerance = 0.000001;
+			this.VelocityToleranceStabilization = 0.0001;
+			this.DiscreteCCD = true;
+			this.CollisionDistance = 0.001;
+			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
+			this.MaxThreadNumber = 2;
+		}
+
+		public SimulationParameters (
+			double timeStep,
+			double CFM,
+			double baumStabilization,
+			double linearVelDisable,
+			double angularVelDisable,
+			double shiftToStaticFrictionTolerance,
+			double velocityToleranceStabilization,
+			bool discreteCCD,
+			double collisionDistance,
+			Vector3 externalForce,
+			int maxThreadNumber)
+		{
+			this.TimeStep = timeStep;
+			this.CFM = CFM;
+			this.BaumStabilization = baumStabilization;
+			this.LinearVelDisable = linearVelDisable;
+			this.AngularVelDisable = angularVelDisable;
+			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
+			this.VelocityToleranceStabilization = velocityToleranceStabilization;
+			this.DiscreteCCD = discreteCCD;
+			this.CollisionDistance = collisionDistance;
+			this.ExternalForce = externalForce;
+			this.MaxThreadNumber = maxThreadNumber;
+		}
+			
+		#endregion
+
+		#region Public Methods
+
+		public void SetTimeStep(double timeStep)
+		{
+			this.TimeStep = timeStep;
+		}
+
+		public void SetCFM(double CFM)
+		{
+			this.CFM = CFM;
+		}
+
+		public void SetBaumStabilization(double baumStabilization)
+		{
+			this.BaumStabilization = baumStabilization;
+		}
+
+		public void SetLinearVelDisable(double linearVelDisable)
+		{
+			this.LinearVelDisable = linearVelDisable;
+		}
+
+		public void SetAngularVelDisable(double angularVelDisable)
+		{
+			this.AngularVelDisable = angularVelDisable;
+		}
+
+		public void SetShiftToStaticFrictionTolerance(double shiftToStaticFrictionTolerance)
+		{
+			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
+		}
+
+		public void SetVelocityToleranceStabilization(double velocityToleranceStabilization)
+		{
+			this.VelocityToleranceStabilization = velocityToleranceStabilization;
+		}
+
+		public void SetExternalForce(Vector3 externalForce)
+		{
+			this.ExternalForce = externalForce;
+		}
+			
+		#endregion
+	}
+}
+

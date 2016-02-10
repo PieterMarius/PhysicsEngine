@@ -1,0 +1,5 @@
+/Users/pietervanduin/Projects/TestPhysics/MathUtility/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/pietervanduin/Projects/TestPhysics/MathUtility/bin/Debug/MathUtility.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/MathUtility/bin/Debug/MathUtility.dll
+/Users/pietervanduin/Projects/TestPhysics/MathUtility/obj/x86/Debug/MathUtility.dll
+/Users/pietervanduin/Projects/TestPhysics/MathUtility/obj/x86/Debug/MathUtility.dll.mdb

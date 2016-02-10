@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{1F1A33F3-176C-4C2A-AFF9-487BED7DCA38}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TestPhysics</RootNamespace>
+    <AssemblyName>TestPhysics</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Externalconsole>true</Externalconsole>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="OpenTK">
+      <HintPath>..\opentk\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="CjClutter.ObjLoader.Loader">
+      <HintPath>..\ObjLoader-master\CjClutter.ObjLoader.Loader.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestWindow.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
+      <Name>Utility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectDefinition\SimulationObjectDefinition.csproj">
+      <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
+      <Name>SimulationObjectDefinition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CollisionEngine\CollisionEngine.csproj">
+      <Project>{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}</Project>
+      <Name>CollisionEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LCPSolver\LCPSolver.csproj">
+      <Project>{38021940-DA65-406D-A9FF-7739B85913F5}</Project>
+      <Name>LCPSolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+      <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
+      <Name>PhysicsEngineMathUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PhysicsEngine\MonoPhysicsEngine.csproj">
+      <Project>{45BC9A44-8517-4BC3-81DC-C7007D248F8C}</Project>
+      <Name>MonoPhysicsEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Loading\Loading.csproj">
+      <Project>{462F00A5-8891-4D82-A347-E886056EB4CD}</Project>
+      <Name>Loading</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
