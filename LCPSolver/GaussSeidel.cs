@@ -156,7 +156,7 @@ namespace LCPSolver
             double[] X,
             int i)
         {
-            double sumBuffer = 0.0;
+			double sumBuffer = 0.0;
 
 			//Avoid last row elaboration
 			if (i + 1 != input.Count) {
