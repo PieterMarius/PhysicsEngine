@@ -1,0 +1,14 @@
+
+*.mdb
+
+*.mdb
+
+*.dll
+
+*.exe
+
+*.mdb
+
+LCPSolver/bin/Release/LCPSolver.dll.mdb
+
+LCPSolver/obj/x86/Release/LCPSolver.dll.mdb
