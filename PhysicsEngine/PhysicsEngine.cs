@@ -770,10 +770,10 @@ namespace MonoPhysicsEngine
 								if (i == j) {
 									mValue += simulationParameters.CFM + 1E-30;
 									D [i] = 1.0 / mValue;
-									lock (sync) {
-										index [i].Add (j);
-										value [i].Add (mValue);
-									}
+//									lock (sync) {
+//										index [i].Add (j);
+//										value [i].Add (mValue);
+//									}
 									continue;
 								}
 

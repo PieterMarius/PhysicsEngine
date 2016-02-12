@@ -25,6 +25,7 @@ namespace CollisionEngine
 			double s,
 			double t,
 			Vector3 normal)
+			:this()
 		{
 			this.a = a;
 			this.b = b;
