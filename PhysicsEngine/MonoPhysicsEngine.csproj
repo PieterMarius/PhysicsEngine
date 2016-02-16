@@ -53,8 +53,14 @@
     <Compile Include="PhysicsEngine.cs" />
     <Compile Include="Contact.cs" />
     <Compile Include="SimulationParameters.cs" />
+    <Compile Include="ContactPartition\ContactPartitioningEngine.cs" />
+    <Compile Include="ContactPartition\IContactPartitioningEngine.cs" />
+    <Compile Include="ContactPartition\SpatialPartition.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ContactPartition\" />
   </ItemGroup>
 </Project>

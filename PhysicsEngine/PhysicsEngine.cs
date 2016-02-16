@@ -67,6 +67,8 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
+		private IContactPartitioningEngine contactPartitioningEngine;
+
 		#endregion
 
 		#region Constructor
@@ -74,11 +76,13 @@ namespace MonoPhysicsEngine
 		public PhysicsEngine (
 			ICollisionEngine collisionEngine,
 			ISolver solver,
+			IContactPartitioningEngine contactPartitioningEngine,
 			SimulationParameters simulationParameters)
 		{
 			this.collisionEngine = collisionEngine;
 			this.solver = solver;
 			this.simulationParameters = simulationParameters;
+			this.contactPartitioningEngine = contactPartitioningEngine;
 
 			this.simulationJoints = new List<SimulationJoint> ();
 		}
@@ -223,6 +227,19 @@ namespace MonoPhysicsEngine
 				this.timeStep = this.simulationParameters.TimeStep;
 
 			this.collisionDetection ();
+
+			Stopwatch stopwatch = new Stopwatch();
+
+			stopwatch.Reset ();
+			stopwatch.Start ();
+
+			this.contactPartitioningEngine.calculateSpatialPartitioning (
+				this.collisionPoints,
+				this.simulationObjects);
+
+			stopwatch.Stop ();
+
+			Console.WriteLine("Partitioning Elapsed={0}",stopwatch.ElapsedMilliseconds);
 
 			this.physicsExecutionFlow ();
 
@@ -372,6 +389,8 @@ namespace MonoPhysicsEngine
 			this.integrateJointPosition ();
 		}
 
+		#region Collision Detection
+
 		/// <summary>
 		/// Collisions detection.
 		/// </summary>
@@ -398,7 +417,104 @@ namespace MonoPhysicsEngine
 
 			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
-			
+
+		#endregion
+
+
+//		private List<SpatialPartition> testPartition = new List<SpatialPartition> ();
+//
+//		private void calculateSpatialPartitioning()
+//		{
+//			if (this.collisionPoints.Count > 0) 
+//			{
+//				//DEBUG creo copia lista
+//				List<CollisionPointStructure> collisionPointsCopy = new List<CollisionPointStructure>();
+//				for (int i = 0; i < this.collisionPoints.Count; i++) 
+//				{
+//					collisionPointsCopy.Add (this.collisionPoints [i]);
+//				}
+//
+//				testPartition.Clear ();
+//
+//				while (collisionPointsCopy.Count != 0) {
+//					List<CollisionPointStructure> partition = new List<CollisionPointStructure> ();
+//
+//					partition.Add (collisionPointsCopy [0]);
+//					recursiveSearch (
+//						collisionPointsCopy [0],
+//						collisionPointsCopy,
+//						partition);
+//
+//					Console.WriteLine ("NPartition contact " + partition.Count);
+//
+//					for (int i = 0; i < partition.Count; i++) 
+//					{
+//						List<int> index = new List<int> ();
+//						for (int j = 0; j < collisionPointsCopy.Count; j++) 
+//						{
+//							if (collisionPointsCopy [j].ObjectA == partition [i].ObjectA &&
+//								collisionPointsCopy [j].ObjectB == partition [i].ObjectB) 
+//							{
+//								index.Add (j);
+//							}
+//						}
+//						for (int j = 0; j < index.Count; j++) 
+//						{
+//							collisionPointsCopy.RemoveAt (index [j]);
+//						}
+//
+//					}
+//
+//					testPartition.Add (new SpatialPartition (partition));
+//				}
+//			}
+//
+//		}
+//
+//		private void recursiveSearch(
+//			CollisionPointStructure collisionPoint,
+//			List<CollisionPointStructure> readList,
+//			List<CollisionPointStructure> partition)
+//		{
+//			for (int i = 0; i < readList.Count; i++) {
+//				if (collisionPoint.ObjectA == readList [i].ObjectA
+//				    && collisionPoint.ObjectB == readList [i].ObjectB) {
+//					continue;
+//				} else if (this.simulationObjects [collisionPoint.ObjectA].Mass <= 0.0 &&
+//				           this.simulationObjects [collisionPoint.ObjectB].Mass <= 0.0) {
+//					break;
+//				} else if (this.simulationObjects [collisionPoint.ObjectA].Mass <= 0.0 &&
+//				           (collisionPoint.ObjectB == readList [i].ObjectA ||
+//				           collisionPoint.ObjectB == readList [i].ObjectB)) {
+//					
+//					if (!partition.Contains (readList [i])) {
+//						partition.Add (readList [i]);
+//						recursiveSearch (partition [partition.Count - 1], readList, partition);
+//					}
+//
+//				} else if (this.simulationObjects [collisionPoint.ObjectB].Mass <= 0.0 &&
+//				           (collisionPoint.ObjectA == readList [i].ObjectA ||
+//				           collisionPoint.ObjectA == readList [i].ObjectB)) {
+//					
+//					if (!partition.Contains (readList [i])) {
+//						partition.Add (readList [i]);
+//						recursiveSearch (partition [partition.Count - 1], readList, partition);
+//					}
+//
+//				} else if (collisionPoint.ObjectA == readList [i].ObjectB ||
+//				           collisionPoint.ObjectB == readList [i].ObjectA ||
+//				           collisionPoint.ObjectA == readList [i].ObjectA ||
+//				           collisionPoint.ObjectB == readList [i].ObjectB &&
+//				           (this.simulationObjects [collisionPoint.ObjectA].Mass > 0.0 &&
+//				           this.simulationObjects [collisionPoint.ObjectB].Mass > 0.0)) {
+//
+//					if (!partition.Contains (readList [i])) {
+//						partition.Add (readList [i]);
+//						recursiveSearch (partition [partition.Count - 1], readList, partition);
+//					}
+//				}
+//			}	
+//		}
 
 		/// <summary>
 		/// Builds the contacts matrix.
@@ -883,6 +999,8 @@ namespace MonoPhysicsEngine
 				contactA.Normal,
 				(linearA + angularA) - (linearB + angularB));
 		}
+
+		#region Integrate velocity and position
 			
 		/// <summary>
 		/// Updates velocity of the simulations objects.
@@ -1053,7 +1171,8 @@ namespace MonoPhysicsEngine
 					this.simulationJoints [i].RotationConstraintB);
 			}
 		}
-			
+
+		#endregion
 
 		#endregion
 

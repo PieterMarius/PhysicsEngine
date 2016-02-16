@@ -29,7 +29,7 @@
    <ObjectsSettings>
        
        <Object>
-            <Position x="-1,0" y="4,7" z="-3,0" />
+            <Position x="-1,0" y="5,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -86,7 +86,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="4,7" z="-3,0" />
+            <Position x="1,0" y="5,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -143,7 +143,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="4,7" z="-3,0" />
+            <Position x="3,0" y="5,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -202,7 +202,7 @@
         <!-- Avanti -->
             
         <Object>
-            <Position x="-1,0" y="4,7" z="-1,0" />
+            <Position x="-1,0" y="5,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -261,7 +261,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="4,7" z="-1,0" />
+            <Position x="1,0" y="5,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -318,7 +318,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="4,7" z="-1,0" />
+            <Position x="3,0" y="5,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -376,7 +376,7 @@
         
         <!-- Dietro -->
         <Object>
-            <Position x="-1,0" y="4,7" z="-5,0" />
+            <Position x="-1,0" y="5,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -435,7 +435,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="4,7" z="-5,0" />
+            <Position x="1,0" y="5,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -492,7 +492,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="4,7" z="-5,0" />
+            <Position x="3,0" y="5,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />

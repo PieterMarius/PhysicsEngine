@@ -89,9 +89,11 @@ namespace TestPhysics
 //			this.simulationParameters = engineConfig.ReadEngineConfig ();
 //
 			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -1.2, 0.0));
+			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
 			this.physicsEngine = new PhysicsEngine (
 				this.collisionEngine,
 				this.lcpSolver,
+				contactPartitionEngine,
 				this.simulationParameters);
 
 			for (int i = 0; i < this.simulationObjects.Count (); i++) 
