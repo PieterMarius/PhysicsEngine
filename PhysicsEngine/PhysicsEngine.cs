@@ -235,6 +235,7 @@ namespace MonoPhysicsEngine
 
 			this.contactPartitioningEngine.calculateSpatialPartitioning (
 				this.collisionPoints,
+				this.simulationJoints,
 				this.simulationObjects);
 
 			stopwatch.Stop ();

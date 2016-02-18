@@ -8,20 +8,16 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public List<CollisionPointStructure> ObjectList;
+		public List<ContactIndex> ObjectList;
 
 		#endregion
 
 		#region Constructor
 
 		public SpatialPartition (
-			List<CollisionPointStructure> objectList)
+			List<ContactIndex> objectList)
 		{
 			this.ObjectList = objectList;
-		}
-
-		public SpatialPartition()
-		{
 		}
 
 		#endregion

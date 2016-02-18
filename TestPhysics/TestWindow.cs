@@ -63,8 +63,8 @@ namespace TestPhysics
 
 		void initProgram()
 		{
-			//LoadObject loadObject = new LoadObject ("startJoint.xml");
-			LoadObject loadObject = new LoadObject ("startConfig.xml");
+			LoadObject loadObject = new LoadObject ("startJoint.xml");
+			//LoadObject loadObject = new LoadObject ("startConfig.xml");
 			simulationObjects = loadObject.LoadSimulationObjects ();
 			simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
 
