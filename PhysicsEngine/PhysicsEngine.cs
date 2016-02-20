@@ -49,15 +49,16 @@ namespace MonoPhysicsEngine
 
 		#region Execution Properties
 
-		private List<Contact> contactConstraints;
+		List<List<CollisionPointStructure>> collisionPartitionedPoints;
+		List<List<SimulationJoint>> partitionedJoint;
 
 		#endregion
 
 		#region LCP properties
 
 		private ISolver solver;
-		private LinearProblemProperties linearProblemProperties;
-		private double[] X;
+		//private LinearProblemProperties linearProblemProperties;
+		//private double[] X;
 
 		#endregion
 
@@ -199,13 +200,13 @@ namespace MonoPhysicsEngine
 			this.solver = solver;
 		}
 
-		public double GetSolverError()
-		{
-			if (this.X == null || this.X.Length == 0)
-				return 0.0;
-
-			return this.solver.GetMediumSquareError (this.linearProblemProperties, this.X);
-		}
+//		public double GetSolverError()
+//		{
+//			if (this.X == null || this.X.Length == 0)
+//				return 0.0;
+//
+//			return this.solver.GetMediumSquareError (this.linearProblemProperties, this.X);
+//		}
 
 		//TODO aggiungere GetSolverErrorList
 
@@ -228,19 +229,7 @@ namespace MonoPhysicsEngine
 
 			this.collisionDetection ();
 
-			Stopwatch stopwatch = new Stopwatch();
-
-			stopwatch.Reset ();
-			stopwatch.Start ();
-
-			this.contactPartitioningEngine.calculateSpatialPartitioning (
-				this.collisionPoints,
-				this.simulationJoints,
-				this.simulationObjects);
-
-			stopwatch.Stop ();
-
-			Console.WriteLine("Partitioning Elapsed={0}",stopwatch.ElapsedMilliseconds);
+			this.partitionEngineExecute ();
 
 			this.physicsExecutionFlow ();
 
@@ -342,52 +331,113 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-		private void physicsExecutionFlow()
+
+
+		private void partitionEngineExecute()
 		{
-			//Svuoto il vettore delle incognite
-			this.X = null;
-
-			//Con i punti di collisione costruisco la matrice delle collisioni
-			this.buildContactsMatrix ();
-
-			//Costruisco la matrice dei Joints
-			this.buildJointsMatrix ();
-
-			Stopwatch stopwatch1 = new Stopwatch();
-			stopwatch1.Reset ();
-			stopwatch1.Start ();
-
-			//Costruisco la struttura da passare al solver
-			this.buildLCPMatrix ();
-
-			stopwatch1.Stop ();
-
-			Console.WriteLine("Matrix Elapsed={0}",stopwatch1.ElapsedMilliseconds);
-			Console.WriteLine ("Contact:" + this.contactConstraints.Count);
-
 			Stopwatch stopwatch = new Stopwatch();
 
 			stopwatch.Reset ();
 			stopwatch.Start ();
 
-			//Test verifica efficacia motore
-			if (this.contactConstraints.Count > 0) 
-			{
-				this.X = this.solver.Solve (this.linearProblemProperties);
+			List<SpatialPartition> partitions = this.contactPartitioningEngine.calculateSpatialPartitioning (
+				this.collisionPoints,
+				this.simulationJoints,
+				this.simulationObjects);
+
+			if (partitions != null) {
+
+				collisionPartitionedPoints = new List<List<CollisionPointStructure>> ();
+				partitionedJoint = new List<List<SimulationJoint>> ();
+
+				for (int i = 0; i < partitions.Count; i++) 
+				{
+					List<CollisionPointStructure> partitionedCollision = new List<CollisionPointStructure> ();
+					List<SimulationJoint> partJoint = new List<SimulationJoint> ();
+
+					for (int j = 0; j < partitions [i].ObjectList.Count; j++) 
+					{
+						if (partitions [i].ObjectList [j].Type == ContactType.Collision) 
+						{
+							CollisionPointStructure cpStruct = this.collisionPoints.Find (item => item.ObjectA == partitions [i].ObjectList [j].IndexA &&
+							                                  item.ObjectB == partitions [i].ObjectList [j].IndexB);
+							partitionedCollision.Add (cpStruct);
+
+						} else {
+
+							SimulationJoint smJoint = this.simulationJoints.Find (item => item.IndexA == partitions [i].ObjectList [j].IndexA &&
+							                           item.IndexB == partitions [i].ObjectList [j].IndexB);
+							partJoint.Add (smJoint);
+
+						}
+					}
+					collisionPartitionedPoints.Add (partitionedCollision);
+					partitionedJoint.Add(partJoint);
+				}
 			}
 
 			stopwatch.Stop ();
+			Console.WriteLine("Partitioning Elapsed={0}",stopwatch.ElapsedMilliseconds);
+		}
 
-			Console.WriteLine("Solver Elapsed={0}",stopwatch.ElapsedMilliseconds);
+		private void physicsExecutionFlow()
+		{
+			Stopwatch stopwatch = new Stopwatch();
 
-			//Aggiorno la velocità degli oggetti
-			this.updateVelocity ();
+			stopwatch.Reset ();
+			stopwatch.Start ();
+
+			if (this.collisionPartitionedPoints != null) {
+
+				Parallel.For (0, 
+					collisionPartitionedPoints.Count, 
+					new ParallelOptions { MaxDegreeOfParallelism = this.simulationParameters.MaxThreadNumber }, 
+					i => {
+						
+						//Svuoto il vettore delle incognite
+						double[] X = null;
+
+						List<Contact> contactConstraints = new List<Contact> ();
+
+						//Con i punti di collisione costruisco la matrice delle collisioni
+						contactConstraints = this.buildContactsMatrix (
+							this.collisionPartitionedPoints [i],
+							this.simulationObjects);
+
+						//Costruisco la matrice dei Joints
+						contactConstraints.AddRange (
+							this.buildJointsMatrix (
+								this.partitionedJoint[i],
+								this.simulationObjects));
+
+						//Costruisco la struttura da passare al solver
+						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactConstraints.ToArray ());
+
+						//Test verifica efficacia motore
+						if (contactConstraints.Count > 0 &&
+						   linearProblemProperties != null) 
+						{
+							X = this.solver.Solve (linearProblemProperties);
+						}
+
+						//Aggiorno la velocità degli oggetti
+						this.updateVelocity (
+							contactConstraints.ToArray (),
+							X,
+							this.simulationObjects);
+					});
+			}
 
 			//Aggiorno la posizione degli oggetti
-			this.integrateObjectsPosition ();
+			this.integrateObjectsPosition (this.simulationObjects);
 
 			//Aggiorno la posizione dei Joint
-			this.integrateJointPosition ();
+			this.integrateJointPosition (this.simulationJoints);
+
+			stopwatch.Stop ();
+			
+			Console.WriteLine ("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
 		}
 
 		#region Collision Detection
@@ -520,38 +570,40 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Builds the contacts matrix.
 		/// </summary>
-		private void buildContactsMatrix()
+		private List<Contact> buildContactsMatrix(
+			List<CollisionPointStructure> collisionPointsStruct,
+			SimulationObject[] simulationObjs)
 		{
-			this.contactConstraints = new List<Contact> ();
+			List<Contact> contactConstraints = new List<Contact> ();
 
-			for (int i = 0; i < this.collisionPoints.Count; i++) 
+			for (int i = 0; i < collisionPointsStruct.Count; i++) 
 			{
-				int indexA = this.collisionPoints [i].ObjectA;
-				int indexB = this.collisionPoints [i].ObjectB;
+				int indexA = collisionPointsStruct [i].ObjectA;
+				int indexB = collisionPointsStruct [i].ObjectB;
 
 				double restitutionCoefficient =
-					1.0 + (this.simulationObjects [indexA].RestitutionCoeff +
-					this.simulationObjects [indexB].RestitutionCoeff) / 2.0;
+					1.0 + (simulationObjs [indexA].RestitutionCoeff +
+						simulationObjs [indexB].RestitutionCoeff) / 2.0;
 				
-				for (int k = 0; k < this.collisionPoints[i].CollisionPoints.Length; k++) 
+				for (int k = 0; k < collisionPointsStruct[i].CollisionPoints.Length; k++) 
 				{
 					Vector3 collisionPoint;
-					if (this.collisionPoints [i].Intersection)
-						collisionPoint = this.collisionPoints [i].CollisionPoints [k].collisionPointA;
+					if (collisionPointsStruct [i].Intersection)
+						collisionPoint = collisionPointsStruct [i].CollisionPoints [k].collisionPointA;
 					else
-						collisionPoint = (this.collisionPoints[i].CollisionPoints [k].collisionPointA +
-							this.collisionPoints[i].CollisionPoints [k].collisionPointB) * 0.5;
+						collisionPoint = (collisionPointsStruct [i].CollisionPoints [k].collisionPointA +
+						collisionPointsStruct [i].CollisionPoints [k].collisionPointB) * 0.5;
 
-					Vector3 ra = collisionPoint - this.simulationObjects [indexA].Position;
-					Vector3 rb = collisionPoint - this.simulationObjects [indexB].Position;
+					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
+					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
 
-					Vector3 normal = Vector3.Normalize (this.collisionPoints [i].CollisionPoints [k].collisionNormal * -1.0);
+					Vector3 normal = Vector3.Normalize (collisionPointsStruct [i].CollisionPoints [k].collisionNormal * -1.0);
 
-					Vector3 velocityA = this.simulationObjects [indexA].LinearVelocity + 
-						Vector3.Cross (this.simulationObjects [indexA].AngularVelocity, ra);
+					Vector3 velocityA = simulationObjs [indexA].LinearVelocity +
+					                    Vector3.Cross (simulationObjs [indexA].AngularVelocity, ra);
 
-					Vector3 velocityB = this.simulationObjects [indexB].LinearVelocity + 
-						Vector3.Cross (this.simulationObjects [indexB].AngularVelocity, rb);
+					Vector3 velocityB = simulationObjs [indexB].LinearVelocity +
+					                    Vector3.Cross (simulationObjs [indexB].AngularVelocity, rb);
 
 					Vector3 relativeVelocity = velocityA - velocityB;
 
@@ -562,7 +614,7 @@ namespace MonoPhysicsEngine
 						this.simulationParameters.VelocityToleranceStabilization)
 						restitutionCoefficient = 1.0;
 
-					double error = this.collisionPoints [i].IntersectionDistance * this.simulationParameters.BaumStabilization;
+					double error = collisionPointsStruct [i].IntersectionDistance * this.simulationParameters.BaumStabilization;
 					double b = Vector3.Dot (normal, relativeVelocity) * restitutionCoefficient -
 					           error;
 
@@ -604,11 +656,12 @@ namespace MonoPhysicsEngine
 							ConstraintType.StaticFriction);
 					}
 						
-					this.contactConstraints.Add (normalDirection);
-					this.contactConstraints.Add (frictionContact[0]);
-					this.contactConstraints.Add (frictionContact[1]);
+					contactConstraints.Add (normalDirection);
+					contactConstraints.Add (frictionContact[0]);
+					contactConstraints.Add (frictionContact[1]);
 				}
 			}
+			return contactConstraints;
 		}
 
 
@@ -696,15 +749,19 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Builds the joints matrix.
 		/// </summary>
-		private void buildJointsMatrix()
+		private List<Contact> buildJointsMatrix(
+			List<SimulationJoint> simulationJointList,
+			SimulationObject[] simulationObj)
 		{
-			foreach (SimulationJoint simulationJoint in this.simulationJoints) 
+			List<Contact> contactConstraints = new List<Contact> ();
+
+			foreach (SimulationJoint simulationJoint in simulationJointList) 
 			{
 				int indexA = simulationJoint.IndexA;
 				int indexB = simulationJoint.IndexB;
 
-				SimulationObject simulationObjectA = this.simulationObjects [indexA];
-				SimulationObject simulationObjectB = this.simulationObjects [indexB];
+				SimulationObject simulationObjectA = simulationObj [indexA];
+				SimulationObject simulationObjectB = simulationObj [indexB];
 
 				Vector3 ra = simulationJoint.Position - simulationObjectA.Position;
 				Vector3 rb = simulationJoint.Position - simulationObjectB.Position;
@@ -751,9 +808,9 @@ namespace MonoPhysicsEngine
 					                 simulationJoint.Axis3);
 
 				//Critical section
-				this.contactConstraints.Add (Joint1);
-				this.contactConstraints.Add (Joint2);
-				this.contactConstraints.Add (Joint3);
+				contactConstraints.Add (Joint1);
+				contactConstraints.Add (Joint2);
+				contactConstraints.Add (Joint3);
 
 				//TODO verificare se introdurre il vincolo
 //				if (jt[i].vB >= 0) {
@@ -794,6 +851,7 @@ namespace MonoPhysicsEngine
 //
 //				}
 			}
+			return contactConstraints;
 		}
 
 		/// <summary>
@@ -830,12 +888,11 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Builds the LCP matrix for solver.
 		/// </summary>
-		private void buildLCPMatrix()
+		private LinearProblemProperties buildLCPMatrix(
+			Contact[] contact)
 		{
-			if (this.contactConstraints.Count > 0) 
+			if (contact.Length > 0) 
 			{
-				Contact[] contact = this.contactConstraints.ToArray ();
-
 				SparseElement[] M = new SparseElement[contact.Length];
 				double[] B = new double[contact.Length];
 				double[] X = new double[contact.Length];
@@ -909,7 +966,7 @@ namespace MonoPhysicsEngine
 						index [i].ToArray ());
 				}
 
-				this.linearProblemProperties = new LinearProblemProperties (
+				return new LinearProblemProperties (
 					M,
 					B,
 					X,
@@ -919,6 +976,8 @@ namespace MonoPhysicsEngine
 					constraints,
 					contact.Length);
 			}
+
+			return null;
 		}
 
 
@@ -1006,24 +1065,27 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Updates velocity of the simulations objects.
 		/// </summary>
-		private void updateVelocity()
+		private void updateVelocity(
+			Contact[] contact,
+			double[] X,
+			SimulationObject[] simulationObj)
 		{
-			Contact[] contact = this.contactConstraints.ToArray ();
-
 			int index = 0;
 			foreach (Contact ct in contact) 
 			{
-				Vector3 impulseA = this.X [index] *
-				                           ct.Normal;
-				Vector3 impulseB = -this.X [index] *
-				                           ct.Normal;
+				Vector3 impulseA = X [index] *
+				                   ct.Normal;
+				Vector3 impulseB = -X [index] *
+				                   ct.Normal;
 		
 				this.updateObjectVelocity (
+					simulationObj,
 					impulseA, 
 					ct.CollisionPoint,
 					ct.ObjectA);
 			
 				this.updateObjectVelocity ( 
+					simulationObj,
 					impulseB, 
 					ct.CollisionPoint,
 					ct.ObjectB);
@@ -1039,36 +1101,38 @@ namespace MonoPhysicsEngine
 		/// <param name="normal">Normal.</param>
 		/// <param name="collisionPoint">Collision point.</param>
 		private void updateObjectVelocity(
+			SimulationObject[] simulationObj,
 			Vector3 normalImpulse,
 			Vector3 collisionPoint,
 			int objectIndex)
 		{
 			if (this.simulationObjects [objectIndex].Mass > 0.0) 
 			{
-				Vector3 linearVelocity = this.simulationObjects [objectIndex].LinearVelocity +
-					normalImpulse * this.simulationObjects [objectIndex].InverseMass;
+				Vector3 linearVelocity = simulationObj [objectIndex].LinearVelocity +
+					normalImpulse * simulationObj [objectIndex].InverseMass;
 
-				Vector3 rx = collisionPoint - this.simulationObjects [objectIndex].Position;
+				Vector3 rx = collisionPoint - simulationObj [objectIndex].Position;
 
-				Vector3 angularVelocity = this.simulationObjects [objectIndex].AngularVelocity +
-				                          (this.simulationObjects [objectIndex].InertiaTensor *
+				Vector3 angularVelocity = simulationObj [objectIndex].AngularVelocity +
+				                          (simulationObj [objectIndex].InertiaTensor *
 				                          Vector3.Cross (rx, normalImpulse));
 
-				this.simulationObjects [objectIndex].SetLinearVelocity (linearVelocity);
-				this.simulationObjects [objectIndex].SetAngularVelocity (angularVelocity);
+				simulationObj [objectIndex].SetLinearVelocity (linearVelocity);
+				simulationObj [objectIndex].SetAngularVelocity (angularVelocity);
 			}
 		}
 
 		/// <summary>
 		/// Integrates the objects position.
 		/// </summary>
-		private void integrateObjectsPosition()
+		private void integrateObjectsPosition(
+			SimulationObject[] simulationObj)
 		{
 			Vector3 externalVelocityStep = this.timeStep * 
 				simulationParameters.ExternalForce;
 
 			int index = 0;
-			foreach (SimulationObject simObj in this.simulationObjects) 
+			foreach (SimulationObject simObj in simulationObj) 
 			{
 				if (simObj.Mass > 0.0) 
 				{
@@ -1144,31 +1208,32 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Integrates the joint position.
 		/// </summary>
-		private void integrateJointPosition()
+		private void integrateJointPosition(
+			List<SimulationJoint> simulationJoints)
 		{
-			for (int i = 0; i < this.simulationJoints.Count; i++) 
+			for (int i = 0; i < simulationJoints.Count; i++) 
 			{
-				int indexA = this.simulationJoints [i].IndexA;
+				int indexA = simulationJoints [i].IndexA;
 
-				Vector3 relativePosition = this.simulationJoints [i].StartJointPos -
+				Vector3 relativePosition = simulationJoints [i].StartJointPos -
 				                           this.simulationObjects [indexA].StartPosition;
 
 				relativePosition = (this.simulationObjects [indexA].RotationMatrix * relativePosition) +
 				this.simulationObjects [indexA].Position;
 
-				this.simulationJoints [i] = new SimulationJoint (
-					this.simulationJoints [i].IndexA,
-					this.simulationJoints [i].IndexB,
-					this.simulationJoints [i].K,
-					this.simulationJoints [i].C,
-					this.simulationJoints [i].StartJointPos,
+				simulationJoints [i] = new SimulationJoint (
+					simulationJoints [i].IndexA,
+					simulationJoints [i].IndexB,
+					simulationJoints [i].K,
+					simulationJoints [i].C,
+					simulationJoints [i].StartJointPos,
 					relativePosition,
-					this.simulationJoints [i].Axis1,
-					this.simulationJoints [i].Axis2,
-					this.simulationJoints [i].Axis3,
-					this.simulationJoints [i].DistanceFromA,
-					this.simulationJoints [i].DistanceFromB,
-					this.simulationJoints [i].RotationConstraintA,
+					simulationJoints [i].Axis1,
+					simulationJoints [i].Axis2,
+					simulationJoints [i].Axis3,
+					simulationJoints [i].DistanceFromA,
+					simulationJoints [i].DistanceFromB,
+					simulationJoints [i].RotationConstraintA,
 					this.simulationJoints [i].RotationConstraintB);
 			}
 		}
