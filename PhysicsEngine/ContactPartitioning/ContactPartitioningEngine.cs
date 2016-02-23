@@ -1,6 +1,7 @@
 ﻿using System;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 using System.Collections.Generic;
+using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {
@@ -10,13 +11,13 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public ContactPartitioningEngine ()
-		{
-		}
+		{}
 
 		#endregion
 
 		#region Public Methods
 
+		//TODO gestire presenza di più di un vincolo legato a dei joint e a dei contatti
 		public List<SpatialPartition> calculateSpatialPartitioning(
 			List<CollisionPointStructure> collisionPoints,
 			List<SimulationJoint> simulationJoint,
@@ -57,15 +58,14 @@ namespace MonoPhysicsEngine
 						partition,
 						simulationObjects);
 
-					Console.WriteLine ("NPartition contact " + partition.Count);
-
 					for (int i = 0; i < partition.Count; i++) 
 					{
 						List<int> index = new List<int> ();
 						for (int j = 0; j < contactIndex.Count; j++) 
 						{
 							if (contactIndex [j].IndexA == partition [i].IndexA &&
-								contactIndex [j].IndexB == partition [i].IndexB) 
+								contactIndex [j].IndexB == partition [i].IndexB &&
+								contactIndex [j].Type == partition [i].Type) 
 							{
 								index.Add (j);
 							}

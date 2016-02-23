@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using OpenTK;
 using PhysicsEngineMathUtility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 using Utility;
 using CollisionEngine;
 using ObjLoader;

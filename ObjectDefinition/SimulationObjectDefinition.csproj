@@ -41,5 +41,6 @@
     <Compile Include="SimulationObject.cs" />
     <Compile Include="SimulationJoint.cs" />
     <Compile Include="AABB.cs" />
+    <Compile Include="Joint.cs" />
   </ItemGroup>
 </Project>

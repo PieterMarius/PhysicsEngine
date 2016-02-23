@@ -4,7 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 using CollisionEngine;
 using LCPSolver;
 
@@ -57,8 +57,6 @@ namespace MonoPhysicsEngine
 		#region LCP properties
 
 		private ISolver solver;
-		//private LinearProblemProperties linearProblemProperties;
-		//private double[] X;
 
 		#endregion
 
@@ -331,7 +329,7 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-
+		#region Contact Partitioning
 
 		private void partitionEngineExecute()
 		{
@@ -359,13 +357,16 @@ namespace MonoPhysicsEngine
 					{
 						if (partitions [i].ObjectList [j].Type == ContactType.Collision) 
 						{
-							CollisionPointStructure cpStruct = this.collisionPoints.Find (item => item.ObjectA == partitions [i].ObjectList [j].IndexA &&
-							                                  item.ObjectB == partitions [i].ObjectList [j].IndexB);
+
+							CollisionPointStructure cpStruct = this.collisionPoints.Find (item => 
+																item.ObjectA == partitions [i].ObjectList [j].IndexA &&
+							                                   item.ObjectB == partitions [i].ObjectList [j].IndexB);
 							partitionedCollision.Add (cpStruct);
 
 						} else {
 
-							SimulationJoint smJoint = this.simulationJoints.Find (item => item.IndexA == partitions [i].ObjectList [j].IndexA &&
+							SimulationJoint smJoint = this.simulationJoints.Find (item => 
+													   item.IndexA == partitions [i].ObjectList [j].IndexA &&
 							                           item.IndexB == partitions [i].ObjectList [j].IndexB);
 							partJoint.Add (smJoint);
 
@@ -379,6 +380,8 @@ namespace MonoPhysicsEngine
 			stopwatch.Stop ();
 			Console.WriteLine("Partitioning Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
+
+		#endregion
 
 		private void physicsExecutionFlow()
 		{
@@ -394,13 +397,8 @@ namespace MonoPhysicsEngine
 					new ParallelOptions { MaxDegreeOfParallelism = this.simulationParameters.MaxThreadNumber }, 
 					i => {
 						
-						//Svuoto il vettore delle incognite
-						double[] X = null;
-
-						List<Contact> contactConstraints = new List<Contact> ();
-
 						//Con i punti di collisione costruisco la matrice delle collisioni
-						contactConstraints = this.buildContactsMatrix (
+						List<Contact> contactConstraints = this.buildContactsMatrix (
 							this.collisionPartitionedPoints [i],
 							this.simulationObjects);
 
@@ -410,21 +408,23 @@ namespace MonoPhysicsEngine
 								this.partitionedJoint[i],
 								this.simulationObjects));
 
-						//Costruisco la struttura da passare al solver
-						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactConstraints.ToArray ());
+						Contact[] contactArray = contactConstraints.ToArray ();
 
-						//Test verifica efficacia motore
+						//Costruisco la struttura da passare al solver
+						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
+
 						if (contactConstraints.Count > 0 &&
 						   linearProblemProperties != null) 
 						{
-							X = this.solver.Solve (linearProblemProperties);
+							double[] X = this.solver.Solve (linearProblemProperties);
+
+							//Aggiorno la velocità degli oggetti
+							this.updateVelocity (
+								contactArray,
+								X,
+								this.simulationObjects);
 						}
 
-						//Aggiorno la velocità degli oggetti
-						this.updateVelocity (
-							contactConstraints.ToArray (),
-							X,
-							this.simulationObjects);
 					});
 			}
 
@@ -578,26 +578,28 @@ namespace MonoPhysicsEngine
 
 			for (int i = 0; i < collisionPointsStruct.Count; i++) 
 			{
-				int indexA = collisionPointsStruct [i].ObjectA;
-				int indexB = collisionPointsStruct [i].ObjectB;
+				CollisionPointStructure collisionPointStr = collisionPointsStruct [i];
+
+				int indexA = collisionPointStr.ObjectA;
+				int indexB = collisionPointStr.ObjectB;
 
 				double restitutionCoefficient =
 					1.0 + (simulationObjs [indexA].RestitutionCoeff +
-						simulationObjs [indexB].RestitutionCoeff) / 2.0;
+						simulationObjs [indexB].RestitutionCoeff) * 0.5;
 				
-				for (int k = 0; k < collisionPointsStruct[i].CollisionPoints.Length; k++) 
+				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
 					Vector3 collisionPoint;
-					if (collisionPointsStruct [i].Intersection)
-						collisionPoint = collisionPointsStruct [i].CollisionPoints [k].collisionPointA;
+					if (collisionPointStr.Intersection)
+						collisionPoint = collisionPointStr.CollisionPoints [k].collisionPointA;
 					else
-						collisionPoint = (collisionPointsStruct [i].CollisionPoints [k].collisionPointA +
-						collisionPointsStruct [i].CollisionPoints [k].collisionPointB) * 0.5;
+						collisionPoint = (collisionPointStr.CollisionPoints [k].collisionPointA +
+							collisionPointStr.CollisionPoints [k].collisionPointB) * 0.5;
 
 					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
 					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
 
-					Vector3 normal = Vector3.Normalize (collisionPointsStruct [i].CollisionPoints [k].collisionNormal * -1.0);
+					Vector3 normal = Vector3.Normalize (collisionPointStr.CollisionPoints [k].collisionNormal * -1.0);
 
 					Vector3 velocityA = simulationObjs [indexA].LinearVelocity +
 					                    Vector3.Cross (simulationObjs [indexA].AngularVelocity, ra);
@@ -610,11 +612,12 @@ namespace MonoPhysicsEngine
 					Vector3 tangentialVelocity = relativeVelocity - 
 						(Vector3.Dot (normal, relativeVelocity) * normal);
 
+					//Help to stabilize simulation
 					if (Math.Abs (Vector3.Dot (normal, relativeVelocity)) <= 
 						this.simulationParameters.VelocityToleranceStabilization)
 						restitutionCoefficient = 1.0;
 
-					double error = collisionPointsStruct [i].IntersectionDistance * this.simulationParameters.BaumStabilization;
+					double error = collisionPointStr.IntersectionDistance * this.simulationParameters.BaumStabilization;
 					double b = Vector3.Dot (normal, relativeVelocity) * restitutionCoefficient -
 					           error;
 
@@ -784,6 +787,7 @@ namespace MonoPhysicsEngine
 				Vector3 p2 = simulationObjectB.Position + r2;
 
 				Vector3 dp = p2 - p1;
+
 
 				//vector3 tx = jt[i].t[0]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[0])*/;
 				//vector3 ty = jt[i].t[1]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[1])*/;
@@ -1168,9 +1172,8 @@ namespace MonoPhysicsEngine
 					{
 						Vector3 versor = Vector3.Normalize (simObj.AngularVelocity);
 
-						//Coriolis parameters
-						//ob[i].a_vel = sum(ob[i].a_vel, scalarm(-0.0009, versor));
-						//double angv = lengthw(ob[i].a_vel);
+						//Inertia parameter
+						angularVelocity = Math.Max (0.0, angularVelocity + angularVelocity * this.simulationParameters.InertiaParameter);
 
 						double rotationAngle = angularVelocity * this.timeStep;
 

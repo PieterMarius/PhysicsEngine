@@ -549,7 +549,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="-4,0" z="-3,0" />
+            <Position x="1,0" y="-8,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
@@ -558,7 +558,7 @@
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
             <CollisionDetection>1</CollisionDetection>
-            <Scale>3,5</Scale>
+            <Scale>7</Scale>
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>

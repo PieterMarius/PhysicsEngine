@@ -3,14 +3,8 @@ using PhysicsEngineMathUtility;
 
 namespace SimulationObjectDefinition
 {
-	public struct SimulationJoint
+	public struct Joint
 	{
-		#region public properties
-
-		public readonly int IndexA;
-		public readonly int IndexB;
-
-
 		public readonly double K;
 		public readonly double C;
 		public readonly Vector3 StartJointPos;
@@ -23,13 +17,7 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 RotationConstraintB;
 		public readonly Vector3 Position;
 
-		#endregion
-
-		#region Contructor
-
-		public SimulationJoint (
-			int indexA,
-			int indexB,
+		public Joint(
 			double K,
 			double C,
 			Vector3 startJointPos,
@@ -41,10 +29,7 @@ namespace SimulationObjectDefinition
 			Vector3 distanceFromB,
 			Vector3 rotationConstraintA,
 			Vector3 rotationConstraintB)
-			:this()
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartJointPos = startJointPos;
@@ -57,9 +42,6 @@ namespace SimulationObjectDefinition
 			this.RotationConstraintA = rotationConstraintA;
 			this.RotationConstraintB = rotationConstraintB;
 		}
-
-		#endregion
-
 	}
 }
 

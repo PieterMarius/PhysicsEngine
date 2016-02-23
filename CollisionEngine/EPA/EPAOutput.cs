@@ -1,5 +1,5 @@
 ﻿using System;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 
 namespace CollisionEngine
 {

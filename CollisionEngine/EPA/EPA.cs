@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using PhysicsEngineMathUtility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 
 
 namespace CollisionEngine

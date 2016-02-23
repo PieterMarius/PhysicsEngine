@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ObjectDefinition
+namespace CollisionEngine
 {
 	public class CollisionPointStructure
 	{

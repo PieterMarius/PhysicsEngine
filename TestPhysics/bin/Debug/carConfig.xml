@@ -1,0 +1,166 @@
+<?xml version="1.0" ?>
+<RigidBodyEngine>
+    <!-- Settings for RigidBodyEngine-->
+    <MainFolder>Users/pietervanduin/NetBeansProjects/PhysicsEngine/build/Debug/GNU-MacOSX/</MainFolder>        
+    <Parameters>
+        <TimeStep>0,01</TimeStep>
+        <LcpIter>150</LcpIter>
+        <LcpError>0,000001</LcpError>
+        <Distance>0,002</Distance>
+        <CFM>0,001</CFM>
+        <GJKD>0,008</GJKD>
+        <EPAD>0,008</EPAD>
+        <BaumStab>6,25</BaumStab>
+        <WarmStart>0,0001</WarmStart>
+        <GJKNIter>9</GJKNIter>
+        <SORP>150</SORP>
+        <LineDis>0,00000015</LineDis>
+        <AngDis>0,00000015</AngDis>
+        <StabIter>0</StabIter>
+        <ExternalForce x="0,0" y="-6,0" z="0,0 "/>
+    </Parameters>
+    
+   <ObjectsSettings>
+       
+       <!-- Ruote -->
+       <Object>
+            <Position x="4,0" y="-1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="1,57079632679" />
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>0,9</Scale>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        <Object>
+            <Position x="-4,0" y="-1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="1,57079632679" />
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>0,9</Scale>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        <Object>
+            <Position x="-4,0" y="-1,6" z="-6,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="1,57079632679" />
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>0,9</Scale>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        <Object>
+            <Position x="4,0" y="-1,6" z="-6,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="1,57079632679" />
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>0,9</Scale>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        <!-- Pianale -->
+        
+        <Object>
+            <Position x="0,0" y="2,0" z="-2,7" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="0,0" />
+            <Mass>-1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>4,0</Scale>
+            <ObjectGeometry>cube1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+          
+        <!-- Joint -->
+        <Object>
+            <Position x="3,5" y="1,2" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="1,0" y="5,0" z="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="1,57079632679" />
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,7</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>0,2</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        
+       <Object>
+            <Position x="0,0" y="-5" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <Mass>-1,0</Mass>
+            <RestitutionCoeff>0,01</RestitutionCoeff>
+            <DynamicFriction>1</DynamicFriction>
+            <StaticFriction>1</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>25</Scale>
+            <ObjectGeometry>cube1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+       
+    </ObjectsSettings>
+    
+    <JointsSettings>
+        
+    
+        <Joint>
+            <ObjectIndexA>5</ObjectIndexA>
+            <ObjectIndexB>4</ObjectIndexB>
+            <Position x="0,0" y="0,0" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </Joint>
+        
+        <Joint>
+            <ObjectIndexA>5</ObjectIndexA>
+            <ObjectIndexB>4</ObjectIndexB>
+            <Position x="0,5" y="0,0" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </Joint>
+
+    
+
+    </JointsSettings>
+    
+</RigidBodyEngine>

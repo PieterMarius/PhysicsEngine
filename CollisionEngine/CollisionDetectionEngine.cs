@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 
 namespace CollisionEngine
 {
@@ -14,16 +14,10 @@ namespace CollisionEngine
 		private GJK collisionEngine;
 		private EPA compenetrationCollisionEngine;
 		private CollisionEngineParameters collisionEngineParameters;
+		private SweepAndPrune SweepAndPrune;
 
 		#endregion
 
-		#region Sweep And Prune fields
-
-		private List<double> vectorX;
-		private List<double> vectorY;
-		private List<double> vectorZ;
-
-		#endregion
 
 		#region Constructor
 

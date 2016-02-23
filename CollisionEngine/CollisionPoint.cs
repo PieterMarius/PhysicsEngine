@@ -1,7 +1,7 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 
-namespace ObjectDefinition
+namespace CollisionEngine
 {
 	public class CollisionPoint
 	{

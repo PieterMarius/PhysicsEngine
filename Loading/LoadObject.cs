@@ -3,7 +3,7 @@ using System.Xml;
 using System.IO;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 using ObjLoader;
 using ObjLoader.Loader.Loaders;
 using Utility;

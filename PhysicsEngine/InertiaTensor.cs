@@ -1,6 +1,6 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 
 namespace MonoPhysicsEngine
 {

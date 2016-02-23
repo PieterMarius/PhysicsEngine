@@ -1,33 +1,46 @@
 ﻿using System;
-using ObjectDefinition;
+using System.Collections.Generic;
+using SimulationObjectDefinition;
 
 namespace CollisionEngine
 {
 	public class SweepAndPrune
 	{
-		#region Object fields
+		#region Sweep And Prune fields
 
-		struct EndPoint
-		{
-			public int index;
-			public float mValue;
-			public bool mIsMin;
-		};
+		private List<EndPoint> vectorX;
+		private List<EndPoint> vectorY;
+		private List<EndPoint> vectorZ;
 
-		struct Box
-		{
-			public EndPoint[] mMin;
-			public EndPoint[] mMax;
-		};
+		private List<Pair> PairList;
 
 		#endregion
 
 		#region Constructor
 
-		public SweepAndPrune (ObjectGeometry[] objects)
+		public SweepAndPrune ()
 		{
-			
+			this.vectorX = new List<EndPoint> ();
+			this.vectorY = new List<EndPoint> ();
+			this.vectorZ = new List<EndPoint> ();
+
+			this.PairList = new List<Pair> ();
 		}
+
+		#endregion
+
+		#region Public Methods
+
+		public List<Pair> GetPairList()
+		{
+			return null;
+		}
+
+		#endregion
+
+		#region Private Methods
+
+
 
 		#endregion
 	}

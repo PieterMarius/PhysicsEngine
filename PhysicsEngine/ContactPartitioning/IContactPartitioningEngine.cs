@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using ObjectDefinition;
+using SimulationObjectDefinition;
+using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {

@@ -1,28 +1,24 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
 
-namespace MonoPhysicsEngine
+namespace CollisionEngine
 {
-	public struct ContactIndex
+	public struct Pair
 	{
 		#region Public Properties
 
 		public readonly int IndexA;
 		public readonly int IndexB;
-		public readonly ContactType Type;
 
 		#endregion
 
 		#region Constructor
 
-		public ContactIndex(
+		public Pair (
 			int indexA,
-			int indexB,
-			ContactType type)
+			int indexB)
 		{
 			this.IndexA = indexA;
 			this.IndexB = indexB;
-			this.Type = type;
 		}
 
 		#endregion

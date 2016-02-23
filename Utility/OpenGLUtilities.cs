@@ -11,13 +11,10 @@ using ObjLoader.Loader.Loaders;
 
 namespace Utility
 {
-	public class OpenGLUtilities
+	public static class OpenGLUtilities
 	{
-		public OpenGLUtilities ()
-		{
-		}
-
-		public LoadResult LoadObjSolid(string fileName)
+		
+		public static LoadResult LoadObjSolid(string fileName)
 		{
 			var objLoaderFactory = new ObjLoaderFactory ();
 			var objLoader = objLoaderFactory.Create ();
@@ -211,7 +208,7 @@ namespace Utility
 		}
 
 
-		public float[] BuildPerspProjMat(
+		public static float[] BuildPerspProjMat(
 			float fov, 
 			float aspect,
 			float znear, 
@@ -276,7 +273,6 @@ namespace Utility
 			GL.Begin (PrimitiveType.Quads);
 			for (int i = 5; i >= 0; i--) 
 			{
-				
 				GL.Normal3 (n [i] [0],n[i][1],n[i][2]);
 				GL.Vertex3 (v [faces [i] [0]] [0], v [faces [i] [0]] [1], v [faces [i] [0]] [2]);
 				GL.Vertex3 (v [faces [i] [1]] [0], v [faces [i] [1]] [1], v [faces [i] [1]] [2]);
@@ -287,7 +283,7 @@ namespace Utility
 			GL.End ();
 		}
 
-		public void glLookAt(
+		public static void glLookAt(
 			PhysicsEngineMathUtility.Vector3 eye,
 			PhysicsEngineMathUtility.Vector3 center,
 			PhysicsEngineMathUtility.Vector3 up)
@@ -378,7 +374,7 @@ namespace Utility
 						solid.Normals[normalData[index]].Y, 
 						solid.Normals[normalData[index]].Z);
 
-				if (GLM_TEXTURE)
+				if (GLM_TEXTURE && solid.Textures.Count > 0)
 					GL.TexCoord2 (solid.Textures [textureData [index]].X,
 						solid.Textures [textureData [index]].Y);
 
@@ -391,7 +387,7 @@ namespace Utility
 						solid.Normals[normalData[index + 1]].Y, 
 						solid.Normals[normalData[index + 1]].Z);
 
-				if (GLM_TEXTURE)
+				if (GLM_TEXTURE && solid.Textures.Count > 0)
 					GL.TexCoord2 (solid.Textures [textureData [index + 1]].X,
 						solid.Textures [textureData [index + 1]].Y);
 
@@ -404,7 +400,7 @@ namespace Utility
 						solid.Normals[normalData[index + 2]].Y, 
 						solid.Normals[normalData[index + 2]].Z);
 
-				if (GLM_TEXTURE)
+				if (GLM_TEXTURE && solid.Textures.Count > 0)
 					GL.TexCoord2 (solid.Textures [textureData [index + 2]].X,
 						solid.Textures [textureData [index + 2]].Y);
 

@@ -62,7 +62,7 @@
     <Compile Include="EPA\EPAOutput.cs" />
     <Compile Include="SweepAndPrune\SweepAndPrune.cs" />
     <Compile Include="SweepAndPrune\EndPoint.cs" />
-    <Compile Include="SweepAndPrune\Box.cs" />
+    <Compile Include="SweepAndPrune\Pair.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="EPA\" />

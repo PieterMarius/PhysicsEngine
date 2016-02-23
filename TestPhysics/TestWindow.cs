@@ -12,7 +12,7 @@ using OpenTK.Graphics.OpenGL;
 using ObjLoader;
 using ObjLoader.Loader.Loaders;  
 using Utility;
-using ObjectDefinition;
+using SimulationObjectDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
@@ -48,6 +48,8 @@ namespace TestPhysics
 		int count = 0;
 		bool pause = false;
 
+		int redTexture;
+
 		//ObjectGeometry[] objectsGeometry;
 
 		#region Keyboard and mouse variables
@@ -63,8 +65,12 @@ namespace TestPhysics
 
 		void initProgram()
 		{
-			LoadObject loadObject = new LoadObject ("startJoint.xml");
-			//LoadObject loadObject = new LoadObject ("startConfig.xml");
+			try
+			{
+			//LoadObject loadObject = new LoadObject ("startJoint.xml");
+			LoadObject loadObject = new LoadObject ("startConfig.xml");
+			//LoadObject loadObject = new LoadObject ("carConfig.xml");
+
 			simulationObjects = loadObject.LoadSimulationObjects ();
 			simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
 
@@ -72,6 +78,8 @@ namespace TestPhysics
 
 			//Carico le texture
 			textureID = loadObject.LoadTexture ();
+			redTexture = OpenGLUtilities.LoadTexture ("red.bmp");
+
 
 			//Set Collision Detection
 			this.collisionEngineParameters = new CollisionEngineParameters();
@@ -107,6 +115,12 @@ namespace TestPhysics
 			}
 
 			this.collPoint = new List<CollisionPointStructure> ();
+
+			}
+			catch (Exception e) 
+			{
+				throw new Exception (e.StackTrace);
+			}
 
 			/* TODO Fine */
 
@@ -154,6 +168,7 @@ namespace TestPhysics
 			GL.Flush ();
 			SwapBuffers ();
 
+
 		}
 
 		protected override void OnUpdateFrame(FrameEventArgs e)
@@ -175,15 +190,15 @@ namespace TestPhysics
 
 			GL.MatrixMode (MatrixMode.Modelview);
 
+			//Physics
 			this.UpdateMouse ();
 			this.UpdateKeyboard ();
 
-			//Physics
-
-			stopwatch.Reset ();
-			stopwatch.Start ();
 
 			if (!pause){
+				stopwatch.Reset ();
+				stopwatch.Start ();
+
 				collPoint.Clear ();
 
 				this.physicsEngine.Simulate (null);
@@ -197,12 +212,12 @@ namespace TestPhysics
 //				Console.WriteLine ("Velocity:" + this.physicsEngine.GetObject (0).LinearVelocity.x + " ; " +
 //					this.physicsEngine.GetObject (0).LinearVelocity.y + " ; " +
 //					this.physicsEngine.GetObject (0).LinearVelocity.z);
+
+				stopwatch.Stop ();
+
+				Console.WriteLine("Engine Elapsed={0}",stopwatch.ElapsedMilliseconds);
+				Console.WriteLine ();
 			}
-
-			stopwatch.Stop ();
-
-			Console.WriteLine("Engine Elapsed={0}",stopwatch.ElapsedMilliseconds);
-			Console.WriteLine ();
 
 			collPoint = this.physicsEngine.GetCollisionPointStrucureList ();
 
@@ -253,6 +268,8 @@ namespace TestPhysics
 		//Test collisione
 		double angle = 0.0;
 
+		int selectedObjIndex = -1;
+
 		protected void UpdateKeyboard ()
 		{
 			if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.W])
@@ -291,32 +308,32 @@ namespace TestPhysics
 			}
 
 			// pause
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Space]) 
+			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.P]) 
 			{
-				if (pause)
+				selectedObjIndex = -1;
+				if (pause) {
 					pause = false;
-				else
+				} else {
 					pause = true;
+				}
 			}
 
-			//Test for ObjectA
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.C]) 
+			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.R]) 
 			{
-				PhysicsEngineMathUtility.Vector3 versor = new PhysicsEngineMathUtility.Vector3 (0.0, 1.0, 0.0);
-				angle += 0.02;
-				PhysicsEngineMathUtility.Quaternion rotation = new PhysicsEngineMathUtility.Quaternion (versor, angle);
-				simulationObjects [0].SetRotationStatus (rotation);
-
-				this.UpdateVertexPosition (0);
-				this.UpdateVertexPosition (1);
-
-				collPoint.Clear ();
-
-				this.physicsEngine.GetObject (0).SetRotationStatus (rotation);
-//				this.physicsEngine.ExecuteEngine ();
-//
-//				collPoint = this.physicsEngine.GetCollisionPointStrucureList ();
+				initProgram ();
 			}
+
+			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.F]) 
+			{
+				pause = true;
+				selectedObjIndex = Convert.ToInt32 (Console.ReadLine ());
+			}
+
+			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Down]) 
+			{
+				
+			}
+
 		}
 
 		private void UpdateVertexPosition(int index)
@@ -380,10 +397,16 @@ namespace TestPhysics
 			GL.MultMatrix (dmviewData);
 
 			//Inserire il textire ID
-			GL.BindTexture (TextureTarget.Texture2D, textureID[id]);
+			if (id == selectedObjIndex)
+				GL.BindTexture (TextureTarget.Texture2D, redTexture);
+			else
+				GL.BindTexture (TextureTarget.Texture2D, textureID[id]);
+			
 			GL.CallList (displayList [id]);
 			GL.Disable(EnableCap.Texture2D);
 
+
+	
 			GL.PopMatrix();
 		}
 

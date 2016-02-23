@@ -23,7 +23,7 @@
    <ObjectsSettings>
        <Object>
             <Position x="0,0" y="-1,6" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="4,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
             <Mass>1,0</Mass>
@@ -37,7 +37,7 @@
         </Object>
        <Object>
             <Position x="0,0" y="0,7" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <LinearVelocity x="0,0" y="5,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
             <Mass>1,0</Mass>
@@ -235,7 +235,7 @@
         
         <Object>
             <Position x="0,0" y="-1,0" z="12,0" />
-            <LinearVelocity x="0,0" y="0,0" z="-10,0" />
+            <LinearVelocity x="0,0" y="0,0" z="-5,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
             <Mass>5,0</Mass>
@@ -369,7 +369,7 @@
         <Axis2 x="0,0" y="1,0" z="0,0" />
         <Axis3 x="0,0" y="0,0" z="1,0" />
         <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>s
+        <StretchCoefficient>0,0</StretchCoefficient>
     </Joint>
 
     </JointsSettings>

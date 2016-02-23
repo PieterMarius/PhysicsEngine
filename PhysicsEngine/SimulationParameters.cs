@@ -25,7 +25,6 @@ namespace MonoPhysicsEngine
 		/// <value>The baum stabilization.</value>
 		public double BaumStabilization { get; private set; }
 
-		//velocità lineare al di sotto del quale un oggetto viene considerato fermo
 		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
 		/// </summary>
@@ -69,6 +68,12 @@ namespace MonoPhysicsEngine
 		public Vector3 ExternalForce { get; private set; }
 
 		/// <summary>
+		/// Gets the inertia parameter.
+		/// </summary>
+		/// <value>The inertia parameter.</value>
+		public double InertiaParameter { get; private set; }
+
+		/// <summary>
 		/// Gets the max thread number.
 		/// </summary>
 		/// <value>The max thread number.</value>
@@ -90,7 +95,8 @@ namespace MonoPhysicsEngine
 			this.DiscreteCCD = true;
 			this.CollisionDistance = 0.001;
 			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			this.MaxThreadNumber = 2;
+			this.InertiaParameter = -0.00009;
+			this.MaxThreadNumber = 4;
 		}
 
 		public SimulationParameters (

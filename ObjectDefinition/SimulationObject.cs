@@ -1,7 +1,7 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 
-namespace ObjectDefinition
+namespace SimulationObjectDefinition
 {
 	public struct SimulationObject
 	{

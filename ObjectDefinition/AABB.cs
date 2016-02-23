@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ObjectDefinition
+namespace SimulationObjectDefinition
 {
 	public class AABB
 	{
