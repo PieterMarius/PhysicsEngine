@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using System.IO;
+using System.Collections.Generic;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
 using SimulationObjectDefinition;
@@ -35,6 +36,7 @@ namespace Loading
 
 		#region Joint Attribute
 
+		private String jointProperties = "JointProperties";
 		private String objectIndexAAttribute = "ObjectIndexA";
 		private String objectIndexBAttribute = "ObjectIndexB";
 		private String positionJointAttribute = "Position";
@@ -201,57 +203,67 @@ namespace Loading
 				//Object index B
 				int indexB = Convert.ToInt32 (xmlList [i] [this.objectIndexBAttribute].InnerText);
 
-				//Position
-				Vector3 startPosition = new Vector3 (
-					                   Convert.ToDouble (xmlList [i] [this.positionJointAttribute].Attributes ["x"].Value),
-					                   Convert.ToDouble (xmlList [i] [this.positionJointAttribute].Attributes ["y"].Value),
-					                   Convert.ToDouble (xmlList [i] [this.positionJointAttribute].Attributes ["z"].Value));
+				XmlNodeList jointPropertiesList = xmlList [i].SelectNodes (this.jointProperties);
 
-				Vector3 relativePos = startPosition - objects [indexA].StartPosition;
-				relativePos = objects [indexA].RotationMatrix * relativePos;
+				Joint[] joint = new Joint[jointPropertiesList.Count];
 
-				Vector3 position = relativePos + objects [indexA].Position;
+				for (int j = 0; j < jointPropertiesList.Count; j++) {
+					
+					//Position
+					Vector3 startPosition = new Vector3 (
+						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
+						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
+						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
+
+					Vector3 relativePos = startPosition - objects [indexA].StartPosition;
+					relativePos = objects [indexA].RotationMatrix * relativePos;
+
+					Vector3 position = relativePos + objects [indexA].Position;
 			 	
-				//Distance A
-				Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) * 
-					(position - objects [indexA].Position);
+					//Distance A
+					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
+					                   (position - objects [indexA].Position);
 
-				//Distance B
-				Vector3 distanceB = Matrix3x3.Transpose (objects [indexB].RotationMatrix) * 
-					(position - objects [indexB].Position);
+					//Distance B
+					Vector3 distanceB = Matrix3x3.Transpose (objects [indexB].RotationMatrix) *
+					                   (position - objects [indexB].Position);
 
-				//Axis1
-				Vector3 axis1 = new Vector3 (
-					                Convert.ToDouble (xmlList [i] [this.axis1Attribute].Attributes ["x"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis1Attribute].Attributes ["y"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis1Attribute].Attributes ["z"].Value));
+					//Axis1
+					Vector3 axis1 = new Vector3 (
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["x"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["y"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["z"].Value));
 
-				//Axis2
-				Vector3 axis2 = new Vector3 (
-					                Convert.ToDouble (xmlList [i] [this.axis2Attribute].Attributes ["x"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis2Attribute].Attributes ["y"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis2Attribute].Attributes ["z"].Value));
+					//Axis2
+					Vector3 axis2 = new Vector3 (
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["x"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["y"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["z"].Value));
 
-				//Axis3
-				Vector3 axis3 = new Vector3 (
-					                Convert.ToDouble (xmlList [i] [this.axis3Attribute].Attributes ["x"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis3Attribute].Attributes ["y"].Value),
-					                Convert.ToDouble (xmlList [i] [this.axis3Attribute].Attributes ["z"].Value));
+					//Axis3
+					Vector3 axis3 = new Vector3 (
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["x"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["y"].Value),
+						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["z"].Value));
+
+					joint [j] = new Joint (
+						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
+						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+						startPosition,
+						position,
+						axis1,
+						axis2,
+						axis3,
+						distanceA,
+						distanceB,
+						new Vector3 (),
+						new Vector3 ());
+				}
 
 				joints [i] = new SimulationJoint (
 					indexA,
 					indexB,
-					Convert.ToDouble (xmlList [i] [this.restoreCoeffAttribute].InnerText), //Attribute K
-					Convert.ToDouble (xmlList [i] [this.stretchCoeffAttribute].InnerText), //Attribute C
-					startPosition,
-					position,
-					axis1,
-					axis2,
-					axis3,
-					distanceA,
-					distanceB,
-					new Vector3 (),
-					new Vector3 ()); 
+					joint);
 			}
 
 			return joints;

@@ -267,109 +267,128 @@
     
     <JointsSettings>
     
-    
-    
     <Joint>
         <ObjectIndexA>2</ObjectIndexA>
         <ObjectIndexB>1</ObjectIndexB>
-        <Position x="0,0" y="-1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        
+        <JointProperties>
+            <Position x="0,0" y="-1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
 
     <Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>1</ObjectIndexB>
-        <Position x="0,0" y="1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     
     <Joint>
         <ObjectIndexA>3</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
-        <Position x="0,0" y="1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>5</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
-        <Position x="0,0" y="-1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="-1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>6</ObjectIndexA>
         <ObjectIndexB>7</ObjectIndexB>
-        <Position x="0,0" y="1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>8</ObjectIndexA>
         <ObjectIndexB>7</ObjectIndexB>
-        <Position x="0,0" y="-1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="-1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>9</ObjectIndexA>
         <ObjectIndexB>10</ObjectIndexB>
-        <Position x="0,0" y="1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>11</ObjectIndexA>
         <ObjectIndexB>10</ObjectIndexB>
-        <Position x="0,0" y="-1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="-1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>12</ObjectIndexA>
         <ObjectIndexB>13</ObjectIndexB>
-        <Position x="0,0" y="1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
     <Joint>
         <ObjectIndexA>14</ObjectIndexA>
         <ObjectIndexB>13</ObjectIndexB>
-        <Position x="0,0" y="-1,15" z="0,0" />
-        <Axis1 x="1,0" y="0,0" z="0,0" />
-        <Axis2 x="0,0" y="1,0" z="0,0" />
-        <Axis3 x="0,0" y="0,0" z="1,0" />
-        <RestoreCoefficient>6,6</RestoreCoefficient>
-        <StretchCoefficient>0,0</StretchCoefficient>
+        <JointProperties>
+            <Position x="0,0" y="-1,15" z="0,0" />
+            <Axis1 x="1,0" y="0,0" z="0,0" />
+            <Axis2 x="0,0" y="1,0" z="0,0" />
+            <Axis3 x="0,0" y="0,0" z="1,0" />
+            <RestoreCoefficient>6,6</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+        </JointProperties>
     </Joint>
 
     </JointsSettings>

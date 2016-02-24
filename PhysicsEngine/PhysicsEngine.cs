@@ -763,58 +763,67 @@ namespace MonoPhysicsEngine
 				int indexA = simulationJoint.IndexA;
 				int indexB = simulationJoint.IndexB;
 
-				SimulationObject simulationObjectA = simulationObj [indexA];
-				SimulationObject simulationObjectB = simulationObj [indexB];
+				foreach (Joint joint in simulationJoint.JointList) 
+				{
+					SimulationObject simulationObjectA = simulationObj [indexA];
+					SimulationObject simulationObjectB = simulationObj [indexB];
 
-				Vector3 ra = simulationJoint.Position - simulationObjectA.Position;
-				Vector3 rb = simulationJoint.Position - simulationObjectB.Position;
+					Vector3 ra = joint.Position - simulationObjectA.Position;
+					Vector3 rb = joint.Position - simulationObjectB.Position;
 
-				Vector3 velObjA = simulationObjectA.LinearVelocity +
-				                  Vector3.Cross (simulationObjectA.AngularVelocity, ra);
+					Vector3 velObjA = simulationObjectA.LinearVelocity +
+					                 Vector3.Cross (simulationObjectA.AngularVelocity, ra);
 				
-				Vector3 velObjB = simulationObjectB.LinearVelocity +
-				                  Vector3.Cross (simulationObjectB.AngularVelocity, rb);
+					Vector3 velObjB = simulationObjectB.LinearVelocity +
+					                 Vector3.Cross (simulationObjectB.AngularVelocity, rb);
 
-				Vector3 relativeVelocity = velObjA - velObjB;
+					Vector3 relativeVelocity = velObjA - velObjB;
 
-				Vector3 r1 = simulationObjectA.RotationMatrix *
-				             simulationJoint.DistanceFromA;
+					Vector3 r1 = simulationObjectA.RotationMatrix *
+					            joint.DistanceFromA;
 				
-				Vector3 r2 = simulationObjectB.RotationMatrix *
-				             simulationJoint.DistanceFromB;
+					Vector3 r2 = simulationObjectB.RotationMatrix *
+					            joint.DistanceFromB;
 
-				Vector3 p1 = simulationObjectA.Position + r1;
-				Vector3 p2 = simulationObjectB.Position + r2;
+					Vector3 p1 = simulationObjectA.Position + r1;
+					Vector3 p2 = simulationObjectB.Position + r2;
 
-				Vector3 dp = p2 - p1;
+					Vector3 dp = p2 - p1;
 
 
-				//vector3 tx = jt[i].t[0]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[0])*/;
-				//vector3 ty = jt[i].t[1]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[1])*/;
-				//vector3 tz = jt[i].t[2]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[2])*/;
+					//vector3 tx = jt[i].t[0]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[0])*/;
+					//vector3 ty = jt[i].t[1]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[1])*/;
+					//vector3 tz = jt[i].t[2]/*productMatrix(ob[jt[i].A].rotmatrix,jt[i].t[2])*/;
 
-				Contact Joint1 = this.setJointConstraint (
-					                 simulationJoint,
-					                 dp,
-					                 relativeVelocity,
-					                 simulationJoint.Axis1);
+					Contact Joint1 = this.setJointConstraint (
+						                indexA,
+										indexB,
+										joint,
+						                dp,
+						                relativeVelocity,
+						                joint.Axis1);
 
-				Contact Joint2 = this.setJointConstraint (
-					                 simulationJoint,
-					                 dp,
-					                 relativeVelocity,
-					                 simulationJoint.Axis2);
+					Contact Joint2 = this.setJointConstraint (
+						                 indexA,
+						                 indexB,                
+						                 joint,
+						                 dp,
+						                 relativeVelocity,
+						                 joint.Axis2);
 
-				Contact Joint3 = this.setJointConstraint (
-					                 simulationJoint,
-					                 dp,
-					                 relativeVelocity,
-					                 simulationJoint.Axis3);
+					Contact Joint3 = this.setJointConstraint (
+						                 indexA,
+						                 indexB,                 
+						                 joint,
+						                 dp,
+						                 relativeVelocity,
+						                 joint.Axis3);
 
-				//Critical section
-				contactConstraints.Add (Joint1);
-				contactConstraints.Add (Joint2);
-				contactConstraints.Add (Joint3);
+					//Critical section
+					contactConstraints.Add (Joint1);
+					contactConstraints.Add (Joint2);
+					contactConstraints.Add (Joint3);
+				}
 
 				//TODO verificare se introdurre il vincolo
 //				if (jt[i].vB >= 0) {
@@ -867,21 +876,23 @@ namespace MonoPhysicsEngine
 		/// <param name="relativeVelocity">Relative velocity.</param>
 		/// <param name="axis">Axis.</param>
 		private Contact setJointConstraint(
-			SimulationJoint simulationJoint,
+			int indexA,
+			int indexB,
+			Joint joint,
 			Vector3 distanceParameter,
 			Vector3 relativeVelocity,
 			Vector3 axis)
 		{
-			double error = simulationJoint.K * Vector3.Dot (axis, distanceParameter);
+			double error = joint.K * Vector3.Dot (axis, distanceParameter);
 			double B = Vector3.Dot (axis, relativeVelocity) -
-			           simulationJoint.C * Vector3.Dot (axis, relativeVelocity) -
+			           joint.C * Vector3.Dot (axis, relativeVelocity) -
 			           error;
 
 			return new Contact (
-				simulationJoint.IndexA,
-				simulationJoint.IndexB,
+				indexA,
+				indexB,
 				-1,
-				simulationJoint.Position,
+				joint.Position,
 				axis,
 				ConstraintType.Joint,
 				B,
@@ -1218,26 +1229,36 @@ namespace MonoPhysicsEngine
 			{
 				int indexA = simulationJoints [i].IndexA;
 
-				Vector3 relativePosition = simulationJoints [i].StartJointPos -
-				                           this.simulationObjects [indexA].StartPosition;
+				List<Joint> joint = new List<Joint> ();
 
-				relativePosition = (this.simulationObjects [indexA].RotationMatrix * relativePosition) +
-				this.simulationObjects [indexA].Position;
+				for (int j = 0; j < simulationJoints [i].JointList.Length; j++) 
+				{
+					Vector3 relativePosition = simulationJoints [i].JointList[j].StartJointPos -
+					                          this.simulationObjects [indexA].StartPosition;
+
+					relativePosition = (this.simulationObjects [indexA].RotationMatrix * relativePosition) +
+					this.simulationObjects [indexA].Position;
+
+					Joint jointBuf = new Joint (
+						                 simulationJoints [i].JointList [j].K,
+						                 simulationJoints [i].JointList [j].C,
+						                 simulationJoints [i].JointList [j].StartJointPos,
+						                 relativePosition,
+						                 simulationJoints [i].JointList [j].Axis1,
+						                 simulationJoints [i].JointList [j].Axis2,
+						                 simulationJoints [i].JointList [j].Axis3,
+						                 simulationJoints [i].JointList [j].DistanceFromA,
+						                 simulationJoints [i].JointList [j].DistanceFromB,
+						                 simulationJoints [i].JointList [j].RotationConstraintA,
+						                 simulationJoints [i].JointList [j].RotationConstraintB);
+
+					joint.Add (jointBuf);
+				}
 
 				simulationJoints [i] = new SimulationJoint (
 					simulationJoints [i].IndexA,
 					simulationJoints [i].IndexB,
-					simulationJoints [i].K,
-					simulationJoints [i].C,
-					simulationJoints [i].StartJointPos,
-					relativePosition,
-					simulationJoints [i].Axis1,
-					simulationJoints [i].Axis2,
-					simulationJoints [i].Axis3,
-					simulationJoints [i].DistanceFromA,
-					simulationJoints [i].DistanceFromB,
-					simulationJoints [i].RotationConstraintA,
-					this.simulationJoints [i].RotationConstraintB);
+					joint.ToArray ());
 			}
 		}
 
