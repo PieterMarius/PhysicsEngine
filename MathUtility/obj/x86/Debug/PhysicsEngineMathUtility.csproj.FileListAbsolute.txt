@@ -1,0 +1,4 @@
+C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\MathUtility\bin\Debug\MathUtility.dll
+C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\MathUtility\bin\Debug\MathUtility.pdb
+C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\MathUtility\obj\x86\Debug\MathUtility.dll
+C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\MathUtility\obj\x86\Debug\MathUtility.pdb

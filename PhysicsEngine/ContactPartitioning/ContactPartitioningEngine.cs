@@ -17,7 +17,6 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-		//TODO gestire presenza di più di un vincolo legato a dei joint e a dei contatti
 		public List<SpatialPartition> calculateSpatialPartitioning(
 			List<CollisionPointStructure> collisionPoints,
 			List<SimulationJoint> simulationJoint,
