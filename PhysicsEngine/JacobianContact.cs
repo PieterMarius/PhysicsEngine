@@ -4,7 +4,7 @@ using LCPSolver;
 
 namespace MonoPhysicsEngine
 {
-	public struct Contact
+	public struct JacobianContact
 	{
 		#region Public Properties
 
@@ -21,7 +21,13 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 CollisionPoint;
 
 		//Normale della collisione dell'oggetto B
-		public readonly Vector3 Normal;
+		public readonly Vector3 LinearComponentA;
+
+		public readonly Vector3 LinearComponentB;
+
+		public readonly Vector3 AngularComponentA;
+
+		public readonly Vector3 AngularComponentB;
 
 		/// <summary>
 		/// The type of contact (collision, friction, joint).
@@ -47,12 +53,15 @@ namespace MonoPhysicsEngine
 
 		#region Constructor
 
-		public Contact (
+		public JacobianContact (
 			int objectA,
 			int objectB,
 			int contactReference,
 			Vector3 collisionPoint,
-			Vector3 normal,
+			Vector3 linearComponentA,
+			Vector3 linearComponentB,
+			Vector3 angularComponentA,
+			Vector3 angularComponentB,
 			ConstraintType type,
 			double b,
 			double constraintLimit,
@@ -62,7 +71,10 @@ namespace MonoPhysicsEngine
 			this.ObjectB = objectB;
 			this.ContactReference = contactReference;
 			this.CollisionPoint = collisionPoint;
-			this.Normal = normal;
+			this.LinearComponentA = linearComponentA;
+			this.LinearComponentB = linearComponentB;
+			this.AngularComponentA = angularComponentA;
+			this.AngularComponentB = angularComponentB;
 			this.Type = type;
 			this.B = b;
 			this.ConstraintLimit = constraintLimit;

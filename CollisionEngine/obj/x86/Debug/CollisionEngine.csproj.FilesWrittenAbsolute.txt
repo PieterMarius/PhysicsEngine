@@ -11,3 +11,4 @@
 /Users/pietervanduin/Projects/TestPhysics/CollisionEngine/bin/Debug/Utility.dll.mdb
 /Users/pietervanduin/Projects/TestPhysics/CollisionEngine/bin/Debug/CjClutter.ObjLoader.Loader.dll
 /Users/pietervanduin/Projects/TestPhysics/CollisionEngine/bin/Debug/OpenTK.dll
+/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/bin/Debug/OpenTK.xml
