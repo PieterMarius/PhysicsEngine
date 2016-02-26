@@ -703,15 +703,10 @@ namespace MonoPhysicsEngine
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
-			Vector3 linearComponentA_1 = new Vector3 ();
-			Vector3 linearComponentB_1 = new Vector3 ();
-			Vector3 angularComponentA_1 = new Vector3 ();
-			Vector3 angularComponentB_1 = new Vector3 ();
-
-			Vector3 linearComponentA_2 = new Vector3 ();
-			Vector3 linearComponentB_2 = new Vector3 ();
-			Vector3 angularComponentA_2 = new Vector3 ();
-			Vector3 angularComponentB_2 = new Vector3 ();
+			Vector3[] linearComponentA = new Vector3[2];
+			Vector3[] linearComponentB = new Vector3[2];
+			Vector3[] angularComponentA = new Vector3[2];
+			Vector3[] angularComponentB = new Vector3[2];
 
 			double constraintLimit = 0.0;
 			double B1 = 0.0;
@@ -724,21 +719,21 @@ namespace MonoPhysicsEngine
 				constraintLimit = 0.5 * (this.simulationObjects [indexA].DynamicFrictionCoeff +
 				this.simulationObjects [indexB].DynamicFrictionCoeff);
 
-				linearComponentA_1 = Vector3.Normalize (tangentialVelocity);
-				linearComponentB_1 = -1.0 * linearComponentA_1;
+				linearComponentA[0] = Vector3.Normalize (tangentialVelocity);
+				linearComponentB[0] = -1.0 * linearComponentA[0];
 
-				angularComponentA_1 = Vector3.Cross (ra, linearComponentA_1);
-				angularComponentB_1 = Vector3.Cross (rb, linearComponentB_1);
+				angularComponentA[0] = Vector3.Cross (ra, linearComponentA[0]);
+				angularComponentB[0] = Vector3.Cross (rb, linearComponentB[0]);
 
-				B1 = Vector3.Dot (linearComponentA_1, tangentialVelocity);
+				B1 = Vector3.Dot (linearComponentA[0], tangentialVelocity);
 
-				linearComponentA_2 = Vector3.Normalize (Vector3.Cross (tangentialVelocity, normal));
-				linearComponentB_2 = -1.0 * linearComponentA_2;
+				linearComponentA[1] = Vector3.Normalize (Vector3.Cross (tangentialVelocity, normal));
+				linearComponentB[1] = -1.0 * linearComponentA[1];
 
-				angularComponentA_2 = Vector3.Cross (ra, linearComponentA_2);
-				angularComponentB_2 = Vector3.Cross (rb, linearComponentB_2);
+				angularComponentA[1] = Vector3.Cross (ra, linearComponentA[1]);
+				angularComponentB[1] = Vector3.Cross (rb, linearComponentB[1]);
 
-				B2 = Vector3.Dot (linearComponentA_2, tangentialVelocity);
+				B2 = Vector3.Dot (linearComponentA[1], tangentialVelocity);
 
 				break;
 
@@ -747,17 +742,17 @@ namespace MonoPhysicsEngine
 				constraintLimit = 0.5 * (this.simulationObjects [indexA].StaticFrictionCoeff +
 					this.simulationObjects [indexB].StaticFrictionCoeff);
 
-				linearComponentA_1 = GeometryUtilities.ProjectVectorOnPlane (normal);
-				linearComponentB_1 = -1.0 * linearComponentA_1;
+				linearComponentA[0] = GeometryUtilities.ProjectVectorOnPlane (normal);
+				linearComponentB[0] = -1.0 * linearComponentA[0];
 
-				angularComponentA_1 = Vector3.Cross (ra, linearComponentA_1);
-				angularComponentB_1 = Vector3.Cross (rb, linearComponentB_1);
+				angularComponentA[0] = Vector3.Cross (ra, linearComponentA[0]);
+				angularComponentB[0] = Vector3.Cross (rb, linearComponentB[0]);
 
-				linearComponentA_2 = Vector3.Normalize (Vector3.Cross (linearComponentA_1, normal));
-				linearComponentB_2 = -1.0 * linearComponentA_2;
+				linearComponentA[1] = Vector3.Normalize (Vector3.Cross (linearComponentA[0], normal));
+				linearComponentB[1] = -1.0 * linearComponentA[1];
 
-				angularComponentA_2 = Vector3.Cross (ra, linearComponentA_2);
-				angularComponentB_2 = Vector3.Cross (rb, linearComponentB_2);
+				angularComponentA[1] = Vector3.Cross (ra, linearComponentA[1]);
+				angularComponentB[1] = Vector3.Cross (rb, linearComponentB[1]);
 
 				break;	
 			}
@@ -767,10 +762,10 @@ namespace MonoPhysicsEngine
 				indexB,
 				-1,
 				collisionPoint,
-				linearComponentA_1,
-				linearComponentB_1,
-				angularComponentA_1,
-				angularComponentB_1,
+				linearComponentA[0],
+				linearComponentB[0],
+				angularComponentA[0],
+				angularComponentB[0],
 				frictionType,
 				B1,
 				constraintLimit,
@@ -781,10 +776,10 @@ namespace MonoPhysicsEngine
 				indexB,
 				-2,
 				collisionPoint,
-				linearComponentA_2,
-				linearComponentB_2,
-				angularComponentA_2,
-				angularComponentB_2,
+				linearComponentA[1],
+				linearComponentB[1],
+				angularComponentA[1],
+				angularComponentB[1],
 				frictionType,
 				B2,
 				constraintLimit,
@@ -1076,9 +1071,11 @@ namespace MonoPhysicsEngine
 					forceOnA = contactB.LinearComponentA;
 					torqueOnA = contactB.AngularComponentA;
 
-					linearA = Vector3.Dot (contactA.LinearComponentA, forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
+					linearA = Vector3.Dot (contactA.LinearComponentA, 
+						forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
+					
 					angularA = Vector3.Dot (contactA.AngularComponentA,
-							this.simulationObjects [contactA.ObjectA].InertiaTensor * torqueOnA);
+						this.simulationObjects [contactA.ObjectA].InertiaTensor * torqueOnA);
 
 				} else if (contactB.ObjectB == contactA.ObjectA) {
 					
