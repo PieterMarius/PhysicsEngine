@@ -8,25 +8,39 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Properties
 
-		//Indice relativo alla lista di SimulationObject
+		/// <summary>
+		/// The object index A.
+		/// </summary>
 		public readonly int ObjectA;
 
-		//Indice relativo alla lista di SimulationObject
+		/// <summary>
+		/// The object index B.
+		/// </summary>
 		public readonly int ObjectB;
 
-		//Eventuale contatto di riferimento (Es. forza normale nel caso dell'attrito)
+		/// <summary>
+		/// The contact reference.
+		/// </summary>
 		public readonly int ContactReference;
 
-		//Punto di collisione sull'oggetto A
-		public readonly Vector3 CollisionPoint;
-
-		//Normale della collisione dell'oggetto B
+		/// <summary>
+		/// The linear component object A.
+		/// </summary>
 		public readonly Vector3 LinearComponentA;
 
+		/// <summary>
+		/// The linear component object B.
+		/// </summary>
 		public readonly Vector3 LinearComponentB;
 
+		/// <summary>
+		/// The angular component object A.
+		/// </summary>
 		public readonly Vector3 AngularComponentA;
 
+		/// <summary>
+		/// The angular component object B.
+		/// </summary>
 		public readonly Vector3 AngularComponentB;
 
 		/// <summary>
@@ -57,7 +71,6 @@ namespace MonoPhysicsEngine
 			int objectA,
 			int objectB,
 			int contactReference,
-			Vector3 collisionPoint,
 			Vector3 linearComponentA,
 			Vector3 linearComponentB,
 			Vector3 angularComponentA,
@@ -70,7 +83,6 @@ namespace MonoPhysicsEngine
 			this.ObjectA = objectA;
 			this.ObjectB = objectB;
 			this.ContactReference = contactReference;
-			this.CollisionPoint = collisionPoint;
 			this.LinearComponentA = linearComponentA;
 			this.LinearComponentB = linearComponentB;
 			this.AngularComponentA = angularComponentA;

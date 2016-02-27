@@ -618,10 +618,13 @@ namespace MonoPhysicsEngine
 					Vector3 tangentialVelocity = relativeVelocity - 
 						(Vector3.Dot (linearComponentA, relativeVelocity) * linearComponentA);
 
-					//Help to stabilize simulation
+					#region Stabilize Animation
+
 					if (Math.Abs (Vector3.Dot (linearComponentA, relativeVelocity)) <= 
 						this.simulationParameters.VelocityToleranceStabilization)
 						restitutionCoefficient = 1.0;
+
+					#endregion
 
 					double error = collisionPointStr.IntersectionDistance * this.simulationParameters.BaumStabilization;
 					double b = Vector3.Dot (linearComponentA, relativeVelocity) * restitutionCoefficient -
@@ -632,7 +635,6 @@ namespace MonoPhysicsEngine
 						                                  indexA,
 						                                  indexB,
 						                                  0,
-						                                  collisionPoint,
 						                                  linearComponentA,
 						                                  linearComponentB,
 						                                  angularComponentA,
@@ -761,7 +763,6 @@ namespace MonoPhysicsEngine
 				indexA,
 				indexB,
 				-1,
-				collisionPoint,
 				linearComponentA[0],
 				linearComponentB[0],
 				angularComponentA[0],
@@ -775,7 +776,6 @@ namespace MonoPhysicsEngine
 				indexA,
 				indexB,
 				-2,
-				collisionPoint,
 				linearComponentA[1],
 				linearComponentB[1],
 				angularComponentA[1],
@@ -948,7 +948,6 @@ namespace MonoPhysicsEngine
 				indexA,
 				indexB,
 				-1,
-				joint.Position,
 				linearComponentA,
 				linearComponentB,
 				angularComponentA,
@@ -1062,14 +1061,15 @@ namespace MonoPhysicsEngine
 			double linearA = 0.0;
 			double angularA = 0.0;
 
+			double linearB = 0.0;
+			double angularB = 0.0;
+
 			if (this.simulationObjects [contactA.ObjectA].Mass > 0.0) {
-				Vector3 forceOnA = Vector3.ToZero ();
-				Vector3 torqueOnA = Vector3.ToZero ();
 
 				if (contactA.ObjectA == contactB.ObjectA) {
 					
-					forceOnA = contactB.LinearComponentA;
-					torqueOnA = contactB.AngularComponentA;
+					Vector3 forceOnA = contactB.LinearComponentA;
+					Vector3 torqueOnA = contactB.AngularComponentA;
 
 					linearA = Vector3.Dot (contactA.LinearComponentA, 
 						forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
@@ -1079,8 +1079,8 @@ namespace MonoPhysicsEngine
 
 				} else if (contactB.ObjectB == contactA.ObjectA) {
 					
-					forceOnA = contactB.LinearComponentB;
-					torqueOnA = contactB.AngularComponentB;
+					Vector3 forceOnA = contactB.LinearComponentB;
+					Vector3 torqueOnA = contactB.AngularComponentB;
 
 					linearA = Vector3.Dot (contactA.LinearComponentA,
 						forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
@@ -1090,17 +1090,12 @@ namespace MonoPhysicsEngine
 				}
 			}
 
-			double linearB = 0.0;
-			double angularB = 0.0;
-
 			if (this.simulationObjects [contactA.ObjectB].Mass > 0.0) {
-				Vector3 forceOnB = Vector3.ToZero ();
-				Vector3 torqueOnB = Vector3.ToZero ();
 
 				if (contactB.ObjectA == contactA.ObjectB) {
 					
-					forceOnB = contactB.LinearComponentA;
-					torqueOnB = contactB.AngularComponentA;
+					Vector3 forceOnB = contactB.LinearComponentA;
+					Vector3 torqueOnB = contactB.AngularComponentA;
 
 					linearB = Vector3.Dot (contactA.LinearComponentB, 
 						forceOnB * this.simulationObjects [contactA.ObjectB].InverseMass);
@@ -1110,8 +1105,8 @@ namespace MonoPhysicsEngine
 					
 				} else if (contactB.ObjectB == contactA.ObjectB) {
 
-					forceOnB = contactB.LinearComponentB;
-					torqueOnB = contactB.AngularComponentB;
+					Vector3 forceOnB = contactB.LinearComponentB;
+					Vector3 torqueOnB = contactB.AngularComponentB;
 
 					linearB = Vector3.Dot (contactA.LinearComponentB, 
 						forceOnB * this.simulationObjects [contactA.ObjectB].InverseMass);
@@ -1137,21 +1132,18 @@ namespace MonoPhysicsEngine
 			int index = 0;
 			foreach (JacobianContact ct in contact) 
 			{
-				Vector3 impulseA = X [index] *
-				                   ct.LinearComponentA;
-				Vector3 impulseB = X [index] *
-				                   ct.LinearComponentB;
-		
 				this.updateObjectVelocity (
 					simulationObj,
-					impulseA, 
-					ct.CollisionPoint,
+					ct.LinearComponentA, 
+					ct.AngularComponentA,
+					X[index],
 					ct.ObjectA);
 			
 				this.updateObjectVelocity ( 
 					simulationObj,
-					impulseB, 
-					ct.CollisionPoint,
+					ct.LinearComponentB, 
+					ct.AngularComponentB,
+					X[index],
 					ct.ObjectB);
 				
 				index++;
@@ -1166,20 +1158,22 @@ namespace MonoPhysicsEngine
 		/// <param name="collisionPoint">Collision point.</param>
 		private void updateObjectVelocity(
 			SimulationObject[] simulationObj,
-			Vector3 normalImpulse,
-			Vector3 collisionPoint,
+			Vector3 linearComponent,
+			Vector3 angularComponent,
+			double X,
 			int objectIndex)
 		{
 			if (this.simulationObjects [objectIndex].Mass > 0.0) 
 			{
-				Vector3 linearVelocity = simulationObj [objectIndex].LinearVelocity +
-					normalImpulse * simulationObj [objectIndex].InverseMass;
+				Vector3 linearImpulse = X * linearComponent;
+				Vector3 angularImpuse = X * angularComponent;
 
-				Vector3 rx = collisionPoint - simulationObj [objectIndex].Position;
+				Vector3 linearVelocity = simulationObj [objectIndex].LinearVelocity +
+					linearImpulse * simulationObj [objectIndex].InverseMass;
 
 				Vector3 angularVelocity = simulationObj [objectIndex].AngularVelocity +
 				                          (simulationObj [objectIndex].InertiaTensor *
-				                          Vector3.Cross (rx, normalImpulse));
+				                          angularImpuse);
 
 				simulationObj [objectIndex].SetLinearVelocity (linearVelocity);
 				simulationObj [objectIndex].SetAngularVelocity (angularVelocity);
