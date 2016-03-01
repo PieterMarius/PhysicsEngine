@@ -220,6 +220,47 @@ namespace PhysicsEngineMathUtility
 			return Quaternion.Normalize (new Quaternion(ra,rb,rc,rd) * q);
 		}
 
+		public static Vector3 GetEuler(Quaternion q)
+		{
+			
+			double test = q.b * q.c + q.d * q.a;
+			double heading, attitude, bank;
+
+			// singularity at north pole
+			if (test > 0.499999) 
+			{ 
+				heading = 2.0 * Math.Atan2 (q.b, q.a);
+				attitude = Math.PI / 2.0;
+				bank = 0.0;
+				return new Vector3 (bank, heading, attitude);
+			}
+
+			// singularity at south pole
+			if (test < -0.499999) { 
+				heading = -2.0 * Math.Atan2 (q.b, q.a);
+				attitude = -Math.PI / 2.0;
+				bank = 0.0;
+				return new Vector3 (bank, heading, attitude);
+			}
+
+			double sqx = q.b * q.b;
+			double sqy = q.c * q.c;
+			double sqz = q.d * q.d;
+
+			//( y-axis)
+			heading = Math.Atan2 (2.0 * q.c * q.a - 2.0 * q.b * q.d, 
+				1.0 - 2.0 * sqy - 2.0 * sqz); 
+
+			// (z-axis)
+			attitude = Math.Asin (2.0 * test); 
+
+			// (x-axis)
+			bank = Math.Atan2 (2.0 * q.b * q.a - 2.0 * q.c * q.d, 
+				1.0 - 2.0 * sqx - 2.0 * sqz); 
+			
+			return new Vector3 (bank, heading, attitude);
+		}
+
 		#endregion
 
 		#region Const

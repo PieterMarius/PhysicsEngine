@@ -1,5 +1,6 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
+using SimulationObjectDefinition;
 
 namespace LCPSolver
 {
@@ -19,14 +20,14 @@ namespace LCPSolver
 			case ConstraintType.StaticFriction:
 				return GeometryUtilities.Clamp (
 					X [i],
-					X [i + input.Constraints [i]] * input.ConstraintLimit [i],
-					-X [i + input.Constraints [i]] * input.ConstraintLimit [i]);
+					X [i + input.Constraints [i].Value] * input.ConstraintLimit [i],
+					-X [i + input.Constraints [i].Value] * input.ConstraintLimit [i]);
 				
 			case ConstraintType.DynamicFriction:
 				return GeometryUtilities.Clamp (
 					X [i],
-					X [i + input.Constraints [i]] * input.ConstraintLimit [i],
-					-X [i + input.Constraints [i]] * input.ConstraintLimit [i]);
+					X [i + input.Constraints [i].Value] * input.ConstraintLimit [i],
+					-X [i + input.Constraints [i].Value] * input.ConstraintLimit [i]);
 				
 			case ConstraintType.Joint:
 				return X [i];

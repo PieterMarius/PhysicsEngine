@@ -42,5 +42,6 @@
     <Compile Include="SimulationJoint.cs" />
     <Compile Include="AABB.cs" />
     <Compile Include="Joint.cs" />
+    <Compile Include="ConstraintType.cs" />
   </ItemGroup>
 </Project>

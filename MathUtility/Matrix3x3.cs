@@ -249,6 +249,14 @@ namespace PhysicsEngineMathUtility
 				r3x, r3y, r3z);
 		}
 
+		public static Matrix3x3 GetSkewSymmetricMatrix(Vector3 input)
+		{
+			return new Matrix3x3 (
+				0.0, -input.z, input.y,
+				input.z, 0.0, -input.x,
+				-input.y, input.x, 0.0);
+		}
+
 		#endregion
 
 		#region Const

@@ -1,5 +1,6 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
+using SimulationObjectDefinition;
 
 namespace LCPSolver
 {
@@ -23,7 +24,7 @@ namespace LCPSolver
 		public readonly ConstraintType[] ConstraintType;
 
 		//Legame contatto
-		public readonly int[] Constraints;
+		public readonly int?[] Constraints;
 
 		//Dimensioni vettori
 		public readonly int Count;
@@ -42,7 +43,7 @@ namespace LCPSolver
 			double[] d,
 			double[] constraintLimit,
 			ConstraintType[] constraintType,
-			int[] constraints,
+			int?[] constraints,
 			int count)
 		{
 			this.M = M;

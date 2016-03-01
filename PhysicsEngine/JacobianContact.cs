@@ -1,6 +1,7 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 using LCPSolver;
+using SimulationObjectDefinition;
 
 namespace MonoPhysicsEngine
 {
@@ -21,7 +22,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The contact reference.
 		/// </summary>
-		public readonly int ContactReference;
+		public readonly int? ContactReference;
 
 		/// <summary>
 		/// The linear component object A.
@@ -70,7 +71,7 @@ namespace MonoPhysicsEngine
 		public JacobianContact (
 			int objectA,
 			int objectB,
-			int contactReference,
+			int? contactReference,
 			Vector3 linearComponentA,
 			Vector3 linearComponentB,
 			Vector3 angularComponentA,

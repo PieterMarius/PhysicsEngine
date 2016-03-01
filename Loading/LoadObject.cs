@@ -228,32 +228,12 @@ namespace Loading
 					Vector3 distanceB = Matrix3x3.Transpose (objects [indexB].RotationMatrix) *
 					                   (position - objects [indexB].Position);
 
-					//Axis1
-					Vector3 axis1 = new Vector3 (
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["x"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["y"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis1Attribute].Attributes ["z"].Value));
-
-					//Axis2
-					Vector3 axis2 = new Vector3 (
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["x"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["y"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis2Attribute].Attributes ["z"].Value));
-
-					//Axis3
-					Vector3 axis3 = new Vector3 (
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["x"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["y"].Value),
-						                Convert.ToDouble (jointPropertiesList [j] [this.axis3Attribute].Attributes ["z"].Value));
-
 					joint [j] = new Joint (
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+						ConstraintType.Fixed,
 						startPosition,
 						position,
-						axis1,
-						axis2,
-						axis3,
 						distanceA,
 						distanceB,
 						new Vector3 (),
