@@ -210,34 +210,40 @@ namespace Loading
 				for (int j = 0; j < jointPropertiesList.Count; j++) {
 					
 					//Position
-					Vector3 startPosition = new Vector3 (
+					Vector3 startAnchorPosition = new Vector3 (
 						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
 						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
 						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
 
-					Vector3 relativePos = startPosition - objects [indexA].StartPosition;
+					Vector3 relativePos = startAnchorPosition - objects [indexA].StartPosition;
 					relativePos = objects [indexA].RotationMatrix * relativePos;
 
-					Vector3 position = relativePos + objects [indexA].Position;
+					Vector3 anchorPosition = relativePos + objects [indexA].Position;
 			 	
 					//Distance A
 					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
-					                   (position - objects [indexA].Position);
+					                    (anchorPosition - objects [indexA].Position);
 
 					//Distance B
 					Vector3 distanceB = Matrix3x3.Transpose (objects [indexB].RotationMatrix) *
-					                   (position - objects [indexB].Position);
+					                    (anchorPosition - objects [indexB].Position);
 
+					//Relative orientation
+					Quaternion relativeOrientation = Quaternion.Inverse (objects [indexA].RotationStatus) *
+					                                 objects [indexB].RotationStatus;
+
+					//TODO test di verifica
 					joint [j] = new Joint (
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
 						ConstraintType.Fixed,
-						startPosition,
-						position,
+						startAnchorPosition,
+						anchorPosition,
 						distanceA,
 						distanceB,
-						new Vector3 (),
-						new Vector3 ());
+						relativeOrientation,
+						new Vector3 (1.0, 0.0, 0.0),
+						new Vector3 (1.0, 0.0, 0.0));
 				}
 
 				joints [i] = new SimulationJoint (

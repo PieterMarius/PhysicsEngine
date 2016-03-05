@@ -24,9 +24,9 @@ namespace MonoPhysicsEngine
 			Joint simulationJoint,
 			SimulationObject[] simulationObjs);
 
-		List<JacobianContact> BuildJointsMatrix (
-			List<SimulationJoint> simulationJointList,
-			SimulationObject[] simulationObj);
+//		List<JacobianContact> BuildJointsMatrix (
+//			List<SimulationJoint> simulationJointList,
+//			SimulationObject[] simulationObj);
 	}
 }
 

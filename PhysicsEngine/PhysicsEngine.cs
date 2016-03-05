@@ -399,19 +399,6 @@ namespace MonoPhysicsEngine
 					collisionPartitionedPoints.Count, 
 					new ParallelOptions { MaxDegreeOfParallelism = this.simulationParameters.MaxThreadNumber }, 
 					i => {
-						
-						//Con i punti di collisione costruisco la matrice delle collisioni
-//						List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.BuildContactJoints (
-//							this.collisionPartitionedPoints [i],
-//							this.simulationObjects,
-//							this.simulationParameters);
-//
-//						//Costruisco la matrice dei Joints
-//						contactConstraints.AddRange (
-//							this.jacobianConstraintBuilder.BuildJointsMatrix (
-//								this.partitionedJoint[i],
-//								this.simulationObjects));
-
 
 						List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.GetJacobianConstraint (
 														this.collisionPartitionedPoints [i],
@@ -801,22 +788,29 @@ namespace MonoPhysicsEngine
 
 				for (int j = 0; j < simulationJoints [i].JointList.Length; j++) 
 				{
-					Vector3 relativePosition = simulationJoints [i].JointList[j].StartJointPos -
+					Vector3 relativeAnchorPosition = simulationJoints [i].JointList[j].StartAnchorPoint -
 					                          this.simulationObjects [indexA].StartPosition;
 
-					relativePosition = (this.simulationObjects [indexA].RotationMatrix * relativePosition) +
-					this.simulationObjects [indexA].Position;
+					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
+										this.simulationObjects [indexA].Position;
+
+					Vector3 rotationalAxis = Vector3.Normalize (this.simulationObjects [indexA].RotationMatrix *
+					                         simulationJoints [i].JointList [j].RotationAxis);
+
+					Vector3 translationAxis = Vector3.Normalize (this.simulationObjects [indexA].RotationMatrix *
+					                          simulationJoints [i].JointList [j].TranslationAxis);
 
 					Joint jointBuf = new Joint (
 						                 simulationJoints [i].JointList [j].K,
 						                 simulationJoints [i].JointList [j].C,
 						                 simulationJoints [i].JointList [j].Type,
-						                 simulationJoints [i].JointList [j].StartJointPos,
-						                 relativePosition,
+						                 simulationJoints [i].JointList [j].StartAnchorPoint,
+						                 relativeAnchorPosition,
 						                 simulationJoints [i].JointList [j].DistanceFromA,
 						                 simulationJoints [i].JointList [j].DistanceFromB,
-						                 simulationJoints [i].JointList [j].RotationAxis,
-						                 simulationJoints [i].JointList [j].TranslationAxis);
+						                 simulationJoints [i].JointList [j].RelativeOrientation,
+						                 rotationalAxis,
+						                 translationAxis);
 
 					joint.Add (jointBuf);
 				}

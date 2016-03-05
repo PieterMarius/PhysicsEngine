@@ -57,9 +57,9 @@ namespace TestPhysics
 		OpenTK.Input.MouseState current, previous;
 		float xrot = 0.0f;
 		float yrot = 0.0f;
-		float xpos = 0.35f;
+		float xpos = 0.0f;
 		float ypos = 0.0f;
-		float zpos = 0.0f;
+		float zpos = -7.0f;
 
 		#endregion
 
@@ -67,6 +67,11 @@ namespace TestPhysics
 		{
 			try
 			{
+
+			//test
+//				PhysicsEngineMathUtility.Quaternion prova = new PhysicsEngineMathUtility.Quaternion(3.0,1.0,2.0,1.0);
+//				PhysicsEngineMathUtility.Vector3 ciao = (180/Math.PI) * PhysicsEngineMathUtility.Quaternion.GetEuler (prova);
+//			
 			//LoadObject loadObject = new LoadObject ("startJoint.xml");
 			LoadObject loadObject = new LoadObject ("configJoint.xml");
 			//LoadObject loadObject = new LoadObject ("startConfig.xml");
@@ -158,7 +163,7 @@ namespace TestPhysics
 
 //			displayOrigin ();
 			displayContact ();
-			displayJoint ();
+			//displayJoint ();
 			//displayVertex (0);
 			//displayVertex (1);
 			//displayVertex (2);
@@ -489,36 +494,36 @@ namespace TestPhysics
 			}
 		}
 
-		private void displayJoint()
-		{
-			List<SimulationJoint> jointList = this.physicsEngine.GetJointsList ();
-
-			for (int i = 0; i < jointList.Count; i++) 
-			{
-				for (int j = 0; j < jointList [i].JointList.Length; j++) {
-
-					GL.PushMatrix ();
-
-					Matrix4 mView = Matrix4.CreateTranslation (
-						                Convert.ToSingle (jointList [i].JointList [j].Position.x), 
-						                Convert.ToSingle (jointList [i].JointList [j].Position.y), 
-						                Convert.ToSingle (jointList [i].JointList [j].Position.z));
-
-					float[] dmviewData = new float[] {
-						mView.M11, mView.M12, mView.M13, mView.M14,
-						mView.M21, mView.M22, mView.M23, mView.M24,
-						mView.M31, mView.M32, mView.M33, mView.M34,
-						mView.M41, mView.M42, mView.M43, mView.M44
-					};
-
-					GL.MultMatrix (dmviewData);
-
-					OpenGLUtilities.drawSolidCube (0.08f);
-
-					GL.PopMatrix ();
-				}
-			}
-		}
+//		private void displayJoint()
+//		{
+//			List<SimulationJoint> jointList = this.physicsEngine.GetJointsList ();
+//
+//			for (int i = 0; i < jointList.Count; i++) 
+//			{
+//				for (int j = 0; j < jointList [i].JointList.Length; j++) {
+//
+//					GL.PushMatrix ();
+//
+//					Matrix4 mView = Matrix4.CreateTranslation (
+//						                Convert.ToSingle (jointList [i].JointList [j].Position.x), 
+//						                Convert.ToSingle (jointList [i].JointList [j].Position.y), 
+//						                Convert.ToSingle (jointList [i].JointList [j].Position.z));
+//
+//					float[] dmviewData = new float[] {
+//						mView.M11, mView.M12, mView.M13, mView.M14,
+//						mView.M21, mView.M22, mView.M23, mView.M24,
+//						mView.M31, mView.M32, mView.M33, mView.M34,
+//						mView.M41, mView.M42, mView.M43, mView.M44
+//					};
+//
+//					GL.MultMatrix (dmviewData);
+//
+//					OpenGLUtilities.drawSolidCube (0.08f);
+//
+//					GL.PopMatrix ();
+//				}
+//			}
+//		}
 
 		private void displayOrigin()
 		{

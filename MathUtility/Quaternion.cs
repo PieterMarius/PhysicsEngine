@@ -4,10 +4,19 @@ namespace PhysicsEngineMathUtility
 {
 	public struct Quaternion
 	{
+		#region Real Value
+
 		public readonly double a;
+
+		#endregion
+
+		#region Complex Values
+
 		public readonly double b;
 		public readonly double c;
 		public readonly double d;
+
+		#endregion
 
 		#region Constructors
 
@@ -59,10 +68,10 @@ namespace PhysicsEngineMathUtility
 
 		public static Quaternion operator*(Quaternion q1, Quaternion q2)
 		{
-			double ra = (q1.a * q2.a - q1.b * q2.b - q1.c * q2.c - q1.d * q2.d);
-			double rb = (q1.a * q2.b + q1.b * q2.a + q1.c * q2.d - q1.d * q2.c);
-			double rc = (q1.a * q2.c - q1.b * q2.d + q1.c * q2.a + q1.d * q2.b);
-			double rd = (q1.a * q2.d + q1.b * q2.c - q1.c * q2.b + q1.d * q2.a);
+			double ra = (q2.a * q1.a - q2.b * q1.b - q2.c * q1.c - q2.d * q1.d);
+			double rb = (q2.a * q1.b + q2.b * q1.a - q2.c * q1.d + q2.d * q1.c);
+			double rc = (q2.a * q1.c + q2.b * q1.d + q2.c * q1.a - q2.d * q1.b);
+			double rd = (q2.a * q1.d - q2.b * q1.c + q2.c * q1.b + q2.d * q1.a);
 
 			return new Quaternion (ra, rb, rc, rd);
 		}
@@ -150,6 +159,12 @@ namespace PhysicsEngineMathUtility
 
 				return new Quaternion (ra, rb, rc, rd);
 			}
+		}
+
+		public static Quaternion Inverse(Quaternion q) 
+		{
+			double d = q.a * q.a + q.b * q.b + q.c * q.c + q.d * q.d;
+			return new Quaternion (q.a / d, -q.b / d, -q.c / d, -q.d / d);
 		}
 
 		public static Matrix3x3 ConvertToMatrix(Quaternion q)
@@ -249,7 +264,7 @@ namespace PhysicsEngineMathUtility
 
 			//( y-axis)
 			heading = Math.Atan2 (2.0 * q.c * q.a - 2.0 * q.b * q.d, 
-				1.0 - 2.0 * sqy - 2.0 * sqz); 
+				1.0 - 2.0 * sqy - 2.0 * sqz);
 
 			// (z-axis)
 			attitude = Math.Asin (2.0 * test); 
