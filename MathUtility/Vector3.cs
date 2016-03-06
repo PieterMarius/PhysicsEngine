@@ -182,9 +182,19 @@ namespace PhysicsEngineMathUtility
 			return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 		}
 
+		public double Dot(Vector3 a)
+		{
+			return (this.x * a.x) + (this.y * a.y) + (this.z * a.z);
+		}
+
 		public static double Length(Vector3 a)
 		{
 			return Math.Sqrt (Dot (a, a));
+		}
+
+		public double Length()
+		{
+			return Math.Sqrt (this.Dot (this));
 		}
 
 		public static Vector3 ToZero()
@@ -262,6 +272,15 @@ namespace PhysicsEngineMathUtility
 				return true;
 			return false;
 		}
+
+		public Matrix3x3 GetSkewSymmetricMatrix()
+		{
+			return new Matrix3x3 (
+				0.0, -this.z, this.y,
+				this.z, 0.0, -this.x,
+				-this.y, this.x, 0.0);
+		}
+
 
 
 		#region IComparable implementation

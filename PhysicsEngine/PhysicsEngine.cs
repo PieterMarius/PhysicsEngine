@@ -358,12 +358,12 @@ namespace MonoPhysicsEngine
 
 					for (int j = 0; j < partitions [i].ObjectList.Count; j++) 
 					{
-						if (partitions [i].ObjectList [j].Type == ContactType.Collision) 
+						if (partitions [i].ObjectList [j].Type == ContactGroupType.Collision) 
 						{
 
 							CollisionPointStructure cpStruct = this.collisionPoints.Find (item => 
 																item.ObjectA == partitions [i].ObjectList [j].IndexA &&
-							                                   item.ObjectB == partitions [i].ObjectList [j].IndexB);
+							                                   	item.ObjectB == partitions [i].ObjectList [j].IndexB);
 							partitionedCollision.Add (cpStruct);
 
 						} else {
@@ -401,10 +401,10 @@ namespace MonoPhysicsEngine
 					i => {
 
 						List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.GetJacobianConstraint (
-														this.collisionPartitionedPoints [i],
-														this.partitionedJoint[i],
-														this.simulationObjects,
-							this.simulationParameters);
+							                                           this.collisionPartitionedPoints [i],
+							                                           this.partitionedJoint [i],
+							                                           this.simulationObjects,
+							                                           this.simulationParameters);
 
 						JacobianContact[] contactArray = contactConstraints.ToArray ();
 
@@ -412,8 +412,7 @@ namespace MonoPhysicsEngine
 						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
 
 						if (contactConstraints.Count > 0 &&
-						   linearProblemProperties != null) 
-						{
+						    linearProblemProperties != null) {
 							double[] X = this.solver.Solve (linearProblemProperties);
 
 							//Aggiorno la velocità degli oggetti

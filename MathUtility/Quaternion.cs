@@ -98,7 +98,7 @@ namespace PhysicsEngineMathUtility
 
 
 		/// <summary>
-		/// Gets the vector. ????? da capire a cosa serve
+		/// Gets the vector.
 		/// </summary>
 		/// <returns>The vector.</returns>
 		/// <param name="q">Q.</param>
@@ -163,8 +163,14 @@ namespace PhysicsEngineMathUtility
 
 		public static Quaternion Inverse(Quaternion q) 
 		{
-			double d = q.a * q.a + q.b * q.b + q.c * q.c + q.d * q.d;
-			return new Quaternion (q.a / d, -q.b / d, -q.c / d, -q.d / d);
+			double d = 1.0 / (q.a * q.a + q.b * q.b + q.c * q.c + q.d * q.d);
+			return new Quaternion (q.a * d, -q.b * d, -q.c * d, -q.d * d);
+		}
+
+		public Quaternion Inverse()
+		{
+			double d = 1.0 / (this.a * this.a + this.b * this.b + this.c * this.c + this.d * this.d);
+			return new Quaternion (this.a * d, -this.b * d, -this.c * d, -this.d * d);
 		}
 
 		public static Matrix3x3 ConvertToMatrix(Quaternion q)
@@ -175,15 +181,15 @@ namespace PhysicsEngineMathUtility
 			double s = q.a;
 
 			double r1x = 1.0 - yy - zz;
-			double r1y = 2.0 * q.b * q.c - 2.0 * s * q.d;
-			double r1z = 2.0 * q.b * q.d + 2.0 * s * q.c;
+			double r1y = 2.0 * (q.b * q.c - s * q.d);
+			double r1z = 2.0 * (q.b * q.d + s * q.c);
 
-			double r2x = 2.0 * q.b * q.c + 2.0 * s * q.d;
+			double r2x = 2.0 * (q.b * q.c + s * q.d);
 			double r2y = 1.0 - xx - zz;
-			double r2z = 2.0 * q.c * q.d - 2.0 * s * q.b;
+			double r2z = 2.0 * (q.c * q.d - s * q.b);
 
-			double r3x = 2.0 * q.b * q.d - 2.0 * s * q.c;
-			double r3y = 2.0 * q.c * q.d + 2.0 * s * q.b;
+			double r3x = 2.0 * (q.b * q.d - s * q.c);
+			double r3y = 2.0 * (q.c * q.d + s * q.b);
 			double r3z = 1.0 - xx - yy;
 
 			return new Matrix3x3 (
@@ -262,14 +268,14 @@ namespace PhysicsEngineMathUtility
 			double sqy = q.c * q.c;
 			double sqz = q.d * q.d;
 
-			//( y-axis)
+			// y-axis
 			heading = Math.Atan2 (2.0 * q.c * q.a - 2.0 * q.b * q.d, 
 				1.0 - 2.0 * sqy - 2.0 * sqz);
 
-			// (z-axis)
+			// z-axis
 			attitude = Math.Asin (2.0 * test); 
 
-			// (x-axis)
+			// x-axis
 			bank = Math.Atan2 (2.0 * q.b * q.a - 2.0 * q.c * q.d, 
 				1.0 - 2.0 * sqx - 2.0 * sqz); 
 			

@@ -231,7 +231,7 @@ namespace PhysicsEngineMathUtility
 			double s = Math.Sin(angle);
 			double t = 1.0 - c;
 
-			double r1x = c + p.x*t;
+			double r1x = c + p.x * t;
 			double r1y = (versor.x * versor.y * t) - (versor.z * s);
 			double r1z = (versor.x * versor.z * t) + (versor.y * s);
 

@@ -2,7 +2,7 @@
 
 namespace MonoPhysicsEngine
 {
-	public enum ContactType
+	public enum ContactGroupType
 	{
 		Collision,
 		Joint,

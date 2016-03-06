@@ -35,7 +35,7 @@ namespace MonoPhysicsEngine
 					contactIndex.Add (new ContactIndex (
 						collisionPoints [i].ObjectA,
 						collisionPoints [i].ObjectB,
-						ContactType.Collision));
+						ContactGroupType.Collision));
 				}
 
 				// Add joints
@@ -44,7 +44,7 @@ namespace MonoPhysicsEngine
 					contactIndex.Add (new ContactIndex (
 						simulationJoint [i].IndexA,
 						simulationJoint [i].IndexB,
-						ContactType.Joint));
+						ContactGroupType.Joint));
 				}
 
 				while (contactIndex.Count != 0) {

@@ -9,7 +9,7 @@ namespace MonoPhysicsEngine
 
 		public readonly int IndexA;
 		public readonly int IndexB;
-		public readonly ContactType Type;
+		public readonly ContactGroupType Type;
 
 		#endregion
 
@@ -18,7 +18,7 @@ namespace MonoPhysicsEngine
 		public ContactIndex(
 			int indexA,
 			int indexB,
-			ContactType type)
+			ContactGroupType type)
 		{
 			this.IndexA = indexA;
 			this.IndexB = indexB;

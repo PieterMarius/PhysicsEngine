@@ -55,16 +55,17 @@
     <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />
     <Compile Include="ContactPartitioning\IContactPartitioningEngine.cs" />
     <Compile Include="ContactPartitioning\SpatialPartition.cs" />
-    <Compile Include="ContactPartitioning\ContactType.cs" />
     <Compile Include="ContactPartitioning\ContactIndex.cs" />
-    <Compile Include="JacobianContact.cs" />
-    <Compile Include="JacobianConstraintBuilder.cs" />
-    <Compile Include="IJacobianConstraintBuilder.cs" />
+    <Compile Include="JacobianBuilder\IJacobianConstraintBuilder.cs" />
+    <Compile Include="JacobianBuilder\JacobianConstraintBuilder.cs" />
+    <Compile Include="JacobianBuilder\JacobianContact.cs" />
+    <Compile Include="ContactPartitioning\ContactGroupType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ContactPartitioning\" />
+    <Folder Include="JacobianBuilder\" />
   </ItemGroup>
 </Project>

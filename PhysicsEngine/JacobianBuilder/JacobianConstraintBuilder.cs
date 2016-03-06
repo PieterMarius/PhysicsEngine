@@ -84,6 +84,7 @@ namespace MonoPhysicsEngine
 				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
 					Vector3 collisionPoint;
+
 					if (collisionPointStr.Intersection)
 						collisionPoint = collisionPointStr.CollisionPoints [k].collisionPointA;
 					else
@@ -135,6 +136,8 @@ namespace MonoPhysicsEngine
 
 					JacobianContact[] frictionContact;
 
+					#region Friction Contact
+
 					if (Vector3.Length (tangentialVelocity) > 
 						simulationParameters.ShiftToStaticFrictionTolerance) 
 					{
@@ -165,6 +168,8 @@ namespace MonoPhysicsEngine
 							ConstraintType.StaticFriction);
 					}
 
+					#endregion
+
 					contactConstraints.Add (normalDirection);
 					contactConstraints.Add (frictionContact[0]);
 					contactConstraints.Add (frictionContact[1]);
@@ -192,8 +197,8 @@ namespace MonoPhysicsEngine
 			Vector3 r2 = simulationObjectB.RotationMatrix *
 				simulationJoint.DistanceFromB;
 
-			Matrix3x3 skewR1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
-			Matrix3x3 skewR2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
+			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
+			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -204,10 +209,10 @@ namespace MonoPhysicsEngine
 
 			#region Init Angular
 
-			Quaternion currentRelativeOrientation = Quaternion.Inverse (simulationObjectA.RotationStatus) *
+			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
 			                                 simulationObjectB.RotationStatus;
 
-			Quaternion relativeOrientationError = Quaternion.Inverse (simulationJoint.RelativeOrientation) *
+			Quaternion relativeOrientationError = simulationJoint.RelativeOrientation.Inverse () *
 			                                     currentRelativeOrientation;
 
 			Vector3 angularError = new Vector3 (
@@ -283,7 +288,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				simulationJoint.K * 2.0 * angularError.x,
-				//0.0,
 				ConstraintType.Fixed));
 
 			//DOF 5
