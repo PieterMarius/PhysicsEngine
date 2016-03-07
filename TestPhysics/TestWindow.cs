@@ -68,10 +68,6 @@ namespace TestPhysics
 			try
 			{
 
-			//test
-//				PhysicsEngineMathUtility.Quaternion prova = new PhysicsEngineMathUtility.Quaternion(3.0,1.0,2.0,1.0);
-//				PhysicsEngineMathUtility.Vector3 ciao = (180/Math.PI) * PhysicsEngineMathUtility.Quaternion.GetEuler (prova);
-//			
 			//LoadObject loadObject = new LoadObject ("startJoint.xml");
 			LoadObject loadObject = new LoadObject ("configJoint.xml");
 			//LoadObject loadObject = new LoadObject ("startConfig.xml");

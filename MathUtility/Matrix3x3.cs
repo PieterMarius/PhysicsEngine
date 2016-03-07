@@ -159,6 +159,11 @@ namespace PhysicsEngineMathUtility
 				r3x, r3y, r3z);
 		}
 
+		public Matrix3x3 Transpose()
+		{
+			return Matrix3x3.Transpose (this);
+		}
+
 		/// <summary>
 		/// Invert the specified matrix.
 		/// </summary>

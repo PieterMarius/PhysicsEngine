@@ -413,6 +413,7 @@ namespace MonoPhysicsEngine
 
 						if (contactConstraints.Count > 0 &&
 						    linearProblemProperties != null) {
+
 							double[] X = this.solver.Solve (linearProblemProperties);
 
 							//Aggiorno la velocità degli oggetti
@@ -582,10 +583,10 @@ namespace MonoPhysicsEngine
 					Vector3 forceOnA = contactB.LinearComponentA;
 					Vector3 torqueOnA = contactB.AngularComponentA;
 
-					linearA = Vector3.Dot (contactA.LinearComponentA, 
+					linearA = contactA.LinearComponentA.Dot (
 						forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
 					
-					angularA = Vector3.Dot (contactA.AngularComponentA,
+					angularA = contactA.AngularComponentA.Dot (
 						this.simulationObjects [contactA.ObjectA].InertiaTensor * torqueOnA);
 
 				} else if (contactB.ObjectB == contactA.ObjectA) {
@@ -593,11 +594,11 @@ namespace MonoPhysicsEngine
 					Vector3 forceOnA = contactB.LinearComponentB;
 					Vector3 torqueOnA = contactB.AngularComponentB;
 
-					linearA = Vector3.Dot (contactA.LinearComponentA,
+					linearA = contactA.LinearComponentA.Dot (
 						forceOnA * this.simulationObjects [contactA.ObjectA].InverseMass);
 					
-					angularA = Vector3.Dot (contactA.AngularComponentA,
-							this.simulationObjects [contactA.ObjectA].InertiaTensor * torqueOnA);
+					angularA = contactA.AngularComponentA.Dot (
+						this.simulationObjects [contactA.ObjectA].InertiaTensor * torqueOnA);
 				}
 			}
 
@@ -608,22 +609,22 @@ namespace MonoPhysicsEngine
 					Vector3 forceOnB = contactB.LinearComponentA;
 					Vector3 torqueOnB = contactB.AngularComponentA;
 
-					linearB = Vector3.Dot (contactA.LinearComponentB, 
+					linearB = contactA.LinearComponentB.Dot (
 						forceOnB * this.simulationObjects [contactA.ObjectB].InverseMass);
 					
-					angularB = Vector3.Dot (contactA.AngularComponentB,
-							this.simulationObjects [contactA.ObjectB].InertiaTensor * torqueOnB);
+					angularB = contactA.AngularComponentB.Dot(
+						this.simulationObjects [contactA.ObjectB].InertiaTensor * torqueOnB);
 					
 				} else if (contactB.ObjectB == contactA.ObjectB) {
 
 					Vector3 forceOnB = contactB.LinearComponentB;
 					Vector3 torqueOnB = contactB.AngularComponentB;
 
-					linearB = Vector3.Dot (contactA.LinearComponentB, 
+					linearB = contactA.LinearComponentB.Dot (
 						forceOnB * this.simulationObjects [contactA.ObjectB].InverseMass);
 					
-					angularB = Vector3.Dot (contactA.AngularComponentB,
-							this.simulationObjects [contactA.ObjectB].InertiaTensor * torqueOnB);
+					angularB = contactA.AngularComponentB.Dot (
+						this.simulationObjects [contactA.ObjectB].InertiaTensor * torqueOnB);
 				}
 			}
 
@@ -724,8 +725,8 @@ namespace MonoPhysicsEngine
 //						}
 //					}else ob[i].a_count=0;
 
-					double linearVelocity = Vector3.Length (simObj.LinearVelocity);
-					double angularVelocity = Vector3.Length (simObj.AngularVelocity);
+					double linearVelocity = simObj.LinearVelocity.Length ();
+					double angularVelocity = simObj.AngularVelocity.Length ();
 
 					if (linearVelocity != 0.0) 
 					{
@@ -735,7 +736,7 @@ namespace MonoPhysicsEngine
 					}
 					if (angularVelocity != 0.0) 
 					{
-						Vector3 versor = Vector3.Normalize (simObj.AngularVelocity);
+						Vector3 versor = simObj.AngularVelocity.Normalize ();
 
 						//Inertia parameter
 						angularVelocity = Math.Max (0.0, angularVelocity + angularVelocity * this.simulationParameters.InertiaParameter);
@@ -745,14 +746,13 @@ namespace MonoPhysicsEngine
 						Quaternion rotationQuaternion = new Quaternion (versor, rotationAngle); 
 
 						simObj.SetRotationStatus (
-							Quaternion.Normalize (rotationQuaternion * simObj.RotationStatus));
+							(rotationQuaternion * simObj.RotationStatus).Normalize ());
 
-						simObj.SetRotationMatrix (
-							Quaternion.ConvertToMatrix (simObj.RotationStatus));
+						simObj.SetRotationMatrix (simObj.RotationStatus.ConvertToMatrix ());
 
 						simObj.SetInertiaTensor (
 							(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
-							Matrix3x3.Transpose (simObj.RotationMatrix));
+							simObj.RotationMatrix.Transpose ());
 					}
 
 					//Update Simulation Object Vertex Position
@@ -791,13 +791,13 @@ namespace MonoPhysicsEngine
 					                          this.simulationObjects [indexA].StartPosition;
 
 					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
-										this.simulationObjects [indexA].Position;
+												this.simulationObjects [indexA].Position;
 
-					Vector3 rotationalAxis = Vector3.Normalize (this.simulationObjects [indexA].RotationMatrix *
-					                         simulationJoints [i].JointList [j].RotationAxis);
-
-					Vector3 translationAxis = Vector3.Normalize (this.simulationObjects [indexA].RotationMatrix *
-					                          simulationJoints [i].JointList [j].TranslationAxis);
+//					Vector3 rotationalAxis = (this.simulationObjects [indexA].RotationMatrix *
+//					                         simulationJoints [i].JointList [j].RotationAxis).Normalize ();
+//
+//					Vector3 translationAxis = (this.simulationObjects [indexA].RotationMatrix *
+//					                          simulationJoints [i].JointList [j].TranslationAxis).Normalize ();
 
 					Joint jointBuf = new Joint (
 						                 simulationJoints [i].JointList [j].K,
@@ -808,8 +808,9 @@ namespace MonoPhysicsEngine
 						                 simulationJoints [i].JointList [j].DistanceFromA,
 						                 simulationJoints [i].JointList [j].DistanceFromB,
 						                 simulationJoints [i].JointList [j].RelativeOrientation,
-						                 rotationalAxis,
-						                 translationAxis);
+						                 simulationJoints [i].JointList [j].Axis1,
+						                 simulationJoints [i].JointList [j].Axis2,
+						                 simulationJoints [i].JointList [j].Axis3);
 
 					joint.Add (jointBuf);
 				}

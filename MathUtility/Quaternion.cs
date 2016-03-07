@@ -199,6 +199,11 @@ namespace PhysicsEngineMathUtility
 
 		}
 
+		public Matrix3x3 ConvertToMatrix()
+		{
+			return Quaternion.ConvertToMatrix (this);
+		}
+
 		public static double Length(Quaternion q)
 		{
 			return Math.Sqrt (
@@ -224,6 +229,11 @@ namespace PhysicsEngineMathUtility
 			}
 
 			return q;
+		}
+
+		public Quaternion Normalize()
+		{
+			return Quaternion.Normalize (this);
 		}
 
 		public static Quaternion IntegrateQuaternion(

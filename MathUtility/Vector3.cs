@@ -218,6 +218,11 @@ namespace PhysicsEngineMathUtility
 			return a;
 		}
 
+		public Vector3 Normalize()
+		{
+			return Vector3.Normalize (this);
+		}
+
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{
 			Vector3 p= new Vector3();
@@ -238,6 +243,11 @@ namespace PhysicsEngineMathUtility
 				(a.y * b.z)-(a.z * b.y),
 				(a.z * b.x)-(a.x * b.z),
 				(a.x * b.y)-(a.y * b.x));
+		}
+
+		public Vector3 Cross(Vector3 a)
+		{
+			return Vector3.Cross (this, a);
 		}
 
 		public static Vector3 ProjectVectorOnPlane(Vector3 normal)

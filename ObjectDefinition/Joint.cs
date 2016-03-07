@@ -15,8 +15,9 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 DistanceFromA;
 		public readonly Vector3 DistanceFromB;
 		public readonly Quaternion RelativeOrientation;
-		public readonly Vector3 RotationAxis;
-		public readonly Vector3 TranslationAxis;
+		public readonly Vector3 Axis1;
+		public readonly Vector3 Axis2;
+		public readonly Vector3 Axis3;
 
 		#endregion
 
@@ -31,8 +32,9 @@ namespace SimulationObjectDefinition
 			Vector3 distanceFromA,
 			Vector3 distanceFromB,
 			Quaternion relativeOrientation,
-			Vector3 rotationAxis,
-			Vector3 translationAxis)
+			Vector3 axis1,
+			Vector3 axis2,
+			Vector3 axis3)
 		{
 			this.K = K;
 			this.C = C;
@@ -42,8 +44,9 @@ namespace SimulationObjectDefinition
 			this.DistanceFromA = distanceFromA;
 			this.DistanceFromB = distanceFromB;
 			this.RelativeOrientation = relativeOrientation;
-			this.RotationAxis = rotationAxis;
-			this.TranslationAxis = translationAxis;
+			this.Axis1 = axis1;
+			this.Axis2 = axis2;
+			this.Axis3 = axis3;
 		}
 
 		#endregion

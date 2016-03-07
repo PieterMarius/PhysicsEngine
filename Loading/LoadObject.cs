@@ -221,6 +221,9 @@ namespace Loading
 					Vector3 anchorPosition = relativePos + objects [indexA].Position;
 			 	
 					//Distance A
+//					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
+//					                    (anchorPosition - objects [indexA].Position);
+
 					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
 					                    (anchorPosition - objects [indexA].Position);
 
@@ -236,13 +239,14 @@ namespace Loading
 					joint [j] = new Joint (
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
-						ConstraintType.Fixed,
+						ConstraintType.Slider,
 						startAnchorPosition,
 						anchorPosition,
 						distanceA,
 						distanceB,
 						relativeOrientation,
-						new Vector3 (1.0, 0.0, 0.0),
+						new Vector3 (0.0, 1.0, 0.0),
+						new Vector3 (0.0, 0.0, 1.0),
 						new Vector3 (1.0, 0.0, 0.0));
 				}
 

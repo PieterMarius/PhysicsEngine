@@ -13,17 +13,6 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters);
 
-		List<JacobianContact> BuildContactJoints (
-			List<CollisionPointStructure> collisionPointsStruct,
-			SimulationObject[] simulationObjs,
-			SimulationParameters simulationParameters);
-
-		List<JacobianContact> BuildFixedJoint (
-			int indexA,
-			int indexB,
-			Joint simulationJoint,
-			SimulationObject[] simulationObjs);
-
 //		List<JacobianContact> BuildJointsMatrix (
 //			List<SimulationJoint> simulationJointList,
 //			SimulationObject[] simulationObj);
