@@ -625,6 +625,23 @@ namespace PhysicsEngineMathUtility
 			return false;
 		}
 
+		public static Vector3 GetPerpendicularVector(Vector3 a)
+		{
+			if (a.x == 0 && a.y == 0 && a.z == 0.0) 
+			{
+				throw new Exception ("Zero Vector");
+			}
+
+			if (a.x == 0)
+				return new Vector3 (1.0, 0.0, 0.0);
+			if (a.y == 0)
+				return new Vector3 (0.0, 1.0, 0.0);
+			if (a.z == 0)
+				return new Vector3 (0.0, 0.0, 1.0);
+
+			return new Vector3 (1.0, 1.0, -1.0 * (a.x + a.y) / a.z);
+		}
+
 		#endregion
 
 	}

@@ -22,7 +22,6 @@ namespace Loading
 		private String linearVelocityStabilization = "LinearVelociyStabilize";
 		private String angularVelocityStabilization = "AngularVelociyStabilize";
 		private String shiftToStaticFrictionTolerance = "ShiftToStaticFrictionTolerance";
-		private String velocityToleranceStabilization = "VelocityToleranceStabilization";
 		private String externalForce = "ExternalForce";
 		private String discreteCCD = "DiscreteCCD";
 		private String maxThreadNumber = "MaxThreadNumber";
@@ -61,7 +60,6 @@ namespace Loading
                                 Convert.ToDouble (xmlList [0] [this.linearVelocityStabilization].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.angularVelocityStabilization].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.shiftToStaticFrictionTolerance].InnerText),
-                                Convert.ToDouble (xmlList [0] [this.velocityToleranceStabilization].InnerText),
                                 Convert.ToBoolean (xmlList [0] [this.discreteCCD].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.collisionDistance].InnerText),
                                 new Vector3 (Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["x"].Value),

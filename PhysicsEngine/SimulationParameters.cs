@@ -44,12 +44,6 @@ namespace MonoPhysicsEngine
 		public double ShiftToStaticFrictionTolerance { get; private set; }
 
 		/// <summary>
-		/// Gets the velocity tolerance stabilization parameter.
-		/// </summary>
-		/// <value>The velocity tolerance stabilization.</value>
-		public double VelocityToleranceStabilization { get; private set; }
-
-		/// <summary>
 		/// Discrete Continuos Collision Detection.
 		/// </summary>
 		/// <value><c>true</c> if discrete CC; otherwise, <c>false</c>.</value>
@@ -91,7 +85,6 @@ namespace MonoPhysicsEngine
 			this.LinearVelDisable = 0.0;
 			this.AngularVelDisable = 0.0;
 			this.ShiftToStaticFrictionTolerance = 0.000001;
-			this.VelocityToleranceStabilization = 0.0001;
 			this.DiscreteCCD = true;
 			this.CollisionDistance = 0.001;
 			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
@@ -106,7 +99,6 @@ namespace MonoPhysicsEngine
 			double linearVelDisable,
 			double angularVelDisable,
 			double shiftToStaticFrictionTolerance,
-			double velocityToleranceStabilization,
 			bool discreteCCD,
 			double collisionDistance,
 			Vector3 externalForce,
@@ -118,7 +110,6 @@ namespace MonoPhysicsEngine
 			this.LinearVelDisable = linearVelDisable;
 			this.AngularVelDisable = angularVelDisable;
 			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
-			this.VelocityToleranceStabilization = velocityToleranceStabilization;
 			this.DiscreteCCD = discreteCCD;
 			this.CollisionDistance = collisionDistance;
 			this.ExternalForce = externalForce;
@@ -157,11 +148,6 @@ namespace MonoPhysicsEngine
 		public void SetShiftToStaticFrictionTolerance(double shiftToStaticFrictionTolerance)
 		{
 			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
-		}
-
-		public void SetVelocityToleranceStabilization(double velocityToleranceStabilization)
-		{
-			this.VelocityToleranceStabilization = velocityToleranceStabilization;
 		}
 
 		public void SetExternalForce(Vector3 externalForce)

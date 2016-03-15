@@ -18,7 +18,9 @@ namespace LCPSolver
 		public readonly double[] D;
 
 		//Vincoli
-		public readonly double[] ConstraintLimit;
+		public readonly double[] ConstraintLimitMin;
+
+		public readonly double[] ConstraintLimitMax;
 
 		//Tipo vincolo
 		public readonly ConstraintType[] ConstraintType;
@@ -41,7 +43,8 @@ namespace LCPSolver
 			double[] B,
 			double[] startX,
 			double[] d,
-			double[] constraintLimit,
+			double[] constraintLimitMin,
+			double[] constraintLimitMax,
 			ConstraintType[] constraintType,
 			int?[] constraints,
 			int count)
@@ -50,7 +53,8 @@ namespace LCPSolver
 			this.B = B;
 			this.StartX = startX;
 			this.D = d;
-			this.ConstraintLimit = constraintLimit;
+			this.ConstraintLimitMin = constraintLimitMin;
+			this.ConstraintLimitMax = constraintLimitMax;
 			this.ConstraintType = constraintType;
 			this.Constraints = constraints;
 			this.Count = count;

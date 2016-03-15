@@ -208,7 +208,7 @@ namespace Loading
 				Joint[] joint = new Joint[jointPropertiesList.Count];
 
 				for (int j = 0; j < jointPropertiesList.Count; j++) {
-					
+
 					//Position
 					Vector3 startAnchorPosition = new Vector3 (
 						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
@@ -239,7 +239,7 @@ namespace Loading
 					joint [j] = new Joint (
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
-						ConstraintType.Slider,
+						JointType.Slider,
 						startAnchorPosition,
 						anchorPosition,
 						distanceA,
@@ -247,7 +247,12 @@ namespace Loading
 						relativeOrientation,
 						new Vector3 (0.0, 1.0, 0.0),
 						new Vector3 (0.0, 0.0, 1.0),
-						new Vector3 (1.0, 0.0, 0.0));
+						new Vector3 (1.0, 0.0, 0.0),
+						3.0,
+						5.0,
+						0.0,
+						0.0);
+
 				}
 
 				joints [i] = new SimulationJoint (
