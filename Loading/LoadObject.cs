@@ -236,6 +236,17 @@ namespace Loading
 					                                 objects [indexB].RotationStatus;
 
 					//TODO test di verifica
+
+//					joint [i] = Joint.SetHingeJoint (
+//						startAnchorPosition,
+//						objects [indexA],
+//						objects [indexB],
+//						new Vector3 (0.0, 1.0, 0.0),
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+//						-Math.PI / 2,
+//						Math.PI / 4);
+
 					joint [j] = new Joint (
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
@@ -245,13 +256,13 @@ namespace Loading
 						distanceA,
 						distanceB,
 						relativeOrientation,
-						new Vector3 (0.0, 1.0, 0.0),
 						new Vector3 (0.0, 0.0, 1.0),
+						new Vector3 (0.0, 1.0, 0.0),
 						new Vector3 (1.0, 0.0, 0.0),
-						3.0,
-						5.0,
-						0.0,
-						0.0);
+						new Vector3 (5.0, 0.0, 0.0),
+						new Vector3 (8.0, 0.0, 0.0),
+						new Vector3 (0.0, -Math.PI / 2, 0.0),
+						new Vector3 (0.0, Math.PI / 4, 0.0));
 
 				}
 

@@ -18,10 +18,10 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 Axis1;
 		public readonly Vector3 Axis2;
 		public readonly Vector3 Axis3;
-		public readonly double LinearLimitMin;
-		public readonly double LinearLimitMax;
-		public readonly double AngularLimitMin;
-		public readonly double AngularLimitMax;
+		public readonly Vector3 LinearLimitMin;
+		public readonly Vector3 LinearLimitMax;
+		public readonly Vector3 AngularLimitMin;
+		public readonly Vector3 AngularLimitMax;
 
 		#endregion
 
@@ -39,10 +39,10 @@ namespace SimulationObjectDefinition
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 axis3,
-			double linearLimitMin,
-			double linearLimitMax,
-			double angularLimitMin,
-			double angularLimitMax)
+			Vector3 linearLimitMin,
+			Vector3 linearLimitMax,
+			Vector3 angularLimitMin,
+			Vector3 angularLimitMax)
 			:this()
 		{
 			this.K = K;
@@ -99,10 +99,10 @@ namespace SimulationObjectDefinition
 				              Vector3.ToZero (),
 				              Vector3.ToZero (),
 				              Vector3.ToZero (),
-				              0,
-				              0,
-				              0,
-				              0);
+				              new Vector3 (),
+				              new Vector3 (),
+				              new Vector3 (),
+				              new Vector3 ());
 
 			return joint;
 		}
@@ -135,22 +135,27 @@ namespace SimulationObjectDefinition
 
 			Vector3 t2 = Vector3.Cross (sliderAxis, t1);
 
+			sliderAxis = sliderAxis.Normalize ();
+
+			Vector3 linearLimitMinVec = sliderAxis * linearLimitMin;
+			Vector3 linearLimitMaxVec = sliderAxis * linearLimitMax;
+
 			Joint joint = new Joint (
-				K,
-				C,
-				JointType.Slider,
-				startAnchorPosition,
-				anchorPosition,
-				distanceFromA,
-				distanceFromB,
-				relativeOrientation,
-				t1,
-				t2,
-				sliderAxis,
-				linearLimitMin,
-				linearLimitMax,
-				0,
-				0);
+				              K,
+				              C,
+				              JointType.Slider,
+				              startAnchorPosition,
+				              anchorPosition,
+				              distanceFromA,
+				              distanceFromB,
+				              relativeOrientation,
+				              t1,
+				              t2,
+				              sliderAxis,
+				              linearLimitMinVec,
+				              linearLimitMaxVec,
+				              new Vector3 (),
+				              new Vector3 ());
 
 			return joint;
 		}
@@ -183,22 +188,27 @@ namespace SimulationObjectDefinition
 
 			Vector3 t2 = Vector3.Cross (hingeAxis, t1);
 
+			hingeAxis = hingeAxis.Normalize ();
+
+			Vector3 angularLimitMinVec = hingeAxis * angularLimitMin;
+			Vector3 angularLimitMaxVec = hingeAxis * angularLimitMax;
+
 			Joint joint = new Joint (
-				K,
-				C,
-				JointType.Hinge,
-				startAnchorPosition,
-				anchorPosition,
-				distanceFromA,
-				distanceFromB,
-				relativeOrientation,
-				t1,
-				t2,
-				hingeAxis,
-				0,
-				0,
-				angularLimitMin,
-				angularLimitMax);
+				              K,
+				              C,
+				              JointType.Hinge,
+				              startAnchorPosition,
+				              anchorPosition,
+				              distanceFromA,
+				              distanceFromB,
+				              relativeOrientation,
+				              t1,
+				              t2,
+				              hingeAxis,
+				              new Vector3 (),
+				              new Vector3 (),
+				              angularLimitMinVec,
+				              angularLimitMaxVec);
 
 			return joint;
 		}
