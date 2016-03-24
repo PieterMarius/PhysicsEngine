@@ -17,7 +17,6 @@ namespace SimulationObjectDefinition
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 Axis1;
 		public readonly Vector3 Axis2;
-		public readonly Vector3 Axis3;
 		public readonly Vector3 LinearLimitMin;
 		public readonly Vector3 LinearLimitMax;
 		public readonly Vector3 AngularLimitMin;
@@ -38,7 +37,6 @@ namespace SimulationObjectDefinition
 			Quaternion relativeOrientation,
 			Vector3 axis1,
 			Vector3 axis2,
-			Vector3 axis3,
 			Vector3 linearLimitMin,
 			Vector3 linearLimitMax,
 			Vector3 angularLimitMin,
@@ -55,7 +53,6 @@ namespace SimulationObjectDefinition
 			this.RelativeOrientation = relativeOrientation;
 			this.Axis1 = axis1;
 			this.Axis2 = axis2;
-			this.Axis3 = axis3;
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
 			this.AngularLimitMin = angularLimitMin;
@@ -98,7 +95,6 @@ namespace SimulationObjectDefinition
 				              relativeOrientation,
 				              Vector3.ToZero (),
 				              Vector3.ToZero (),
-				              Vector3.ToZero (),
 				              new Vector3 (),
 				              new Vector3 (),
 				              new Vector3 (),
@@ -131,10 +127,6 @@ namespace SimulationObjectDefinition
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
 				objectB.RotationStatus;
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis);
-
-			Vector3 t2 = Vector3.Cross (sliderAxis, t1);
-
 			sliderAxis = sliderAxis.Normalize ();
 
 			Vector3 linearLimitMinVec = sliderAxis * linearLimitMin;
@@ -149,9 +141,8 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
-				              t1,
-				              t2,
 				              sliderAxis,
+				              new Vector3 (),
 				              linearLimitMinVec,
 				              linearLimitMaxVec,
 				              new Vector3 (),
@@ -184,10 +175,6 @@ namespace SimulationObjectDefinition
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
 				objectB.RotationStatus;
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (hingeAxis);
-
-			Vector3 t2 = Vector3.Cross (hingeAxis, t1);
-
 			hingeAxis = hingeAxis.Normalize ();
 
 			Vector3 angularLimitMinVec = hingeAxis * angularLimitMin;
@@ -202,9 +189,8 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
-				              t1,
-				              t2,
 				              hingeAxis,
+				              new Vector3 (),
 				              new Vector3 (),
 				              new Vector3 (),
 				              angularLimitMinVec,

@@ -7,6 +7,7 @@ namespace SimulationObjectDefinition
 		Collision,
 		Friction,
 		Joint,
+		JointLimit,
 	}
 }
 

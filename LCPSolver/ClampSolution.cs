@@ -34,6 +34,10 @@ namespace LCPSolver
 					}
 
 					return X [i];
+
+				case ConstraintType.JointLimit:
+					return Math.Max (0.0, X [i]);
+					//return X [i];
 				
 				default:
 					return X [i];
