@@ -237,6 +237,35 @@ namespace Loading
 
 					//TODO test di verifica
 
+//					joint[j] = Joint.SetFixedJoint (
+//						objects[indexA],
+//						objects[indexB],
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
+
+//					joint [j] = Joint.SetSliderJoint (
+//						objects [indexA],
+//						objects [indexB],
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+//						3.0,
+//						5.0);
+
+//					joint[j] = Joint.SetBallSocketJoint (
+//						objects[indexA],
+//						objects[indexB],
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
+
+					joint[j] = Joint.SetPistonJoint (
+						objects[indexA],
+						objects[indexB],
+						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+						3.0,
+						5.0);
+					
+
 //					joint [i] = Joint.SetHingeJoint (
 //						startAnchorPosition,
 //						objects [indexA],
@@ -247,21 +276,21 @@ namespace Loading
 //						-Math.PI / 2,
 //						Math.PI / 4);
 
-					joint [j] = new Joint (
-						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
-						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
-						JointType.Slider,
-						startAnchorPosition,
-						anchorPosition,
-						distanceA,
-						distanceB,
-						relativeOrientation,
-						new Vector3 (1.0, 0.0, 0.0),
-						new Vector3 (),
-						new Vector3 (5.0, 0.0, 0.0),
-						new Vector3 (8.0, 0.0, 0.0),
-						new Vector3 (0.0, -Math.PI / 2, 0.0),
-						new Vector3 (0.0, Math.PI / 4, 0.0));
+//					joint [j] = new Joint (
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+//						JointType.Slider,
+//						startAnchorPosition,
+//						anchorPosition,
+//						distanceA,
+//						distanceB,
+//						relativeOrientation,
+//						new Vector3 (0.0, 0.0, 1.0),
+//						new Vector3 (),
+//						new Vector3 (0.0, 0.0, 2.0),
+//						new Vector3 (0.0, 0.0, 5.0),
+//						new Vector3 (0.0, -Math.PI / 2, 0.0),
+//						new Vector3 (0.0, Math.PI / 4, 0.0));
 
 				}
 
