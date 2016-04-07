@@ -256,7 +256,7 @@ namespace Loading
 //						objects[indexB],
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 //						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
-
+//
 					joint[j] = Joint.SetPistonJoint (
 						objects[indexA],
 						objects[indexB],

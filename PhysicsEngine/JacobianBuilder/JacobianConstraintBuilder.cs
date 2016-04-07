@@ -237,10 +237,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.DistanceFromA;
+				simulationJoint.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.DistanceFromB;
+				simulationJoint.StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -392,10 +392,9 @@ namespace MonoPhysicsEngine
 			Vector3 r1 =   simulationJoint.AnchorPoint - simulationObjectA.Position;
 			Vector3 r2 =   simulationJoint.AnchorPoint - simulationObjectB.Position;
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
 
-			Vector3 linearError = p2 - p1;
+			Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
 			
 			#endregion
 
@@ -472,7 +471,7 @@ namespace MonoPhysicsEngine
 				indexB,
 				t1,
 				-1.0 * t1,
-				Vector3.Cross (r1 + linearError, t1),
+				Vector3.Cross (r1, t1),
 				-1.0 * Vector3.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
@@ -489,7 +488,7 @@ namespace MonoPhysicsEngine
 				indexB,
 				t2,
 				-1.0 * t2,
-				Vector3.Cross (r1 + linearError, t2),
+				Vector3.Cross (r1, t2),
 				-1.0 * Vector3.Cross (r2, t2),
 				simulationObjectA,
 				simulationObjectB,
@@ -539,10 +538,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.DistanceFromA;
+				simulationJoint.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.DistanceFromB;
+				simulationJoint.StartErrorAxis2;
 
 			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
 			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
@@ -631,19 +630,12 @@ namespace MonoPhysicsEngine
 			t1 = simulationObjectA.RotationMatrix * t1;
 			t2 = simulationObjectA.RotationMatrix * t2;
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.DistanceFromA;
+			Vector3 r1 =   simulationJoint.AnchorPoint - simulationObjectA.Position;
+			Vector3 r2 =   simulationJoint.AnchorPoint - simulationObjectB.Position;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.DistanceFromB;
+			Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
 
-			Vector3 currentR1 =   simulationJoint.AnchorPoint - simulationObjectA.Position;
-			Vector3 currentR2 =   simulationJoint.AnchorPoint - simulationObjectB.Position;
-
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
-
-			Vector3 linearError = p2 - p1;
+			Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
 
 			#endregion
 
@@ -684,10 +676,10 @@ namespace MonoPhysicsEngine
 			pistonConstraints.Add (this.addDOF (
 				indexA,
 				indexB,
-				t1,
+				1.0 * t1,
 				-1.0 * t1,
-				Vector3.Cross (currentR1, t1),
-				-1.0 * Vector3.Cross (currentR2, t1),
+				1.0 * Vector3.Cross (r1, t1),
+				-1.0 * Vector3.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -701,10 +693,10 @@ namespace MonoPhysicsEngine
 			pistonConstraints.Add (this.addDOF (
 				indexA,
 				indexB,
-				t2,
+				1.0 * t2,
 				-1.0 * t2,
-				Vector3.Cross (currentR1, t2),
-				-1.0 * Vector3.Cross (currentR2, t2),
+				Vector3.Cross (r1, t2),
+				-1.0 * Vector3.Cross (r2, t2),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -727,8 +719,8 @@ namespace MonoPhysicsEngine
 					simulationObjectA,
 					simulationObjectB,
 					simulationJoint.Axis1,
-					currentR1,
-					currentR2,
+					r1,
+					r2,
 					linearLimitMin,
 					linearLimitMax));
 
@@ -776,10 +768,10 @@ namespace MonoPhysicsEngine
 			t2 = simulationObjectA.RotationMatrix * t2;
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.DistanceFromA;
+				simulationJoint.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.DistanceFromB;
+				simulationJoint.StartErrorAxis2;
 
 			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
 			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
@@ -910,10 +902,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.DistanceFromA;
+				simulationJoint.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.DistanceFromB;
+				simulationJoint.StartErrorAxis2;
 
 			#endregion
 
@@ -1294,15 +1286,15 @@ namespace MonoPhysicsEngine
 
 			double sliderDistance = Math.Abs((r2 - r1).Dot (sliderAxis));
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
-
-			Vector3 linearError = p2 - p1;
-
 			Console.WriteLine ("Slider distance: " + sliderDistance);
 
 			if (linearLimitMin == linearLimitMax) 
 			{
+				Vector3 p1 = simulationObjectA.Position + r1;
+				Vector3 p2 = simulationObjectB.Position + r2;
+
+				Vector3 linearError = p2 - p1;
+
 				double linearLimit = simulationJoint.K *
 				                     sliderAxis.Dot (linearError);
 
@@ -1418,7 +1410,7 @@ namespace MonoPhysicsEngine
 			{
 				
 				angularLimit = simulationJoint.K *
-								(angle - angularLimitMax);
+							   (angle - angularLimitMax);
 
 				genericAngular.Add (this.addDOF (
 					indexA, 

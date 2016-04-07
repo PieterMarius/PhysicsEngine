@@ -12,8 +12,8 @@ namespace SimulationObjectDefinition
 		public readonly JointType Type;
 		public readonly Vector3 StartAnchorPoint;
 		public readonly Vector3 AnchorPoint;
-		public readonly Vector3 DistanceFromA;
-		public readonly Vector3 DistanceFromB;
+		public readonly Vector3 StartErrorAxis1;
+		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 Axis1;
 		public readonly Vector3 Axis2;
@@ -48,8 +48,8 @@ namespace SimulationObjectDefinition
 			this.Type = type;
 			this.StartAnchorPoint = startAnchorPoint;
 			this.AnchorPoint = anchorPoint;
-			this.DistanceFromA = distanceFromA;
-			this.DistanceFromB = distanceFromB;
+			this.StartErrorAxis1 = distanceFromA;
+			this.StartErrorAxis2 = distanceFromB;
 			this.RelativeOrientation = relativeOrientation;
 			this.Axis1 = axis1;
 			this.Axis2 = axis2;
@@ -207,11 +207,7 @@ namespace SimulationObjectDefinition
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
-			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-				(anchorPosition - objectA.Position);
-
-			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-				(anchorPosition - objectB.Position);
+			Vector3 startErrorAxis = objectB.Position - objectA.Position;
 
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
 				objectB.RotationStatus;
@@ -225,8 +221,8 @@ namespace SimulationObjectDefinition
 				              JointType.Piston,
 				              startAnchorPosition,
 				              anchorPosition,
-				              distanceFromA,
-				              distanceFromB,
+				              startErrorAxis,
+				              new Vector3 (),
 				              relativeOrientation,
 				              pistonAxis,
 				              new Vector3 (),
