@@ -4,14 +4,11 @@ namespace SimulationObjectDefinition
 {
 	public class AABB
 	{
+
 		#region Object fields
 
-		public double MinX { get; private set; }
-		public double MaxX { get; private set; }
-		public double MinY { get; private set; }
-		public double MaxY { get; private set; }
-		public double MinZ { get; private set; }
-		public double MaxZ { get; private set; }
+		public double[] Min;
+		public double[] Max;
 		public bool positionAABBChanged { get; private set; }
 
 		#endregion
@@ -27,12 +24,14 @@ namespace SimulationObjectDefinition
 			double maxZ,
 			bool positionChanged)
 		{
-			this.MinX = minX;
-			this.MaxX = maxX;
-			this.MinY = minY;
-			this.MaxY = maxY;
-			this.MinZ = minZ;
-			this.MaxZ = maxZ;
+			this.Min = new double[3];
+			this.Max = new double[3];
+			this.Min[0] = minX;
+			this.Max[0] = maxX;
+			this.Min[1] = minY;
+			this.Max[1] = maxY;
+			this.Min[2] = minZ;
+			this.Max[2] = maxZ;
 			this.positionAABBChanged = positionChanged;
 		}
 

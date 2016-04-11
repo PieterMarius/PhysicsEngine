@@ -32,8 +32,8 @@ namespace SimulationObjectDefinition
 			JointType type,
 			Vector3 startAnchorPoint,
 			Vector3 anchorPoint,
-			Vector3 distanceFromA,
-			Vector3 distanceFromB,
+			Vector3 startErrorAxis1,
+			Vector3 startErrorAxis2,
 			Quaternion relativeOrientation,
 			Vector3 axis1,
 			Vector3 axis2,
@@ -48,8 +48,8 @@ namespace SimulationObjectDefinition
 			this.Type = type;
 			this.StartAnchorPoint = startAnchorPoint;
 			this.AnchorPoint = anchorPoint;
-			this.StartErrorAxis1 = distanceFromA;
-			this.StartErrorAxis2 = distanceFromB;
+			this.StartErrorAxis1 = startErrorAxis1;
+			this.StartErrorAxis2 = startErrorAxis2;
 			this.RelativeOrientation = relativeOrientation;
 			this.Axis1 = axis1;
 			this.Axis2 = axis2;
@@ -63,6 +63,14 @@ namespace SimulationObjectDefinition
 
 		#region Public Methods
 
+		/// <summary>
+		/// Sets the fixed joint.
+		/// </summary>
+		/// <returns>The fixed joint.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="K">K.</param>
+		/// <param name="C">C.</param>
 		public static Joint SetFixedJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
@@ -104,6 +112,16 @@ namespace SimulationObjectDefinition
 			return joint;
 		}
 
+		/// <summary>
+		/// Sets the slider joint.
+		/// </summary>
+		/// <returns>The slider joint.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="K">K.</param>
+		/// <param name="C">C.</param>
+		/// <param name="linearLimitMin">Linear limit minimum.</param>
+		/// <param name="linearLimitMax">Linear limit max.</param>
 		public static Joint SetSliderJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
@@ -152,13 +170,25 @@ namespace SimulationObjectDefinition
 			return joint;
 		}
 
+
+		/// <summary>
+		/// Sets the ball socket joint.
+		/// </summary>
+		/// <returns>The ball socket joint.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="K">K.</param>
+		/// <param name="C">C.</param>
+		/// <param name="startAnchorPosition">Start anchor position (default: objectB.Position - objectA.Position * 0.5).</param>
 		public static Joint SetBallSocketJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
 			double K,
-			double C)
+			double C,
+			Vector3 startAnchorPosition = new Vector3 ())
 		{
-			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
+			if (startAnchorPosition.Length () == 0.0)
+				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -190,30 +220,47 @@ namespace SimulationObjectDefinition
 			return joint;
 		}
 
+		/// <summary>
+		/// Sets the piston joint.
+		/// </summary>
+		/// <returns>The piston joint.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="K">K.</param>
+		/// <param name="C">C.</param>
+		/// <param name="linearLimitMin">Linear limit minimum.</param>
+		/// <param name="linearLimitMax">Linear limit max.</param>
+		/// <param name="angularLimitMin">Angular limit minimum.</param>
+		/// <param name="angularLimitMax">Angular limit max.</param>
 		public static Joint SetPistonJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
 			double K,
 			double C,
 			double linearLimitMin = 0.0,
-			double linearLimitMax = 0.0)
+			double linearLimitMax = 0.0,
+			double angularLimitMin = double.MinValue,
+			double angularLimitMax = double.MaxValue)
 		{
 			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
 
 			Vector3 pistonAxis = -1.0 * startAnchorPosition.Normalize ();
 
-			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
-			relativePos = objectA.RotationMatrix * relativePos;
+			Vector3 relativePos = objectA.RotationMatrix *
+			                      (startAnchorPosition - objectA.StartPosition);
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
 			Vector3 startErrorAxis = objectB.Position - objectA.Position;
 
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
-				objectB.RotationStatus;
+			                                 objectB.RotationStatus;
 
 			Vector3 linearLimitMinVec = pistonAxis * linearLimitMin;
 			Vector3 linearLimitMaxVec = pistonAxis * linearLimitMax;
+
+			Vector3 angularLimitMinVec = pistonAxis * angularLimitMin;
+			Vector3 angularLimitMaxVec = pistonAxis * angularLimitMax;
 
 			Joint joint = new Joint (
 				              K,
@@ -228,34 +275,49 @@ namespace SimulationObjectDefinition
 				              new Vector3 (),
 				              linearLimitMinVec,
 				              linearLimitMaxVec,
-				              new Vector3 (),
-				              new Vector3 ());
+				              angularLimitMinVec,
+				              angularLimitMaxVec);
 
 			return joint;
 		}
 
+		/// <summary>
+		/// Sets the hinge joint.
+		/// </summary>
+		/// <returns>The hinge joint.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="hingeAxis">Hinge axis.</param>
+		/// <param name="K">K.</param>
+		/// <param name="C">C.</param>
+		/// <param name="angularLimitMin">Angular limit minimum.</param>
+		/// <param name="angularLimitMax">Angular limit max.</param>
+		/// <param name="startAnchorPosition">Start anchor position (default: objectB.Position - objectA.Position * 0.5).</param>
 		public static Joint SetHingeJoint(
-			Vector3 startAnchorPosition,
 			SimulationObject objectA,
 			SimulationObject objectB,
 			Vector3 hingeAxis,
 			double K,
 			double C,
 			double angularLimitMin = 0.0,
-			double angularLimitMax = 0.0)
+			double angularLimitMax = 0.0,
+			Vector3 startAnchorPosition = new Vector3 ())
 		{
+			if (startAnchorPosition.Length () == 0.0)
+				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
+
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
-			Vector3 distanceFromA = Matrix3x3.Transpose (objectA.RotationMatrix) *
+			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
 				(anchorPosition - objectA.Position);
 
-			Vector3 distanceFromB = Matrix3x3.Transpose (objectB.RotationMatrix) *
+			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
 				(anchorPosition - objectB.Position);
 
-			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
+			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
 				objectB.RotationStatus;
 
 			hingeAxis = hingeAxis.Normalize ();
@@ -278,6 +340,55 @@ namespace SimulationObjectDefinition
 				              new Vector3 (),
 				              angularLimitMinVec,
 				              angularLimitMaxVec);
+
+			return joint;
+		}
+
+		public static Joint Set6DOFJoint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			double K,
+			double C,
+			Vector3 linearLimitMin,
+			Vector3 linearLimitMax,
+			Vector3 angularLimitMin,
+			Vector3 angularLimitMax,
+			Vector3 startAnchorPosition = new Vector3 ())
+		{
+			if (startAnchorPosition.Length () == 0.0)
+				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
+
+			Vector3 relativePos = objectA.RotationMatrix *
+			                      (startAnchorPosition - objectA.StartPosition);
+
+			Vector3 anchorPosition = relativePos + objectA.Position;
+
+			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
+			                        (anchorPosition - objectA.Position);
+
+			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
+			                        (anchorPosition - objectB.Position);
+
+			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
+			                                 objectB.RotationStatus;
+
+			Vector3 startErrorAxis = objectB.Position - objectA.Position;
+
+			Joint joint = new Joint (
+				              K,
+				              C,
+				              JointType.Generic6DOF,
+				              startAnchorPosition,
+				              anchorPosition,
+				              startErrorAxis,
+				              new Vector3 (),
+				              relativeOrientation,
+				              new Vector3 (),
+				              new Vector3 (),
+				              linearLimitMin,
+				              linearLimitMax,
+				              angularLimitMin,
+				              angularLimitMax);
 
 			return joint;
 		}

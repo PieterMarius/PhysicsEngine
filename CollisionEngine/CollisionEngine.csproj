@@ -61,8 +61,7 @@
     <Compile Include="GJK\GJKOutput.cs" />
     <Compile Include="EPA\EPAOutput.cs" />
     <Compile Include="SweepAndPrune\SweepAndPrune.cs" />
-    <Compile Include="SweepAndPrune\EndPoint.cs" />
-    <Compile Include="SweepAndPrune\Pair.cs" />
+    <Compile Include="SweepAndPrune\CollisionPair.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="EPA\" />

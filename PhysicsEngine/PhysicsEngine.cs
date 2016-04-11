@@ -342,9 +342,9 @@ namespace MonoPhysicsEngine
 			stopwatch.Start ();
 
 			List<SpatialPartition> partitions = this.contactPartitioningEngine.calculateSpatialPartitioning (
-				this.collisionPoints,
-				this.simulationJoints,
-				this.simulationObjects);
+				                                    this.collisionPoints,
+				                                    this.simulationJoints,
+				                                    this.simulationObjects);
 
 			if (partitions != null) {
 
@@ -408,7 +408,7 @@ namespace MonoPhysicsEngine
 
 						JacobianContact[] contactArray = contactConstraints.ToArray ();
 
-						//Costruisco la struttura da passare al solver
+						//Build solver data
 						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
 
 						if (contactConstraints.Count > 0 &&
@@ -416,7 +416,7 @@ namespace MonoPhysicsEngine
 
 							double[] X = this.solver.Solve (linearProblemProperties);
 
-							//Aggiorno la velocità degli oggetti
+							//Update Objects velocity
 							this.updateVelocity (
 								contactArray,
 								X,
@@ -426,10 +426,10 @@ namespace MonoPhysicsEngine
 					});
 			}
 
-			//Aggiorno la posizione degli oggetti
+			//Update Objects position
 			this.integrateObjectsPosition (this.simulationObjects);
 
-			//Aggiorno la posizione dei Joint
+			//Update Joints position
 			this.integrateJointPosition (this.simulationJoints);
 
 			stopwatch.Stop ();
@@ -448,9 +448,7 @@ namespace MonoPhysicsEngine
 			this.collisionPoints = new List<CollisionPointStructure> ();
 
 			//Creo l'array contenente la geometria degli oggetti
-			this.objectsGeometry = new ObjectGeometry[this.simulationObjects.Length];
-			for (int i = 0; i < this.simulationObjects.Length; i++)
-				objectsGeometry [i] = simulationObjects [i].ObjectGeometry;
+			this.objectsGeometry = Array.ConvertAll (this.simulationObjects, item => item.ObjectGeometry);
 
 			Stopwatch stopwatch = new Stopwatch();
 
@@ -489,6 +487,7 @@ namespace MonoPhysicsEngine
 
 				List<int>[] index = new List<int>[contact.Length];
 				List<double>[] value = new List<double>[contact.Length];
+
 				for (int i = 0; i < contact.Length; i++) 
 				{
 					index [i] = new List<int> ();
@@ -639,14 +638,14 @@ namespace MonoPhysicsEngine
 					simulationObj,
 					ct.LinearComponentA, 
 					ct.AngularComponentA,
-					X[index],
+					X [index],
 					ct.ObjectA);
 			
-				this.updateObjectVelocity ( 
+				this.updateObjectVelocity (
 					simulationObj,
 					ct.LinearComponentB, 
 					ct.AngularComponentB,
-					X[index],
+					X [index],
 					ct.ObjectB);
 				
 				index++;
@@ -672,7 +671,7 @@ namespace MonoPhysicsEngine
 				Vector3 angularImpuse = X * angularComponent;
 
 				Vector3 linearVelocity = simulationObj [objectIndex].LinearVelocity +
-					linearImpulse * simulationObj [objectIndex].InverseMass;
+				                         linearImpulse * simulationObj [objectIndex].InverseMass;
 
 				Vector3 angularVelocity = simulationObj [objectIndex].AngularVelocity +
 				                          (simulationObj [objectIndex].InertiaTensor *
@@ -759,13 +758,25 @@ namespace MonoPhysicsEngine
 					{
 						for (int j = 0; j < simObj.ObjectGeometry.NVertex; j++) 
 						{
-							Vector3 relativePosition = simObj.RotationMatrix * 
-								simObj.RelativePositions [j];
+							Vector3 relativePosition = simObj.Position + 
+								(simObj.RotationMatrix * simObj.RelativePositions [j]);
 							
 							simObj.ObjectGeometry.SetVertexPosition (
-								relativePosition + simObj.Position,
+								relativePosition,
 								j);
 						}
+
+						//TODO refactoring
+						AABB box = new AABB (
+							simObj.ObjectGeometry.VertexPosition.Min (point => point.x),
+							simObj.ObjectGeometry.VertexPosition.Max (point => point.x),
+							simObj.ObjectGeometry.VertexPosition.Min (point => point.y),
+							simObj.ObjectGeometry.VertexPosition.Max (point => point.y),
+							simObj.ObjectGeometry.VertexPosition.Min (point => point.z),
+							simObj.ObjectGeometry.VertexPosition.Max (point => point.z),
+							false);
+
+						simObj.ObjectGeometry.SetAABB (box);
 					}
 
 					#endregion
@@ -786,7 +797,7 @@ namespace MonoPhysicsEngine
 			{
 				int indexA = simulationJoints [i].IndexA;
 
-				List<Joint> joint = new List<Joint> ();
+				Joint[] joint = new Joint[simulationJoints [i].JointList.Length];
 
 				for (int j = 0; j < simulationJoints [i].JointList.Length; j++) 
 				{
@@ -796,7 +807,7 @@ namespace MonoPhysicsEngine
 					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
 												this.simulationObjects [indexA].Position;
 
-					Joint jointBuf = new Joint (
+					joint[j] = new Joint (
 						                 simulationJoints [i].JointList [j].K,
 						                 simulationJoints [i].JointList [j].C,
 						                 simulationJoints [i].JointList [j].Type,
@@ -811,14 +822,12 @@ namespace MonoPhysicsEngine
 						                 simulationJoints [i].JointList [j].LinearLimitMax,
 						                 simulationJoints [i].JointList [j].AngularLimitMin,
 						                 simulationJoints [i].JointList [j].AngularLimitMax);
-					
-					joint.Add (jointBuf);
 				}
 
 				simulationJoints [i] = new SimulationJoint (
 					simulationJoints [i].IndexA,
 					simulationJoints [i].IndexB,
-					joint.ToArray ());
+					joint);
 			}
 		}
 

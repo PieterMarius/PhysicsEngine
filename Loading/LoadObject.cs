@@ -257,24 +257,25 @@ namespace Loading
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 //						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
 //
-					joint[j] = Joint.SetPistonJoint (
-						objects[indexA],
-						objects[indexB],
-						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-						3.0,
-						5.0);
-					
-
-//					joint [i] = Joint.SetHingeJoint (
-//						startAnchorPosition,
+//					joint [j] = Joint.SetPistonJoint (
 //						objects [indexA],
 //						objects [indexB],
-//						new Vector3 (0.0, 1.0, 0.0),
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 //						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+//						3.0,
+//						5.0,
 //						-Math.PI / 2,
 //						Math.PI / 4);
+
+					joint [i] = Joint.SetHingeJoint (
+						objects [indexA],
+						objects [indexB],
+						new Vector3 (1.0, 0.0, 0.0),
+						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+						-Math.PI / 2,
+						Math.PI / 4,
+						new Vector3 (-3.5,0.0,0.0));
 
 //					joint [j] = new Joint (
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K

@@ -14,7 +14,7 @@ namespace CollisionEngine
 		private GJK collisionEngine;
 		private EPA compenetrationCollisionEngine;
 		private CollisionEngineParameters collisionEngineParameters;
-		private SweepAndPrune SweepAndPrune;
+		private SweepAndPruneEngine sweepAndPruneEngine;
 
 		#endregion
 
@@ -37,6 +37,8 @@ namespace CollisionEngine
 				collisionEngineParameters.Precision,
 				collisionEngineParameters.EPAManifoldTolerance,
 				collisionEngineParameters.ManifoldPointNumber);
+
+			this.sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
 		}
 
 		#endregion
