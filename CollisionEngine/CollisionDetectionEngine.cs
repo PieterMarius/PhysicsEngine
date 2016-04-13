@@ -56,7 +56,11 @@ namespace CollisionEngine
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
-			return this.bruteForceBroadPhase (
+//			return this.bruteForceBroadPhase (
+//				objects,
+//				minDistance);
+
+			return this.sweepAndPruneBroadPhase (
 				objects,
 				minDistance);
 		}
@@ -182,10 +186,36 @@ namespace CollisionEngine
 			return result;
 		}
 
-		private List<CollisionPointStructure> sweepAndPruneBroadPhase()
+		private List<CollisionPointStructure> sweepAndPruneBroadPhase(
+			ObjectGeometry[] objects,
+			double minDistance)
 		{
-			
-			return null;
+			List<CollisionPointStructure> result = new List<CollisionPointStructure> ();
+
+			AABB[] boxs = Array.ConvertAll (objects, item => item.Box);
+
+			List<CollisionPair> collisionPair = this.sweepAndPruneEngine.SweepAndPruneTest (boxs);
+
+			object lockMe = new object();
+
+			Parallel.ForEach (
+				collisionPair, 
+				new ParallelOptions { MaxDegreeOfParallelism = this.collisionEngineParameters.MaxThreadNumber }, 
+				pair => {
+					CollisionPointStructure collisionPointStruct = this.narrowPhase (
+						objects [pair.objectIndexA], 
+						objects [pair.objectIndexB],
+						pair.objectIndexA,
+						pair.objectIndexB,
+						minDistance);
+
+					lock (lockMe) {
+						if (collisionPointStruct != null)
+							result.Add (collisionPointStruct);
+					}
+				});
+
+			return result;
 		}
 
 		#endregion

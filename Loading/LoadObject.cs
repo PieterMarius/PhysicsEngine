@@ -2,6 +2,7 @@
 using System.Xml;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
 using SimulationObjectDefinition;
@@ -179,6 +180,16 @@ namespace Loading
 					Vector3 relPositionRotate = objects [i].RotationMatrix * objects [i].RelativePositions [j];
 					objects [i].ObjectGeometry.SetVertexPosition (objects [i].Position + relPositionRotate, j);
 				}
+
+				AABB box = new AABB (objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.x),
+					objects [i].ObjectGeometry.VertexPosition.Min (point => point.y),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.y),
+					objects [i].ObjectGeometry.VertexPosition.Min (point => point.z),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.z),
+					false);
+
+				objects [i].ObjectGeometry.SetAABB (box);
 					
 			}
 
@@ -211,30 +222,15 @@ namespace Loading
 
 					//Position
 					Vector3 startAnchorPosition = new Vector3 (
-						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
-						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
-						                        Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
+						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
+						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
+						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
 
 					Vector3 relativePos = startAnchorPosition - objects [indexA].StartPosition;
 					relativePos = objects [indexA].RotationMatrix * relativePos;
 
 					Vector3 anchorPosition = relativePos + objects [indexA].Position;
 			 	
-					//Distance A
-//					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
-//					                    (anchorPosition - objects [indexA].Position);
-
-					Vector3 distanceA = Matrix3x3.Transpose (objects [indexA].RotationMatrix) *
-					                    (anchorPosition - objects [indexA].Position);
-
-					//Distance B
-					Vector3 distanceB = Matrix3x3.Transpose (objects [indexB].RotationMatrix) *
-					                    (anchorPosition - objects [indexB].Position);
-
-					//Relative orientation
-					Quaternion relativeOrientation = Quaternion.Inverse (objects [indexA].RotationStatus) *
-					                                 objects [indexB].RotationStatus;
-
 					//TODO test di verifica
 
 //					joint[j] = Joint.SetFixedJoint (
@@ -267,15 +263,25 @@ namespace Loading
 //						-Math.PI / 2,
 //						Math.PI / 4);
 
-					joint [i] = Joint.SetHingeJoint (
+//					joint [i] = Joint.SetHingeJoint (
+//						objects [indexA],
+//						objects [indexB],
+//						new Vector3 (1.0, 0.0, 0.0),
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+//						-Math.PI / 2,
+//						Math.PI / 4,
+//						new Vector3 (-3.5,0.0,0.0));
+
+					joint [i] = Joint.Set6DOFJoint (
 						objects [indexA],
 						objects [indexB],
-						new Vector3 (1.0, 0.0, 0.0),
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-						-Math.PI / 2,
-						Math.PI / 4,
-						new Vector3 (-3.5,0.0,0.0));
+						new Vector3 (0.0, 0.0, 0.0),
+						new Vector3 (3.0, 0.0, 0.0),
+						new Vector3 (0.0, 0.0, 0.0),
+						new Vector3 (0.0, 0.0, 0.0));
 
 //					joint [j] = new Joint (
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K

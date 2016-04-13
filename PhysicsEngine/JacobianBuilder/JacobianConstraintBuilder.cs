@@ -1288,8 +1288,6 @@ namespace MonoPhysicsEngine
 
 			double sliderDistance = Math.Abs((r2 - r1).Dot (sliderAxis));
 
-
-
 			Console.WriteLine ("Slider distance: " + sliderDistance);
 
 			if (linearLimitMin == linearLimitMax) 

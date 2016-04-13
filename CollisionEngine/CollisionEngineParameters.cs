@@ -6,9 +6,16 @@ namespace CollisionEngine
 	{
 		#region Collision Engine Parameters Properties
 	
-		//numero di iterazioni per la ricerca dei punti di collisione
+		/// <summary>
+		/// Gets the max GJK iteration.
+		/// </summary>
+		/// <value>The max GJK iteration.</value>
 		public int MaxGJKIteration { get; private set; }
 
+		/// <summary>
+		/// Max iteration number for searching the deepest compenetrations point.
+		/// </summary>
+		/// <value>The max EPA iteration.</value>
 		public int MaxEPAIteration { get; private set; }
 
 		//parametro di stabilizzazione del motore delle collisioni
@@ -29,6 +36,12 @@ namespace CollisionEngine
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set;}
 
+		/// <summary>
+		/// Gets a value indicating whether this <see cref="CollisionEngine.CollisionEngineParameters"/> activate sweep and prune.
+		/// </summary>
+		/// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
+		public bool ActivateSweepAndPrune { get; private set;}
+
 		#endregion
 
 		#region Constructors
@@ -42,6 +55,7 @@ namespace CollisionEngine
 			this.EPAManifoldTolerance = 0.006;
 			this.ManifoldPointNumber = 4;
 			this.MaxThreadNumber = 2;
+			this.ActivateSweepAndPrune = true;
 		}
 
 		public CollisionEngineParameters (
@@ -52,7 +66,8 @@ namespace CollisionEngine
 			double gjkTolerance,
 			double epaTolerance,
 			int manifoldPointNumber,
-			int maxThreadNumber)
+			int maxThreadNumber,
+			bool activateSweepAndPrune)
 		{
 			this.MaxGJKIteration = maxGJKIteration;
 			this.MaxEPAIteration = maxEPAIteration;
@@ -61,6 +76,7 @@ namespace CollisionEngine
 			this.EPAManifoldTolerance = epaTolerance;
 			this.ManifoldPointNumber = manifoldPointNumber;
 			this.MaxThreadNumber = maxThreadNumber;
+			this.ActivateSweepAndPrune = activateSweepAndPrune;
 		}
 
 		#endregion

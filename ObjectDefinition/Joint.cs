@@ -312,13 +312,13 @@ namespace SimulationObjectDefinition
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
 			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-				(anchorPosition - objectA.Position);
+			                        (anchorPosition - objectA.Position);
 
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-				(anchorPosition - objectB.Position);
+			                        (anchorPosition - objectB.Position);
 
 			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
-				objectB.RotationStatus;
+			                                 objectB.RotationStatus;
 
 			hingeAxis = hingeAxis.Normalize ();
 
@@ -372,16 +372,14 @@ namespace SimulationObjectDefinition
 			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
 			                                 objectB.RotationStatus;
 
-			Vector3 startErrorAxis = objectB.Position - objectA.Position;
-
 			Joint joint = new Joint (
 				              K,
 				              C,
 				              JointType.Generic6DOF,
 				              startAnchorPosition,
 				              anchorPosition,
-				              startErrorAxis,
-				              new Vector3 (),
+				              distanceFromA,
+				              distanceFromB,
 				              relativeOrientation,
 				              new Vector3 (),
 				              new Vector3 (),
