@@ -80,13 +80,13 @@ namespace MonoPhysicsEngine
 		public SimulationParameters ()
 		{
 			this.TimeStep = 0.015;
-			this.CFM = 0.001;
+			this.CFM = 0.0001;
 			this.BaumStabilization = 6.6;
 			this.LinearVelDisable = 0.0;
 			this.AngularVelDisable = 0.0;
 			this.ShiftToStaticFrictionTolerance = 0.000001;
 			this.DiscreteCCD = true;
-			this.CollisionDistance = 0.001;
+			this.CollisionDistance = 0.0001;
 			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			this.InertiaParameter = -0.00009;
 			this.MaxThreadNumber = 4;

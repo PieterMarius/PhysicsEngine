@@ -56,13 +56,18 @@ namespace CollisionEngine
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
-//			return this.bruteForceBroadPhase (
-//				objects,
-//				minDistance);
-
-			return this.sweepAndPruneBroadPhase (
-				objects,
-				minDistance);
+			if (this.collisionEngineParameters.ActivateSweepAndPrune) 
+			{
+				return this.sweepAndPruneBroadPhase (
+					objects,
+					minDistance);
+			} 
+			else 
+			{
+				return this.bruteForceBroadPhase (
+					objects,
+					minDistance);
+			}
 		}
 
 		/// <summary>

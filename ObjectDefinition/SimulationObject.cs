@@ -62,6 +62,8 @@ namespace SimulationObjectDefinition
 		/// <value>The object geometry.</value>
 		public ObjectGeometry ObjectGeometry{ get; set; }
 
+		public ObjectType ObjectType { get; private set; }
+
 
 		#endregion
 
@@ -201,6 +203,11 @@ namespace SimulationObjectDefinition
 				for (int i = 0; i < this.ObjectGeometry.NVertex; i++) 
 					this.RelativePositions [i] = this.ObjectGeometry.VertexInitialPosition [i] - this.StartPosition;
 			}
+		}
+
+		public void SetObjectType(ObjectType type)
+		{
+			this.ObjectType = type;
 		}
 
 		#endregion

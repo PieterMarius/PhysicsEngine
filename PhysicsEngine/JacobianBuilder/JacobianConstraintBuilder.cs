@@ -127,8 +127,8 @@ namespace MonoPhysicsEngine
 				int indexB = collisionPointStr.ObjectB;
 
 				double restitutionCoefficient =
-					1.0 + (simulationObjs [indexA].RestitutionCoeff +
-						simulationObjs [indexB].RestitutionCoeff) * 0.5;
+					(simulationObjs [indexA].RestitutionCoeff +
+					simulationObjs [indexB].RestitutionCoeff) * 0.5;
 
 				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
@@ -143,8 +143,11 @@ namespace MonoPhysicsEngine
 					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
 					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
 
-					Vector3 collisionNormal = (collisionPointStr.CollisionPoints [k].collisionNormal * -1.0).Normalize ();
-					Vector3 negCollisionNormal = -1.0 * collisionNormal;
+					Vector3 linearComponentA = (collisionPointStr.CollisionPoints [k].collisionNormal * -1.0).Normalize ();
+					Vector3 linearComponentB = -1.0 * linearComponentA;
+
+					Vector3 angularComponentA = ra.Cross (linearComponentA);
+					Vector3 angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
 					Vector3 velocityA = simulationObjs [indexA].LinearVelocity +
 					                    simulationObjs [indexA].AngularVelocity.Cross (ra);
@@ -152,30 +155,36 @@ namespace MonoPhysicsEngine
 					Vector3 velocityB = simulationObjs [indexB].LinearVelocity +
 					                    simulationObjs [indexB].AngularVelocity.Cross (rb);
 
-					Vector3 relativeVelocity = velocityA - velocityB;
+					Vector3 relativeVelocity = velocityB - velocityA;
 
 					Vector3 tangentialVelocity = relativeVelocity -
-					                             (collisionNormal.Dot (relativeVelocity)) * collisionNormal;
+					                             (linearComponentA.Dot (relativeVelocity)) * linearComponentA;
 
 					#region Normal direction contact
 
-					double error = collisionPointStr.IntersectionDistance * simulationParameters.BaumStabilization;
-					double b = collisionNormal.Dot (relativeVelocity) * restitutionCoefficient -
-						error;
+					double jacobianVelocityValue =
+						linearComponentA.Dot (simulationObjs [indexA].LinearVelocity) +
+						linearComponentB.Dot (simulationObjs [indexB].LinearVelocity) +
+						angularComponentA.Dot (simulationObjs [indexA].AngularVelocity) +
+						angularComponentB.Dot (simulationObjs [indexB].AngularVelocity);
+
+					double correctionParameter = collisionPointStr.IntersectionDistance * simulationParameters.BaumStabilization;
+					double b = jacobianVelocityValue  - 
+						(linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter);
 
 					JacobianContact normalDirection = new JacobianContact (
 						                                  indexA,
 						                                  indexB,
 						                                  null,
-						                                  collisionNormal,
-						                                  negCollisionNormal,
-						                                  ra.Cross (collisionNormal),
-						                                  rb.Cross (negCollisionNormal),
+														  linearComponentA,
+														  linearComponentB,
+														  angularComponentA,
+														  angularComponentB,
 						                                  ConstraintType.Collision,
 						                                  b,
 						                                  0.0,
 														  0.0,
-						                                  0.0);
+														  0.0);
 
 					#endregion
 
@@ -193,7 +202,7 @@ namespace MonoPhysicsEngine
 							indexB,
 							simulationObjs,
 							collisionPoint,
-							collisionNormal,
+							linearComponentA,
 							tangentialVelocity,
 							ra,
 							rb);
@@ -207,7 +216,7 @@ namespace MonoPhysicsEngine
 							indexB,
 							simulationObjs,
 							collisionPoint,
-							collisionNormal,
+							linearComponentA,
 							tangentialVelocity,
 							ra,
 							rb);

@@ -29,19 +29,21 @@
    <ObjectsSettings>
        
        <Object>
-            <Position x="-1,0" y="5,0" z="-3,0" />
+            <Position x="-1,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
             <Mass>1,0</Mass>
             <RestitutionCoeff>1,0</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
             <CollisionDetection>1</CollisionDetection>
             <Scale>0,5</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>sphere.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
+        <!--
         <Object>
             <Position x="-1,0" y="3,5" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
@@ -86,7 +88,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="5,0" z="-3,0" />
+            <Position x="1,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -143,7 +145,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="5,0" z="-3,0" />
+            <Position x="3,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -198,11 +200,11 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-        
+        -->
         <!-- Avanti -->
-            
+          <!--  
         <Object>
-            <Position x="-1,0" y="5,0" z="-1,0" />
+            <Position x="-1,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -261,7 +263,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="5,0" z="-1,0" />
+            <Position x="1,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -318,7 +320,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="5,0" z="-1,0" />
+            <Position x="3,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -373,10 +375,11 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-        
+        -->
         <!-- Dietro -->
+            <!--
         <Object>
-            <Position x="-1,0" y="5,0" z="-5,0" />
+            <Position x="-1,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -435,7 +438,7 @@
         </Object>
         
         <Object>
-            <Position x="1,0" y="5,0" z="-5,0" />
+            <Position x="1,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -492,7 +495,7 @@
         </Object>
         
         <Object>
-            <Position x="3,0" y="5,0" z="-5,0" />
+            <Position x="3,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
@@ -547,18 +550,19 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-        
+        -->
         <Object>
-            <Position x="1,0" y="-4,0" z="-3,0" />
+            <Position x="1,0" y="-8,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
-            <Mass>0,0</Mass>
-            <RestitutionCoeff>0,6</RestitutionCoeff>
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>1</ObjectType>
+            <Mass>1000,0</Mass>
+            <RestitutionCoeff>1,0</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
             <CollisionDetection>1</CollisionDetection>
-            <Scale>3,5</Scale>
+            <Scale>7</Scale>
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>

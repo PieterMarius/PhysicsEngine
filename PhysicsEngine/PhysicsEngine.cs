@@ -234,6 +234,8 @@ namespace MonoPhysicsEngine
 
 			this.physicsExecutionFlow ();
 
+			this.collisionPartitionedPoints = null;
+
 			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
 			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
 
@@ -665,7 +667,7 @@ namespace MonoPhysicsEngine
 			double X,
 			int objectIndex)
 		{
-			if (this.simulationObjects [objectIndex].Mass > 0.0) 
+			if (this.simulationObjects [objectIndex].ObjectType != ObjectType.StaticRigidBody) 
 			{
 				Vector3 linearImpulse = X * linearComponent;
 				Vector3 angularImpuse = X * angularComponent;
@@ -676,6 +678,8 @@ namespace MonoPhysicsEngine
 				Vector3 angularVelocity = simulationObj [objectIndex].AngularVelocity +
 				                          (simulationObj [objectIndex].InertiaTensor *
 				                          angularImpuse);
+
+
 
 				simulationObj [objectIndex].SetLinearVelocity (linearVelocity);
 				simulationObj [objectIndex].SetAngularVelocity (angularVelocity);
@@ -691,7 +695,9 @@ namespace MonoPhysicsEngine
 			int index = 0;
 			foreach (SimulationObject simObj in simulationObj) 
 			{
-				if (simObj.Mass > 0.0) 
+				Console.WriteLine ("Velocity: " + simObj.LinearVelocity.x + " " + simObj.LinearVelocity.y + " " + simObj.LinearVelocity.z);
+
+				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 				{
 					#region Linear Velocity
 
@@ -731,10 +737,10 @@ namespace MonoPhysicsEngine
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
 					//Inertia parameter
-					angularVelocity = Math.Max (0.0, 
-						angularVelocity + 
-						angularVelocity * 
-						this.simulationParameters.InertiaParameter);
+//					angularVelocity = Math.Max (0.0, 
+//						angularVelocity + 
+//						angularVelocity * 
+//						this.simulationParameters.InertiaParameter);
 
 					double rotationAngle = angularVelocity * this.timeStep;
 

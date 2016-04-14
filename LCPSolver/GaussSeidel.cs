@@ -53,8 +53,8 @@ namespace LCPSolver
 					int[] bufIndex = input.M [i].Index;
 
 					//Avoid first row elaboration
-					if (i != 0) 
-					{
+//					if (i != 0) 
+//					{
 						for (int j = 0; j < input.M [i].Count; j++) 
 						{
 							if (bufIndex [j] < i) 
@@ -62,7 +62,7 @@ namespace LCPSolver
 								sumBuffer += bufValue [j] * X [bufIndex [j]];
 							}
 						}
-					}
+//					}
 
 					sumBuffer = (input.B[i] - sumBuffer) * input.D[i];
 
@@ -78,9 +78,13 @@ namespace LCPSolver
 					
 				double error = this.getMediumSquareError (diffX);
 
-				if (error < this.solverParameters.ErrorTolerance) 
-					return X;
+//				if (error < this.solverParameters.ErrorTolerance) {
+//					Console.WriteLine ("Error: " + GetMediumSquareError(input,X));
+//					return X;
+//				}
 			}
+
+			Console.WriteLine ("Error: " + GetMediumSquareError(input,X));
 				
             return X;
         }
@@ -159,7 +163,7 @@ namespace LCPSolver
 			double sumBuffer = 0.0;
 
 			//Avoid last row elaboration
-			if (i + 1 != input.Count) {
+//			if (i + 1 != input.Count) {
 
 				double[] bufValue = input.M [i].Value;
 				int[] bufIndex = input.M [i].Index;
@@ -169,7 +173,7 @@ namespace LCPSolver
 						sumBuffer += bufValue [j] * X [bufIndex [j]];
 					}
 				}
-			}
+//			}
             return sumBuffer;
         }
 

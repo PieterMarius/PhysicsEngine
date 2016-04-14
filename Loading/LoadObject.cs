@@ -32,6 +32,7 @@ namespace Loading
 		private String objectGeometryAttribute = "ObjectGeometry";
 		private String scaleAttribute = "Scale";
 		private String textureAttribute = "Texture";
+		private String objectType = "ObjectType";
 
 		#endregion
 
@@ -114,7 +115,9 @@ namespace Loading
 				double angle = Convert.ToDouble(xmlList [i][this.rotationStatusAttribute].Attributes["angle"].Value);
 
 				objects [i].SetRotationStatus (new Quaternion (versor, angle));
-				
+
+				objects [i].SetObjectType ((ObjectType)Convert.ToInt32 (xmlList [i] [this.objectType].InnerText));
+
 				//Mass
 				objects [i].SetMass (Convert.ToDouble (xmlList [i] [this.massAttribute].InnerText));
 
