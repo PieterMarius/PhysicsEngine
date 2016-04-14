@@ -162,29 +162,21 @@ namespace MonoPhysicsEngine
 
 					#region Normal direction contact
 
-					double jacobianVelocityValue =
-						linearComponentA.Dot (simulationObjs [indexA].LinearVelocity) +
-						linearComponentB.Dot (simulationObjs [indexB].LinearVelocity) +
-						angularComponentA.Dot (simulationObjs [indexA].AngularVelocity) +
-						angularComponentB.Dot (simulationObjs [indexB].AngularVelocity);
-
 					double correctionParameter = collisionPointStr.IntersectionDistance * simulationParameters.BaumStabilization;
-					double b = jacobianVelocityValue  - 
-						(linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter);
+					double b = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
 
-					JacobianContact normalDirection = new JacobianContact (
-						                                  indexA,
-						                                  indexB,
-						                                  null,
-														  linearComponentA,
-														  linearComponentB,
-														  angularComponentA,
-														  angularComponentB,
-						                                  ConstraintType.Collision,
-						                                  b,
-						                                  0.0,
-														  0.0,
-														  0.0);
+					JacobianContact normalContact = this.addDOF (
+														indexA,
+														indexB,
+														linearComponentA,
+														linearComponentB,
+														angularComponentA,
+														angularComponentB,
+														simulationObjs [indexA],
+														simulationObjs [indexB],
+														b,
+														b,
+														ConstraintType.Collision);
 
 					#endregion
 
@@ -201,7 +193,6 @@ namespace MonoPhysicsEngine
 							indexA,
 							indexB,
 							simulationObjs,
-							collisionPoint,
 							linearComponentA,
 							tangentialVelocity,
 							ra,
@@ -215,7 +206,6 @@ namespace MonoPhysicsEngine
 							indexA,
 							indexB,
 							simulationObjs,
-							collisionPoint,
 							linearComponentA,
 							tangentialVelocity,
 							ra,
@@ -224,7 +214,7 @@ namespace MonoPhysicsEngine
 
 					#endregion
 
-					contactConstraints.Add (normalDirection);
+					contactConstraints.Add (normalContact);
 					contactConstraints.Add (frictionContact[0]);
 					contactConstraints.Add (frictionContact[1]);
 				}
@@ -1039,7 +1029,6 @@ namespace MonoPhysicsEngine
 			int indexA,
 			int indexB,
 			SimulationObject[] simulationObjects,
-			Vector3 collisionPoint,
 			Vector3 normal,
 			Vector3 tangentialVelocity,
 			Vector3 ra,
@@ -1107,7 +1096,6 @@ namespace MonoPhysicsEngine
 			int indexA,
 			int indexB,
 			SimulationObject[] simulationObjects,
-			Vector3 collisionPoint,
 			Vector3 normal,
 			Vector3 tangentialVelocity,
 			Vector3 ra,
@@ -1115,59 +1103,59 @@ namespace MonoPhysicsEngine
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
-			Vector3[] linearComponentA = new Vector3[2];
-			Vector3[] linearComponentB = new Vector3[2];
-			Vector3[] angularComponentA = new Vector3[2];
-			Vector3[] angularComponentB = new Vector3[2];
+			Vector3 linearComponentA = new Vector3 ();
+			Vector3 linearComponentB = new Vector3 ();
+			Vector3 angularComponentA = new Vector3 ();
+			Vector3 angularComponentB = new Vector3 ();
+
+			#region Tangential Direction 1
 
 			double constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff +
-				simulationObjects [indexB].DynamicFrictionCoeff);
+			                         simulationObjects [indexB].DynamicFrictionCoeff);
 
-			linearComponentA [0] = tangentialVelocity.Normalize ();
-			linearComponentB [0] = -1.0 * linearComponentA [0];
+			linearComponentA = tangentialVelocity.Normalize ();
+			linearComponentB = -1.0 * linearComponentA;
 
-			angularComponentA [0] = ra.Cross (linearComponentA [0]);
-			angularComponentB [0] = rb.Cross (linearComponentB [0]);
+			angularComponentA = ra.Cross (linearComponentA);
+			angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
-			double B1 = linearComponentA [0].Dot (tangentialVelocity);
-
-			linearComponentA [1] = tangentialVelocity.Cross (normal).Normalize ();
-			linearComponentB [1] = -1.0 * linearComponentA [1];
-
-			angularComponentA [1] = ra.Cross (linearComponentA [1]);
-			angularComponentB [1] = rb.Cross (linearComponentB [1]);
-
-			double B2 = linearComponentA [1].Dot (tangentialVelocity);
-
-			#region Jacobian Component
-
-			friction [0] = new JacobianContact (
+			friction [0] = this.addDOF (
 				indexA,
 				indexB,
-				-1,
-				linearComponentA[0],
-				linearComponentB[0],
-				angularComponentA[0],
-				angularComponentB[0],
-				ConstraintType.Friction,
-				B1,
+				linearComponentA,
+				linearComponentB,
+				angularComponentA,
+				angularComponentB,
+				simulationObjects [indexA],
+				simulationObjects [indexB],
 				constraintLimit,
 				0.0,
-				0.0);
+				ConstraintType.Friction,
+				-1);
 
-			friction [1] = new JacobianContact (
+			#endregion
+
+			#region Tangential Direction 2
+
+			linearComponentA = tangentialVelocity.Cross (normal).Normalize ();
+			linearComponentB = -1.0 * linearComponentA;
+
+			angularComponentA = ra.Cross (linearComponentA);
+			angularComponentB = -1.0 * rb.Cross (linearComponentA);
+
+			friction [1] = this.addDOF (
 				indexA,
 				indexB,
-				-2,
-				linearComponentA[1],
-				linearComponentB[1],
-				angularComponentA[1],
-				angularComponentB[1],
-				ConstraintType.Friction,
-				B2,
+				linearComponentA,
+				linearComponentB,
+				angularComponentA,
+				angularComponentB,
+				simulationObjects [indexA],
+				simulationObjects [indexB],
 				constraintLimit,
 				0.0,
-				0.0);
+				ConstraintType.Friction,
+				-2);
 
 			#endregion
 
@@ -1245,19 +1233,22 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectB,
 			double? constraintLimitMin,
 			double? constraintLimitMax,
-			ConstraintType type)
+			ConstraintType type,
+			int? contactReference = null)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
 			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
 			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
-			double B = 0;
+			double B = jacobianVelocityValue;
 
 			if (!constraintLimitMin.HasValue &&
 			    !constraintLimitMax.HasValue) 
 			{
-				B = jacobianVelocityValue;
+				constraintLimitMin = double.MinValue;
+				constraintLimitMax = double.MaxValue;
+
 			} 
 			else if (constraintLimitMin == constraintLimitMax) 
 			{
@@ -1269,7 +1260,7 @@ namespace MonoPhysicsEngine
 			return new JacobianContact (
 				indexA,
 				indexB,
-				null,
+				contactReference,
 				linearComponentA,
 				linearComponentB,
 				angularComponentA,
