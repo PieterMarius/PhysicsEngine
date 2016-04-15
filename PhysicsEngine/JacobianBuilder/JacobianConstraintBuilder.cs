@@ -182,35 +182,15 @@ namespace MonoPhysicsEngine
 
 					#region Friction Contact
 
-					JacobianContact[] frictionContact;
-
-					if (Vector3.Length (tangentialVelocity) > 
-						simulationParameters.ShiftToStaticFrictionTolerance) 
-					{
-						//Dynamic friction
-
-						frictionContact = this.addDynamicFriction (
-							indexA,
-							indexB,
-							simulationObjs,
-							linearComponentA,
-							tangentialVelocity,
-							ra,
-							rb);
-					} 
-					else 
-					{
-						//Static friction
-
-						frictionContact = this.addStaticFriction (
-							indexA,
-							indexB,
-							simulationObjs,
-							linearComponentA,
-							tangentialVelocity,
-							ra,
-							rb);
-					}
+					JacobianContact[] frictionContact = this.addFriction (
+						simulationObjs,
+						simulationParameters,
+						indexA,
+						indexB,
+						linearComponentA,
+						tangentialVelocity,
+						ra,
+						rb);
 
 					#endregion
 
@@ -1025,77 +1005,78 @@ namespace MonoPhysicsEngine
 
 		#region Common Methods
 
-		private JacobianContact[] addStaticFriction(
+//		private JacobianContact[] addStaticFriction(
+//			int indexA,
+//			int indexB,
+//			SimulationObject[] simulationObjects,
+//			Vector3 normal,
+//			Vector3 tangentialVelocity,
+//			Vector3 ra,
+//			Vector3 rb)
+//		{
+//			JacobianContact[] friction = new JacobianContact[2];
+//
+//			Vector3[] linearComponentA = new Vector3[2];
+//			Vector3[] linearComponentB = new Vector3[2];
+//			Vector3[] angularComponentA = new Vector3[2];
+//			Vector3[] angularComponentB = new Vector3[2];
+//
+//			double constraintLimit = 0.5 * (simulationObjects [indexA].StaticFrictionCoeff +
+//				simulationObjects [indexB].StaticFrictionCoeff);
+//
+//			linearComponentA [0] = GeometryUtilities.ProjectVectorOnPlane (normal);
+//			linearComponentB [0] = -1.0 * linearComponentA [0];
+//
+//			angularComponentA [0] = ra.Cross (linearComponentA [0]);
+//			angularComponentB [0] = rb.Cross (linearComponentB [0]);
+//
+//			linearComponentA [1] = linearComponentA [0].Cross (normal).Normalize ();
+//			linearComponentB [1] = -1.0 * linearComponentA [1];
+//
+//			angularComponentA [1] = ra.Cross (linearComponentA [1]);
+//			angularComponentB [1] = rb.Cross (linearComponentB [1]);
+//
+//			#region Jacobian Component
+//
+//			friction [0] = new JacobianContact (
+//				indexA,
+//				indexB,
+//				-1,
+//				linearComponentA[0],
+//				linearComponentB[0],
+//				angularComponentA[0],
+//				angularComponentB[0],
+//				ConstraintType.Friction,
+//				0.0,
+//				constraintLimit,
+//				0.0,
+//				0.0);
+//
+//			friction [1] = new JacobianContact (
+//				indexA,
+//				indexB,
+//				-2,
+//				linearComponentA[1],
+//				linearComponentB[1],
+//				angularComponentA[1],
+//				angularComponentB[1],
+//				ConstraintType.Friction,
+//				0.0,
+//				constraintLimit,
+//				0.0,
+//				0.0);
+//
+//			#endregion
+//
+//			return friction;
+//
+//		}
+
+		private JacobianContact[] addFriction(
+			SimulationObject[] simulationObjects,
+			SimulationParameters simulationParameters,
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObjects,
-			Vector3 normal,
-			Vector3 tangentialVelocity,
-			Vector3 ra,
-			Vector3 rb)
-		{
-			JacobianContact[] friction = new JacobianContact[2];
-
-			Vector3[] linearComponentA = new Vector3[2];
-			Vector3[] linearComponentB = new Vector3[2];
-			Vector3[] angularComponentA = new Vector3[2];
-			Vector3[] angularComponentB = new Vector3[2];
-
-			double constraintLimit = 0.5 * (simulationObjects [indexA].StaticFrictionCoeff +
-				simulationObjects [indexB].StaticFrictionCoeff);
-
-			linearComponentA [0] = GeometryUtilities.ProjectVectorOnPlane (normal);
-			linearComponentB [0] = -1.0 * linearComponentA [0];
-
-			angularComponentA [0] = ra.Cross (linearComponentA [0]);
-			angularComponentB [0] = rb.Cross (linearComponentB [0]);
-
-			linearComponentA [1] = linearComponentA [0].Cross (normal).Normalize ();
-			linearComponentB [1] = -1.0 * linearComponentA [1];
-
-			angularComponentA [1] = ra.Cross (linearComponentA [1]);
-			angularComponentB [1] = rb.Cross (linearComponentB [1]);
-
-			#region Jacobian Component
-
-			friction [0] = new JacobianContact (
-				indexA,
-				indexB,
-				-1,
-				linearComponentA[0],
-				linearComponentB[0],
-				angularComponentA[0],
-				angularComponentB[0],
-				ConstraintType.Friction,
-				0.0,
-				constraintLimit,
-				0.0,
-				0.0);
-
-			friction [1] = new JacobianContact (
-				indexA,
-				indexB,
-				-2,
-				linearComponentA[1],
-				linearComponentB[1],
-				angularComponentA[1],
-				angularComponentB[1],
-				ConstraintType.Friction,
-				0.0,
-				constraintLimit,
-				0.0,
-				0.0);
-
-			#endregion
-
-			return friction;
-
-		}
-
-		private JacobianContact[] addDynamicFriction(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjects,
 			Vector3 normal,
 			Vector3 tangentialVelocity,
 			Vector3 ra,
@@ -1108,12 +1089,29 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentA = new Vector3 ();
 			Vector3 angularComponentB = new Vector3 ();
 
+			Vector3 t = new Vector3 ();
+
+			double constraintLimit = 0.0;
+
+			if (Vector3.Length (tangentialVelocity) >
+			    simulationParameters.ShiftToStaticFrictionTolerance) 
+			{
+				constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff +
+				simulationObjects [indexB].DynamicFrictionCoeff);
+
+				t = tangentialVelocity.Normalize ();
+			} 
+			else 
+			{
+				constraintLimit = 0.5 * (simulationObjects [indexA].StaticFrictionCoeff +
+				simulationObjects [indexB].StaticFrictionCoeff);
+
+				t = GeometryUtilities.ProjectVectorOnPlane (normal);
+			}
+
 			#region Tangential Direction 1
 
-			double constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff +
-			                         simulationObjects [indexB].DynamicFrictionCoeff);
-
-			linearComponentA = tangentialVelocity.Normalize ();
+			linearComponentA = t;
 			linearComponentB = -1.0 * linearComponentA;
 
 			angularComponentA = ra.Cross (linearComponentA);
@@ -1137,7 +1135,7 @@ namespace MonoPhysicsEngine
 
 			#region Tangential Direction 2
 
-			linearComponentA = tangentialVelocity.Cross (normal).Normalize ();
+			linearComponentA = t.Cross (normal).Normalize ();
 			linearComponentB = -1.0 * linearComponentA;
 
 			angularComponentA = ra.Cross (linearComponentA);

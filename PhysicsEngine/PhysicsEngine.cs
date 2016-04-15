@@ -580,44 +580,38 @@ namespace MonoPhysicsEngine
 			double linearB = 0.0;
 			double angularB = 0.0;
 
-			if (this.simulationObjects [contactA.ObjectA].Mass > 0.0) {
+			if (contactA.ObjectA == contactB.ObjectA) {
 
-				if (contactA.ObjectA == contactB.ObjectA) {
+				linearA = contactA.LinearComponentA.Dot (
+					contactB.LinearComponentA * this.simulationObjects [contactA.ObjectA].InverseMass);
+				
+				angularA = contactA.AngularComponentA.Dot (
+					this.simulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentA);
 
-					linearA = contactA.LinearComponentA.Dot (
-						contactB.LinearComponentA * this.simulationObjects [contactA.ObjectA].InverseMass);
-					
-					angularA = contactA.AngularComponentA.Dot (
-						this.simulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentA);
+			} else if (contactB.ObjectB == contactA.ObjectA) {
 
-				} else if (contactB.ObjectB == contactA.ObjectA) {
-
-					linearA = contactA.LinearComponentA.Dot (
-						contactB.LinearComponentB * this.simulationObjects [contactA.ObjectA].InverseMass);
-					
-					angularA = contactA.AngularComponentA.Dot (
-						this.simulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentB);
-				}
+				linearA = contactA.LinearComponentA.Dot (
+					contactB.LinearComponentB * this.simulationObjects [contactA.ObjectA].InverseMass);
+				
+				angularA = contactA.AngularComponentA.Dot (
+					this.simulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentB);
 			}
 
-			if (this.simulationObjects [contactA.ObjectB].Mass > 0.0) {
-
-				if (contactB.ObjectA == contactA.ObjectB) {
-					
-					linearB = contactA.LinearComponentB.Dot (
-						contactB.LinearComponentA * this.simulationObjects [contactA.ObjectB].InverseMass);
-					
-					angularB = contactA.AngularComponentB.Dot(
-						this.simulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentA);
-					
-				} else if (contactB.ObjectB == contactA.ObjectB) {
-					
-					linearB = contactA.LinearComponentB.Dot (
-						contactB.LinearComponentB * this.simulationObjects [contactA.ObjectB].InverseMass);
-					
-					angularB = contactA.AngularComponentB.Dot (
-						this.simulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentB);
-				}
+			if (contactB.ObjectA == contactA.ObjectB) {
+				
+				linearB = contactA.LinearComponentB.Dot (
+					contactB.LinearComponentA * this.simulationObjects [contactA.ObjectB].InverseMass);
+				
+				angularB = contactA.AngularComponentB.Dot(
+					this.simulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentA);
+				
+			} else if (contactB.ObjectB == contactA.ObjectB) {
+				
+				linearB = contactA.LinearComponentB.Dot (
+					contactB.LinearComponentB * this.simulationObjects [contactA.ObjectB].InverseMass);
+				
+				angularB = contactA.AngularComponentB.Dot (
+					this.simulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentB);
 			}
 
 			return (linearA + angularA) + (linearB + angularB);
