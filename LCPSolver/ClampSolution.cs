@@ -27,11 +27,11 @@ namespace LCPSolver
 					
 				case ConstraintType.Joint:
 
-					if (X [i] < input.ConstraintLimitMin [i]) {
-						return input.ConstraintLimitMin [i];
-					} else if (X [i] > input.ConstraintLimitMax [i]) {
-						return input.ConstraintLimitMax [i];
-					}
+//					if (X [i] < input.ConstraintLimitMin [i]) {
+//						return input.ConstraintLimitMin [i];
+//					} else if (X [i] > input.ConstraintLimitMax [i]) {
+//						return input.ConstraintLimitMax [i];
+//					}
 
 					return X [i];
 

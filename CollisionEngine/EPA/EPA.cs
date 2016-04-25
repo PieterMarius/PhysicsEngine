@@ -83,7 +83,7 @@ namespace CollisionEngine
 			int index = 0;
 			double maxDot = Vector3.Dot (obj.VertexPosition [index], direction);
 
-			for (int i = 1; i < obj.NVertex; i++) 
+			for (int i = 1; i < obj.VertexPosition.Length; i++) 
 			{
 				double dot = Vector3.Dot (obj.VertexPosition [i], direction);
 

@@ -153,7 +153,7 @@ namespace Loading
 					inertiaTensor.GetMassCenter ().z);
 
 				//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-				for (int j = 0; j < objects [i].ObjectGeometry.NVertex; j++) 
+				for (int j = 0; j < objects [i].ObjectGeometry.VertexInitialPosition.Length; j++) 
 				{
 					objects [i].ObjectGeometry.SetVertexInitialPosition (
 						objects [i].ObjectGeometry.VertexInitialPosition [j] - inertiaTensor.GetMassCenter (),
@@ -178,7 +178,7 @@ namespace Loading
 					(objects [i].RotationMatrix * objects [i].BaseInertiaTensor) *
 					Matrix3x3.Transpose (objects [i].RotationMatrix));
 				
-				for (int j = 0; j < objects [i].ObjectGeometry.NVertex; j++) 
+				for (int j = 0; j < objects [i].ObjectGeometry.VertexPosition.Length; j++) 
 				{
 					Vector3 relPositionRotate = objects [i].RotationMatrix * objects [i].RelativePositions [j];
 					objects [i].ObjectGeometry.SetVertexPosition (objects [i].Position + relPositionRotate, j);
@@ -269,22 +269,33 @@ namespace Loading
 //					joint [i] = Joint.SetHingeJoint (
 //						objects [indexA],
 //						objects [indexB],
-//						new Vector3 (1.0, 0.0, 0.0),
+//						new Vector3 (0.0, 0.0, 1.0),
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 //						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
 //						-Math.PI / 2,
 //						Math.PI / 4,
 //						new Vector3 (-3.5,0.0,0.0));
 
-					joint [i] = Joint.Set6DOFJoint (
+					joint [i] = Joint.SetHinge2Joint (
 						objects [indexA],
 						objects [indexB],
+						new Vector3 (0.0, 0.0, 1.0),
+						new Vector3 (0.0, 1.0, 0.0),
 						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-						new Vector3 (0.0, 0.0, 0.0),
-						new Vector3 (3.0, 0.0, 0.0),
-						new Vector3 (0.0, 0.0, 0.0),
-						new Vector3 (0.0, 0.0, 0.0));
+						-Math.PI / 2,
+						Math.PI / 4,
+						new Vector3 (-3.5,0.0,0.0));
+
+//					joint [i] = Joint.Set6DOFJoint (
+//						objects [indexA],
+//						objects [indexB],
+//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+//						new Vector3 (0.0, 0.0, 0.0),
+//						new Vector3 (3.0, 0.0, 0.0),
+//						new Vector3 (0.0, 0.0, 0.0),
+//						new Vector3 (0.0, 0.0, 0.0));
 
 //					joint [j] = new Joint (
 //						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K

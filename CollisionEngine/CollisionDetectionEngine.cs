@@ -197,7 +197,7 @@ namespace CollisionEngine
 		{
 			List<CollisionPointStructure> result = new List<CollisionPointStructure> ();
 
-			AABB[] boxs = Array.ConvertAll (objects, item => item.Box);
+			AABB[] boxs = Array.ConvertAll (objects, item => item.AABBox);
 
 			List<CollisionPair> collisionPair = this.sweepAndPruneEngine.SweepAndPruneTest (boxs);
 

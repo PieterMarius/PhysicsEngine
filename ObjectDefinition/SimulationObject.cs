@@ -197,10 +197,10 @@ namespace SimulationObjectDefinition
 
 		public void SetRelativePosition()
 		{
-			if (this.ObjectGeometry.NVertex > 0) 
+			if (this.ObjectGeometry.VertexInitialPosition.Length > 0) 
 			{
-				this.RelativePositions = new Vector3[this.ObjectGeometry.NVertex];
-				for (int i = 0; i < this.ObjectGeometry.NVertex; i++) 
+				this.RelativePositions = new Vector3[this.ObjectGeometry.VertexInitialPosition.Length];
+				for (int i = 0; i < this.ObjectGeometry.VertexInitialPosition.Length; i++) 
 					this.RelativePositions [i] = this.ObjectGeometry.VertexInitialPosition [i] - this.StartPosition;
 			}
 		}

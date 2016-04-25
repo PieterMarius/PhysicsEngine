@@ -6,6 +6,7 @@ namespace SimulationObjectDefinition
 	{
 		BallAndSocket,
 		Hinge,
+		Hinge2,
 		Slider,
 		ConeTwist,
 		Generic6DOF,

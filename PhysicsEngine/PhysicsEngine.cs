@@ -338,11 +338,6 @@ namespace MonoPhysicsEngine
 
 		private void partitionEngineExecute()
 		{
-			Stopwatch stopwatch = new Stopwatch();
-
-			stopwatch.Reset ();
-			stopwatch.Start ();
-
 			List<SpatialPartition> partitions = this.contactPartitioningEngine.calculateSpatialPartitioning (
 				                                    this.collisionPoints,
 				                                    this.simulationJoints,
@@ -381,9 +376,6 @@ namespace MonoPhysicsEngine
 					partitionedJoint.Add(partJoint);
 				}
 			}
-
-			stopwatch.Stop ();
-			Console.WriteLine("Partitioning Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
 
 		#endregion
@@ -393,40 +385,43 @@ namespace MonoPhysicsEngine
 			Stopwatch stopwatch = new Stopwatch();
 
 			stopwatch.Reset ();
+
 			stopwatch.Start ();
+
+			#region Contact and Joint elaboration
 
 			if (this.collisionPartitionedPoints != null) {
 
-				Parallel.For (0, 
-					collisionPartitionedPoints.Count, 
-					new ParallelOptions { MaxDegreeOfParallelism = this.simulationParameters.MaxThreadNumber }, 
-					i => {
+				for (int i = 0; i<  collisionPartitionedPoints.Count;i++)
+				{
+					List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.GetJacobianConstraint (
+						                                           this.collisionPartitionedPoints [i],
+						                                           this.partitionedJoint [i],
+						                                           this.simulationObjects,
+						                                           this.simulationParameters);
 
-						List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.GetJacobianConstraint (
-							                                           this.collisionPartitionedPoints [i],
-							                                           this.partitionedJoint [i],
-							                                           this.simulationObjects,
-							                                           this.simulationParameters);
+					JacobianContact[] contactArray = contactConstraints.ToArray ();
 
-						JacobianContact[] contactArray = contactConstraints.ToArray ();
+					//Build solver data
+					LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
 
-						//Build solver data
-						LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
+					if (contactConstraints.Count > 0 &&
+					    linearProblemProperties != null) {
 
-						if (contactConstraints.Count > 0 &&
-						    linearProblemProperties != null) {
+						double[] X = this.solver.Solve (linearProblemProperties);
 
-							double[] X = this.solver.Solve (linearProblemProperties);
-
-							//Update Objects velocity
-							this.updateVelocity (
-								contactArray,
-								X,
-								this.simulationObjects);
-						}
-
-					});
+						//Update Objects velocity
+						this.updateVelocity (
+							contactArray,
+							X,
+							this.simulationObjects);
+					}
+				}
 			}
+
+			#endregion
+
+			#region Position and Velocity integration
 
 			//Update Objects position
 			this.integrateObjectsPosition (this.simulationObjects);
@@ -434,8 +429,10 @@ namespace MonoPhysicsEngine
 			//Update Joints position
 			this.integrateJointPosition (this.simulationJoints);
 
+			#endregion
+
 			stopwatch.Stop ();
-			
+
 			Console.WriteLine ("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
 		}
@@ -689,8 +686,7 @@ namespace MonoPhysicsEngine
 			int index = 0;
 			foreach (SimulationObject simObj in simulationObj) 
 			{
-				Console.WriteLine ("Velocity: " + simObj.LinearVelocity.x + " " + simObj.LinearVelocity.y + " " + simObj.LinearVelocity.z);
-
+				
 				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 				{
 					#region Linear Velocity
@@ -756,7 +752,7 @@ namespace MonoPhysicsEngine
 					if (linearVelocity > 0.0 ||
 					    angularVelocity > 0.0) 
 					{
-						for (int j = 0; j < simObj.ObjectGeometry.NVertex; j++) 
+						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++) 
 						{
 							Vector3 relativePosition = simObj.Position + 
 								(simObj.RotationMatrix * simObj.RelativePositions [j]);

@@ -170,7 +170,6 @@ namespace SimulationObjectDefinition
 			return joint;
 		}
 
-
 		/// <summary>
 		/// Sets the ball socket joint.
 		/// </summary>
@@ -340,6 +339,59 @@ namespace SimulationObjectDefinition
 				              new Vector3 (),
 				              angularLimitMinVec,
 				              angularLimitMaxVec);
+
+			return joint;
+		}
+
+		public static Joint SetHinge2Joint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 hingeAxis,
+			Vector3 rotationAxis,
+			double K,
+			double C,
+			double angularLimitMin = 0.0,
+			double angularLimitMax = 0.0,
+			Vector3 startAnchorPosition = new Vector3 ())
+		{
+			if (startAnchorPosition.Length () == 0.0)
+				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
+
+			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
+			relativePos = objectA.RotationMatrix * relativePos;
+
+			Vector3 anchorPosition = relativePos + objectA.Position;
+
+			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
+				(anchorPosition - objectA.Position);
+
+			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
+				(anchorPosition - objectB.Position);
+
+			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
+				objectB.RotationStatus;
+
+			hingeAxis = hingeAxis.Normalize ();
+			rotationAxis = rotationAxis.Normalize ();
+
+			Vector3 angularLimitMinVec = hingeAxis * angularLimitMin;
+			Vector3 angularLimitMaxVec = hingeAxis * angularLimitMax;
+
+			Joint joint = new Joint (
+				K,
+				C,
+				JointType.Hinge2,
+				startAnchorPosition,
+				anchorPosition,
+				distanceFromA,
+				distanceFromB,
+				relativeOrientation,
+				hingeAxis,
+				rotationAxis,
+				new Vector3 (),
+				new Vector3 (),
+				angularLimitMinVec,
+				angularLimitMaxVec);
 
 			return joint;
 		}

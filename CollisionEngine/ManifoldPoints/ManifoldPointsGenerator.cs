@@ -83,7 +83,7 @@ namespace CollisionEngine
 			List<Vector3> collisionPoints = new List<Vector3> ();
 
 			Vector3 normal = Vector3.Normalize(planeNormal);
-			for (int i = 0; i < shape.NVertex; i++) 
+			for (int i = 0; i < shape.VertexPosition.Length; i++) 
 			{
 				Vector3 nt = Vector3.Normalize (shape.VertexPosition [i] - collisionPoint);
 				if (Math.Abs (Vector3.Dot (nt, normal)) < tolerance)

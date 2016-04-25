@@ -198,6 +198,7 @@ namespace TestPhysics
 			this.UpdateMouse ();
 			this.UpdateKeyboard ();
 
+			try {
 
 			if (!pause){
 				stopwatch.Reset ();
@@ -222,7 +223,9 @@ namespace TestPhysics
 				Console.WriteLine("Engine Elapsed={0}",stopwatch.ElapsedMilliseconds);
 				Console.WriteLine ();
 			}
-
+			}catch (Exception) {
+				throw new Exception ("Physics engine error.");
+			}
 			collPoint = this.physicsEngine.GetCollisionPointStrucureList ();
 
 		}
@@ -345,7 +348,7 @@ namespace TestPhysics
 			simulationObjects[index].SetRotationMatrix (
 				PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
 
-			for (int i = 0; i < simulationObjects[index].ObjectGeometry.NVertex; i++) 
+			for (int i = 0; i < simulationObjects[index].ObjectGeometry.VertexPosition.Length; i++) 
 			{
 				PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
 				simulationObjects [index].ObjectGeometry.SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
@@ -468,7 +471,7 @@ namespace TestPhysics
 
 		private void displayVertex(int index)
 		{
-			for (int i = 0; i < this.physicsEngine.GetObject (index).ObjectGeometry.NVertex; i++) 
+			for (int i = 0; i < this.physicsEngine.GetObject (index).ObjectGeometry.VertexPosition.Length; i++) 
 			{
 				GL.PushMatrix ();
 

@@ -99,10 +99,10 @@ namespace MonoPhysicsEngine
 				if (collisionPoint.IndexA == collisionValue.IndexA &&
 				    collisionPoint.IndexB == collisionValue.IndexB) {
 					continue;
-				} else if (simulationObjects [collisionPoint.IndexA].Mass <= 0.0 &&
-				           simulationObjects [collisionPoint.IndexB].Mass <= 0.0) {
+				} else if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody) {
 					break;
-				} else if (simulationObjects [collisionPoint.IndexA].Mass <= 0.0 &&
+				} else if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
 				           (collisionPoint.IndexB == collisionValue.IndexA ||
 				           collisionPoint.IndexB == collisionValue.IndexB)) {
 
@@ -115,7 +115,7 @@ namespace MonoPhysicsEngine
 							simulationObjects);
 					}
 
-				} else if (simulationObjects [collisionPoint.IndexB].Mass <= 0.0 &&
+				} else if (simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody &&
 				           (collisionPoint.IndexA == collisionValue.IndexA ||
 				           collisionPoint.IndexA == collisionValue.IndexB)) {
 
@@ -132,8 +132,8 @@ namespace MonoPhysicsEngine
 				           collisionPoint.IndexB == collisionValue.IndexA ||
 				           collisionPoint.IndexA == collisionValue.IndexA ||
 				           collisionPoint.IndexB == collisionValue.IndexB &&
-				           (simulationObjects [collisionPoint.IndexA].Mass > 0.0 &&
-				           simulationObjects [collisionPoint.IndexB].Mass > 0.0)) {
+						   (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.RigidBody &&
+						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.RigidBody)) {
 
 					if (!partition.Contains (collisionValue)) {
 						partition.Add (collisionValue);

@@ -49,18 +49,18 @@ namespace LCPSolver
 				{
 					double sumBuffer = sum [i];
 
-					double[] bufValue = input.M [i].Value;
-					int[] bufIndex = input.M [i].Index;
+					SparseElement m = input.M [i];
+
+					double[] bufValue = m.Value;
+					int[] bufIndex = m.Index;
 
 					//Avoid first row elaboration
 					if (i != 0) 
 					{
-						for (int j = 0; j < input.M [i].Count; j++) 
+						for (int j = 0; j < m.Count; j++) 
 						{
 							if (bufIndex [j] < i) 
-							{
 								sumBuffer += bufValue [j] * X [bufIndex [j]];
-							}
 						}
 					}
 
@@ -90,48 +90,6 @@ namespace LCPSolver
             this.SOR = SOR;
         }
 
-		public double[] GetError(
-			LinearProblemProperties input,
-			double[] X)
-		{
-			if (input.Count > 0) {
-				double[] result = new double[input.Count];
-				for (int i = 0; i < input.Count; i++) {
-					result [i] = 0.0;
-					for (int j = 0; j < input.M[i].Count; j++) {
-						result [i] += input.M [i].Value[j] * X [input.M [i].Index[j]];
-					}
-
-					result [i] = (input.B [i] - result [i]);
-					result [i] = result [i] * result [i];
-				}
-
-				return result;
-			} else {
-				throw new Exception ("Empty solver parameters");
-			}
-		}
-
-		public double GetMediumSquareError(
-			LinearProblemProperties input,
-			double[] X)
-		{
-			double[] errors = this.GetError (
-				input,
-				X);
-
-			double errorResult = 0.0;
-
-			for (int i = 0; i < errors.Length; i++) 
-			{
-				errorResult += errors [i];
-			}
-
-			errorResult = errorResult / errors.Length;
-
-			return errorResult;
-		}
-
         #endregion
 
         #region Private Methods
@@ -160,7 +118,7 @@ namespace LCPSolver
 			double sumBuffer = 0.0;
 
 			//Avoid last row elaboration
-//			if (i + 1 != input.Count) {
+			if (i + 1 != input.Count) {
 
 				double[] bufValue = input.M [i].Value;
 				int[] bufIndex = input.M [i].Index;
@@ -170,23 +128,19 @@ namespace LCPSolver
 						sumBuffer += bufValue [j] * X [bufIndex [j]];
 					}
 				}
-//			}
+			}
             return sumBuffer;
         }
 
 		private double getMediumSquareError(
-			double[] diff)
+			double[] vector)
 		{
 			double buf = 0.0;
-			double delta;
 
-			for (int i = 0; i < diff.Length; i++) 
-			{
-				delta = diff [i];
-				buf += delta * delta;
-			}
-
-			return buf / diff.Length;
+			foreach(double value in vector)
+				buf += value * value;
+			
+			return buf / vector.Length;
 		}
        
         #endregion

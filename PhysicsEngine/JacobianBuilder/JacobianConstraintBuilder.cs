@@ -51,7 +51,7 @@ namespace MonoPhysicsEngine
 								simJoint.IndexB,
 								joint,
 								simulationObjs));
-							break;
+						break;
 
 					case JointType.Slider:
 						constraint.AddRange (
@@ -83,6 +83,15 @@ namespace MonoPhysicsEngine
 					case JointType.Hinge:
 						constraint.AddRange (
 							this.BuildHingeJoint (
+								simJoint.IndexA,
+								simJoint.IndexB,
+								joint,
+								simulationObjs));
+						break;
+
+					case JointType.Hinge2:
+						constraint.AddRange (
+							this.BuildHinge2Joint (
 								simJoint.IndexA,
 								simJoint.IndexB,
 								joint,
@@ -143,7 +152,7 @@ namespace MonoPhysicsEngine
 					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
 					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
 
-					Vector3 linearComponentA = (collisionPointStr.CollisionPoints [k].collisionNormal * -1.0).Normalize ();
+					Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPoints [k].collisionNormal).Normalize ();
 					Vector3 linearComponentB = -1.0 * linearComponentA;
 
 					Vector3 angularComponentA = ra.Cross (linearComponentA);
@@ -163,7 +172,7 @@ namespace MonoPhysicsEngine
 					#region Normal direction contact
 
 					double correctionParameter = collisionPointStr.IntersectionDistance * simulationParameters.BaumStabilization;
-					double b = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
+					double correctedBounce = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
 
 					JacobianContact normalContact = this.addDOF (
 														indexA,
@@ -174,8 +183,8 @@ namespace MonoPhysicsEngine
 														angularComponentB,
 														simulationObjs [indexA],
 														simulationObjs [indexB],
-														b,
-														b,
+														correctedBounce,
+														correctedBounce,
 														ConstraintType.Collision);
 
 					#endregion
@@ -869,6 +878,137 @@ namespace MonoPhysicsEngine
 			return hingeConstraints;
 		}
 
+		private List<JacobianContact> BuildHinge2Joint(
+			int indexA,
+			int indexB,
+			Joint simulationJoint,
+			SimulationObject[] simulationObjs)
+		{
+			List<JacobianContact> hinge2Constraints = new List<JacobianContact> ();
+
+			SimulationObject simulationObjectA = simulationObjs [indexA];
+			SimulationObject simulationObjectB = simulationObjs [indexB];
+
+			#region Init Linear
+
+			Vector3 t1 = simulationObjectA.RotationMatrix * simulationJoint.Axis1;
+			Vector3 t2 = simulationObjectA.RotationMatrix * simulationJoint.Axis1.Cross (simulationJoint.Axis2);
+
+			Vector3 t3 = simulationObjectB.RotationMatrix * simulationJoint.Axis1;
+
+//			double angle = getRotationAngle (
+//				simulationObjectA,
+//				simulationObjectB,
+//				new Vector3(1.0,0.0,0.0),
+//				simulationJoint);
+
+			Vector3 r1 = simulationObjectA.RotationMatrix *
+				simulationJoint.StartErrorAxis1;
+
+			Vector3 r2 = simulationObjectB.RotationMatrix *
+				simulationJoint.StartErrorAxis2;
+
+			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
+			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
+
+			Vector3 p1 = simulationObjectA.Position + r1;
+			Vector3 p2 = simulationObjectB.Position + r2;
+
+			Vector3 linearError = p2 - p1;
+
+			#endregion
+
+			#region Jacobian Constraint
+
+			double constraintLimit = simulationJoint.K * linearError.x;
+
+			//DOF 1
+
+			hinge2Constraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (1.0, 0.0, 0.0),
+				new Vector3 (-1.0, 0.0, 0.0),
+				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			//DOF 2
+
+			constraintLimit = simulationJoint.K * linearError.y;
+
+			hinge2Constraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (0.0, 1.0, 0.0),
+				new Vector3 (0.0, -1.0, 0.0),
+				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			//DOF 3
+
+			constraintLimit = simulationJoint.K * linearError.z;
+
+			hinge2Constraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (0.0, 0.0, 1.0),
+				new Vector3 (0.0, 0.0, -1.0),
+				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			//DOF 4
+
+//			double angularLimit = simulationJoint.K *
+//				2.0 * rotationAxis.Dot (angularError);
+
+			hinge2Constraints.Add (this.addDOF (
+				indexA, 
+				indexB, 
+				new Vector3(), 
+				new Vector3(), 
+				t1, 
+				t3, 
+				simulationObjectA, 
+				simulationObjectB, 
+				0.0, 
+				0.0, 
+				ConstraintType.Joint));
+
+			//DOF 5
+
+			hinge2Constraints.Add (this.addDOF (
+				indexA, 
+				indexB, 
+				new Vector3(), 
+				new Vector3(), 
+				t2, 
+				t3, 
+				simulationObjectA, 
+				simulationObjectB, 
+				0.0, 
+				0.0, 
+				ConstraintType.Joint));
+
+			#endregion
+
+			return hinge2Constraints;
+		}
+
 		private List<JacobianContact> BuildGeneric6DOFJoint(
 			int indexA,
 			int indexB,
@@ -905,7 +1045,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (1.0, 0.0, 0.0),
+					new Vector3 (-1.0, 0.0, 0.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -923,7 +1063,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (0.0, 1.0, 0.0),
+					new Vector3 (0.0, -1.0, 0.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -941,7 +1081,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (0.0, 0.0, 1.0),
+					new Vector3 (0.0, 0.0, -1.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -1005,73 +1145,6 @@ namespace MonoPhysicsEngine
 
 		#region Common Methods
 
-//		private JacobianContact[] addStaticFriction(
-//			int indexA,
-//			int indexB,
-//			SimulationObject[] simulationObjects,
-//			Vector3 normal,
-//			Vector3 tangentialVelocity,
-//			Vector3 ra,
-//			Vector3 rb)
-//		{
-//			JacobianContact[] friction = new JacobianContact[2];
-//
-//			Vector3[] linearComponentA = new Vector3[2];
-//			Vector3[] linearComponentB = new Vector3[2];
-//			Vector3[] angularComponentA = new Vector3[2];
-//			Vector3[] angularComponentB = new Vector3[2];
-//
-//			double constraintLimit = 0.5 * (simulationObjects [indexA].StaticFrictionCoeff +
-//				simulationObjects [indexB].StaticFrictionCoeff);
-//
-//			linearComponentA [0] = GeometryUtilities.ProjectVectorOnPlane (normal);
-//			linearComponentB [0] = -1.0 * linearComponentA [0];
-//
-//			angularComponentA [0] = ra.Cross (linearComponentA [0]);
-//			angularComponentB [0] = rb.Cross (linearComponentB [0]);
-//
-//			linearComponentA [1] = linearComponentA [0].Cross (normal).Normalize ();
-//			linearComponentB [1] = -1.0 * linearComponentA [1];
-//
-//			angularComponentA [1] = ra.Cross (linearComponentA [1]);
-//			angularComponentB [1] = rb.Cross (linearComponentB [1]);
-//
-//			#region Jacobian Component
-//
-//			friction [0] = new JacobianContact (
-//				indexA,
-//				indexB,
-//				-1,
-//				linearComponentA[0],
-//				linearComponentB[0],
-//				angularComponentA[0],
-//				angularComponentB[0],
-//				ConstraintType.Friction,
-//				0.0,
-//				constraintLimit,
-//				0.0,
-//				0.0);
-//
-//			friction [1] = new JacobianContact (
-//				indexA,
-//				indexB,
-//				-2,
-//				linearComponentA[1],
-//				linearComponentB[1],
-//				angularComponentA[1],
-//				angularComponentB[1],
-//				ConstraintType.Friction,
-//				0.0,
-//				constraintLimit,
-//				0.0,
-//				0.0);
-//
-//			#endregion
-//
-//			return friction;
-//
-//		}
-
 		private JacobianContact[] addFriction(
 			SimulationObject[] simulationObjects,
 			SimulationParameters simulationParameters,
@@ -1093,21 +1166,27 @@ namespace MonoPhysicsEngine
 
 			double constraintLimit = 0.0;
 
+			#region Get start friction direction
+
 			if (Vector3.Length (tangentialVelocity) >
 			    simulationParameters.ShiftToStaticFrictionTolerance) 
 			{
-				constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff +
+				constraintLimit = 0.5 *
+				(simulationObjects [indexA].DynamicFrictionCoeff +
 				simulationObjects [indexB].DynamicFrictionCoeff);
 
 				t = tangentialVelocity.Normalize ();
 			} 
 			else 
 			{
-				constraintLimit = 0.5 * (simulationObjects [indexA].StaticFrictionCoeff +
+				constraintLimit = 0.5 *
+				(simulationObjects [indexA].StaticFrictionCoeff +
 				simulationObjects [indexB].StaticFrictionCoeff);
 
 				t = GeometryUtilities.ProjectVectorOnPlane (normal);
 			}
+
+			#endregion
 
 			#region Tangential Direction 1
 
@@ -1290,9 +1369,13 @@ namespace MonoPhysicsEngine
 
 			if (linearLimitMin == linearLimitMax) 
 			{
-				Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
+				Vector3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1) * sliderAxis;
+				Vector3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2) * sliderAxis;
 
-				Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
+				Vector3 p1 = simulationObjectA.Position + r1;
+				Vector3 p2 = simulationObjectB.Position + r2;
+
+				Vector3 linearError = p2 - p1;
 
 				double linearLimit = simulationJoint.K *
 				                     sliderAxis.Dot (linearError);
@@ -1302,8 +1385,8 @@ namespace MonoPhysicsEngine
 					indexB,
 					sliderAxis,
 					-1.0 * sliderAxis,
-					Vector3.Cross (r1, sliderAxis),
-					-1.0 * Vector3.Cross (r2, sliderAxis),
+					skewP1,
+					-1.0 * skewP2,
 					simulationObjectA,
 					simulationObjectB,
 					linearLimit,
