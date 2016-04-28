@@ -33,6 +33,7 @@ namespace Loading
 		private String scaleAttribute = "Scale";
 		private String textureAttribute = "Texture";
 		private String objectType = "ObjectType";
+		private String excludeFromCollisionDetection = "ExludeFromCollisionDetection";
 
 		#endregion
 
@@ -108,14 +109,15 @@ namespace Loading
 
 				//Rotation Status
 				Vector3 versor = new Vector3 (
-					                 Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["x"].Value),
-					                 Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["y"].Value),
-					                 Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["z"].Value));
+					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["x"].Value),
+					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["y"].Value),
+					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["z"].Value));
 
 				double angle = Convert.ToDouble(xmlList [i][this.rotationStatusAttribute].Attributes["angle"].Value);
 
 				objects [i].SetRotationStatus (new Quaternion (versor, angle));
 
+				//Object type
 				objects [i].SetObjectType ((ObjectType)Convert.ToInt32 (xmlList [i] [this.objectType].InnerText));
 
 				//Mass
@@ -130,6 +132,9 @@ namespace Loading
 				//Static friction
 				objects [i].SetStaticFrictionCoeff (Convert.ToDouble (xmlList [i] [this.staticFrictionAttribute].InnerText));
 
+				//Collision detection
+				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [this.excludeFromCollisionDetection].InnerText));
+
 				//Scale
 				float scale = Convert.ToSingle (xmlList [i] [this.scaleAttribute].InnerText);
 
@@ -143,9 +148,9 @@ namespace Loading
 				//Inertia Tensor and Geometry
 
 				InertiaTensor inertiaTensor = new InertiaTensor (
-					                              objects [i].ObjectGeometry.VertexInitialPosition,
-					                              objects [i].ObjectGeometry.Triangle,
-					                              objects [i].Mass);
+					objects [i].ObjectGeometry.VertexInitialPosition,
+					objects [i].ObjectGeometry.Triangle,
+					objects [i].Mass);
 
 				this.translate [i] = new Vector3 (
 					inertiaTensor.GetMassCenter ().x, 
@@ -177,7 +182,7 @@ namespace Loading
 				objects [i].SetInertiaTensor (
 					(objects [i].RotationMatrix * objects [i].BaseInertiaTensor) *
 					Matrix3x3.Transpose (objects [i].RotationMatrix));
-				
+
 				for (int j = 0; j < objects [i].ObjectGeometry.VertexPosition.Length; j++) 
 				{
 					Vector3 relPositionRotate = objects [i].RotationMatrix * objects [i].RelativePositions [j];
@@ -193,7 +198,7 @@ namespace Loading
 					false);
 
 				objects [i].ObjectGeometry.SetAABB (box);
-					
+
 			}
 
 			return objects;
@@ -225,93 +230,105 @@ namespace Loading
 
 					//Position
 					Vector3 startAnchorPosition = new Vector3 (
-						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
-						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
-						                              Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
+						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
+						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
+						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
 
 					Vector3 relativePos = startAnchorPosition - objects [indexA].StartPosition;
 					relativePos = objects [indexA].RotationMatrix * relativePos;
 
 					Vector3 anchorPosition = relativePos + objects [indexA].Position;
-			 	
+
 					//TODO test di verifica
 
-//					joint[j] = Joint.SetFixedJoint (
-//						objects[indexA],
-//						objects[indexB],
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
+					//					joint[j] = Joint.SetFixedJoint (
+					//						objects[indexA],
+					//						objects[indexB],
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
 
-//					joint [j] = Joint.SetSliderJoint (
-//						objects [indexA],
-//						objects [indexB],
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
-//						3.0,
-//						5.0);
+					//					joint [j] = Joint.SetSliderJoint (
+					//						objects [indexA],
+					//						objects [indexB],
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+					//						3.0,
+					//						5.0);
 
-//					joint[j] = Joint.SetBallSocketJoint (
-//						objects[indexA],
-//						objects[indexB],
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
-//
-//					joint [j] = Joint.SetPistonJoint (
-//						objects [indexA],
-//						objects [indexB],
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-//						3.0,
-//						5.0,
-//						-Math.PI / 2,
-//						Math.PI / 4);
+					//					joint[j] = Joint.SetBallSocketJoint (
+					//						objects[indexA],
+					//						objects[indexB],
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText));
+					//
+					//					joint [j] = Joint.SetPistonJoint (
+					//						objects [indexA],
+					//						objects [indexB],
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+					//						3.0,
+					//						5.0,
+					//						-Math.PI / 2,
+					//						Math.PI / 4);
+					if (i == 0) {
 
-//					joint [i] = Joint.SetHingeJoint (
-//						objects [indexA],
-//						objects [indexB],
-//						new Vector3 (0.0, 0.0, 1.0),
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-//						-Math.PI / 2,
-//						Math.PI / 4,
-//						new Vector3 (-3.5,0.0,0.0));
+						joint [j] = Joint.SetHingeJoint (
+							objects [indexA],
+							objects [indexB],
+							new Vector3 (0.0, 1.0, 0.0),
+							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+							-Math.PI / 2,
+							Math.PI / 4,
+							new Vector3 (-3.5, 0.0, 0.0));
+					} else {
+						joint [j] = Joint.SetHingeJoint (
+							objects [indexA],
+							objects [indexB],
+							new Vector3 (1.0, 0.0, 0.0),
+							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+							double.MinValue,
+							double.MaxValue,
+							new Vector3 (0.0, 0.0, 0.0));
+					}
 
-					joint [i] = Joint.SetHinge2Joint (
-						objects [indexA],
-						objects [indexB],
-						new Vector3 (0.0, 0.0, 1.0),
-						new Vector3 (0.0, 1.0, 0.0),
-						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-						-Math.PI / 2,
-						Math.PI / 4,
-						new Vector3 (-3.5,0.0,0.0));
+					//					joint [i] = Joint.SetHinge2Joint (
+					//						objects [indexA],
+					//						objects [indexB],
+					//						new Vector3 (0.0, 0.0, 1.0),
+					//						new Vector3 (0.0, 1.0, 0.0),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+					//						-Math.PI / 2,
+					//						Math.PI / 4,
+					//						new Vector3 (-3.5,0.0,0.0));
 
-//					joint [i] = Joint.Set6DOFJoint (
-//						objects [indexA],
-//						objects [indexB],
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-//						new Vector3 (0.0, 0.0, 0.0),
-//						new Vector3 (3.0, 0.0, 0.0),
-//						new Vector3 (0.0, 0.0, 0.0),
-//						new Vector3 (0.0, 0.0, 0.0));
+					//					joint [i] = Joint.Set6DOFJoint (
+					//						objects [indexA],
+					//						objects [indexB],
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+					//						new Vector3 (0.0, 0.0, 0.0),
+					//						new Vector3 (3.0, 0.0, 0.0),
+					//						new Vector3 (0.0, 0.0, 0.0),
+					//						new Vector3 (0.0, 0.0, 0.0));
 
-//					joint [j] = new Joint (
-//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
-//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
-//						JointType.Slider,
-//						startAnchorPosition,
-//						anchorPosition,
-//						distanceA,
-//						distanceB,
-//						relativeOrientation,
-//						new Vector3 (0.0, 0.0, 1.0),
-//						new Vector3 (),
-//						new Vector3 (0.0, 0.0, 2.0),
-//						new Vector3 (0.0, 0.0, 5.0),
-//						new Vector3 (0.0, -Math.PI / 2, 0.0),
-//						new Vector3 (0.0, Math.PI / 4, 0.0));
+					//					joint [j] = new Joint (
+					//						Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText), //Attribute K
+					//						Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText), //Attribute C
+					//						JointType.Slider,
+					//						startAnchorPosition,
+					//						anchorPosition,
+					//						distanceA,
+					//						distanceB,
+					//						relativeOrientation,
+					//						new Vector3 (0.0, 0.0, 1.0),
+					//						new Vector3 (),
+					//						new Vector3 (0.0, 0.0, 2.0),
+					//						new Vector3 (0.0, 0.0, 5.0),
+					//						new Vector3 (0.0, -Math.PI / 2, 0.0),
+					//						new Vector3 (0.0, Math.PI / 4, 0.0));
 
 				}
 
@@ -323,7 +340,7 @@ namespace Loading
 
 			return joints;
 		}
-			
+
 		public int[] GetOpenGLObjectList()
 		{
 			XmlDocument xmlDoc = new XmlDocument();
@@ -373,7 +390,7 @@ namespace Loading
 			return textureID;
 
 		}
-			
+
 		#endregion
 
 		#region Private Methods

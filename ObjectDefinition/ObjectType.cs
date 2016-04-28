@@ -6,7 +6,7 @@ namespace SimulationObjectDefinition
 	{
 		RigidBody = 0,
 		StaticRigidBody = 1,
-		FakeBodyJoint = 2,
+		JointConnector = 2,
 	}
 }
 

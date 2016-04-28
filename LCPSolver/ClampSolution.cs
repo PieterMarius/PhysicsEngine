@@ -26,18 +26,10 @@ namespace LCPSolver
 						-X [i + input.Constraints [i].Value] * input.ConstraintLimitMin [i]);
 					
 				case ConstraintType.Joint:
-
-//					if (X [i] < input.ConstraintLimitMin [i]) {
-//						return input.ConstraintLimitMin [i];
-//					} else if (X [i] > input.ConstraintLimitMax [i]) {
-//						return input.ConstraintLimitMax [i];
-//					}
-
 					return X [i];
 
 				case ConstraintType.JointLimit:
 					return Math.Max (0.0, X [i]);
-					//return X [i];
 				
 				default:
 					return X [i];

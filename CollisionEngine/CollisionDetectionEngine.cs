@@ -172,18 +172,21 @@ namespace CollisionEngine
 				objects.Length, 
 				new ParallelOptions { MaxDegreeOfParallelism = this.collisionEngineParameters.MaxThreadNumber }, 
 				i => {
-		
-					for (int j = i + 1; j < objects.Length; j++) {
-						CollisionPointStructure collisionPointStruct = this.narrowPhase (
-							                                               objects [i], 
-							                                               objects [j],
-							                                               i,
-							                                               j,
-							                                               minDistance);
+					if (objects [i] != null) {
+						for (int j = i + 1; j < objects.Length; j++) {
+							if (objects [j] != null) {
+								CollisionPointStructure collisionPointStruct = this.narrowPhase (
+									                                              objects [i], 
+									                                              objects [j],
+									                                              i,
+									                                              j,
+									                                              minDistance);
 
-						lock (lockMe) {    
-							if (collisionPointStruct != null)
-								result.Add (collisionPointStruct);
+								lock (lockMe) {    
+									if (collisionPointStruct != null)
+										result.Add (collisionPointStruct);
+								}
+							}
 						}
 					}
 				});
@@ -197,7 +200,7 @@ namespace CollisionEngine
 		{
 			List<CollisionPointStructure> result = new List<CollisionPointStructure> ();
 
-			AABB[] boxs = Array.ConvertAll (objects, item => item.AABBox);
+			AABB[] boxs = Array.ConvertAll (objects, item => (item == null) ? null : item.AABBox);
 
 			List<CollisionPair> collisionPair = this.sweepAndPruneEngine.SweepAndPruneTest (boxs);
 

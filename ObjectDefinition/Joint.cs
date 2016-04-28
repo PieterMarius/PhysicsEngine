@@ -16,7 +16,6 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 Axis1;
-		public readonly Vector3 Axis2;
 		public readonly Vector3 LinearLimitMin;
 		public readonly Vector3 LinearLimitMax;
 		public readonly Vector3 AngularLimitMin;
@@ -36,7 +35,6 @@ namespace SimulationObjectDefinition
 			Vector3 startErrorAxis2,
 			Quaternion relativeOrientation,
 			Vector3 axis1,
-			Vector3 axis2,
 			Vector3 linearLimitMin,
 			Vector3 linearLimitMax,
 			Vector3 angularLimitMin,
@@ -52,7 +50,6 @@ namespace SimulationObjectDefinition
 			this.StartErrorAxis2 = startErrorAxis2;
 			this.RelativeOrientation = relativeOrientation;
 			this.Axis1 = axis1;
-			this.Axis2 = axis2;
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
 			this.AngularLimitMin = angularLimitMin;
@@ -102,7 +99,6 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
-				              Vector3.ToZero (),
 				              Vector3.ToZero (),
 				              new Vector3 (),
 				              new Vector3 (),
@@ -161,7 +157,6 @@ namespace SimulationObjectDefinition
 				              distanceFromB,
 				              relativeOrientation,
 				              sliderAxis,
-				              new Vector3 (),
 				              linearLimitMinVec,
 				              linearLimitMaxVec,
 				              new Vector3 (),
@@ -201,20 +196,19 @@ namespace SimulationObjectDefinition
 				(anchorPosition - objectB.Position);
 
 			Joint joint = new Joint (
-				K,
-				C,
-				JointType.BallAndSocket,
-				startAnchorPosition,
-				anchorPosition,
-				distanceFromA,
-				distanceFromB,
-				new Quaternion(),
-				Vector3.ToZero (),
-				Vector3.ToZero (),
-				new Vector3 (),
-				new Vector3 (),
-				new Vector3 (),
-				new Vector3 ());
+				              K,
+				              C,
+				              JointType.BallAndSocket,
+				              startAnchorPosition,
+				              anchorPosition,
+				              distanceFromA,
+				              distanceFromB,
+				              new Quaternion (),
+				              Vector3.ToZero (),
+				              new Vector3 (),
+				              new Vector3 (),
+				              new Vector3 (),
+				              new Vector3 ());
 
 			return joint;
 		}
@@ -271,7 +265,6 @@ namespace SimulationObjectDefinition
 				              new Vector3 (),
 				              relativeOrientation,
 				              pistonAxis,
-				              new Vector3 (),
 				              linearLimitMinVec,
 				              linearLimitMaxVec,
 				              angularLimitMinVec,
@@ -336,16 +329,16 @@ namespace SimulationObjectDefinition
 				              hingeAxis,
 				              new Vector3 (),
 				              new Vector3 (),
-				              new Vector3 (),
 				              angularLimitMinVec,
 				              angularLimitMaxVec);
 
 			return joint;
 		}
 
-		public static Joint SetHinge2Joint(
+		public static Joint[] SetHinge2Joint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			SimulationObject connector,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
 			double K,
@@ -354,6 +347,8 @@ namespace SimulationObjectDefinition
 			double angularLimitMax = 0.0,
 			Vector3 startAnchorPosition = new Vector3 ())
 		{
+			Joint[] hinge2 = new Joint[2];
+
 			if (startAnchorPosition.Length () == 0.0)
 				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
 
@@ -377,23 +372,37 @@ namespace SimulationObjectDefinition
 			Vector3 angularLimitMinVec = hingeAxis * angularLimitMin;
 			Vector3 angularLimitMaxVec = hingeAxis * angularLimitMax;
 
-			Joint joint = new Joint (
+			hinge2[0] = new Joint (
 				K,
 				C,
-				JointType.Hinge2,
+				JointType.Hinge,
 				startAnchorPosition,
 				anchorPosition,
 				distanceFromA,
 				distanceFromB,
 				relativeOrientation,
 				hingeAxis,
-				rotationAxis,
 				new Vector3 (),
 				new Vector3 (),
 				angularLimitMinVec,
 				angularLimitMaxVec);
 
-			return joint;
+			hinge2 [1] = new Joint (
+				K,
+				C,
+				JointType.Hinge,
+				startAnchorPosition,
+				anchorPosition,
+				distanceFromA,
+				distanceFromB,
+				relativeOrientation,
+				rotationAxis,
+				new Vector3 (),
+				new Vector3 (),
+				new Vector3 (),
+				new Vector3 ());
+
+			return hinge2;
 		}
 
 		public static Joint Set6DOFJoint(
@@ -433,7 +442,6 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
-				              new Vector3 (),
 				              new Vector3 (),
 				              linearLimitMin,
 				              linearLimitMax,

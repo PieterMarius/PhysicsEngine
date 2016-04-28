@@ -71,8 +71,8 @@ namespace TestPhysics
 
 
 			//LoadObject loadObject = new LoadObject ("startJoint.xml");
-			//LoadObject loadObject = new LoadObject ("configJoint.xml");
-			LoadObject loadObject = new LoadObject ("startConfig.xml");
+			LoadObject loadObject = new LoadObject ("configJoint.xml");
+			//LoadObject loadObject = new LoadObject ("startConfig.xml");
 			//LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 			simulationObjects = loadObject.LoadSimulationObjects ();
@@ -362,59 +362,63 @@ namespace TestPhysics
 
 		private void SetOpenGLObjectMatrix(int id)
 		{
-			GL.PushMatrix ();
-			GL.Enable(EnableCap.Texture2D);
-
 			// TODO parte da modificare
 			//Matrice da utilizzare come costante
 			PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = this.physicsEngine.GetObject (id).RotationMatrix;
 			PhysicsEngineMathUtility.Vector3 position = this.physicsEngine.GetObject (id).Position;
+			ObjectType type = this.physicsEngine.GetObject (id).ObjectType;
 
-			Matrix4 positionMatrix = new Matrix4 (
-				                         Convert.ToSingle (rotatioMatrix.r1c1), 
-				                         Convert.ToSingle (rotatioMatrix.r2c1), 
-				                         Convert.ToSingle (rotatioMatrix.r3c1),
-				                         0.0f,
+			if (type != ObjectType.JointConnector) {
 
-				                         Convert.ToSingle (rotatioMatrix.r1c2), 
-				                         Convert.ToSingle (rotatioMatrix.r2c2), 
-				                         Convert.ToSingle (rotatioMatrix.r3c2),
-				                         0.0f,
+				GL.PushMatrix ();
+				GL.Enable (EnableCap.Texture2D);
 
-				                         Convert.ToSingle (rotatioMatrix.r1c3), 
-				                         Convert.ToSingle (rotatioMatrix.r2c3), 
-				                         Convert.ToSingle (rotatioMatrix.r3c3),
-				                         0.0f,
+				Matrix4 positionMatrix = new Matrix4 (
+					                        Convert.ToSingle (rotatioMatrix.r1c1), 
+					                        Convert.ToSingle (rotatioMatrix.r2c1), 
+					                        Convert.ToSingle (rotatioMatrix.r3c1),
+					                        0.0f,
 
-				                         Convert.ToSingle (position.x), 
-				                         Convert.ToSingle (position.y), 
-				                         Convert.ToSingle (position.z),
-				                         1.0f);
+					                        Convert.ToSingle (rotatioMatrix.r1c2), 
+					                        Convert.ToSingle (rotatioMatrix.r2c2), 
+					                        Convert.ToSingle (rotatioMatrix.r3c2),
+					                        0.0f,
+
+					                        Convert.ToSingle (rotatioMatrix.r1c3), 
+					                        Convert.ToSingle (rotatioMatrix.r2c3), 
+					                        Convert.ToSingle (rotatioMatrix.r3c3),
+					                        0.0f,
+
+					                        Convert.ToSingle (position.x), 
+					                        Convert.ToSingle (position.y), 
+					                        Convert.ToSingle (position.z),
+					                        1.0f);
 			
-			Matrix4 mView = positionMatrix;
+				Matrix4 mView = positionMatrix;
 
-			float[] dmviewData = new float[] {
-				mView.M11, mView.M12, mView.M13, mView.M14,
-				mView.M21, mView.M22, mView.M23, mView.M24,
-				mView.M31, mView.M32, mView.M33, mView.M34,
-				mView.M41, mView.M42, mView.M43, mView.M44
-			};
+				float[] dmviewData = new float[] {
+					mView.M11, mView.M12, mView.M13, mView.M14,
+					mView.M21, mView.M22, mView.M23, mView.M24,
+					mView.M31, mView.M32, mView.M33, mView.M34,
+					mView.M41, mView.M42, mView.M43, mView.M44
+				};
 
-			//Fine parte da modificare
-			GL.MultMatrix (dmviewData);
+				//Fine parte da modificare
+				GL.MultMatrix (dmviewData);
 
-			//Inserire il textire ID
-			if (id == selectedObjIndex)
-				GL.BindTexture (TextureTarget.Texture2D, redTexture);
-			else
-				GL.BindTexture (TextureTarget.Texture2D, textureID[id]);
+				//Inserire il textire ID
+				if (id == selectedObjIndex)
+					GL.BindTexture (TextureTarget.Texture2D, redTexture);
+				else
+					GL.BindTexture (TextureTarget.Texture2D, textureID [id]);
 			
-			GL.CallList (displayList [id]);
-			GL.Disable(EnableCap.Texture2D);
+				GL.CallList (displayList [id]);
+				GL.Disable (EnableCap.Texture2D);
 
 
 	
-			GL.PopMatrix();
+				GL.PopMatrix ();
+			}
 		}
 
 		private void displayContact()

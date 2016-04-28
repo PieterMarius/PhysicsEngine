@@ -29,7 +29,8 @@ namespace CollisionEngine
 				i => {
 					for (int j = i + 1; j < boxs.Length; j++) {
 
-						if (testAABBAABB (boxs [i], boxs [j], 0) &&
+						if (boxs[i] != null && boxs[j] != null &&
+							testAABBAABB (boxs [i], boxs [j], 0) &&
 							testAABBAABB (boxs [i], boxs [j], 1) &&
 							testAABBAABB (boxs [i], boxs [j], 2)) 
 						{

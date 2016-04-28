@@ -9,6 +9,11 @@ namespace MonoPhysicsEngine
 {
 	public class JacobianConstraintBuilder: IJacobianConstraintBuilder
 	{
+		#region Private Fields
+
+		private const Double tolerance = 1E-30;
+
+		#endregion
 
 		#region Constructor
 
@@ -83,15 +88,6 @@ namespace MonoPhysicsEngine
 					case JointType.Hinge:
 						constraint.AddRange (
 							this.BuildHingeJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Hinge2:
-						constraint.AddRange (
-							this.BuildHinge2Joint (
 								simJoint.IndexA,
 								simJoint.IndexB,
 								joint,
@@ -488,6 +484,7 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
+
 			// Limit extraction
 			double linearLimitMin = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMin);
 			double linearLimitMax = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMax);
@@ -878,137 +875,6 @@ namespace MonoPhysicsEngine
 			return hingeConstraints;
 		}
 
-		private List<JacobianContact> BuildHinge2Joint(
-			int indexA,
-			int indexB,
-			Joint simulationJoint,
-			SimulationObject[] simulationObjs)
-		{
-			List<JacobianContact> hinge2Constraints = new List<JacobianContact> ();
-
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
-
-			#region Init Linear
-
-			Vector3 t1 = simulationObjectA.RotationMatrix * simulationJoint.Axis1;
-			Vector3 t2 = simulationObjectA.RotationMatrix * simulationJoint.Axis1.Cross (simulationJoint.Axis2);
-
-			Vector3 t3 = simulationObjectB.RotationMatrix * simulationJoint.Axis1;
-
-//			double angle = getRotationAngle (
-//				simulationObjectA,
-//				simulationObjectB,
-//				new Vector3(1.0,0.0,0.0),
-//				simulationJoint);
-
-			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.StartErrorAxis1;
-
-			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.StartErrorAxis2;
-
-			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
-			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
-
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
-
-			Vector3 linearError = p2 - p1;
-
-			#endregion
-
-			#region Jacobian Constraint
-
-			double constraintLimit = simulationJoint.K * linearError.x;
-
-			//DOF 1
-
-			hinge2Constraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (1.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
-				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			//DOF 2
-
-			constraintLimit = simulationJoint.K * linearError.y;
-
-			hinge2Constraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 1.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
-				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			//DOF 3
-
-			constraintLimit = simulationJoint.K * linearError.z;
-
-			hinge2Constraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 0.0, 1.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
-				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			//DOF 4
-
-//			double angularLimit = simulationJoint.K *
-//				2.0 * rotationAxis.Dot (angularError);
-
-			hinge2Constraints.Add (this.addDOF (
-				indexA, 
-				indexB, 
-				new Vector3(), 
-				new Vector3(), 
-				t1, 
-				t3, 
-				simulationObjectA, 
-				simulationObjectB, 
-				0.0, 
-				0.0, 
-				ConstraintType.Joint));
-
-			//DOF 5
-
-			hinge2Constraints.Add (this.addDOF (
-				indexA, 
-				indexB, 
-				new Vector3(), 
-				new Vector3(), 
-				t2, 
-				t3, 
-				simulationObjectA, 
-				simulationObjectB, 
-				0.0, 
-				0.0, 
-				ConstraintType.Joint));
-
-			#endregion
-
-			return hinge2Constraints;
-		}
-
 		private List<JacobianContact> BuildGeneric6DOFJoint(
 			int indexA,
 			int indexB,
@@ -1045,7 +911,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (-1.0, 0.0, 0.0),
+					new Vector3 (1.0, 0.0, 0.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -1063,7 +929,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (0.0, -1.0, 0.0),
+					new Vector3 (0.0, 1.0, 0.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -1081,7 +947,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB,
-					new Vector3 (0.0, 0.0, -1.0),
+					new Vector3 (0.0, 0.0, 1.0),
 					r1, 
 					r2,
 					linearLimitMin,
@@ -1367,7 +1233,7 @@ namespace MonoPhysicsEngine
 
 			Console.WriteLine ("Slider distance: " + sliderDistance);
 
-			if (linearLimitMin == linearLimitMax) 
+			if (Math.Abs (linearLimitMin - linearLimitMax) < tolerance) 
 			{
 				Vector3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1) * sliderAxis;
 				Vector3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2) * sliderAxis;
@@ -1457,9 +1323,9 @@ namespace MonoPhysicsEngine
 				                       simulationObjectB,
 				                       simulationJoint);
 
-			Vector3 zeroVector = new Vector3 (0.0, 0.0, 0.0);
+			Vector3 zeroVector = new Vector3 ();
 
-			if (angularLimitMax == angularLimitMin) 
+			if (Math.Abs (angularLimitMax - angularLimitMin) < tolerance) 
 			{
 				double angularLimit = simulationJoint.K *
 				                      2.0 * rotationAxis.Dot (angularError);

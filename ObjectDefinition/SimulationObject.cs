@@ -62,6 +62,10 @@ namespace SimulationObjectDefinition
 		/// <value>The object geometry.</value>
 		public ObjectGeometry ObjectGeometry{ get; set; }
 
+		/// <summary>
+		/// Gets the type of the object.
+		/// </summary>
+		/// <value>The type of the object.</value>
 		public ObjectType ObjectType { get; private set; }
 
 
@@ -114,6 +118,11 @@ namespace SimulationObjectDefinition
 		/// </summary>
 		/// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
 		public bool ExcludeFromCollisionDetection{ get; private set; } 
+
+		#endregion
+
+		#region Constructor
+
 
 		#endregion
 

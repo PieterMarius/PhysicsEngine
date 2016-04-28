@@ -447,7 +447,8 @@ namespace MonoPhysicsEngine
 			this.collisionPoints = new List<CollisionPointStructure> ();
 
 			//Creo l'array contenente la geometria degli oggetti
-			this.objectsGeometry = Array.ConvertAll (this.simulationObjects, item => item.ObjectGeometry);
+			this.objectsGeometry = Array.ConvertAll (this.simulationObjects, 
+				item => (item.ExcludeFromCollisionDetection) ? null : item.ObjectGeometry);
 
 			Stopwatch stopwatch = new Stopwatch();
 
@@ -670,8 +671,6 @@ namespace MonoPhysicsEngine
 				                          (simulationObj [objectIndex].InertiaTensor *
 				                          angularImpuse);
 
-
-
 				simulationObj [objectIndex].SetLinearVelocity (linearVelocity);
 				simulationObj [objectIndex].SetAngularVelocity (angularVelocity);
 			}
@@ -749,8 +748,9 @@ namespace MonoPhysicsEngine
 
 					#region Update Object Vertex Position
 
-					if (linearVelocity > 0.0 ||
-					    angularVelocity > 0.0) 
+					if (simObj.ObjectGeometry != null &&
+						(linearVelocity > 0.0 ||
+						angularVelocity > 0.0)) 
 					{
 						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++) 
 						{
@@ -803,21 +803,20 @@ namespace MonoPhysicsEngine
 					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
 												this.simulationObjects [indexA].Position;
 
-					joint[j] = new Joint (
-						                 simulationJoints [i].JointList [j].K,
-						                 simulationJoints [i].JointList [j].C,
-						                 simulationJoints [i].JointList [j].Type,
-						                 simulationJoints [i].JointList [j].StartAnchorPoint,
-						                 relativeAnchorPosition,
-						                 simulationJoints [i].JointList [j].StartErrorAxis1,
-						                 simulationJoints [i].JointList [j].StartErrorAxis2,
-						                 simulationJoints [i].JointList [j].RelativeOrientation,
-						                 simulationJoints [i].JointList [j].Axis1,
-						                 simulationJoints [i].JointList [j].Axis2,
-						                 simulationJoints [i].JointList [j].LinearLimitMin,
-						                 simulationJoints [i].JointList [j].LinearLimitMax,
-						                 simulationJoints [i].JointList [j].AngularLimitMin,
-						                 simulationJoints [i].JointList [j].AngularLimitMax);
+					joint [j] = new Joint (
+						simulationJoints [i].JointList [j].K,
+						simulationJoints [i].JointList [j].C,
+						simulationJoints [i].JointList [j].Type,
+						simulationJoints [i].JointList [j].StartAnchorPoint,
+						relativeAnchorPosition,
+						simulationJoints [i].JointList [j].StartErrorAxis1,
+						simulationJoints [i].JointList [j].StartErrorAxis2,
+						simulationJoints [i].JointList [j].RelativeOrientation,
+						simulationJoints [i].JointList [j].Axis1,
+						simulationJoints [i].JointList [j].LinearLimitMin,
+						simulationJoints [i].JointList [j].LinearLimitMax,
+						simulationJoints [i].JointList [j].AngularLimitMin,
+						simulationJoints [i].JointList [j].AngularLimitMax);
 				}
 
 				simulationJoints [i] = new SimulationJoint (
