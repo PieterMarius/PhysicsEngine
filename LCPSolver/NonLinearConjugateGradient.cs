@@ -23,7 +23,8 @@ namespace LCPSolver
 				                                          1,
 				                                          1E-20,
 				                                          this.solverParameters.SOR,
-														  this.solverParameters.MaxThreadNumber);
+				                                          this.solverParameters.MaxThreadNumber,
+				                                          0.007);
 			
 			this.gaussSeidelSolver = new GaussSeidel(gaussSeidelSolverParam);
         }

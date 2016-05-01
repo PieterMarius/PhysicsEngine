@@ -26,19 +26,19 @@
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <ObjectType>1</ObjectType>
+            <Mass>1000,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
-            <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Scale>2,0</Scale>
+            <ObjectGeometry>cube1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
        <Object>
-            <Position x="-5,0" y="5,6" z="0,0" />
-            <LinearVelocity x="0,0" y="4,0" z="0,0" />
+            <Position x="-5,0" y="5,6" z="-1,5" />
+            <LinearVelocity x="0,0" y="4,0" z="-2,0" />
             <AngularVelocity x="3,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -48,12 +48,12 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
-            <Position x="-5,0" y="5,6" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="3,0" />
+            <Position x="-4,0" y="5,6" z="-1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>2</ObjectType>
@@ -62,7 +62,7 @@
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>true</ExludeFromCollisionDetection>
-            <Scale>1,0</Scale>
+            <Scale>0,2</Scale>
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
@@ -89,89 +89,33 @@
     
     <JointsSettings>
 	
-    <!-- Hinge Joint -->
-	<!--
-    <Joint>
-        <ObjectIndexA>0</ObjectIndexA>
-        <ObjectIndexB>1</ObjectIndexB>
-        <JointProperties>
-            <Position x="-2,0" y="0,5" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-		<JointProperties>
-            <Position x="-2,0" y="-0,5" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-    </Joint>
-	-->
-	
-	<!-- Rigid Joint -->
-	<!--
-	<Joint>
-        <ObjectIndexA>0</ObjectIndexA>
-        <ObjectIndexB>1</ObjectIndexB>
-        <JointProperties>
-            <Position x="-1,3" y="0,0" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-		<JointProperties>
-            <Position x="-2,6" y="0,0" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-		<JointProperties>
-            <Position x="-2,0" y="0,5" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-		<JointProperties>
-            <Position x="-2,0" y="-0,5" z="0,0" />
-            <Axis1 x="1,0" y="0,0" z="0,0" />
-            <Axis2 x="0,0" y="1,0" z="0,0" />
-            <Axis3 x="0,0" y="0,0" z="1,0" />
-            <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
-        </JointProperties>
-    </Joint>
-	-->
-	
-	<!-- Slider Joint -->
+    
 	<Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>2</ObjectIndexB>
         <JointProperties>
-            <Position x="-3,0" y="0,0" z="0,0" />
+            <JointType>4</JointType>
+            <Position x="-3,0" y="0,0" z="-1,5" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-1,57079632679</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
         </JointProperties>
 		
         
 	</Joint>
 	<Joint>
-        <ObjectIndexA>1</ObjectIndexA>
-        <ObjectIndexB>2</ObjectIndexB>
+        <ObjectIndexA>2</ObjectIndexA>
+        <ObjectIndexB>1</ObjectIndexB>
         <JointProperties>
-            <Position x="-3,0" y="0,0" z="0,0" />
+            <JointType>4</JointType>
+            <Position x="0,0" y="0,0" z="0,0" />
+            <ActionAxis x="1,0" y="0,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>0.0</AngularLimitMin>
+            <AngularLimitMax>0,0</AngularLimitMax>
         </JointProperties>
 	</Joint>
     </JointsSettings>

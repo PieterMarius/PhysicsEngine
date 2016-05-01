@@ -167,7 +167,10 @@ namespace MonoPhysicsEngine
 
 					#region Normal direction contact
 
-					double correctionParameter = collisionPointStr.IntersectionDistance * simulationParameters.BaumStabilization;
+					double correctionParameter = (collisionPointStr.Intersection) ? 
+						collisionPointStr.ObjectDistance * simulationParameters.BaumStabilization :
+						0.0;
+					
 					double correctedBounce = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
 
 					JacobianContact normalContact = this.addDOF (
@@ -367,8 +370,8 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.Axis1);
-			Vector3 t2 = Vector3.Cross (simulationJoint.Axis1, t1);
+			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.JointActDirection);
+			Vector3 t2 = Vector3.Cross (simulationJoint.JointActDirection, t1);
 
 			t1 = simulationObjectA.RotationMatrix * t1;
 			t2 = simulationObjectA.RotationMatrix * t2;
@@ -486,8 +489,8 @@ namespace MonoPhysicsEngine
 
 
 			// Limit extraction
-			double linearLimitMin = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMin);
-			double linearLimitMax = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMax);
+			double linearLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.LinearLimitMin);
+			double linearLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.LinearLimitMax);
 
 			sliderConstraints.Add (
 				addLinearLimit(
@@ -496,7 +499,7 @@ namespace MonoPhysicsEngine
 				simulationJoint,
 				simulationObjectA,
 				simulationObjectB,
-				simulationJoint.Axis1,
+				simulationJoint.JointActDirection,
 				r1,
 				r2,
 				linearLimitMin,
@@ -609,8 +612,8 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.Axis1);
-			Vector3 t2 = Vector3.Cross (simulationJoint.Axis1, t1);
+			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.JointActDirection);
+			Vector3 t2 = Vector3.Cross (simulationJoint.JointActDirection, t1);
 
 			t1 = simulationObjectA.RotationMatrix * t1;
 			t2 = simulationObjectA.RotationMatrix * t2;
@@ -695,8 +698,8 @@ namespace MonoPhysicsEngine
 			#region Limit Constraints 
 
 			// Limit extraction
-			double linearLimitMin = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMin);
-			double linearLimitMax = simulationJoint.Axis1.Dot (simulationJoint.LinearLimitMax);
+			double linearLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.LinearLimitMin);
+			double linearLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.LinearLimitMax);
 
 			pistonConstraints.Add (
 				addLinearLimit(
@@ -705,17 +708,17 @@ namespace MonoPhysicsEngine
 					simulationJoint,
 					simulationObjectA,
 					simulationObjectB,
-					simulationJoint.Axis1,
+					simulationJoint.JointActDirection,
 					r1,
 					r2,
 					linearLimitMin,
 					linearLimitMax));
 
 			// Limit extraction
-			double angularLimitMin = simulationJoint.Axis1.Dot (simulationJoint.AngularLimitMin);
-			double angularLimitMax = simulationJoint.Axis1.Dot (simulationJoint.AngularLimitMax);
+			double angularLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMin);
+			double angularLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMax);
 
-			Vector3 axisRotated = simulationObjectA.RotationMatrix * simulationJoint.Axis1;
+			Vector3 axisRotated = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection;
 
 			pistonConstraints.AddRange(
 				addAngularLimit (
@@ -748,8 +751,8 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.Axis1);
-			Vector3 t2 = Vector3.Cross (simulationJoint.Axis1, t1);
+			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.JointActDirection);
+			Vector3 t2 = Vector3.Cross (simulationJoint.JointActDirection, t1);
 
 			t1 = simulationObjectA.RotationMatrix * t1;
 			t2 = simulationObjectA.RotationMatrix * t2;
@@ -851,22 +854,25 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			//Limit extraction
-			double angularLimitMax = simulationJoint.Axis1.Dot (simulationJoint.AngularLimitMax);
-			double angularLimitMin = simulationJoint.Axis1.Dot (simulationJoint.AngularLimitMin);
+			if (simulationJoint.AngularLimitMax != simulationJoint.AngularLimitMin)
+			{
+				//Limit extraction
+				double angularLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMax);
+				double angularLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMin);
 
-			Vector3 axisRotated = simulationObjectA.RotationMatrix * simulationJoint.Axis1;
+				Vector3 axisRotated = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection;
 
-			hingeConstraints.AddRange(
-				addAngularLimit (
-					indexA, 
-					indexB, 
-					simulationJoint, 
-					simulationObjectA, 
-					simulationObjectB, 
-					axisRotated,
-					angularLimitMin,
-					angularLimitMax));
+				hingeConstraints.AddRange(
+					addAngularLimit (
+						indexA, 
+						indexB, 
+						simulationJoint, 
+						simulationObjectA, 
+						simulationObjectB, 
+						axisRotated,
+						angularLimitMin,
+						angularLimitMax));
+			}
 
 			#endregion
 
@@ -1312,12 +1318,6 @@ namespace MonoPhysicsEngine
 		{
 			List<JacobianContact> genericAngular = new List<JacobianContact> ();
 
-			double angle = this.getRotationAngle (
-				               simulationObjectA, 
-				               simulationObjectB, 
-				               rotationAxis, 
-				               simulationJoint);
-
 			Vector3 angularError = this.getFixedAngularError (
 				                       simulationObjectA,
 				                       simulationObjectB,
@@ -1325,10 +1325,10 @@ namespace MonoPhysicsEngine
 
 			Vector3 zeroVector = new Vector3 ();
 
-			if (Math.Abs (angularLimitMax - angularLimitMin) < tolerance) 
-			{
+			if (Math.Abs (angularLimitMax - angularLimitMin) < tolerance) {
+				
 				double angularLimit = simulationJoint.K *
-				                      2.0 * rotationAxis.Dot (angularError);
+				                      rotationAxis.Dot (angularError);
 
 				genericAngular.Add (this.addDOF (
 					indexA, 
@@ -1342,43 +1342,51 @@ namespace MonoPhysicsEngine
 					angularLimit, 
 					angularLimit, 
 					ConstraintType.Joint));
-			} 
-			else if (angle > angularLimitMax) 
-			{
 				
-				double angularLimit = simulationJoint.K *
-				                      (angle - angularLimitMax);
+			} else {
 
-				genericAngular.Add (this.addDOF (
-					indexA, 
-					indexB, 
-					zeroVector, 
-					zeroVector, 
-					rotationAxis, 
-					-1.0 * rotationAxis, 
+				double angle = this.getRotationAngle (
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
-					angularLimit, 
-					ConstraintType.JointLimit));
-			}
-			else if (angle < angularLimitMin) 
-			{
-				double angularLimit = simulationJoint.K *
-				                      (angularLimitMin - angle);
-
-				genericAngular.Add (this.addDOF (
-					indexA, 
-					indexB, 
-					zeroVector, 
-					zeroVector, 
-					-1.0 * rotationAxis, 
 					rotationAxis, 
-					simulationObjectA, 
-					simulationObjectB, 
-					angularLimit, 
-					angularLimit, 
-					ConstraintType.JointLimit));
+					simulationJoint);
+
+				if (angle > angularLimitMax) {
+				
+					double angularLimit = simulationJoint.K *
+					                     (angle - angularLimitMax);
+
+					genericAngular.Add (this.addDOF (
+						indexA, 
+						indexB, 
+						zeroVector, 
+						zeroVector, 
+						rotationAxis, 
+						-1.0 * rotationAxis, 
+						simulationObjectA, 
+						simulationObjectB, 
+						angularLimit, 
+						angularLimit, 
+						ConstraintType.JointLimit));
+					
+				} else if (angle < angularLimitMin) {
+					
+					double angularLimit = simulationJoint.K *
+					                     (angularLimitMin - angle);
+
+					genericAngular.Add (this.addDOF (
+						indexA, 
+						indexB, 
+						zeroVector, 
+						zeroVector, 
+						-1.0 * rotationAxis, 
+						rotationAxis, 
+						simulationObjectA, 
+						simulationObjectB, 
+						angularLimit, 
+						angularLimit, 
+						ConstraintType.JointLimit));
+				}
 			}
 
 			return genericAngular;

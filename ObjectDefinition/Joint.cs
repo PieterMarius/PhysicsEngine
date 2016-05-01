@@ -15,7 +15,7 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 StartErrorAxis1;
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
-		public readonly Vector3 Axis1;
+		public readonly Vector3 JointActDirection;
 		public readonly Vector3 LinearLimitMin;
 		public readonly Vector3 LinearLimitMax;
 		public readonly Vector3 AngularLimitMin;
@@ -34,7 +34,7 @@ namespace SimulationObjectDefinition
 			Vector3 startErrorAxis1,
 			Vector3 startErrorAxis2,
 			Quaternion relativeOrientation,
-			Vector3 axis1,
+			Vector3 jointActDirection,
 			Vector3 linearLimitMin,
 			Vector3 linearLimitMax,
 			Vector3 angularLimitMin,
@@ -49,7 +49,7 @@ namespace SimulationObjectDefinition
 			this.StartErrorAxis1 = startErrorAxis1;
 			this.StartErrorAxis2 = startErrorAxis2;
 			this.RelativeOrientation = relativeOrientation;
-			this.Axis1 = axis1;
+			this.JointActDirection = jointActDirection;
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
 			this.AngularLimitMin = angularLimitMin;
@@ -177,13 +177,10 @@ namespace SimulationObjectDefinition
 		public static Joint SetBallSocketJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 startAnchorPosition,
 			double K,
-			double C,
-			Vector3 startAnchorPosition = new Vector3 ())
+			double C)
 		{
-			if (startAnchorPosition.Length () == 0.0)
-				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
-
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
@@ -228,6 +225,8 @@ namespace SimulationObjectDefinition
 		public static Joint SetPistonJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 pistonAxis,
 			double K,
 			double C,
 			double linearLimitMin = 0.0,
@@ -235,10 +234,7 @@ namespace SimulationObjectDefinition
 			double angularLimitMin = double.MinValue,
 			double angularLimitMax = double.MaxValue)
 		{
-			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
-
-			Vector3 pistonAxis = -1.0 * startAnchorPosition.Normalize ();
-
+			
 			Vector3 relativePos = objectA.RotationMatrix *
 			                      (startAnchorPosition - objectA.StartPosition);
 
@@ -288,15 +284,13 @@ namespace SimulationObjectDefinition
 		public static Joint SetHingeJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			double K,
 			double C,
 			double angularLimitMin = 0.0,
-			double angularLimitMax = 0.0,
-			Vector3 startAnchorPosition = new Vector3 ())
+			double angularLimitMax = 0.0)
 		{
-			if (startAnchorPosition.Length () == 0.0)
-				startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -314,8 +308,13 @@ namespace SimulationObjectDefinition
 
 			hingeAxis = hingeAxis.Normalize ();
 
-			Vector3 angularLimitMinVec = hingeAxis * angularLimitMin;
-			Vector3 angularLimitMaxVec = hingeAxis * angularLimitMax;
+			Vector3 angularLimitMinVec = new Vector3 ();
+			Vector3 angularLimitMaxVec = new Vector3 ();
+
+			if (angularLimitMin != angularLimitMax) {
+				angularLimitMinVec = hingeAxis * angularLimitMin;
+				angularLimitMaxVec = hingeAxis * angularLimitMax;
+			}
 
 			Joint joint = new Joint (
 				              K,

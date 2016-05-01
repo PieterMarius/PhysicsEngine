@@ -8,13 +8,6 @@ namespace MonoPhysicsEngine
 	public class ContactPartitioningEngine: IContactPartitioningEngine
 	{
 
-		#region Constructor
-
-		public ContactPartitioningEngine ()
-		{}
-
-		#endregion
-
 		#region Public Methods
 
 		public List<SpatialPartition> calculateSpatialPartitioning(

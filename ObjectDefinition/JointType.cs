@@ -4,13 +4,12 @@ namespace SimulationObjectDefinition
 {
 	public enum JointType
 	{
-		BallAndSocket,
-		Hinge,
-		Slider,
-		ConeTwist,
-		Generic6DOF,
-		Fixed,
-		Piston,
+		Fixed  = 0,
+		BallAndSocket = 1,
+		Slider = 2,
+		Piston = 3,
+		Hinge = 4,
+		Generic6DOF  = 5,
 	}
 }
 

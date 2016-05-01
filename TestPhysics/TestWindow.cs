@@ -368,7 +368,7 @@ namespace TestPhysics
 			PhysicsEngineMathUtility.Vector3 position = this.physicsEngine.GetObject (id).Position;
 			ObjectType type = this.physicsEngine.GetObject (id).ObjectType;
 
-			if (type != ObjectType.JointConnector) {
+			//if (type != ObjectType.JointConnector) {
 
 				GL.PushMatrix ();
 				GL.Enable (EnableCap.Texture2D);
@@ -418,7 +418,7 @@ namespace TestPhysics
 
 	
 				GL.PopMatrix ();
-			}
+			//}
 		}
 
 		private void displayContact()

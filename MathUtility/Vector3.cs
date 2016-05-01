@@ -148,9 +148,9 @@ namespace PhysicsEngineMathUtility
 		public static bool operator!=(Vector3 a, Vector3 b)
 		{
 			if (!(a == b))
-				return false;
+				return true;
 			
-			return true;
+			return false;
 		}
 
 		public static bool operator<(Vector3 a, Vector3 b)

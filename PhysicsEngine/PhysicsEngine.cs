@@ -812,7 +812,7 @@ namespace MonoPhysicsEngine
 						simulationJoints [i].JointList [j].StartErrorAxis1,
 						simulationJoints [i].JointList [j].StartErrorAxis2,
 						simulationJoints [i].JointList [j].RelativeOrientation,
-						simulationJoints [i].JointList [j].Axis1,
+						simulationJoints [i].JointList [j].JointActDirection,
 						simulationJoints [i].JointList [j].LinearLimitMin,
 						simulationJoints [i].JointList [j].LinearLimitMax,
 						simulationJoints [i].JointList [j].AngularLimitMin,

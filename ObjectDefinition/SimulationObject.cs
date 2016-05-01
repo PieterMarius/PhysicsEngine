@@ -151,9 +151,7 @@ namespace SimulationObjectDefinition
 
 		public void SetRelativePositions(Vector3[] inputRelativePositions)
 		{
-			for (int i = 0; i < inputRelativePositions.Length; i++) {
-				this.RelativePositions [i] = inputRelativePositions [i];
-			}
+			Array.Copy (inputRelativePositions, this.RelativePositions, inputRelativePositions.Length);
 		}
 
 		public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)

@@ -43,6 +43,8 @@ namespace CollisionEngine
 
 		#endregion
 
+		#region Public Methods
+
 		#region Interface ICollisionEngine
 
 		/// <summary>
@@ -81,8 +83,6 @@ namespace CollisionEngine
 
 		#endregion
 
-		#region Public Methods
-
 		#endregion
 
 		#region Private Methods
@@ -115,9 +115,8 @@ namespace CollisionEngine
 				return new CollisionPointStructure (
 					indexA,
 					indexB,
-					gjkOutput.CollisionDistance,
 					gjkOutput.Intersection,
-					0.0,
+					gjkOutput.CollisionDistance,
 					gjkOutput.CollisionPoint,
 					collisionPointsList.ToArray ());
 			} 
@@ -149,7 +148,6 @@ namespace CollisionEngine
 				return new CollisionPointStructure (
 					indexA,
 					indexB,
-					-1.0,
 					gjkOutput.Intersection,
 					epaOutput.CompenetrationDistance,
 					epaOutput.CollisionPoint,

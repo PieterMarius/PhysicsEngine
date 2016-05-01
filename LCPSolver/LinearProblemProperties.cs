@@ -66,11 +66,7 @@ namespace LCPSolver
 
 		public void SetStartValue(double[] X)
 		{
-			this.StartX = new double[this.Count];
-			for (int i = 0; i < X.Length; i++)
-			{
-				this.StartX[i] = X[i];
-			}
+			Array.Copy (X, this.StartX, X.Length);
 		}
 
 		#endregion

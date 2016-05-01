@@ -13,13 +13,10 @@ namespace CollisionEngine
 		public readonly int ObjectB;
 
 		//Distanza tra gli oggetti che stanno collidendo
-		public readonly double CollisionDistance;
+		public readonly double ObjectDistance;
 
 		//indica se c'è o meno intersezione tra gli oggetti
 		public readonly bool Intersection;
-
-		//Distanza di compenetrazione
-		public readonly double IntersectionDistance;
 
 		//punto di collisione
 		public readonly CollisionPoint CollisionPoint;
@@ -34,17 +31,15 @@ namespace CollisionEngine
 		public CollisionPointStructure (
 			int objectA,
 			int objectB,
-			double collisionDistance,
 			bool intersection,
-			double intersectionDistance,
+			double objectDistance,
 			CollisionPoint collisionPoint,
 			CollisionPoint[] collisionPoints)
 		{
 			this.ObjectA = objectA;
 			this.ObjectB = objectB;
-			this.CollisionDistance = collisionDistance;
+			this.ObjectDistance = objectDistance;
 			this.Intersection = intersection;
-			this.IntersectionDistance = intersectionDistance;
 			this.CollisionPoint = collisionPoint;
 			this.CollisionPoints = collisionPoints;
 		}
