@@ -714,6 +714,7 @@ namespace MonoPhysicsEngine
 					linearLimitMin,
 					linearLimitMax));
 
+
 			// Limit extraction
 			double angularLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMin);
 			double angularLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMax);
@@ -730,6 +731,7 @@ namespace MonoPhysicsEngine
 					axisRotated,
 					angularLimitMin,
 					angularLimitMax));
+			
 
 			#endregion
 
@@ -1241,29 +1243,27 @@ namespace MonoPhysicsEngine
 
 			if (Math.Abs (linearLimitMin - linearLimitMax) < tolerance) 
 			{
-				Vector3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1) * sliderAxis;
-				Vector3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2) * sliderAxis;
+				Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
 
-				Vector3 p1 = simulationObjectA.Position + r1;
-				Vector3 p2 = simulationObjectB.Position + r2;
-
-				Vector3 linearError = p2 - p1;
+				Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
 
 				double linearLimit = simulationJoint.K *
-				                     sliderAxis.Dot (linearError);
+					sliderAxis.Dot (linearError);
 
 				return this.addDOF (
 					indexA,
 					indexB,
 					sliderAxis,
 					-1.0 * sliderAxis,
-					skewP1,
-					-1.0 * skewP2,
+					Vector3.Cross (r1, sliderAxis),
+					-1.0 * Vector3.Cross (r2, sliderAxis),
 					simulationObjectA,
 					simulationObjectB,
 					linearLimit,
 					linearLimit,
 					ConstraintType.Joint);
+				
+
 			}
 			else if (sliderDistance < linearLimitMin) 
 			{

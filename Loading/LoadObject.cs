@@ -226,6 +226,15 @@ namespace Loading
 
 				for (int j = 0; j < jointPropertiesList.Count; j++) {
 
+					//Joint type
+					JointType jointType = (JointType)Convert.ToInt32 (jointPropertiesList [j] [this.jointType].InnerText);
+
+					//Restore coefficient
+					double K = Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText);
+
+					//Stretch coefficient
+					double C = Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText);
+
 					//Position
 					Vector3 startAnchorPosition = new Vector3 (
 						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
@@ -237,12 +246,6 @@ namespace Loading
 						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["x"].Value),
 						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["y"].Value),
 						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["z"].Value));
-
-					//Joint type
-					JointType jointType = (JointType)Convert.ToInt32 (jointPropertiesList [j] [this.jointType].InnerText);
-
-					double K = Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText);
-					double C = Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText);
 
 					switch (jointType) 
 					{
@@ -267,6 +270,7 @@ namespace Loading
 						joint [j] = Joint.SetSliderJoint (
 							objects [indexA],
 							objects [indexB],
+							actionAxis,
 							K,
 							C,
 							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
@@ -277,7 +281,6 @@ namespace Loading
 						joint [j] = Joint.SetPistonJoint (
 							objects [indexA],
 							objects [indexB],
-							startAnchorPosition,
 							actionAxis,
 							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
@@ -295,8 +298,8 @@ namespace Loading
 							actionAxis,
 							K,
 							C,
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 						break;
 
 						default:

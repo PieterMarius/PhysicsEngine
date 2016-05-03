@@ -121,6 +121,7 @@ namespace SimulationObjectDefinition
 		public static Joint SetSliderJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 sliderAxis,
 			double K,
 			double C,
 			double linearLimitMin = 0.0,
@@ -128,18 +129,14 @@ namespace SimulationObjectDefinition
 		{
 			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
 
-			Vector3 sliderAxis = -1.0 * startAnchorPosition.Normalize ();
+			sliderAxis = -1.0 * sliderAxis.Normalize ();
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
-			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-				(anchorPosition - objectA.Position);
-
-			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-				(anchorPosition - objectB.Position);
+			Vector3 startErrorAxis = objectB.Position - objectA.Position;
 
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
 				objectB.RotationStatus;
@@ -153,8 +150,8 @@ namespace SimulationObjectDefinition
 				              JointType.Slider,
 				              startAnchorPosition,
 				              anchorPosition,
-				              distanceFromA,
-				              distanceFromB,
+				              startErrorAxis,
+				              new Vector3 (),
 				              relativeOrientation,
 				              sliderAxis,
 				              linearLimitMinVec,
@@ -225,16 +222,19 @@ namespace SimulationObjectDefinition
 		public static Joint SetPistonJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
-			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
 			double C,
 			double linearLimitMin = 0.0,
 			double linearLimitMax = 0.0,
-			double angularLimitMin = double.MinValue,
-			double angularLimitMax = double.MaxValue)
+			double angularLimitMin = 0.0,
+			double angularLimitMax = 0.0)
 		{
-			
+
+			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
+
+			pistonAxis = -1.0 * pistonAxis.Normalize ();
+
 			Vector3 relativePos = objectA.RotationMatrix *
 			                      (startAnchorPosition - objectA.StartPosition);
 
@@ -242,7 +242,7 @@ namespace SimulationObjectDefinition
 
 			Vector3 startErrorAxis = objectB.Position - objectA.Position;
 
-			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
+			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
 			                                 objectB.RotationStatus;
 
 			Vector3 linearLimitMinVec = pistonAxis * linearLimitMin;
