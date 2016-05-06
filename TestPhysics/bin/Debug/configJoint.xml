@@ -84,9 +84,9 @@
         </Object>     
         
         <Object>
-            <Position x="5,0" y="5,6" z="2,0" />
-            <LinearVelocity x="-2,5" y="4,0" z="2,0" />
-            <AngularVelocity x="2,0" y="0,0" z="1,0" />
+            <Position x="5,0" y="5,6" z="1,5" />
+            <LinearVelocity x="-2,0" y="1,0" z="1,0" />
+            <AngularVelocity x="3,0" y="0,0" z="1,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>1,0</Mass>
@@ -168,14 +168,14 @@
         <ObjectIndexB>4</ObjectIndexB>
         <JointProperties>
             <JointType>3</JointType>
-            <Position x="3,0" y="0,0" z="-1,5" />
+            <Position x="3,0" y="0,0" z="1,5" />
             <ActionAxis x="1,0" y="0,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
-            <LinearLimitMin>4,0</LinearLimitMin>
-            <LinearLimitMax>7,0</LinearLimitMax>
-            <AngularLimitMin>0,0</AngularLimitMin>
-            <AngularLimitMax>0,0</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+            <AngularLimitMin>-1000,0</AngularLimitMin>
+            <AngularLimitMax>10000,0</AngularLimitMax>
         </JointProperties>
 	</Joint>
     </JointsSettings>

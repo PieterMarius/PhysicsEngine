@@ -357,6 +357,93 @@ namespace MonoPhysicsEngine
 			return fixedConstraints;
 		}
 			
+		private List<JacobianContact> BuildBallSocketJoint(
+			int indexA,
+			int indexB,
+			Joint simulationJoint,
+			SimulationObject[] simulationObjs)
+		{
+			List<JacobianContact> ballSocketConstraints = new List<JacobianContact> ();
+
+			SimulationObject simulationObjectA = simulationObjs [indexA];
+			SimulationObject simulationObjectB = simulationObjs [indexB];
+
+			#region Init Linear
+
+			Vector3 r1 = simulationObjectA.RotationMatrix *
+				simulationJoint.StartErrorAxis1;
+
+			Vector3 r2 = simulationObjectB.RotationMatrix *
+				simulationJoint.StartErrorAxis2;
+
+			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
+			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
+
+			Vector3 p1 = simulationObjectA.Position + r1;
+			Vector3 p2 = simulationObjectB.Position + r2;
+
+			Vector3 linearError = p2 - p1;
+
+			#endregion
+
+			#region Jacobian Constraint
+
+			double constraintLimit = simulationJoint.K * linearError.x;
+
+			//DOF 1
+
+			ballSocketConstraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (1.0, 0.0, 0.0),
+				new Vector3 (-1.0, 0.0, 0.0),
+				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			//DOF 2
+
+			constraintLimit = simulationJoint.K * linearError.y;
+
+			ballSocketConstraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (0.0, 1.0, 0.0),
+				new Vector3 (0.0, -1.0, 0.0),
+				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			//DOF 3
+
+			constraintLimit = simulationJoint.K * linearError.z;
+
+			ballSocketConstraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				new Vector3 (0.0, 0.0, 1.0),
+				new Vector3 (0.0, 0.0, -1.0),
+				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
+
+			#endregion
+
+			return ballSocketConstraints;
+		}
+			
 		private List<JacobianContact> BuildSliderJoint(
 			int indexA,
 			int indexB,
@@ -370,18 +457,21 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.JointActDirection);
-			Vector3 t2 = Vector3.Cross (simulationJoint.JointActDirection, t1);
+			Vector3 sliderAxis = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection;
 
-			t1 = simulationObjectA.RotationMatrix * t1;
-			t2 = simulationObjectA.RotationMatrix * t2;
+			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis);
+			Vector3 t2 = Vector3.Cross (sliderAxis, t1);
 
-			Vector3 r1 =   simulationJoint.AnchorPoint - simulationObjectA.Position;
-			Vector3 r2 =   simulationJoint.AnchorPoint - simulationObjectB.Position;
+			Vector3 r1 = simulationObjectA.RotationMatrix *
+				simulationJoint.StartErrorAxis1;
 
-			Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
+			Vector3 r2 = simulationObjectB.RotationMatrix *
+				simulationJoint.StartErrorAxis2;
 
-			Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
+			Vector3 p1 = simulationObjectA.Position + r1;
+			Vector3 p2 = simulationObjectB.Position + r2;
+
+			Vector3 linearError = p2 - p1;
 			
 			#endregion
 
@@ -499,7 +589,7 @@ namespace MonoPhysicsEngine
 				simulationJoint,
 				simulationObjectA,
 				simulationObjectB,
-				simulationJoint.JointActDirection,
+				sliderAxis,
 				r1,
 				r2,
 				linearLimitMin,
@@ -511,94 +601,7 @@ namespace MonoPhysicsEngine
 
 			return sliderConstraints;
 		}
-
-		private List<JacobianContact> BuildBallSocketJoint(
-			int indexA,
-			int indexB,
-			Joint simulationJoint,
-			SimulationObject[] simulationObjs)
-		{
-			List<JacobianContact> ballSocketConstraints = new List<JacobianContact> ();
-
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
-
-			#region Init Linear
-
-			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.StartErrorAxis1;
-
-			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.StartErrorAxis2;
-
-			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
-			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
-
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
-
-			Vector3 linearError = p2 - p1;
-
-			#endregion
-
-			#region Jacobian Constraint
-
-			double constraintLimit = simulationJoint.K * linearError.x;
-
-			//DOF 1
-
-			ballSocketConstraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (1.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
-				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			//DOF 2
-
-			constraintLimit = simulationJoint.K * linearError.y;
-
-			ballSocketConstraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 1.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
-				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			//DOF 3
-
-			constraintLimit = simulationJoint.K * linearError.z;
-
-			ballSocketConstraints.Add (this.addDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 0.0, 1.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
-				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
-				simulationObjectA,
-				simulationObjectB,
-				constraintLimit,
-				constraintLimit,
-				ConstraintType.Joint));
-
-			#endregion
-
-			return ballSocketConstraints;
-		}
-
+			
 		private List<JacobianContact> BuildPistonJoint(
 			int indexA,
 			int indexB,
@@ -612,18 +615,21 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (simulationJoint.JointActDirection);
-			Vector3 t2 = Vector3.Cross (simulationJoint.JointActDirection, t1);
+			Vector3 sliderAxis = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection;
 
-			t1 = simulationObjectA.RotationMatrix * t1;
-			t2 = simulationObjectA.RotationMatrix * t2;
+			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis);
+			Vector3 t2 = Vector3.Cross (sliderAxis, t1);
 
-			Vector3 r1 =   simulationJoint.AnchorPoint - simulationObjectA.Position;
-			Vector3 r2 =   simulationJoint.AnchorPoint - simulationObjectB.Position;
+			Vector3 r1 = simulationObjectA.RotationMatrix *
+				simulationJoint.StartErrorAxis1;
 
-			Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
+			Vector3 r2 = simulationObjectB.RotationMatrix *
+				simulationJoint.StartErrorAxis2;
 
-			Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
+			Vector3 p1 = simulationObjectA.Position + r1;
+			Vector3 p2 = simulationObjectB.Position + r2;
+
+			Vector3 linearError = p2 - p1;
 
 			#endregion
 
@@ -685,7 +691,7 @@ namespace MonoPhysicsEngine
 					indexB,
 					1.0 * t2,
 					-1.0 * t2,
-					Vector3.Cross (r1, t2),
+					1.0*Vector3.Cross (r1, t2),
 					-1.0 * Vector3.Cross (r2, t2),
 					simulationObjectA,
 					simulationObjectB,
@@ -714,12 +720,9 @@ namespace MonoPhysicsEngine
 					linearLimitMin,
 					linearLimitMax));
 
-
 			// Limit extraction
 			double angularLimitMin = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMin);
 			double angularLimitMax = simulationJoint.JointActDirection.Dot (simulationJoint.AngularLimitMax);
-
-			Vector3 axisRotated = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection;
 
 			pistonConstraints.AddRange(
 				addAngularLimit (
@@ -728,7 +731,7 @@ namespace MonoPhysicsEngine
 					simulationJoint, 
 					simulationObjectA, 
 					simulationObjectB, 
-					axisRotated,
+					sliderAxis,
 					angularLimitMin,
 					angularLimitMax));
 			
@@ -1235,17 +1238,15 @@ namespace MonoPhysicsEngine
 			double linearLimitMin,
 			double linearLimitMax)
 		{
-			sliderAxis = simulationObjectA.RotationMatrix * sliderAxis;
-
-			double sliderDistance = Math.Abs((r2 - r1).Dot (sliderAxis));
+			Vector3 p1 = simulationObjectA.Position + r1;
+			Vector3 p2 = simulationObjectB.Position + r2;
+			double sliderDistance = Math.Abs((p2 + p1).Dot (sliderAxis));
 
 			Console.WriteLine ("Slider distance: " + sliderDistance);
 
 			if (Math.Abs (linearLimitMin - linearLimitMax) < tolerance) 
 			{
-				Vector3 r = simulationObjectB.Position - simulationObjectA.Position;
-
-				Vector3 linearError =  r - (simulationObjectA.RotationMatrix * simulationJoint.StartErrorAxis1);
+				Vector3 linearError = p2 - p1;
 
 				double linearLimit = simulationJoint.K *
 					sliderAxis.Dot (linearError);
@@ -1255,15 +1256,13 @@ namespace MonoPhysicsEngine
 					indexB,
 					sliderAxis,
 					-1.0 * sliderAxis,
-					Vector3.Cross (r1, sliderAxis),
+					1.0 * Vector3.Cross (r1, sliderAxis),
 					-1.0 * Vector3.Cross (r2, sliderAxis),
 					simulationObjectA,
 					simulationObjectB,
 					linearLimit,
 					linearLimit,
 					ConstraintType.Joint);
-				
-
 			}
 			else if (sliderDistance < linearLimitMin) 
 			{

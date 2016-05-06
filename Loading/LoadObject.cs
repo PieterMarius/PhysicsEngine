@@ -281,6 +281,7 @@ namespace Loading
 						joint [j] = Joint.SetPistonJoint (
 							objects [indexA],
 							objects [indexB],
+							startAnchorPosition,
 							actionAxis,
 							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
 							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),

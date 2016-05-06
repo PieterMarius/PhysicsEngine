@@ -121,22 +121,26 @@ namespace SimulationObjectDefinition
 		public static Joint SetSliderJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
 			double K,
 			double C,
 			double linearLimitMin = 0.0,
 			double linearLimitMax = 0.0)
 		{
-			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
-
 			sliderAxis = -1.0 * sliderAxis.Normalize ();
 
-			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
-			relativePos = objectA.RotationMatrix * relativePos;
+			Vector3 relativePos = objectA.RotationMatrix *
+				(startAnchorPosition - objectA.StartPosition);
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
-			Vector3 startErrorAxis = objectB.Position - objectA.Position;
+			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
+				(anchorPosition - objectA.Position);
+
+			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
+				(anchorPosition - objectB.Position);
+			
 
 			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
 				objectB.RotationStatus;
@@ -222,6 +226,7 @@ namespace SimulationObjectDefinition
 		public static Joint SetPistonJoint(
 			SimulationObject objectA,
 			SimulationObject objectB,
+			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
 			double C,
@@ -230,9 +235,6 @@ namespace SimulationObjectDefinition
 			double angularLimitMin = 0.0,
 			double angularLimitMax = 0.0)
 		{
-
-			Vector3 startAnchorPosition = (objectB.Position - objectA.Position) * 0.5;
-
 			pistonAxis = -1.0 * pistonAxis.Normalize ();
 
 			Vector3 relativePos = objectA.RotationMatrix *
@@ -240,7 +242,11 @@ namespace SimulationObjectDefinition
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
-			Vector3 startErrorAxis = objectB.Position - objectA.Position;
+			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
+				(anchorPosition - objectA.Position);
+
+			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
+				(anchorPosition - objectB.Position);
 
 			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
 			                                 objectB.RotationStatus;
@@ -257,8 +263,8 @@ namespace SimulationObjectDefinition
 				              JointType.Piston,
 				              startAnchorPosition,
 				              anchorPosition,
-				              startErrorAxis,
-				              new Vector3 (),
+				              distanceFromA,
+				              distanceFromB,
 				              relativeOrientation,
 				              pistonAxis,
 				              linearLimitMinVec,
