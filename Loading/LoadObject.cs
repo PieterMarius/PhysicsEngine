@@ -270,6 +270,7 @@ namespace Loading
 						joint [j] = Joint.SetSliderJoint (
 							objects [indexA],
 							objects [indexB],
+							startAnchorPosition,
 							actionAxis,
 							K,
 							C,

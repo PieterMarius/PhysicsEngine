@@ -667,37 +667,35 @@ namespace MonoPhysicsEngine
 
 			double constraintLimit = simulationJoint.K * Vector3.Dot (t1,linearError);
 
-			pistonConstraints.Add (
-				this.addDOF (
-					indexA,
-					indexB,
-					1.0 * t1,
-					-1.0 * t1,
-					1.0 * Vector3.Cross (r1, t1),
-					-1.0 * Vector3.Cross (r2, t1),
-					simulationObjectA,
-					simulationObjectB,
-					constraintLimit,
-					constraintLimit,
-					ConstraintType.Joint));
+			pistonConstraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				t1,
+				-1.0 * t1,
+				Vector3.Cross (r1, t1),
+				-1.0 * Vector3.Cross (r2, t1),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
 
-			//DOF 4
+			//DOF 5
 
 			constraintLimit = simulationJoint.K * Vector3.Dot (t2,linearError);
 
-			pistonConstraints.Add (
-				this.addDOF (
-					indexA,
-					indexB,
-					1.0 * t2,
-					-1.0 * t2,
-					1.0*Vector3.Cross (r1, t2),
-					-1.0 * Vector3.Cross (r2, t2),
-					simulationObjectA,
-					simulationObjectB,
-					constraintLimit,
-					constraintLimit,
-					ConstraintType.Joint));
+			pistonConstraints.Add (this.addDOF (
+				indexA,
+				indexB,
+				t2,
+				-1.0 * t2,
+				Vector3.Cross (r1, t2),
+				-1.0 * Vector3.Cross (r2, t2),
+				simulationObjectA,
+				simulationObjectB,
+				constraintLimit,
+				constraintLimit,
+				ConstraintType.Joint));
 
 			#endregion
 
@@ -714,7 +712,7 @@ namespace MonoPhysicsEngine
 					simulationJoint,
 					simulationObjectA,
 					simulationObjectB,
-					simulationJoint.JointActDirection,
+					sliderAxis,
 					r1,
 					r2,
 					linearLimitMin,
@@ -1238,18 +1236,20 @@ namespace MonoPhysicsEngine
 			double linearLimitMin,
 			double linearLimitMax)
 		{
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
-			double sliderDistance = Math.Abs((p2 + p1).Dot (sliderAxis));
+			
+			double sliderDistance = Math.Abs((simulationObjectB.Position - simulationObjectA.Position).Dot (sliderAxis));
 
 			Console.WriteLine ("Slider distance: " + sliderDistance);
 
-			if (Math.Abs (linearLimitMin - linearLimitMax) < tolerance) 
+			if (Math.Abs (linearLimitMax-linearLimitMin) < tolerance) 
 			{
+				Vector3 p1 = simulationObjectA.Position + r1;
+				Vector3 p2 = simulationObjectB.Position + r2;
+
 				Vector3 linearError = p2 - p1;
 
 				double linearLimit = simulationJoint.K *
-					sliderAxis.Dot (linearError);
+					Vector3.Dot (sliderAxis,linearError);
 
 				return this.addDOF (
 					indexA,
@@ -1322,9 +1322,10 @@ namespace MonoPhysicsEngine
 				                       simulationObjectB,
 				                       simulationJoint);
 
-			Vector3 zeroVector = new Vector3 ();
+			//Console.WriteLine ("Angular error: " + angularError.Length ());
 
-			if (Math.Abs (angularLimitMax - angularLimitMin) < tolerance) {
+
+			if (Math.Abs (angularLimitMax-angularLimitMin) < tolerance) {
 				
 				double angularLimit = simulationJoint.K *
 				                      rotationAxis.Dot (angularError);
@@ -1332,8 +1333,8 @@ namespace MonoPhysicsEngine
 				genericAngular.Add (this.addDOF (
 					indexA, 
 					indexB, 
-					zeroVector, 
-					zeroVector, 
+					new Vector3(), 
+					new Vector3(), 
 					rotationAxis, 
 					-1.0 * rotationAxis, 
 					simulationObjectA, 
@@ -1342,7 +1343,9 @@ namespace MonoPhysicsEngine
 					angularLimit, 
 					ConstraintType.Joint));
 				
-			} else {
+			} 
+			else 
+			{
 
 				double angle = this.getRotationAngle (
 					simulationObjectA, 
@@ -1358,8 +1361,8 @@ namespace MonoPhysicsEngine
 					genericAngular.Add (this.addDOF (
 						indexA, 
 						indexB, 
-						zeroVector, 
-						zeroVector, 
+						new Vector3(), 
+						new Vector3(), 
 						rotationAxis, 
 						-1.0 * rotationAxis, 
 						simulationObjectA, 
@@ -1376,8 +1379,8 @@ namespace MonoPhysicsEngine
 					genericAngular.Add (this.addDOF (
 						indexA, 
 						indexB, 
-						zeroVector, 
-						zeroVector, 
+						new Vector3(), 
+						new Vector3(), 
 						-1.0 * rotationAxis, 
 						rotationAxis, 
 						simulationObjectA, 

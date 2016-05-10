@@ -43,7 +43,7 @@ namespace LCPSolver
 		public SolverParameters ()
 		{
 			this.MaxIteration = 100;
-			this.ErrorTolerance = 1E-20;
+			this.ErrorTolerance = 1E-30;
 			this.SOR = 1.0;
 			this.SORStep = 0.007;
 			this.MaxThreadNumber = 2;

@@ -131,19 +131,18 @@ namespace SimulationObjectDefinition
 			sliderAxis = -1.0 * sliderAxis.Normalize ();
 
 			Vector3 relativePos = objectA.RotationMatrix *
-				(startAnchorPosition - objectA.StartPosition);
+			                      (startAnchorPosition - objectA.StartPosition);
 
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
 			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-				(anchorPosition - objectA.Position);
+			                        (anchorPosition - objectA.Position);
 
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-				(anchorPosition - objectB.Position);
+			                        (anchorPosition - objectB.Position);
 			
-
-			Quaternion relativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
-				objectB.RotationStatus;
+			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
+			                                 objectB.RotationStatus;
 
 			Vector3 linearLimitMinVec = sliderAxis * linearLimitMin;
 			Vector3 linearLimitMaxVec = sliderAxis * linearLimitMax;
@@ -154,8 +153,8 @@ namespace SimulationObjectDefinition
 				              JointType.Slider,
 				              startAnchorPosition,
 				              anchorPosition,
-				              startErrorAxis,
-				              new Vector3 (),
+				              distanceFromA,
+				              distanceFromB,
 				              relativeOrientation,
 				              sliderAxis,
 				              linearLimitMinVec,
@@ -243,10 +242,10 @@ namespace SimulationObjectDefinition
 			Vector3 anchorPosition = relativePos + objectA.Position;
 
 			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-				(anchorPosition - objectA.Position);
+			                        (anchorPosition - objectA.Position);
 
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-				(anchorPosition - objectB.Position);
+			                        (anchorPosition - objectB.Position);
 
 			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
 			                                 objectB.RotationStatus;
