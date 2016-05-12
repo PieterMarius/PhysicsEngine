@@ -141,8 +141,8 @@ namespace SimulationObjectDefinition
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
 			                        (anchorPosition - objectB.Position);
 			
-			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
-			                                 objectB.RotationStatus;
+			Quaternion relativeOrientation = objectB.RotationStatus.Inverse () *
+			                                 objectA.RotationStatus;
 
 			Vector3 linearLimitMinVec = sliderAxis * linearLimitMin;
 			Vector3 linearLimitMaxVec = sliderAxis * linearLimitMax;
@@ -247,8 +247,8 @@ namespace SimulationObjectDefinition
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
 			                        (anchorPosition - objectB.Position);
 
-			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
-			                                 objectB.RotationStatus;
+			Quaternion relativeOrientation = objectB.RotationStatus.Inverse () *
+			                                 objectA.RotationStatus;
 
 			Vector3 linearLimitMinVec = pistonAxis * linearLimitMin;
 			Vector3 linearLimitMaxVec = pistonAxis * linearLimitMax;
@@ -308,8 +308,8 @@ namespace SimulationObjectDefinition
 			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
 			                        (anchorPosition - objectB.Position);
 
-			Quaternion relativeOrientation = objectA.RotationStatus.Inverse () *
-			                                 objectB.RotationStatus;
+			Quaternion relativeOrientation = objectB.RotationStatus.Inverse () *
+			                                 objectA.RotationStatus;
 
 			hingeAxis = hingeAxis.Normalize ();
 
