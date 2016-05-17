@@ -60,6 +60,8 @@
     <Compile Include="JacobianBuilder\JacobianConstraintBuilder.cs" />
     <Compile Include="JacobianBuilder\JacobianContact.cs" />
     <Compile Include="ContactPartitioning\ContactGroupType.cs" />
+    <Compile Include="JacobianBuilder\JacobianBuilderCommon.cs" />
+    <Compile Include="JacobianBuilder\FixedJointConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

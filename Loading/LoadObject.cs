@@ -304,6 +304,19 @@ namespace Loading
 							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 						break;
 
+					case JointType.Hinge2:
+						joint [j] = Joint.SetHinge2Joint (
+							objects [indexA],
+							objects [indexB],
+							startAnchorPosition,
+							actionAxis,
+							new Vector3 (1.0,0.0,0.0),
+							K,
+							C,
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+						break;
+
 						default:
 							break;
 					}

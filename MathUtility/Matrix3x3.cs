@@ -262,6 +262,26 @@ namespace PhysicsEngineMathUtility
 				-input.y, input.x, 0.0);
 		}
 
+		public static Matrix3x3 GetMatrix(Vector3 a, Vector3 b)
+		{
+			a = a.Normalize ();
+			b = b.Normalize ();
+
+			if (a != b && 
+				a.Length () > 0 &&
+				b.Length () > 0) 
+			{
+				Vector3 c = a.Cross (b);
+				return new Matrix3x3 (
+					a.x, b.x, c.x,
+					a.y, b.y, c.y,
+					a.z, b.z, c.z);
+
+			} else {
+				return new Matrix3x3 ();
+			}
+		}
+
 		#endregion
 
 		#region Const
