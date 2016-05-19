@@ -14,7 +14,8 @@ namespace SimulationObjectDefinition
 		public readonly Vector3 AnchorPoint;
 		public readonly Vector3 StartErrorAxis1;
 		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation;
+		public readonly Quaternion RelativeRotation1;
+		public readonly Quaternion RelativeRotation2;
 		public readonly Vector3 JointActDirection1;
 		public readonly Vector3 JointActDirection2;
 		public readonly Vector3 LinearLimitMin;
@@ -34,7 +35,8 @@ namespace SimulationObjectDefinition
 			Vector3 anchorPoint,
 			Vector3 startErrorAxis1,
 			Vector3 startErrorAxis2,
-			Quaternion relativeOrientation,
+			Quaternion relativeRotation1,
+			Quaternion relativeRotation2,
 			Vector3 jointActDirection1,
 			Vector3 jointActDirection2,
 			Vector3 linearLimitMin,
@@ -50,7 +52,8 @@ namespace SimulationObjectDefinition
 			this.AnchorPoint = anchorPoint;
 			this.StartErrorAxis1 = startErrorAxis1;
 			this.StartErrorAxis2 = startErrorAxis2;
-			this.RelativeOrientation = relativeOrientation;
+			this.RelativeRotation1 = relativeRotation1;
+			this.RelativeRotation2 = relativeRotation2;
 			this.JointActDirection1 = jointActDirection1;
 			this.JointActDirection2 = jointActDirection2;
 			this.LinearLimitMin = linearLimitMin;
@@ -102,6 +105,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              new Vector3 (),
 				              new Vector3 (),
 				              new Vector3 (),
@@ -160,6 +164,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              sliderAxis,
 				              new Vector3 (),
 				              linearLimitMinVec,
@@ -205,6 +210,7 @@ namespace SimulationObjectDefinition
 				              anchorPosition,
 				              distanceFromA,
 				              distanceFromB,
+				              new Quaternion (),
 				              new Quaternion (),
 				              new Vector3 (),
 				              new Vector3 (),
@@ -271,6 +277,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              pistonAxis,
 				              new Vector3 (),
 				              linearLimitMinVec,
@@ -337,6 +344,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              hingeAxis,
 				              new Vector3 (),
 				              new Vector3 (),
@@ -393,6 +401,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              hingeAxis,
 				              rotationAxis,
 				              new Vector3 (),
@@ -440,6 +449,7 @@ namespace SimulationObjectDefinition
 				              distanceFromA,
 				              distanceFromB,
 				              relativeOrientation,
+				              new Quaternion (),
 				              new Vector3 (),
 				              new Vector3 (),
 				              linearLimitMin,

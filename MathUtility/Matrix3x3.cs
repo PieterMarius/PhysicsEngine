@@ -262,7 +262,7 @@ namespace PhysicsEngineMathUtility
 				-input.y, input.x, 0.0);
 		}
 
-		public static Matrix3x3 GetMatrix(Vector3 a, Vector3 b)
+		public static Matrix3x3 GetRotationMatrix(Vector3 a, Vector3 b)
 		{
 			a = a.Normalize ();
 			b = b.Normalize ();

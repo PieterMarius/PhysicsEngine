@@ -14,7 +14,7 @@ namespace MonoPhysicsEngine
 			Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse () *
 				objectA.RotationStatus;
 
-			Quaternion relativeOrientationError = simulationJoint.RelativeOrientation.Inverse () *
+			Quaternion relativeOrientationError = simulationJoint.RelativeRotation1.Inverse () *
 				currentRelativeOrientation;
 
 			Vector3 angularError = new Vector3 (
@@ -160,6 +160,29 @@ namespace MonoPhysicsEngine
 			return new JacobianContact ();
 		}
 
+		public static double GetAngle1(
+			Vector3 axis1,
+			Vector3 axis2,
+			Quaternion rotationStatus,
+			Quaternion startRelativeRotation)
+		{
+			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix (axis1, axis2);
+			Quaternion rotationQ = Quaternion.GetQuaternion (rotationMatrix);
+
+			Quaternion mult1 = Quaternion.Multiply1 (rotationStatus, rotationQ);
+			Quaternion mult2 = Quaternion.Multiply2 (mult1, startRelativeRotation);
+
+			Vector3 quaternionVectorPart = new Vector3 (
+				mult2.b,
+				mult2.c,
+				mult2.d);
+
+			//quaternionVectorPart = simulationObjectA.RotationMatrix * quaternionVectorPart;
+			//TODO work in progress
+
+			return GetRotationAngle (quaternionVectorPart, mult2.a, new Vector3 ());
+		}
+
 		public static JacobianContact GetAngularLimit (
 			int indexA, 
 			int indexB, 
@@ -174,7 +197,7 @@ namespace MonoPhysicsEngine
 			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
 			                                        simulationObjectB.RotationStatus;
 
-			Quaternion relativeOrientation = simulationJoint.RelativeOrientation.Inverse () *
+			Quaternion relativeOrientation = simulationJoint.RelativeRotation1.Inverse () *
 			                                 currentRelativeOrientation;
 
 			Vector3 quaternionVectorPart = new Vector3 (

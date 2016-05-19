@@ -161,6 +161,26 @@ namespace PhysicsEngineMathUtility
 			}
 		}
 
+		public static Quaternion Multiply1(Quaternion q1, Quaternion q2)
+		{
+			double a = (q1.a * q2.a + q1.b * q2.b + q1.c * q2.c + q1.d * q2.d);
+			double b = (q1.a * q2.b - q1.b * q2.a - q1.c * q2.d + q1.d * q2.c);
+			double c = (q1.a * q2.c - q1.c * q2.a - q1.d * q2.b + q1.b * q2.d);
+			double d = (q1.a * q2.d - q1.d * q2.a - q1.b * q2.c + q1.c * q2.b);
+
+			return new Quaternion (a, b, c, d);
+		}
+
+		public static Quaternion Multiply2(Quaternion q1, Quaternion q2)
+		{
+			double a = (q1.a * q2.a + q1.b * q2.b + q1.c * q2.c + q1.d * q2.d);
+			double b = (-q1.a * q2.b + q1.b * q2.a - q1.c * q2.d + q1.d * q2.c);
+			double c = (-q1.a * q2.c + q1.c * q2.a - q1.d * q2.b + q1.b * q2.d);
+			double d = (-q1.a * q2.d + q1.d * q2.a - q1.b * q2.c + q1.c * q2.b);
+
+			return new Quaternion (a, b, c, d);
+		}
+
 		public static Quaternion Inverse(Quaternion q) 
 		{
 			double d = 1.0 / (q.a * q.a + q.b * q.b + q.c * q.c + q.d * q.d);

@@ -1043,15 +1043,15 @@ namespace MonoPhysicsEngine
 			double angularLimitMax = simulationJoint.JointActDirection1.Dot (simulationJoint.AngularLimitMax);
 			double angularLimitMin = simulationJoint.JointActDirection1.Dot (simulationJoint.AngularLimitMin);
 
-			hingeConstraints.Add(JacobianBuilderCommon.GetAngularLimit (
-				indexA, 
-				indexB, 
-				simulationJoint, 
-				simulationObjectA, 
-				simulationObjectB, 
-				hingeAxis,
-				angularLimitMin,
-				angularLimitMax));
+//			hingeConstraints.Add(JacobianBuilderCommon.GetAngularLimit (
+//				indexA, 
+//				indexB, 
+//				simulationJoint, 
+//				simulationObjectA, 
+//				simulationObjectB, 
+//				hingeAxis,
+//				angularLimitMin,
+//				angularLimitMax));
 
 			#endregion
 
