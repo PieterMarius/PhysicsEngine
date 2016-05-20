@@ -250,7 +250,7 @@ namespace Loading
 					switch (jointType) 
 					{
 					case JointType.Fixed:
-						joint[j] = Joint.SetFixedJoint (
+						joint[j] = FixedJointConstraint.SetJoint (
 							objects[indexA],
 							objects[indexB],
 							K,
@@ -258,7 +258,7 @@ namespace Loading
 						break;
 
 					case JointType.BallAndSocket:
-						joint[j] = Joint.SetBallSocketJoint (
+						joint[j] = BallAndSocketConstraint.SetJoint (
 							objects[indexA],
 							objects[indexB],
 							startAnchorPosition,
@@ -267,7 +267,7 @@ namespace Loading
 						break;
 
 					case JointType.Slider:
-						joint [j] = Joint.SetSliderJoint (
+						joint [j] = SliderConstraint.SetJoint (
 							objects [indexA],
 							objects [indexB],
 							startAnchorPosition,
@@ -279,7 +279,7 @@ namespace Loading
 						break;
 
 					case JointType.Piston:
-						joint [j] = Joint.SetPistonJoint (
+						joint [j] = PistonConstraint.SetJoint (
 							objects [indexA],
 							objects [indexB],
 							startAnchorPosition,
@@ -293,7 +293,7 @@ namespace Loading
 						break;
 
 					case JointType.Hinge:
-						joint [j] = Joint.SetHingeJoint (
+						joint [j] = HingeConstraint.SetJoint (
 							objects [indexA],
 							objects [indexB],
 							startAnchorPosition,
@@ -305,7 +305,7 @@ namespace Loading
 						break;
 
 					case JointType.Hinge2:
-						joint [j] = Joint.SetHinge2Joint (
+						joint [j] = Hinge2Constraint.SetJoint (
 							objects [indexA],
 							objects [indexB],
 							startAnchorPosition,

@@ -62,6 +62,12 @@
     <Compile Include="ContactPartitioning\ContactGroupType.cs" />
     <Compile Include="JacobianBuilder\JacobianBuilderCommon.cs" />
     <Compile Include="JacobianBuilder\FixedJointConstraint.cs" />
+    <Compile Include="JacobianBuilder\BallAndSocketConstraint.cs" />
+    <Compile Include="JacobianBuilder\SliderConstraint.cs" />
+    <Compile Include="JacobianBuilder\PistonConstraint.cs" />
+    <Compile Include="JacobianBuilder\HingeConstraint.cs" />
+    <Compile Include="JacobianBuilder\Hinge2Constraint.cs" />
+    <Compile Include="JacobianBuilder\ContactConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

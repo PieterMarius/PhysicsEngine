@@ -26,7 +26,7 @@
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>1</ObjectType>
+            <ObjectType>0</ObjectType>
             <Mass>10,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
@@ -69,7 +69,7 @@
              
         <Object>
             <Position x="5,0" y="5,6" z="-1,5" />
-            <LinearVelocity x="-2,0" y="4,0" z="-2,0" />
+            <LinearVelocity x="-2,0" y="4,0" z="0,0" />
             <AngularVelocity x="2,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -86,7 +86,7 @@
         <Object>
             <Position x="5,0" y="5,6" z="1,5" />
             <LinearVelocity x="0,5" y="2,0" z="0,0" />
-            <AngularVelocity x="2,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>1,0</Mass>
@@ -165,7 +165,7 @@
         </JointProperties>
 	</Joint>
         
-        
+        <!--
         <Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
@@ -181,6 +181,7 @@
             <AngularLimitMax>1000,0</AngularLimitMax>
         </JointProperties>
 	</Joint>
+        -->
         
     </JointsSettings>
 </RigidBodyEngine>

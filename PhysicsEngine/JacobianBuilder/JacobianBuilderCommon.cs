@@ -12,10 +12,10 @@ namespace MonoPhysicsEngine
 			Joint simulationJoint)
 		{
 			Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse () *
-				objectA.RotationStatus;
+			                                        objectA.RotationStatus;
 
 			Quaternion relativeOrientationError = simulationJoint.RelativeRotation1.Inverse () *
-				currentRelativeOrientation;
+			                                      currentRelativeOrientation;
 
 			Vector3 angularError = new Vector3 (
 				relativeOrientationError.b, 
