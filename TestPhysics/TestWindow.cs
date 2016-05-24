@@ -35,7 +35,7 @@ namespace TestPhysics
 		List<CollisionPointStructure> collPoint;
 
 		SimulationObject[] simulationObjects;
-		SimulationJoint[] simulationJoints;
+		ObjectConstraint[] simulationJoints;
 
 		CollisionEngineParameters collisionEngineParameters;
 		SolverParameters solverParameters;
@@ -501,18 +501,18 @@ namespace TestPhysics
 
 		private void displayJoint()
 		{
-			List<SimulationJoint> jointList = this.physicsEngine.GetJointsList ();
+			List<ObjectConstraint> jointList = this.physicsEngine.GetJointsList ();
 
 			for (int i = 0; i < jointList.Count; i++) 
 			{
-				for (int j = 0; j < jointList [i].JointList.Length; j++) {
+				for (int j = 0; j < jointList [i].ConstraintList.Length; j++) {
 
 					GL.PushMatrix ();
 
 					Matrix4 mView = Matrix4.CreateTranslation (
-						                Convert.ToSingle (jointList [i].JointList [j].AnchorPoint.x), 
-						                Convert.ToSingle (jointList [i].JointList [j].AnchorPoint.y), 
-						                Convert.ToSingle (jointList [i].JointList [j].AnchorPoint.z));
+						                Convert.ToSingle (jointList [i].ConstraintList [j].GetAnchorPosition ().x), 
+						                Convert.ToSingle (jointList [i].ConstraintList [j].GetAnchorPosition ().y), 
+						                Convert.ToSingle (jointList [i].ConstraintList [j].GetAnchorPosition ().z));
 
 					float[] dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,

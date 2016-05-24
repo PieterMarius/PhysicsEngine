@@ -9,7 +9,7 @@ namespace MonoPhysicsEngine
 	{
 		List<JacobianContact> GetJacobianConstraint (
 			List<CollisionPointStructure> collisionPointsStruct,
-			List<SimulationJoint> simulationJointList,
+			List<ObjectConstraint> simulationJointList,
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters);
 

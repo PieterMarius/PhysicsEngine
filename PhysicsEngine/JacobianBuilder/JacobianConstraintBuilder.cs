@@ -24,7 +24,7 @@ namespace MonoPhysicsEngine
 
 		public List<JacobianContact> GetJacobianConstraint(
 			List<CollisionPointStructure> collisionPointsStruct,
-			List<SimulationJoint> simulationJointList,
+			List<ObjectConstraint> simulationJointList,
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
@@ -42,77 +42,89 @@ namespace MonoPhysicsEngine
 
 			#region Joint
 
-			foreach(SimulationJoint simJoint in simulationJointList)
+			foreach(ObjectConstraint item in simulationJointList)
 			{
-				foreach (Joint joint in simJoint.JointList) 
+				foreach(IConstraint constraintItem in item.ConstraintList)
 				{
-					switch (joint.Type) 
-					{
-					case JointType.Fixed:
-						constraint.AddRange (
-							FixedJointConstraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Slider:
-						constraint.AddRange (
-							SliderConstraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.BallAndSocket:
-						constraint.AddRange (
-							BallAndSocketConstraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Piston:
-						constraint.AddRange (
-							PistonConstraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Hinge:
-						constraint.AddRange (
-							HingeConstraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Generic6DOF:
-						constraint.AddRange (
-							this.BuildGeneric6DOFJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-
-					case JointType.Hinge2:
-						constraint.AddRange (
-							Hinge2Constraint.BuildJoint (
-								simJoint.IndexA,
-								simJoint.IndexB,
-								joint,
-								simulationObjs));
-						break;
-					}
+					constraint.AddRange (
+						constraintItem.BuildJacobian (
+							item.IndexA,
+							item.IndexB,
+							simulationObjs));
 				}
 			}
+
+//			foreach(SimulationJoint simJoint in simulationJointList)
+//			{
+//				foreach (Joint joint in simJoint.JointList) 
+//				{
+//					switch (joint.Type) 
+//					{
+//					case JointType.Fixed:
+//						constraint.AddRange (
+//							FixedJointConstraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.Slider:
+//						constraint.AddRange (
+//							SliderConstraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.BallAndSocket:
+//						constraint.AddRange (
+//							BallAndSocketConstraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.Piston:
+//						constraint.AddRange (
+//							PistonConstraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.Hinge:
+//						constraint.AddRange (
+//							HingeConstraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.Generic6DOF:
+//						constraint.AddRange (
+//							this.BuildGeneric6DOFJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//
+//					case JointType.Hinge2:
+//						constraint.AddRange (
+//							Hinge2Constraint.BuildJoint (
+//								simJoint.IndexA,
+//								simJoint.IndexB,
+//								joint,
+//								simulationObjs));
+//						break;
+//					}
+//				}
+		//	}
 
 			#endregion
 

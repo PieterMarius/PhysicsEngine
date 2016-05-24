@@ -12,7 +12,7 @@ namespace MonoPhysicsEngine
 
 		public List<SpatialPartition> calculateSpatialPartitioning(
 			List<CollisionPointStructure> collisionPoints,
-			List<SimulationJoint> simulationJoint,
+			List<ObjectConstraint> simulationJoint,
 			SimulationObject[] simulationObjects)
 		{
 			if (collisionPoints.Count > 0 ||

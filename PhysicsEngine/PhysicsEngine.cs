@@ -37,7 +37,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The simulation joints.
 		/// </summary>
-		private List<SimulationJoint> simulationJoints;
+		private List<ObjectConstraint> simulationJoints;
 
 		#region Collision Engine
 
@@ -52,7 +52,7 @@ namespace MonoPhysicsEngine
 		private IJacobianConstraintBuilder jacobianConstraintBuilder;
 
 		private List<List<CollisionPointStructure>> collisionPartitionedPoints;
-		private List<List<SimulationJoint>> partitionedJoint;
+		private List<List<ObjectConstraint>> partitionedJoint;
 
 		#endregion
 
@@ -86,7 +86,7 @@ namespace MonoPhysicsEngine
 			this.contactPartitioningEngine = contactPartitioningEngine;
 			this.jacobianConstraintBuilder = new JacobianConstraintBuilder ();
 
-			this.simulationJoints = new List<SimulationJoint> ();
+			this.simulationJoints = new List<ObjectConstraint> ();
 		}
 
 		#endregion
@@ -153,7 +153,7 @@ namespace MonoPhysicsEngine
 
 		#region Simulation Joint
 
-		public void AddJoint(SimulationJoint simulationJoint)
+		public void AddJoint(ObjectConstraint simulationJoint)
 		{
 			this.simulationJoints.Add (simulationJoint);
 		}
@@ -165,15 +165,15 @@ namespace MonoPhysicsEngine
 
 		public void RemoveAllJoints()
 		{
-			this.simulationJoints = new List<SimulationJoint> ();
+			this.simulationJoints = new List<ObjectConstraint> ();
 		}
 
-		public SimulationJoint GetJoint(int jointIndex)
+		public ObjectConstraint GetJoint(int jointIndex)
 		{
 			return this.simulationJoints [jointIndex];
 		}
 
-		public List<SimulationJoint> GetJointsList()
+		public List<ObjectConstraint> GetJointsList()
 		{
 			return this.simulationJoints;
 		}
@@ -346,12 +346,12 @@ namespace MonoPhysicsEngine
 			if (partitions != null) {
 
 				collisionPartitionedPoints = new List<List<CollisionPointStructure>> ();
-				partitionedJoint = new List<List<SimulationJoint>> ();
+				partitionedJoint = new List<List<ObjectConstraint>> ();
 
 				for (int i = 0; i < partitions.Count; i++) 
 				{
 					List<CollisionPointStructure> partitionedCollision = new List<CollisionPointStructure> ();
-					List<SimulationJoint> partJoint = new List<SimulationJoint> ();
+					List<ObjectConstraint> partJoint = new List<ObjectConstraint> ();
 
 					for (int j = 0; j < partitions [i].ObjectList.Count; j++) 
 					{
@@ -365,7 +365,7 @@ namespace MonoPhysicsEngine
 
 						} else {
 
-							SimulationJoint smJoint = this.simulationJoints.Find (item => 
+							ObjectConstraint smJoint = this.simulationJoints.Find (item => 
 													   item.IndexA == partitions [i].ObjectList [j].IndexA &&
 							                           item.IndexB == partitions [i].ObjectList [j].IndexB);
 							partJoint.Add (smJoint);
@@ -787,44 +787,22 @@ namespace MonoPhysicsEngine
 		/// Integrates the joint position.
 		/// </summary>
 		private void integrateJointPosition(
-			List<SimulationJoint> simulationJoints)
+			List<ObjectConstraint> simulationConstraints)
 		{
-			for (int i = 0; i < simulationJoints.Count; i++) 
+			foreach (ObjectConstraint objConstraint in simulationConstraints) 
 			{
-				int indexA = simulationJoints [i].IndexA;
+				int indexA = objConstraint.IndexA;
 
-				Joint[] joint = new Joint[simulationJoints [i].JointList.Length];
-
-				for (int j = 0; j < simulationJoints [i].JointList.Length; j++) 
+				foreach (IConstraint constraintItem in objConstraint.ConstraintList) 
 				{
-					Vector3 relativeAnchorPosition = simulationJoints [i].JointList[j].StartAnchorPoint -
+					Vector3 relativeAnchorPosition = constraintItem.GetStartAnchorPosition () -
 					                          this.simulationObjects [indexA].StartPosition;
 
 					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
 												this.simulationObjects [indexA].Position;
 
-					joint [j] = new Joint (
-						simulationJoints [i].JointList [j].K,
-						simulationJoints [i].JointList [j].C,
-						simulationJoints [i].JointList [j].Type,
-						simulationJoints [i].JointList [j].StartAnchorPoint,
-						relativeAnchorPosition,
-						simulationJoints [i].JointList [j].StartErrorAxis1,
-						simulationJoints [i].JointList [j].StartErrorAxis2,
-						simulationJoints [i].JointList [j].RelativeRotation1,
-						simulationJoints [i].JointList [j].RelativeRotation2,
-						simulationJoints [i].JointList [j].JointActDirection1,
-						simulationJoints [i].JointList [j].JointActDirection2,
-						simulationJoints [i].JointList [j].LinearLimitMin,
-						simulationJoints [i].JointList [j].LinearLimitMax,
-						simulationJoints [i].JointList [j].AngularLimitMin,
-						simulationJoints [i].JointList [j].AngularLimitMax);
+					constraintItem.SetAnchorPosition (relativeAnchorPosition);
 				}
-
-				simulationJoints [i] = new SimulationJoint (
-					simulationJoints [i].IndexA,
-					simulationJoints [i].IndexB,
-					joint);
 			}
 		}
 

@@ -68,6 +68,8 @@
     <Compile Include="JacobianBuilder\HingeConstraint.cs" />
     <Compile Include="JacobianBuilder\Hinge2Constraint.cs" />
     <Compile Include="JacobianBuilder\ContactConstraint.cs" />
+    <Compile Include="JacobianBuilder\IConstraint.cs" />
+    <Compile Include="JacobianBuilder\ObjectConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
