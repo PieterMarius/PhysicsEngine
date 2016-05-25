@@ -45,7 +45,6 @@ namespace TestPhysics
 		ICollisionEngine collisionEngine;
 		ISolver lcpSolver;
 
-		int count = 0;
 		bool pause = false;
 
 		int redTexture;
@@ -271,9 +270,6 @@ namespace TestPhysics
 		#endregion
 
 		#region Keyboard input
-
-		//Test collisione
-		double angle = 0.0;
 
 		int selectedObjIndex = -1;
 

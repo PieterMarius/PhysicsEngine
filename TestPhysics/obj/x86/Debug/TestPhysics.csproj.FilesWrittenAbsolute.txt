@@ -19,3 +19,5 @@
 /Users/pietervanduin/Projects/TestPhysics/TestPhysics/bin/Debug/PhysicsEngine.dll.mdb
 /Users/pietervanduin/Projects/TestPhysics/TestPhysics/bin/Debug/Loading.dll
 /Users/pietervanduin/Projects/TestPhysics/TestPhysics/bin/Debug/Loading.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/TestPhysics/bin/Debug/MonoPhysicsEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/TestPhysics/bin/Debug/MonoPhysicsEngine.dll.mdb

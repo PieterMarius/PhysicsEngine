@@ -11,3 +11,7 @@
 /Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/LCPSolver.dll.mdb
 /Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MathUtility.dll
 /Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MathUtility.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MonoPhysicsEngine.dll.mdb
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/bin/Debug/MonoPhysicsEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/obj/x86/Debug/MonoPhysicsEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/PhysicsEngine/obj/x86/Debug/MonoPhysicsEngine.dll.mdb

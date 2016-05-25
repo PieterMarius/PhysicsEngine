@@ -18,3 +18,5 @@
 /Users/pietervanduin/Projects/TestPhysics/Loading/bin/Debug/LCPSolver.dll.mdb
 /Users/pietervanduin/Projects/TestPhysics/Loading/bin/Debug/OpenTK.dll
 /Users/pietervanduin/Projects/TestPhysics/Loading/bin/Debug/OpenTK.xml
+/Users/pietervanduin/Projects/TestPhysics/Loading/bin/Debug/MonoPhysicsEngine.dll
+/Users/pietervanduin/Projects/TestPhysics/Loading/bin/Debug/MonoPhysicsEngine.dll.mdb

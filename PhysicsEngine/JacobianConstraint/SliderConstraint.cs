@@ -6,19 +6,27 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public static class SliderConstraint
+	public class SliderConstraint: IConstraint
 	{
-		/// <summary>
-		/// Sets the slider joint.
-		/// </summary>
-		/// <returns>The slider joint.</returns>
-		/// <param name="objectA">Object a.</param>
-		/// <param name="objectB">Object b.</param>
-		/// <param name="K">K.</param>
-		/// <param name="C">C.</param>
-		/// <param name="linearLimitMin">Linear limit minimum.</param>
-		/// <param name="linearLimitMax">Linear limit max.</param>
-		public static Joint SetJoint(
+		#region Public Fields
+
+		public readonly double C;
+		public readonly double K;
+		public readonly Vector3 StartAnchorPoint;
+		public readonly Vector3 StartErrorAxis1;
+		public readonly Vector3 StartErrorAxis2;
+		public readonly Quaternion RelativeOrientation;
+		public readonly Vector3 SliderAxis;
+		public readonly Vector3 LinearLimitMin;
+		public readonly Vector3 LinearLimitMax;
+
+		public Vector3 AnchorPoint { get; private set; }
+
+		#endregion
+
+		#region Constructor
+
+		public SliderConstraint(
 			SimulationObject objectA,
 			SimulationObject objectB,
 			Vector3 startAnchorPosition,
@@ -28,44 +36,32 @@ namespace MonoPhysicsEngine
 			double linearLimitMin = 0.0,
 			double linearLimitMax = 0.0)
 		{
-			sliderAxis = -1.0 * sliderAxis.Normalize ();
+			this.K = K;
+			this.C = C;
+			this.StartAnchorPoint = startAnchorPosition;
+			this.SliderAxis = -1.0 * sliderAxis.Normalize ();
 
 			Vector3 relativePos = objectA.RotationMatrix *
 			                      (startAnchorPosition - objectA.StartPosition);
 
-			Vector3 anchorPosition = relativePos + objectA.Position;
+			this.AnchorPoint = relativePos + objectA.Position;
 
-			Vector3 distanceFromA = objectA.RotationMatrix.Transpose () *
-			                        (anchorPosition - objectA.Position);
+			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
+			                        (this.AnchorPoint - objectA.Position);
 
-			Vector3 distanceFromB = objectB.RotationMatrix.Transpose () *
-			                        (anchorPosition - objectB.Position);
+			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
+			                        (this.AnchorPoint - objectB.Position);
 
-			Quaternion relativeOrientation = objectB.RotationStatus.Inverse () *
-			                                 objectA.RotationStatus;
+			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
+									   objectA.RotationStatus;
 
-			Vector3 linearLimitMinVec = sliderAxis * linearLimitMin;
-			Vector3 linearLimitMaxVec = sliderAxis * linearLimitMax;
-
-			Joint joint = new Joint (
-				              K,
-				              C,
-				              JointType.Slider,
-				              startAnchorPosition,
-				              anchorPosition,
-				              distanceFromA,
-				              distanceFromB,
-				              relativeOrientation,
-				              new Quaternion (),
-				              sliderAxis,
-				              new Vector3 (),
-				              linearLimitMinVec,
-				              linearLimitMaxVec,
-				              new Vector3 (),
-				              new Vector3 ());
-
-			return joint;
+			this.LinearLimitMin = sliderAxis * linearLimitMin;
+			this.LinearLimitMax = sliderAxis * linearLimitMax;
 		}
+
+		#endregion
+
+		#region Public Methods
 
 		/// <summary>
 		/// Builds the slider joint.
@@ -75,10 +71,9 @@ namespace MonoPhysicsEngine
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public static List<JacobianContact> BuildJoint(
+		public List<JacobianContact> BuildJacobian(
 			int indexA,
 			int indexB,
-			Joint simulationJoint,
 			SimulationObject[] simulationObjs)
 		{
 			List<JacobianContact> sliderConstraints = new List<JacobianContact> ();
@@ -88,16 +83,16 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 sliderAxis = simulationObjectA.RotationMatrix * simulationJoint.JointActDirection1;
+			Vector3 sliderAxis = simulationObjectA.RotationMatrix * this.SliderAxis;
 
 			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				simulationJoint.StartErrorAxis1;
+				this.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				simulationJoint.StartErrorAxis2;
+				this.StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -108,10 +103,10 @@ namespace MonoPhysicsEngine
 
 			#region Init Angular
 
-			Vector3 angularError = JacobianBuilderCommon.GetFixedAngularError (
+			Vector3 angularError = JacobianCommon.GetFixedAngularError (
 				simulationObjectA,
 				simulationObjectB,
-				simulationJoint);
+				this.RelativeOrientation);
 
 			#endregion
 
@@ -119,11 +114,11 @@ namespace MonoPhysicsEngine
 
 			#region Constraints
 
-			double constraintLimit = simulationJoint.K * 2.0 * angularError.x;
+			double constraintLimit = this.K * 2.0 * angularError.x;
 
 			//DOF 1
 
-			sliderConstraints.Add (JacobianBuilderCommon.GetDOF (
+			sliderConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
@@ -138,9 +133,9 @@ namespace MonoPhysicsEngine
 
 			//DOF 2
 
-			constraintLimit = simulationJoint.K * 2.0 * angularError.y;
+			constraintLimit = this.K * 2.0 * angularError.y;
 
-			sliderConstraints.Add (JacobianBuilderCommon.GetDOF (
+			sliderConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
@@ -155,9 +150,9 @@ namespace MonoPhysicsEngine
 
 			//DOF 3
 
-			constraintLimit = simulationJoint.K * 2.0 * angularError.z;
+			constraintLimit = this.K * 2.0 * angularError.z;
 
-			sliderConstraints.Add (JacobianBuilderCommon.GetDOF (
+			sliderConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
@@ -172,9 +167,9 @@ namespace MonoPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = simulationJoint.K * Vector3.Dot (t1,linearError);
+			constraintLimit = this.K * Vector3.Dot (t1,linearError);
 
-			sliderConstraints.Add (JacobianBuilderCommon.GetDOF (
+			sliderConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				t1,
@@ -189,9 +184,9 @@ namespace MonoPhysicsEngine
 
 			//DOF 5
 
-			constraintLimit = simulationJoint.K * Vector3.Dot (t2,linearError);
+			constraintLimit = this.K * Vector3.Dot (t2,linearError);
 
-			sliderConstraints.Add (JacobianBuilderCommon.GetDOF (
+			sliderConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				t2,
@@ -208,21 +203,20 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-
 			// Limit extraction
-			double linearLimitMin = simulationJoint.JointActDirection1.Dot (simulationJoint.LinearLimitMin);
-			double linearLimitMax = simulationJoint.JointActDirection1.Dot (simulationJoint.LinearLimitMax);
+			double linearLimitMin = this.SliderAxis.Dot (this.LinearLimitMin);
+			double linearLimitMax = this.SliderAxis.Dot (this.LinearLimitMax);
 
 			sliderConstraints.Add (
-				JacobianBuilderCommon.GetLinearLimit(
+				JacobianCommon.GetLinearLimit(
 					indexA,
 					indexB,
-					simulationJoint,
 					simulationObjectA,
 					simulationObjectB,
 					sliderAxis,
 					r1,
 					r2,
+					this.K,
 					linearLimitMin,
 					linearLimitMax));
 
@@ -232,6 +226,23 @@ namespace MonoPhysicsEngine
 
 			return sliderConstraints;
 		}
+
+		public void SetAnchorPosition(Vector3 position)
+		{
+			this.AnchorPoint = position;
+		}
+
+		public Vector3 GetStartAnchorPosition()
+		{
+			return this.StartAnchorPoint;
+		}
+
+		public Vector3 GetAnchorPosition()
+		{
+			return this.AnchorPoint;
+		}
+
+		#endregion
 	}
 }
 

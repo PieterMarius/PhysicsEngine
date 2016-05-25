@@ -39,9 +39,7 @@
   <ItemGroup>
     <Compile Include="ObjectGeometry.cs" />
     <Compile Include="SimulationObject.cs" />
-    <Compile Include="SimulationJoint.cs" />
     <Compile Include="AABB.cs" />
-    <Compile Include="Joint.cs" />
     <Compile Include="ConstraintType.cs" />
     <Compile Include="JointType.cs" />
     <Compile Include="ObjectType.cs" />

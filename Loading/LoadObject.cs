@@ -250,58 +250,58 @@ namespace Loading
 					switch (jointType) 
 					{
 					case JointType.Fixed:
-//						joint[j] = FixedJointConstraint.SetJoint (
-//							objects[indexA],
-//							objects[indexB],
-//							K,
-//							C);
+						joint[j] = new FixedJointConstraint (
+							objects[indexA],
+							objects[indexB],
+							K,
+							C);
 						break;
 
 					case JointType.BallAndSocket:
-//						joint[j] = BallAndSocketConstraint.SetJoint (
-//							objects[indexA],
-//							objects[indexB],
-//							startAnchorPosition,
-//							K,
-//							C);
+						joint[j] = new BallAndSocketConstraint (
+							objects[indexA],
+							objects[indexB],
+							startAnchorPosition,
+							K,
+							C);
 						break;
 
 					case JointType.Slider:
-//						joint [j] = SliderConstraint.SetJoint (
-//							objects [indexA],
-//							objects [indexB],
-//							startAnchorPosition,
-//							actionAxis,
-//							K,
-//							C,
-//							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
+						joint [j] = new SliderConstraint (
+							objects [indexA],
+							objects [indexB],
+							startAnchorPosition,
+							actionAxis,
+							K,
+							C,
+							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
 						break;
 
 					case JointType.Piston:
-//						joint [j] = PistonConstraint.SetJoint (
-//							objects [indexA],
-//							objects [indexB],
-//							startAnchorPosition,
-//							actionAxis,
-//							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));						
+						joint [j] = new PistonConstraint (
+							objects [indexA],
+							objects [indexB],
+							startAnchorPosition,
+							actionAxis,
+							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));						
 						break;
 
 					case JointType.Hinge:
-//						joint [j] = HingeConstraint.SetJoint (
-//							objects [indexA],
-//							objects [indexB],
-//							startAnchorPosition,
-//							actionAxis,
-//							K,
-//							C,
-//							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-//							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+						joint [j] = new HingeConstraint (
+							objects [indexA],
+							objects [indexB],
+							startAnchorPosition,
+							actionAxis,
+							K,
+							C,
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 						break;
 
 					case JointType.Hinge2:

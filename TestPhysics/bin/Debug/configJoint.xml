@@ -120,7 +120,7 @@
     </ObjectsSettings>
     
     <JointsSettings>
-        <!--
+        
 	<Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>2</ObjectIndexB>
@@ -148,7 +148,8 @@
             <AngularLimitMax>1000,0</AngularLimitMax>
         </JointProperties>
 	</Joint>
-        -->
+    
+        
         <Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>3</ObjectIndexB>
@@ -158,14 +159,13 @@
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
-            <AngularLimitMin>-1,57079632679</AngularLimitMin>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
         
-        <!--
         <Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
@@ -181,7 +181,6 @@
             <AngularLimitMax>1000,0</AngularLimitMax>
         </JointProperties>
 	</Joint>
-        -->
         
     </JointsSettings>
 </RigidBodyEngine>

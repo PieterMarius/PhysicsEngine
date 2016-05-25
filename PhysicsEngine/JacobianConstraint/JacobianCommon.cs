@@ -4,17 +4,17 @@ using SimulationObjectDefinition;
 
 namespace MonoPhysicsEngine
 {
-	public static class JacobianBuilderCommon
+	public static class JacobianCommon
 	{
 		public static Vector3 GetFixedAngularError(
 			SimulationObject objectA,
 			SimulationObject objectB,
-			Joint simulationJoint)
+			Quaternion relativeOrientation)
 		{
 			Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse () *
 			                                        objectA.RotationStatus;
 
-			Quaternion relativeOrientationError = simulationJoint.RelativeRotation1.Inverse () *
+			Quaternion relativeOrientationError = relativeOrientation.Inverse () *
 			                                      currentRelativeOrientation;
 
 			Vector3 angularError = new Vector3 (
@@ -50,6 +50,31 @@ namespace MonoPhysicsEngine
 			}
 
 			return (angle > Math.PI) ? angle - 2.0 * Math.PI : angle;
+		}
+
+		public static double GetAngle(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Quaternion relativeRotation,
+			Vector3 rotationAxis)
+		{
+			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
+				simulationObjectB.RotationStatus;
+
+			Quaternion relativeOrientation = relativeRotation.Inverse () *
+				currentRelativeOrientation;
+
+			Vector3 quaternionVectorPart = new Vector3 (
+				relativeOrientation.b,
+				relativeOrientation.c,
+				relativeOrientation.d);
+
+			quaternionVectorPart = simulationObjectA.RotationMatrix * quaternionVectorPart;
+
+			return JacobianCommon.GetRotationAngle (
+				quaternionVectorPart,
+				relativeOrientation.a,
+				rotationAxis);
 		}
 
 		public static JacobianContact GetDOF(
@@ -105,24 +130,22 @@ namespace MonoPhysicsEngine
 		public static JacobianContact GetLinearLimit (
 			int indexA, 
 			int indexB, 
-			Joint simulationJoint,
 			SimulationObject simulationObjectA, 
 			SimulationObject simulationObjectB, 
 			Vector3 sliderAxis,
 			Vector3 r1, 
 			Vector3 r2,
+			double K,
 			double linearLimitMin,
 			double linearLimitMax)
 		{
 
 			double sliderDistance = Math.Abs((simulationObjectB.Position - simulationObjectA.Position).Dot (sliderAxis));
 
-			//Console.WriteLine ("Slider distance: " + sliderDistance);
-
 			if (sliderDistance < linearLimitMin) 
 			{
 
-				double linearLimit = simulationJoint.K *
+				double linearLimit = K *
 					(linearLimitMin - sliderDistance);
 
 				return GetDOF (
@@ -140,7 +163,7 @@ namespace MonoPhysicsEngine
 			}
 			else if (sliderDistance > linearLimitMax) 
 			{
-				double linearLimit = simulationJoint.K *
+				double linearLimit = K *
 					(sliderDistance - linearLimitMax);
 
 				return GetDOF (
@@ -160,63 +183,21 @@ namespace MonoPhysicsEngine
 			return new JacobianContact ();
 		}
 
-		public static double GetAngle1(
-			Vector3 axis1,
-			Vector3 axis2,
-			Quaternion rotationStatus,
-			Quaternion startRelativeRotation)
-		{
-			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix (axis1, axis2);
-			Quaternion rotationQ = Quaternion.GetQuaternion (rotationMatrix);
-
-			Quaternion mult1 = Quaternion.Multiply1 (rotationStatus, rotationQ);
-			Quaternion mult2 = Quaternion.Multiply2 (mult1, startRelativeRotation);
-
-			Vector3 quaternionVectorPart = new Vector3 (
-				mult2.b,
-				mult2.c,
-				mult2.d);
-
-			//quaternionVectorPart = simulationObjectA.RotationMatrix * quaternionVectorPart;
-			//TODO work in progress
-
-			return GetRotationAngle (quaternionVectorPart, mult2.a, new Vector3 ());
-		}
-
 		public static JacobianContact GetAngularLimit (
 			int indexA, 
 			int indexB, 
-			Joint simulationJoint,  
+			double angle,
+			double K,
 			SimulationObject simulationObjectA, 
 			SimulationObject simulationObjectB,
 			Vector3 rotationAxis,
 			double angularLimitMin,
 			double angularLimitMax)
 		{
-			//TODO spostare la logica all'interno dei metodi di joint
-			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
-			                                        simulationObjectB.RotationStatus;
-
-			Quaternion relativeOrientation = simulationJoint.RelativeRotation1.Inverse () *
-			                                 currentRelativeOrientation;
-
-			Vector3 quaternionVectorPart = new Vector3 (
-				                               relativeOrientation.b,
-				                               relativeOrientation.c,
-				                               relativeOrientation.d);
-
-			quaternionVectorPart = simulationObjectA.RotationMatrix * quaternionVectorPart;
-
-			double angle = 
-				GetRotationAngle (
-					quaternionVectorPart,
-					relativeOrientation.a,
-					rotationAxis);
-
 			if (angle > angularLimitMax) {
 
 				double angularLimit = 
-					simulationJoint.K *
+					K *
 					(angle - angularLimitMax);
 
 				return GetDOF (
@@ -238,7 +219,7 @@ namespace MonoPhysicsEngine
 			{
 
 				double angularLimit = 
-					simulationJoint.K *
+					K *
 					(angularLimitMin - angle);
 
 				return GetDOF (

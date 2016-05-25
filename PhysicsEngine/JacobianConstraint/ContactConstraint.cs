@@ -66,7 +66,7 @@ namespace MonoPhysicsEngine
 
 					double correctedBounce = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
 
-					JacobianContact normalContact = JacobianBuilderCommon.GetDOF (
+					JacobianContact normalContact = JacobianCommon.GetDOF (
 						indexA,
 						indexB,
 						linearComponentA,
@@ -158,7 +158,7 @@ namespace MonoPhysicsEngine
 			angularComponentA = ra.Cross (linearComponentA);
 			angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
-			friction [0] = JacobianBuilderCommon.GetDOF (
+			friction [0] = JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				linearComponentA,
@@ -182,7 +182,7 @@ namespace MonoPhysicsEngine
 			angularComponentA = ra.Cross (linearComponentA);
 			angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
-			friction [1] = JacobianBuilderCommon.GetDOF (
+			friction [1] = JacobianCommon.GetDOF (
 				indexA,
 				indexB,
 				linearComponentA,
