@@ -43,8 +43,8 @@ namespace MonoPhysicsEngine
 			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
 			                        (this.AnchorPoint - objectB.Position);
 
-			this.RelativeOrientation = Quaternion.Inverse (objectA.RotationStatus) *
-									   objectB.RotationStatus;
+			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
+									   objectA.RotationStatus;
 		}
 
 		#endregion
@@ -158,8 +158,8 @@ namespace MonoPhysicsEngine
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (1.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
+				new Vector3 (1.0, 0.0, 0.0),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -175,8 +175,8 @@ namespace MonoPhysicsEngine
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 1.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
+				new Vector3 (0.0, 1.0, 0.0),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -192,8 +192,8 @@ namespace MonoPhysicsEngine
 				indexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 1.0),
 				new Vector3 (0.0, 0.0, -1.0),
+				new Vector3 (0.0, 0.0, 1.0),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,

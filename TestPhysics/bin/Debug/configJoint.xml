@@ -69,7 +69,7 @@
              
         <Object>
             <Position x="5,0" y="5,6" z="-1,5" />
-            <LinearVelocity x="-2,0" y="4,0" z="0,0" />
+            <LinearVelocity x="-2,0" y="4,0" z="-1,0" />
             <AngularVelocity x="2,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -86,6 +86,22 @@
         <Object>
             <Position x="5,0" y="5,6" z="1,5" />
             <LinearVelocity x="0,5" y="2,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+        <Object>
+            <Position x="-5,0" y="5,6" z="1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -172,6 +188,22 @@
         <JointProperties>
             <JointType>3</JointType>
             <Position x="3,0" y="0,0" z="1,5" />
+            <ActionAxis x="1,0" y="0,0" z="0,0" />
+            <RestoreCoefficient>13,2</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <LinearLimitMin>4,0</LinearLimitMin>
+            <LinearLimitMax>7,0</LinearLimitMax>
+            <AngularLimitMin>-1000,0</AngularLimitMin>
+            <AngularLimitMax>1000,0</AngularLimitMax>
+        </JointProperties>
+	</Joint>
+        
+        <Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>5</ObjectIndexB>
+        <JointProperties>
+            <JointType>0</JointType>
+            <Position x="-3,0" y="0,0" z="1,5" />
             <ActionAxis x="1,0" y="0,0" z="0,0" />
             <RestoreCoefficient>13,2</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>

@@ -247,75 +247,76 @@ namespace Loading
 						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["y"].Value),
 						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["z"].Value));
 
-					switch (jointType) 
-					{
-					case JointType.Fixed:
-						joint[j] = new FixedJointConstraint (
-							objects[indexA],
-							objects[indexB],
-							K,
-							C);
-						break;
+					switch (jointType) {
+						case JointType.Fixed:
+							joint [j] = new FixedJointConstraint (
+								objects [indexA],
+								objects [indexB],
+								K,
+								C);
+							break;
 
-					case JointType.BallAndSocket:
-						joint[j] = new BallAndSocketConstraint (
-							objects[indexA],
-							objects[indexB],
-							startAnchorPosition,
-							K,
-							C);
-						break;
+						case JointType.BallAndSocket:
+							joint [j] = new BallAndSocketConstraint (
+								objects [indexA],
+								objects [indexB],
+								startAnchorPosition,
+								K,
+								C);
+							break;
 
-					case JointType.Slider:
-						joint [j] = new SliderConstraint (
-							objects [indexA],
-							objects [indexB],
-							startAnchorPosition,
-							actionAxis,
-							K,
-							C,
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
-						break;
+						case JointType.Slider:
+							joint [j] = new SliderConstraint (
+								objects [indexA],
+								objects [indexB],
+								startAnchorPosition,
+								actionAxis,
+								K,
+								C,
+								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
+							break;
 
-					case JointType.Piston:
-						joint [j] = new PistonConstraint (
-							objects [indexA],
-							objects [indexB],
-							startAnchorPosition,
-							actionAxis,
-							Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));						
-						break;
+						case JointType.Piston:
+							joint [j] = new PistonConstraint (
+								objects [indexA],
+								objects [indexB],
+								startAnchorPosition,
+								actionAxis,
+								Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));						
+							break;
 
-					case JointType.Hinge:
-						joint [j] = new HingeConstraint (
-							objects [indexA],
-							objects [indexB],
-							startAnchorPosition,
-							actionAxis,
-							K,
-							C,
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
-						break;
+						case JointType.Hinge:
+							joint [j] = new HingeConstraint (
+								objects [indexA],
+								objects [indexB],
+								startAnchorPosition,
+								actionAxis,
+								K,
+								C,
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+							break;
 
-					case JointType.Hinge2:
-						joint [j] = new Hinge2Constraint (
-							objects [indexA],
-							objects [indexB],
-							startAnchorPosition,
-							actionAxis,
-							new Vector3 (1.0,0.0,0.0),
-							K,
-							C,
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-							Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
-						break;
+						case JointType.Hinge2:
+							joint [j] = new Hinge2Constraint (
+								objects [indexA],
+								objects [indexB],
+								startAnchorPosition,
+								actionAxis,
+								new Vector3 (1.0, 0.0, 0.0),
+								K,
+								C,
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+							break;
 
 						default:
 							break;
