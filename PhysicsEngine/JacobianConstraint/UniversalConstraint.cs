@@ -5,7 +5,7 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public sealed class Hinge2Constraint: IConstraint
+	public sealed class UniversalConstraint: IConstraint
 	{
 		#region Public Fields
 
@@ -18,10 +18,10 @@ namespace MonoPhysicsEngine
 		public readonly Quaternion RelativeOrientation2;
 		public readonly Vector3 JointActDirection1;
 		public readonly Vector3 JointActDirection2;
-		public readonly double? AngularLimitMin1;
-		public readonly double? AngularLimitMax1;
-		public readonly double? AngularLimitMin2;
-		public readonly double? AngularLimitMax2;
+		public readonly double? AngularLimitMin1 = null;
+		public readonly double? AngularLimitMax1 = null;
+		public readonly double? AngularLimitMin2 = null;
+		public readonly double? AngularLimitMax2 = null;
 
 		public Vector3 AnchorPoint { get; private set; }
 
@@ -29,18 +29,14 @@ namespace MonoPhysicsEngine
 
 		#region Constructor
 
-		public Hinge2Constraint(
+		public UniversalConstraint(
 			SimulationObject objectA,
 			SimulationObject objectB,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
 			double K,
-			double C,
-			double? angularLimitMin1 = null,
-			double? angularLimitMax1 = null,
-			double? angularLimitMin2 = null,
-			double? angularLimitMax2 = null)
+			double C)
 		{
 			this.K = K;
 			this.C = C;
@@ -70,8 +66,23 @@ namespace MonoPhysicsEngine
 			this.RelativeOrientation2 = calculateRelativeOrientation (
 				rRotationAxis,
 				rHingeAxis,
-				objectB.RotationStatus); 
-						
+				objectB.RotationStatus);
+		}
+
+		public UniversalConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 hingeAxis,
+			Vector3 rotationAxis,
+			double K,
+			double C,
+			double? angularLimitMin1,
+			double? angularLimitMax1,
+			double? angularLimitMin2,
+			double? angularLimitMax2)
+			:this(objectA, objectB, startAnchorPosition, hingeAxis, rotationAxis, K, C)
+		{
 			this.AngularLimitMin1 = angularLimitMin1;
 			this.AngularLimitMax1 = angularLimitMax1;
 
@@ -148,7 +159,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -164,7 +174,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -182,7 +191,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -199,7 +207,6 @@ namespace MonoPhysicsEngine
 					-1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
 					angularLimit, 
 					ConstraintType.Joint));
 

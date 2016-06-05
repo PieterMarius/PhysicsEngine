@@ -65,11 +65,11 @@
     <Compile Include="JacobianConstraint\SliderConstraint.cs" />
     <Compile Include="JacobianConstraint\PistonConstraint.cs" />
     <Compile Include="JacobianConstraint\HingeConstraint.cs" />
-    <Compile Include="JacobianConstraint\Hinge2Constraint.cs" />
     <Compile Include="JacobianConstraint\ContactConstraint.cs" />
     <Compile Include="JacobianConstraint\IConstraint.cs" />
     <Compile Include="JacobianConstraint\ObjectConstraint.cs" />
     <Compile Include="JacobianConstraint\JacobianCommon.cs" />
+    <Compile Include="JacobianConstraint\UniversalConstraint.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

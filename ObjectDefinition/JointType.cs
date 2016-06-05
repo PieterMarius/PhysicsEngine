@@ -10,7 +10,8 @@ namespace SimulationObjectDefinition
 		Piston = 3,
 		Hinge = 4,
 		Generic6DOF  = 5,
-		Hinge2 = 6,
+		Universal = 6,
+		Hinge2 = 7,
 	}
 }
 

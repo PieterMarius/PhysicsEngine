@@ -303,8 +303,8 @@ namespace Loading
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 							break;
 
-						case JointType.Hinge2:
-							joint [j] = new Hinge2Constraint (
+						case JointType.Universal:
+							joint [j] = new UniversalConstraint (
 								objects [indexA],
 								objects [indexB],
 								startAnchorPosition,

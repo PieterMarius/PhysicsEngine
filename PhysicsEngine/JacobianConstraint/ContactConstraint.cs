@@ -76,22 +76,22 @@ namespace MonoPhysicsEngine
 						simulationObjs [indexA],
 						simulationObjs [indexB],
 						correctedBounce,
-						correctedBounce,
 						ConstraintType.Collision);
 
 					#endregion
 
 					#region Friction Contact
 
-					JacobianContact[] frictionContact = addFriction (
-						simulationObjs,
-						simulationParameters,
-						indexA,
-						indexB,
-						linearComponentA,
-						tangentialVelocity,
-						ra,
-						rb);
+					JacobianContact[] frictionContact = 
+						addFriction (
+							simulationObjs,
+							simulationParameters,
+							indexA,
+							indexB,
+							linearComponentA,
+							tangentialVelocity,
+							ra,
+							rb);
 
 					#endregion
 
@@ -168,7 +168,6 @@ namespace MonoPhysicsEngine
 				simulationObjects [indexA],
 				simulationObjects [indexB],
 				constraintLimit,
-				0.0,
 				ConstraintType.Friction,
 				-1);
 
@@ -192,7 +191,6 @@ namespace MonoPhysicsEngine
 				simulationObjects [indexA],
 				simulationObjects [indexB],
 				constraintLimit,
-				0.0,
 				ConstraintType.Friction,
 				-2);
 

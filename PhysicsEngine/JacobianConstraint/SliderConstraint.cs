@@ -17,8 +17,9 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 SliderAxis;
-		public readonly Vector3 LinearLimitMin;
-		public readonly Vector3 LinearLimitMax;
+		public readonly double? LinearLimitMin = null;
+		public readonly double? LinearLimitMax = null;
+		public readonly double? ForceLimit = null;
 
 		public Vector3 AnchorPoint { get; private set; }
 
@@ -32,9 +33,7 @@ namespace MonoPhysicsEngine
 			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
 			double K,
-			double C,
-			double linearLimitMin = 0.0,
-			double linearLimitMax = 0.0)
+			double C)
 		{
 			this.K = K;
 			this.C = C;
@@ -42,21 +41,63 @@ namespace MonoPhysicsEngine
 			this.SliderAxis = -1.0 * sliderAxis.Normalize ();
 
 			Vector3 relativePos = objectA.RotationMatrix *
-			                      (startAnchorPosition - objectA.StartPosition);
+				(startAnchorPosition - objectA.StartPosition);
 
 			this.AnchorPoint = relativePos + objectA.Position;
 
 			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectA.Position);
+				(this.AnchorPoint - objectA.Position);
 
 			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectB.Position);
+				(this.AnchorPoint - objectB.Position);
 
 			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
-									   objectA.RotationStatus;
+				objectA.RotationStatus;
+		}
 
-			this.LinearLimitMin = sliderAxis * linearLimitMin;
-			this.LinearLimitMax = sliderAxis * linearLimitMax;
+		public SliderConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 sliderAxis,
+			double K,
+			double C,
+			double linearLimitMin,
+			double linearLimitMax)
+			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
+		{
+			this.LinearLimitMin = linearLimitMin;
+			this.LinearLimitMax = linearLimitMax;
+		}
+
+		public SliderConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 sliderAxis,
+			double K,
+			double C,
+			double forceLimit)
+			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
+		{
+			this.ForceLimit = forceLimit;
+		}
+
+		public SliderConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 sliderAxis,
+			double K,
+			double C,
+			double linearLimitMin,
+			double linearLimitMax,
+			double forceLimit)
+			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
+		{
+			this.LinearLimitMin = linearLimitMin;
+			this.LinearLimitMax = linearLimitMax;
+			this.ForceLimit = forceLimit;
 		}
 
 		#endregion
@@ -128,7 +169,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -144,7 +184,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (0.0, 1.0, 0.0),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -162,7 +201,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -178,7 +216,6 @@ namespace MonoPhysicsEngine
 				-1.0 * Vector3.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -196,7 +233,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			#endregion
@@ -204,21 +240,42 @@ namespace MonoPhysicsEngine
 			#region Limit Constraints 
 
 			// Limit extraction
-			double linearLimitMin = this.SliderAxis.Dot (this.LinearLimitMin);
-			double linearLimitMax = this.SliderAxis.Dot (this.LinearLimitMax);
+			if (this.LinearLimitMin.HasValue &&
+				this.LinearLimitMax.HasValue)
+			{
 
-			sliderConstraints.Add (
-				JacobianCommon.GetLinearLimit(
+				sliderConstraints.Add (
+					JacobianCommon.GetLinearLimit(
+						indexA,
+						indexB,
+						simulationObjectA,
+						simulationObjectB,
+						sliderAxis,
+						r1,
+						r2,
+						this.K,
+						this.LinearLimitMin.Value,
+						this.LinearLimitMax.Value));
+			}
+
+			#endregion
+
+			#region Motor Constraint
+
+			if (ForceLimit.HasValue)
+			{
+				sliderConstraints.Add (JacobianCommon.GetDOF (
 					indexA,
 					indexB,
+					sliderAxis,
+					-1.0 * sliderAxis,
+					new Vector3(),
+					new Vector3(),
 					simulationObjectA,
 					simulationObjectB,
-					sliderAxis,
-					r1,
-					r2,
-					this.K,
-					linearLimitMin,
-					linearLimitMax));
+					this.ForceLimit.Value,
+					ConstraintType.JointMotor));
+			}
 
 			#endregion
 
@@ -243,6 +300,7 @@ namespace MonoPhysicsEngine
 		}
 
 		#endregion
+
 	}
 }
 

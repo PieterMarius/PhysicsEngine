@@ -16,8 +16,8 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 HingeAxis;
-		public readonly double? AngularLimitMin;
-		public readonly double? AngularLimitMax;
+		public readonly double? AngularLimitMin = null;
+		public readonly double? AngularLimitMax = null;
 
 		public Vector3 AnchorPoint { get; private set; }
 
@@ -31,9 +31,7 @@ namespace MonoPhysicsEngine
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			double K,
-			double C,
-			double? angularLimitMin = null,
-			double? angularLimitMax = null)
+			double C)
 		{
 			this.K = K;
 			this.C = C;
@@ -54,7 +52,20 @@ namespace MonoPhysicsEngine
 										objectA.RotationStatus;
 
 			this.HingeAxis = hingeAxis.Normalize ();
+		}
 
+		public HingeConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 hingeAxis,
+			double K,
+			double C,
+			double? angularLimitMin,
+			double? angularLimitMax)
+			:this (objectA, objectB, startAnchorPosition, hingeAxis, K, C)
+			
+		{
 			this.AngularLimitMin = angularLimitMin;
 			this.AngularLimitMax = angularLimitMax;
 		}
@@ -130,7 +141,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -147,7 +157,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 3
@@ -163,7 +172,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -183,7 +191,6 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
-					angularLimit, 
 					ConstraintType.Joint));
 
 			//DOF 5
@@ -201,7 +208,6 @@ namespace MonoPhysicsEngine
 					1.0 * t2, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
 					angularLimit, 
 					ConstraintType.Joint));
 

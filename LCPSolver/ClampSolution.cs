@@ -22,14 +22,20 @@ namespace LCPSolver
 					
 					return GeometryUtilities.Clamp (
 						X [i],
-						X [i + input.Constraints [i].Value] * input.ConstraintLimitMin [i],
-						-X [i + input.Constraints [i].Value] * input.ConstraintLimitMin [i]);
+						X [i + input.Constraints [i].Value] * input.ConstraintLimit [i],
+						-X [i + input.Constraints [i].Value] * input.ConstraintLimit [i]);
 					
 				case ConstraintType.Joint:
 					return X [i];
 
 				case ConstraintType.JointLimit:
 					return Math.Max (0.0, X [i]);
+
+				case ConstraintType.JointMotor:
+					return GeometryUtilities.Clamp (
+						X [i],
+						X [i + input.Constraints [i].Value] * input.ConstraintLimit [i],
+						-X [i + input.Constraints [i].Value] * input.ConstraintLimit [i]);
 				
 				default:
 					return X [i];

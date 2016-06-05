@@ -112,7 +112,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -128,7 +127,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -146,7 +144,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -162,7 +159,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (1.0, 0.0, 0.0),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -180,7 +176,6 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				constraintLimit,
 				ConstraintType.Joint));
 
 			//DOF 6
@@ -196,7 +191,6 @@ namespace MonoPhysicsEngine
 				new Vector3 (0.0, 0.0, 1.0),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 

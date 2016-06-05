@@ -8,6 +8,7 @@ namespace SimulationObjectDefinition
 		Friction,
 		Joint,
 		JointLimit,
+		JointMotor,
 	}
 }
 

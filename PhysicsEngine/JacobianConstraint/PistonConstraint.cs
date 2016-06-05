@@ -16,10 +16,10 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 PistonAxis;
-		public readonly Vector3 AngularLimitMin;
-		public readonly Vector3 AngularLimitMax;
-		public readonly Vector3 LinearLimitMin;
-		public readonly Vector3 LinearLimitMax;
+		public readonly Vector3 AngularLimitMin = new Vector3 ();
+		public readonly Vector3 AngularLimitMax = new Vector3 ();
+		public readonly Vector3 LinearLimitMin = new Vector3 ();
+		public readonly Vector3 LinearLimitMax = new Vector3();
 
 		public Vector3 AnchorPoint { get; private set; }
 
@@ -33,11 +33,7 @@ namespace MonoPhysicsEngine
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
-			double C,
-			double linearLimitMin = 0.0,
-			double linearLimitMax = 0.0,
-			double angularLimitMin = 0.0,
-			double angularLimitMax = 0.0)
+			double C)
 		{
 			this.K = K;
 			this.C = C;
@@ -58,7 +54,36 @@ namespace MonoPhysicsEngine
 
 			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
 									   objectA.RotationStatus;
+		}
 
+		public PistonConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 pistonAxis,
+			double K,
+			double C,
+			double linearLimitMin,
+			double linearLimitMax)
+			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
+		{
+			this.LinearLimitMin = this.PistonAxis * linearLimitMin;
+			this.LinearLimitMax = this.PistonAxis * linearLimitMax;
+		}
+		
+		public PistonConstraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 pistonAxis,
+			double K,
+			double C,
+			double linearLimitMin,
+			double linearLimitMax,
+			double angularLimitMin,
+			double angularLimitMax)
+			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
+		{
 			this.LinearLimitMin = this.PistonAxis * linearLimitMin;
 			this.LinearLimitMax = this.PistonAxis * linearLimitMax;
 
@@ -131,7 +156,6 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
-					angularLimit, 
 					ConstraintType.Joint));
 
 			//DOF 2
@@ -150,7 +174,6 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
-					angularLimit, 
 					ConstraintType.Joint));
 
 			//DOF 3
@@ -166,7 +189,6 @@ namespace MonoPhysicsEngine
 				-1.0 * Vector3.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 
@@ -185,7 +207,6 @@ namespace MonoPhysicsEngine
 				-1.0 * Vector3.Cross (r2, t2),
 				simulationObjectA,
 				simulationObjectB,
-				constraintLimit,
 				constraintLimit,
 				ConstraintType.Joint));
 

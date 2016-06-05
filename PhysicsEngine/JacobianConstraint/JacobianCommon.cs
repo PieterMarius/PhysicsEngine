@@ -86,30 +86,24 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentB,
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
-			double? constraintLimitMin,
-			double? constraintLimitMax,
+			double constraintLimit,
 			ConstraintType type,
 			int? contactReference = null)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
-				linearComponentB.Dot (simulationObjectB.LinearVelocity) +
-				angularComponentA.Dot (simulationObjectA.AngularVelocity) +
-				angularComponentB.Dot (simulationObjectB.AngularVelocity);
+			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
+			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
+			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
-			double B = jacobianVelocityValue;
-
-			if (!constraintLimitMin.HasValue &&
-				!constraintLimitMax.HasValue) 
+			switch (type) 
 			{
-				constraintLimitMin = double.MinValue;
-				constraintLimitMax = double.MaxValue;
-
-			} 
-			else if (constraintLimitMin == constraintLimitMax) 
-			{
-				B = jacobianVelocityValue - constraintLimitMin.Value;
-				constraintLimitMin = double.MinValue;
-				constraintLimitMax = double.MaxValue;
+				case ConstraintType.Friction:
+					break;
+				case ConstraintType.JointMotor:
+					break;
+				default:
+					jacobianVelocityValue -= constraintLimit;
+					break;
 			}
 
 			return new JacobianContact (
@@ -121,9 +115,8 @@ namespace MonoPhysicsEngine
 				angularComponentA,
 				angularComponentB,
 				type,
-				B,
-				constraintLimitMin.Value,
-				constraintLimitMax.Value,
+				jacobianVelocityValue,
+				constraintLimit,
 				0.0);
 		}
 
@@ -158,7 +151,6 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					linearLimit, 
-					linearLimit, 
 					ConstraintType.JointLimit);
 			}
 			else if (sliderDistance > linearLimitMax) 
@@ -175,7 +167,6 @@ namespace MonoPhysicsEngine
 					-1.0 * Vector3.Cross (r2, sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB, 
-					linearLimit, 
 					linearLimit, 
 					ConstraintType.JointLimit);
 			}
@@ -210,7 +201,6 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
-					angularLimit, 
 					ConstraintType.JointLimit);
 
 			} 
@@ -231,7 +221,6 @@ namespace MonoPhysicsEngine
 					rotationAxis, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
 					angularLimit, 
 					ConstraintType.JointLimit);
 			}

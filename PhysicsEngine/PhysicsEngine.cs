@@ -481,8 +481,7 @@ namespace MonoPhysicsEngine
 				double[] X = new double[contact.Length];
 				double[] D = new double[contact.Length];
 				ConstraintType[] constraintsType = new ConstraintType[contact.Length];
-				double[] constraintsLimitMin = new double[contact.Length];
-				double[] constraintsLimitMax = new double[contact.Length];
+				double[] constraintsLimit = new double[contact.Length];
 				int?[] constraints = new int?[contact.Length];
 
 				List<int>[] index = new List<int>[contact.Length];
@@ -508,8 +507,7 @@ namespace MonoPhysicsEngine
 						
 						X [i] = contactA.StartImpulseValue;
 						constraints [i] = contactA.ContactReference;
-						constraintsLimitMin [i] = contactA.ConstraintLimitMin;
-						constraintsLimitMax [i] = contactA.ConstraintLimitMax;
+						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;
 
 						double mValue;
@@ -557,8 +555,7 @@ namespace MonoPhysicsEngine
 					B,
 					X,
 					D,
-					constraintsLimitMin,
-					constraintsLimitMax,
+					constraintsLimit,
 					constraintsType,
 					constraints,
 					contact.Length);

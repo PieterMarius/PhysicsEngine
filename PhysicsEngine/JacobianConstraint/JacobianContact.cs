@@ -57,12 +57,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The constraint limit.
 		/// </summary>
-		public readonly double ConstraintLimitMin;
-
-		/// <summary>
-		/// The constraint limit max.
-		/// </summary>
-		public readonly double ConstraintLimitMax;
+		public readonly double ConstraintLimit;
 
 		/// <summary>
 		/// The suggested start value for solver solution find.
@@ -83,8 +78,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentB,
 			ConstraintType type,
 			double b,
-			double constraintLimitMin,
-			double constraintLimitMax,
+			double constraintLimit,
 			double startImpulseValue)
 		{
 			this.ObjectA = objectA;
@@ -96,8 +90,7 @@ namespace MonoPhysicsEngine
 			this.AngularComponentB = angularComponentB;
 			this.Type = type;
 			this.B = b;
-			this.ConstraintLimitMin = constraintLimitMin;
-			this.ConstraintLimitMax = constraintLimitMax;
+			this.ConstraintLimit = constraintLimit;
 			this.StartImpulseValue = startImpulseValue;
 		}
 

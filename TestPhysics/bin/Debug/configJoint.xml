@@ -85,7 +85,7 @@
         
         <Object>
             <Position x="5,0" y="5,6" z="1,5" />
-            <LinearVelocity x="0,5" y="2,0" z="0,0" />
+            <LinearVelocity x="1,5" y="2,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -186,7 +186,7 @@
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
         <JointProperties>
-            <JointType>3</JointType>
+            <JointType>2</JointType>
             <Position x="3,0" y="0,0" z="1,5" />
             <ActionAxis x="1,0" y="0,0" z="0,0" />
             <RestoreCoefficient>13,2</RestoreCoefficient>
