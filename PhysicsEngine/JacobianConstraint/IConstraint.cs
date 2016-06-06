@@ -11,7 +11,6 @@ namespace MonoPhysicsEngine
 		                                     int indexB,
 		                                     SimulationObject[] simulationObjs);
 
-		void SetAnchorPosition(Vector3 position);
 		Vector3 GetStartAnchorPosition ();
 		Vector3 GetAnchorPosition ();
 	}

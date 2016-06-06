@@ -23,7 +23,7 @@ namespace MonoPhysicsEngine
 		public readonly double? AngularLimitMin2 = null;
 		public readonly double? AngularLimitMax2 = null;
 
-		public Vector3 AnchorPoint { get; private set; }
+		private Vector3 AnchorPoint;
 
 		#endregion
 
@@ -113,6 +113,11 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs [indexA];
 			SimulationObject simulationObjectB = simulationObjs [indexB];
 
+			this.AnchorPoint = (simulationObjectA.RotationMatrix *
+								(this.StartAnchorPoint -
+								simulationObjectA.StartPosition)) +
+								simulationObjectA.Position;
+
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
@@ -159,6 +164,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -175,6 +181,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
@@ -191,6 +198,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -208,6 +216,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					0.0,
 					ConstraintType.Joint));
 
 			#region Limit Constraints 
@@ -260,14 +269,15 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
+			#region Motor Constraint
+
+
+
+			#endregion
+
 			#endregion
 
 			return hinge2Constraints;
-		}
-
-		public void SetAnchorPosition(Vector3 position)
-		{
-			this.AnchorPoint = position;
 		}
 
 		public Vector3 GetStartAnchorPosition()

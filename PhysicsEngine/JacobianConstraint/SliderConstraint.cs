@@ -19,9 +19,10 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 SliderAxis;
 		public readonly double? LinearLimitMin = null;
 		public readonly double? LinearLimitMax = null;
+		public readonly double? SpeedLimit = null;
 		public readonly double? ForceLimit = null;
 
-		public Vector3 AnchorPoint { get; private set; }
+		private Vector3 AnchorPoint;
 
 		#endregion
 
@@ -77,26 +78,15 @@ namespace MonoPhysicsEngine
 			Vector3 sliderAxis,
 			double K,
 			double C,
-			double forceLimit)
-			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
-		{
-			this.ForceLimit = forceLimit;
-		}
-
-		public SliderConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
-			Vector3 startAnchorPosition,
-			Vector3 sliderAxis,
-			double K,
-			double C,
 			double linearLimitMin,
 			double linearLimitMax,
+			double speedLimit,
 			double forceLimit)
 			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
 		{
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
+			this.SpeedLimit = speedLimit;
 			this.ForceLimit = forceLimit;
 		}
 
@@ -121,6 +111,11 @@ namespace MonoPhysicsEngine
 
 			SimulationObject simulationObjectA = simulationObjs [indexA];
 			SimulationObject simulationObjectB = simulationObjs [indexB];
+
+			this.AnchorPoint = (simulationObjectA.RotationMatrix *
+								(this.StartAnchorPoint -
+								simulationObjectA.StartPosition)) +
+								simulationObjectA.Position;	
 
 			#region Init Linear
 
@@ -169,6 +164,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -185,6 +181,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
@@ -201,6 +198,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -217,6 +215,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 5
@@ -233,6 +232,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			#endregion
@@ -262,7 +262,8 @@ namespace MonoPhysicsEngine
 
 			#region Motor Constraint
 
-			if (ForceLimit.HasValue)
+			if (ForceLimit.HasValue &&
+				SpeedLimit.HasValue)
 			{
 				sliderConstraints.Add (JacobianCommon.GetDOF (
 					indexA,
@@ -273,6 +274,7 @@ namespace MonoPhysicsEngine
 					new Vector3(),
 					simulationObjectA,
 					simulationObjectB,
+					this.SpeedLimit.Value,
 					this.ForceLimit.Value,
 					ConstraintType.JointMotor));
 			}
@@ -282,11 +284,6 @@ namespace MonoPhysicsEngine
 			#endregion
 
 			return sliderConstraints;
-		}
-
-		public void SetAnchorPosition(Vector3 position)
-		{
-			this.AnchorPoint = position;
 		}
 
 		public Vector3 GetStartAnchorPosition()

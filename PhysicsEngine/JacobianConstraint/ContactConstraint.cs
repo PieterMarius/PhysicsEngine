@@ -76,6 +76,7 @@ namespace MonoPhysicsEngine
 						simulationObjs [indexA],
 						simulationObjs [indexB],
 						correctedBounce,
+						0.0,
 						ConstraintType.Collision);
 
 					#endregion
@@ -167,6 +168,7 @@ namespace MonoPhysicsEngine
 				angularComponentB,
 				simulationObjects [indexA],
 				simulationObjects [indexB],
+				0.0,
 				constraintLimit,
 				ConstraintType.Friction,
 				-1);
@@ -190,6 +192,7 @@ namespace MonoPhysicsEngine
 				angularComponentB,
 				simulationObjects [indexA],
 				simulationObjects [indexB],
+				0.0,
 				constraintLimit,
 				ConstraintType.Friction,
 				-2);

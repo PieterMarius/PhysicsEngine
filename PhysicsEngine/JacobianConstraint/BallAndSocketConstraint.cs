@@ -15,7 +15,7 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 StartErrorAxis1;
 		public readonly Vector3 StartErrorAxis2;
 
-		public Vector3 AnchorPoint { get; private set; }
+		private Vector3 AnchorPoint;
 
 		#endregion
 
@@ -66,6 +66,11 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs [indexA];
 			SimulationObject simulationObjectB = simulationObjs [indexB];
 
+			this.AnchorPoint = (simulationObjectA.RotationMatrix *
+								(this.StartAnchorPoint -
+								simulationObjectA.StartPosition)) +
+								simulationObjectA.Position;
+
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
@@ -100,6 +105,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -116,6 +122,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
@@ -132,16 +139,12 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			#endregion
 
 			return ballSocketConstraints;
-		}
-
-		public void SetAnchorPosition(Vector3 position)
-		{
-			this.AnchorPoint = position;
 		}
 
 		public Vector3 GetStartAnchorPosition()

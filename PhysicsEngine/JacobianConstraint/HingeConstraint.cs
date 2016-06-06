@@ -18,8 +18,10 @@ namespace MonoPhysicsEngine
 		public readonly Vector3 HingeAxis;
 		public readonly double? AngularLimitMin = null;
 		public readonly double? AngularLimitMax = null;
+		public readonly double? SpeedLimit = null;
+		public readonly double? ForceLimit = null;
 
-		public Vector3 AnchorPoint { get; private set; }
+		private Vector3 AnchorPoint;
 
 		#endregion
 
@@ -62,12 +64,16 @@ namespace MonoPhysicsEngine
 			double K,
 			double C,
 			double? angularLimitMin,
-			double? angularLimitMax)
+			double? angularLimitMax,
+			double? speedLimit = null,
+			double? forceLimit = null)
 			:this (objectA, objectB, startAnchorPosition, hingeAxis, K, C)
 			
 		{
 			this.AngularLimitMin = angularLimitMin;
 			this.AngularLimitMax = angularLimitMax;
+			this.SpeedLimit = speedLimit;
+			this.ForceLimit = forceLimit;
 		}
 
 		#endregion
@@ -91,6 +97,11 @@ namespace MonoPhysicsEngine
 
 			SimulationObject simulationObjectA = simulationObjs [indexA];
 			SimulationObject simulationObjectB = simulationObjs [indexB];
+
+			this.AnchorPoint = (simulationObjectA.RotationMatrix *
+								(this.StartAnchorPoint -
+								simulationObjectA.StartPosition)) +
+								simulationObjectA.Position;
 
 			#region Init Linear
 
@@ -124,7 +135,6 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
-
 			#region Jacobian Constraint
 
 			//DOF 1
@@ -141,6 +151,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
@@ -157,6 +168,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
@@ -173,6 +185,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
@@ -191,6 +204,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					0.0,
 					ConstraintType.Joint));
 
 			//DOF 5
@@ -209,6 +223,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					0.0,
 					ConstraintType.Joint));
 
 			#region Limit Constraints 
@@ -236,14 +251,31 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
+			#region Motor Contraint
+
+			if(this.SpeedLimit.HasValue &&
+				this.ForceLimit.HasValue)
+			{
+				hingeConstraints.Add (
+					JacobianCommon.GetDOF (
+						indexA, 
+						indexB, 
+						new Vector3(), 
+						new Vector3(), 
+						-1.0 * axisRotated, 
+						1.0 * axisRotated, 
+						simulationObjectA, 
+						simulationObjectB, 
+						this.SpeedLimit.Value,
+						this.ForceLimit.Value,
+						ConstraintType.JointMotor));
+			}
+
+			#endregion
+
 			#endregion
 
 			return hingeConstraints;
-		}
-
-		public void SetAnchorPosition(Vector3 position)
-		{
-			this.AnchorPoint = position;
 		}
 
 		public Vector3 GetStartAnchorPosition()

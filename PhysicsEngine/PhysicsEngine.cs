@@ -426,9 +426,6 @@ namespace MonoPhysicsEngine
 			//Update Objects position
 			this.integrateObjectsPosition (this.simulationObjects);
 
-			//Update Joints position
-			this.integrateJointPosition (this.simulationJoints);
-
 			#endregion
 
 			stopwatch.Stop ();
@@ -777,29 +774,6 @@ namespace MonoPhysicsEngine
 				}
 				this.simulationObjects [index] = simObj;
 				index++;
-			}
-		}
-			
-		/// <summary>
-		/// Integrates the joint position.
-		/// </summary>
-		private void integrateJointPosition(
-			List<ObjectConstraint> simulationConstraints)
-		{
-			foreach (ObjectConstraint objConstraint in simulationConstraints) 
-			{
-				int indexA = objConstraint.IndexA;
-
-				foreach (IConstraint constraintItem in objConstraint.ConstraintList) 
-				{
-					Vector3 relativeAnchorPosition = constraintItem.GetStartAnchorPosition () -
-					                          this.simulationObjects [indexA].StartPosition;
-
-					relativeAnchorPosition = (this.simulationObjects [indexA].RotationMatrix * relativeAnchorPosition) +
-												this.simulationObjects [indexA].Position;
-
-					constraintItem.SetAnchorPosition (relativeAnchorPosition);
-				}
 			}
 		}
 

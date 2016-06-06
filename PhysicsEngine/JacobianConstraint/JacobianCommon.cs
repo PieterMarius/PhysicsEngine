@@ -86,6 +86,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentB,
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
+			double constraintValue,
 			double constraintLimit,
 			ConstraintType type,
 			int? contactReference = null)
@@ -95,16 +96,7 @@ namespace MonoPhysicsEngine
 			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
 			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
-			switch (type) 
-			{
-				case ConstraintType.Friction:
-					break;
-				case ConstraintType.JointMotor:
-					break;
-				default:
-					jacobianVelocityValue -= constraintLimit;
-					break;
-			}
+			jacobianVelocityValue -= constraintValue;
 
 			return new JacobianContact (
 				indexA,
@@ -151,6 +143,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					linearLimit, 
+					0.0,
 					ConstraintType.JointLimit);
 			}
 			else if (sliderDistance > linearLimitMax) 
@@ -168,6 +161,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					linearLimit, 
+					0.0,
 					ConstraintType.JointLimit);
 			}
 
@@ -201,6 +195,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					0.0,
 					ConstraintType.JointLimit);
 
 			} 
@@ -222,6 +217,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					0.0,
 					ConstraintType.JointLimit);
 			}
 
