@@ -114,48 +114,64 @@ namespace PhysicsEngineMathUtility
 		public static Quaternion GetQuaternion(Matrix3x3 a)
 		{
 			double tr = a.r1c1 + a.r2c2 + a.r3c3;
+			double ra = 0.0, rb = 0.0, rc = 0.0, rd = 0.0;
+			double s = 0.0;
 
-			if (tr >= 0.0) {
-				double s = Math.Sqrt(tr + 1.0);
-				double ra = 0.5 * s;
+			if (tr >= 0.0) 
+			{
+				s = Math.Sqrt(tr + 1.0);
+				ra = 0.5 * s;
 				s = 0.5 / s;
-				double rb = (a.r3c2 - a.r2c3) * s;
-				double rc = (a.r1c3 - a.r3c1) * s;
-				double rd = (a.r2c1 - a.r1c2) * s;
+				rb = (a.r3c2 - a.r2c3) * s;
+				rc = (a.r1c3 - a.r3c1) * s;
+				rd = (a.r2c1 - a.r1c2) * s;
 
 				return new Quaternion (ra, rb, rc, rd);
 			} 
 				
-			if (a.r2c2 > a.r1c1) {
-				double s = Math.Sqrt ((a.r2c2 - (a.r3c3 + a.r1c1)) + 1.0);
-				double rc = 0.5 * s;
+			if (a.r2c2 > a.r1c1) 
+			{
+				if (a.r3c3 > a.r2c2) 
+				{
+					s = Math.Sqrt ((a.r3c3 - (a.r1c1 + a.r2c2)) + 0.5);
+					rd = 0.5 * s;
+					s = 0.5 / s;
+					rb = (a.r3c1 + a.r1c3) * s;
+					rc = (a.r2c3 + a.r3c2) * s;
+					ra = (a.r2c1 - a.r1c2) * s;
+
+					return new Quaternion (ra, rb, rc, rd);
+				}
+
+				s = Math.Sqrt ((a.r2c2 - (a.r3c3 + a.r1c1)) + 1.0);
+				rc = 0.5 * s;
 				s = 0.5 / s;
-				double rd = (a.r2c3 + a.r3c2) * s;
-				double rb = (a.r1c2 + a.r2c1) * s;
-				double ra = (a.r1c3 - a.r3c1) * s;
+				rd = (a.r2c3 + a.r3c2) * s;
+				rb = (a.r1c2 + a.r2c1) * s;
+				ra = (a.r1c3 - a.r3c1) * s;
+
+				return new Quaternion (ra, rb, rc, rd);
+			} 
+				
+			if (a.r3c3 > a.r1c1) 
+			{
+				s = Math.Sqrt ((a.r3c3 - (a.r1c1 + a.r2c2)) + 0.5);
+				rd = 0.5 * s;
+				s = 0.5 / s;
+				rb = (a.r3c1 + a.r1c3) * s;
+				rc = (a.r2c3 + a.r3c2) * s;
+				ra = (a.r2c1 - a.r1c2) * s;
 
 				return new Quaternion (ra, rb, rc, rd);
 			}
-				
-			if ((a.r3c3 > a.r1c1) || (a.r3c3 > a.r2c2)) {
-				double s = Math.Sqrt ((a.r3c3 - (a.r1c1 + a.r2c2)) + 0.5);
-				double rd = 0.5 * s;
-				s = 0.5 / s;
-				double rb = (a.r3c1 + a.r1c3) * s;
-				double rc = (a.r2c3 + a.r3c2) * s;
-				double ra = (a.r2c1 - a.r1c2) * s;
-
-				return new Quaternion (ra, rb, rc, rd);
-			} 
-
 			else 
 			{
-				double s = Math.Sqrt ((a.r1c1 - (a.r2c2 + a.r3c3)) + 1.0);
-				double rb = 0.5 * s;
+				s = Math.Sqrt ((a.r1c1 - (a.r2c2 + a.r3c3)) + 1.0);
+				rb = 0.5 * s;
 				s = 0.5 / s;
-				double rc = (a.r1c2 + a.r2c1) * s;
-				double rd = (a.r3c1 + a.r1c3) * s;
-				double ra = (a.r3c2 - a.r2c3) * s;
+				rc = (a.r1c2 + a.r2c1) * s;
+				rd = (a.r3c1 + a.r1c3) * s;
+				ra = (a.r3c2 - a.r2c3) * s;
 
 				return new Quaternion (ra, rb, rc, rd);
 			}
