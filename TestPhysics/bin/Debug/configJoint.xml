@@ -171,7 +171,7 @@
         <ObjectIndexB>3</ObjectIndexB>
         <JointProperties>
             <JointType>6</JointType>
-            <Position x="3,0" y="0,0" z="-1,5" />
+            <Position x="3,0" y="-1,0" z="-1,5" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
