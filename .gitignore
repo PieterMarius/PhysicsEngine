@@ -59,3 +59,5 @@ Utility/obj/*
 Loading/bin/*
 Loading/obj/*
 TestPhysics/obj/*
+ObjectDefinition/obj/*
+PhysicsEngine/obj/*
