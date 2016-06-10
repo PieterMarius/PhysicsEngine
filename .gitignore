@@ -36,3 +36,4 @@ Loading/obj/Release/Loading.dll
 PhysicsEngine/bin/Release/LCPSolver.dll.mdb
 
 PhysicsEngine/bin/Release/LCPSolver.dll.mdb
+*.dll
