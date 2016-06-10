@@ -52,3 +52,4 @@ CollisionEngine/bin/Debug/MathUtility.dll
 *.pdb
 TestPhysics/obj/x86/Debug/TestPhysics.exe
 CollisionEngine/obj/*
+LCPSolver/obj/*
