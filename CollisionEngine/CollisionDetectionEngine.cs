@@ -202,7 +202,7 @@ namespace CollisionEngine
 
 			List<CollisionPair> collisionPair = this.sweepAndPruneEngine.SweepAndPruneTest (boxs);
 
-			object lockMe = new object();
+			var lockMe = new object();
 
 			Parallel.ForEach (
 				collisionPair, 

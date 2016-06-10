@@ -413,8 +413,6 @@ namespace Utility
 			GL.End ();
 		}
 
-
-
 		#endregion
 			
 	}

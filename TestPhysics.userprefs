@@ -2,18 +2,40 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/Utility/LoadBMP.cs" line="44" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="300" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="312" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="325" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="334" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="343" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="831" column="1" />
-    <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="141" column="1" />
+    <BreakpointStore>
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/Utility/LoadBMP.cs" line="44" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="300" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="312" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="325" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="334" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="343" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="831" column="1" />
+      <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="141" column="1" />
+      <Breakpoint file="C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\JacobianConstraint\IContraintBuilder.cs" line="12" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Utility\OpenGLUtilities.cs">
     <Files>
-      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="94" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="13" Column="28" />
+      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="14" Column="36" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="9" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="9" Column="13" />
+      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="8" Column="78" />
+      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="8" Column="75" />
+      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="8" Column="70" />
+      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="9" Column="64" />
+      <File FileName="PhysicsEngine\InertiaTensor.cs" Line="95" Column="4" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="794" Column="23" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="492" Column="43" />
+      <File FileName="PhysicsEngine\ContactPartitioning\IContactPartitioningEngine.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="1" Column="1" />
+      <File FileName="ObjectDefinition\AABB.cs" Line="18" Column="10" />
+      <File FileName="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" Line="1" Column="1" />
+      <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="195" Column="44" />
+      <File FileName="..\..\..\..\..\Program Files (x86)\MSBuild\14.0\bin\Microsoft.Common.CurrentVersion.targets" Line="1820" Column="5" />
+      <File FileName="Utility\ArrayUtility.cs" Line="11" Column="22" />
+      <File FileName="Utility\OpenGLUtilities.cs" Line="23" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <DisabledProjects>

@@ -497,7 +497,7 @@ namespace TestPhysics
 
 		private void displayJoint()
 		{
-			List<ObjectConstraint> jointList = this.physicsEngine.GetJointsList ();
+			List<ObjectConstraint> jointList = this.physicsEngine.SimulationJoints;
 
 			for (int i = 0; i < jointList.Count; i++) 
 			{
