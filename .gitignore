@@ -38,3 +38,6 @@ PhysicsEngine/bin/Release/LCPSolver.dll.mdb
 PhysicsEngine/bin/Release/LCPSolver.dll.mdb
 *.dll
 *.pdb
+*.dll
+*.mdb
+CollisionEngine/bin/Debug/MathUtility.dll
