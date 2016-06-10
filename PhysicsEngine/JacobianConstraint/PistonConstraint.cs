@@ -204,8 +204,6 @@ namespace MonoPhysicsEngine
 
 			constraintLimit = this.K * Vector3.Dot (t2,linearError);
 
-			Console.WriteLine ("linear error:" + constraintLimit);
-
 			pistonConstraints.Add (JacobianCommon.GetDOF (
 				indexA,
 				indexB,
