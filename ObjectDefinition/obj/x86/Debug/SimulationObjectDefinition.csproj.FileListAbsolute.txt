@@ -5,3 +5,10 @@ C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\ObjectDefinition\bin\
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\SimulationObjectDefinition.csprojResolveAssemblyReference.cache
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\ObjectDefinition.dll
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\ObjectDefinition.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\bin\Debug\ObjectDefinition.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\bin\Debug\ObjectDefinition.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\bin\Debug\MathUtility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\bin\Debug\MathUtility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\SimulationObjectDefinition.csprojResolveAssemblyReference.cache
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\ObjectDefinition.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\ObjectDefinition\obj\x86\Debug\ObjectDefinition.pdb

@@ -4,3 +4,11 @@ C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\M
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\MathUtility.pdb
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\LCPSolver\obj\x86\Debug\LCPSolver.dll
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\LCPSolver\obj\x86\Debug\LCPSolver.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\LCPSolver.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\LCPSolver.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\MathUtility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\ObjectDefinition.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\MathUtility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\bin\Debug\ObjectDefinition.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\obj\x86\Debug\LCPSolver.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\LCPSolver\obj\x86\Debug\LCPSolver.pdb

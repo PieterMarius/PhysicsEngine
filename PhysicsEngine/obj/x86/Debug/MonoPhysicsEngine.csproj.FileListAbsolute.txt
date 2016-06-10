@@ -11,3 +11,16 @@ C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Deb
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\MonoPhysicsEngine.csprojResolveAssemblyReference.cache
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\PhysicsEngine.dll
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\PhysicsEngine.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\MonoPhysicsEngine.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\MonoPhysicsEngine.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\CollisionEngine.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\LCPSolver.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\MathUtility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\ObjectDefinition.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\CollisionEngine.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\ObjectDefinition.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\LCPSolver.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\bin\Debug\MathUtility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\MonoPhysicsEngine.csprojResolveAssemblyReference.cache
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\MonoPhysicsEngine.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\obj\x86\Debug\MonoPhysicsEngine.pdb

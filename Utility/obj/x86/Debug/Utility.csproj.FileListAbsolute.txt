@@ -11,3 +11,16 @@ C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\Ope
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.csprojResolveAssemblyReference.cache
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.dll
 C:\Users\vanduinp.PROMETEIA\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\Utility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\Utility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\CjClutter.ObjLoader.Loader.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\MathUtility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\ObjectDefinition.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\OpenTK.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\MathUtility.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\ObjectDefinition.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\OpenTK.pdb
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\bin\Debug\OpenTK.xml
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.csprojResolveAssemblyReference.cache
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.dll
+C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\Utility\obj\x86\Debug\Utility.pdb
