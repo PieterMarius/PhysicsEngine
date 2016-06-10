@@ -44,3 +44,5 @@ CollisionEngine/bin/Debug/MathUtility.dll
 *.dll
 *.pdb
 *.pdb
+*.cache
+*.pdb
