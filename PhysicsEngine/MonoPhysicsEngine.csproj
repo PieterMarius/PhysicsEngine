@@ -70,6 +70,7 @@
     <Compile Include="JacobianConstraint\ObjectConstraint.cs" />
     <Compile Include="JacobianConstraint\JacobianCommon.cs" />
     <Compile Include="JacobianConstraint\UniversalConstraint.cs" />
+    <Compile Include="JacobianConstraint\IConstraintBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

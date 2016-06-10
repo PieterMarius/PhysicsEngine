@@ -38,7 +38,7 @@ namespace MonoPhysicsEngine
 
 			foreach(ObjectConstraint item in simulationJointList)
 			{
-				foreach(IConstraint constraintItem in item.ConstraintList)
+				foreach(IConstraintBuilder constraintItem in item.ConstraintList)
 				{
 					constraint.AddRange (
 						constraintItem.BuildJacobian (

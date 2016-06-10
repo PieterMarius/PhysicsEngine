@@ -5,7 +5,7 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public sealed class FixedJointConstraint: IConstraint
+	public sealed class FixedJointConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Public Fields
 

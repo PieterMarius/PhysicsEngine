@@ -6,7 +6,7 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public class SliderConstraint: IConstraint
+	public class SliderConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Public Fields
 

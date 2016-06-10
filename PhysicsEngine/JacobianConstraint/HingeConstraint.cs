@@ -5,7 +5,7 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public sealed class HingeConstraint: IConstraint
+	public sealed class HingeConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Public Fields
 

@@ -5,7 +5,7 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public sealed class UniversalConstraint: IConstraint
+	public sealed class UniversalConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Public Fields
 
@@ -96,12 +96,11 @@ namespace MonoPhysicsEngine
 		#region Public Methods
 
 		/// <summary>
-		/// Builds the hinge2 joint.
+		/// Builds the Universal joint.
 		/// </summary>
-		/// <returns>The hinge2 joint.</returns>
+		/// <returns>The Universal joint.</returns>
 		/// <param name="indexA">Index a.</param>
 		/// <param name="indexB">Index b.</param>
-		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
 			int indexA,
@@ -121,10 +120,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+										  this.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+										  this.StartErrorAxis2;
 
 			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
 			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
@@ -139,7 +138,6 @@ namespace MonoPhysicsEngine
 			#region Init Angular
 
 			Vector3 hingeAxis = simulationObjectA.RotationMatrix * this.JointActDirection1;
-
 			Vector3 rotationAxis = simulationObjectB.RotationMatrix * this.JointActDirection2;
 
 			double k = hingeAxis.Dot (rotationAxis);
@@ -266,12 +264,6 @@ namespace MonoPhysicsEngine
 					this.AngularLimitMax2.Value));
 
 			}
-
-			#endregion
-
-			#region Motor Constraint
-
-
 
 			#endregion
 
