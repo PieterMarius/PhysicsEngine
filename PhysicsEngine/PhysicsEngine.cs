@@ -464,6 +464,8 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
+		#region Solver Matrix Computation
+
 
 		/// <summary>
 		/// Builds the LCP matrix for solver.
@@ -608,6 +610,8 @@ namespace MonoPhysicsEngine
 
 			return (linearA + angularA) + (linearB + angularB);
 		}
+
+		#endregion
 
 		#region Integrate velocity and position
 			

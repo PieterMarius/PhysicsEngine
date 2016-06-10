@@ -15,6 +15,24 @@ namespace MonoPhysicsEngine
 		private Vector3[] vertexStartPosition;
 		private int[][] triangleVertexIndex;
 
+		private static readonly double[] mult =
+		{
+			1.0 / 6.0,
+			1.0 / 24.0,
+			1.0 / 24.0,
+			1.0 / 24.0,
+			1.0 / 60.0,
+			1.0 / 60.0,
+			1.0 / 60.0,
+			1.0 / 120.0,
+			1.0 / 120.0,
+			1.0 / 120.0
+		};
+
+		private static  readonly double[] intg = 
+		{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+
+
 		#endregion
 
 		#region Constructor
@@ -72,23 +90,10 @@ namespace MonoPhysicsEngine
 			g2 = f2 + w2 * (f1 + w2);
 		}
 
+
 		private void computeInertiaTensor()
 		{
-			double[] mult = new double[] {
-				1.0 / 6.0,
-				1.0 / 24.0,
-				1.0 / 24.0,
-				1.0 / 24.0,
-				1.0 / 60.0,
-				1.0 / 60.0,
-				1.0 / 60.0,
-				1.0 / 120.0,
-				1.0 / 120.0,
-				1.0 / 120.0
-			};
-
-			double[] intg = new double[]{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-
+			
 			for (int i = 0; i < this.triangleVertexIndex.Length; i++) 
 			{
 				//Vertice 1 triangolo
