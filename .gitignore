@@ -52,7 +52,7 @@ CollisionEngine/bin/Debug/MathUtility.dll
 *.pdb
 CollisionEngine/obj/*
 LCPSolver/obj/*
-CollisionEgine/bin/*
+CollisionEngine/bin/*
 TestPhysics/obj/*
 Utility/bin/*
 Utility/obj/*
