@@ -57,8 +57,6 @@
     <Compile Include="ContactPartitioning\SpatialPartition.cs" />
     <Compile Include="ContactPartitioning\ContactIndex.cs" />
     <Compile Include="ContactPartitioning\ContactGroupType.cs" />
-    <Compile Include="JacobianConstraint\IJacobianConstraintBuilder.cs" />
-    <Compile Include="JacobianConstraint\JacobianConstraintBuilder.cs" />
     <Compile Include="JacobianConstraint\JacobianContact.cs" />
     <Compile Include="JacobianConstraint\FixedJointConstraint.cs" />
     <Compile Include="JacobianConstraint\BallAndSocketConstraint.cs" />

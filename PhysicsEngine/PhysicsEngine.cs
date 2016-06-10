@@ -49,8 +49,6 @@ namespace MonoPhysicsEngine
 
 		#region Execution Properties
 
-		private IJacobianConstraintBuilder jacobianConstraintBuilder;
-
 		private List<List<CollisionPointStructure>> collisionPartitionedPoints;
 		private List<List<ObjectConstraint>> partitionedJoint;
 
@@ -84,7 +82,6 @@ namespace MonoPhysicsEngine
 			this.solver = solver;
 			this.simulationParameters = simulationParameters;
 			this.contactPartitioningEngine = contactPartitioningEngine;
-			this.jacobianConstraintBuilder = new JacobianConstraintBuilder ();
 
 			this.simulationJoints = new List<ObjectConstraint> ();
 		}
@@ -394,7 +391,7 @@ namespace MonoPhysicsEngine
 
 				for (int i = 0; i<  collisionPartitionedPoints.Count;i++)
 				{
-					List<JacobianContact> contactConstraints = this.jacobianConstraintBuilder.GetJacobianConstraint (
+					List<JacobianContact> contactConstraints = GetJacobianConstraint (
 						                                           this.collisionPartitionedPoints [i],
 						                                           this.partitionedJoint [i],
 						                                           this.simulationObjects,
@@ -464,8 +461,48 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-		#region Solver Matrix Computation
+		#region Jacobian Constraint
 
+		public List<JacobianContact> GetJacobianConstraint(
+			List<CollisionPointStructure> collisionPointsStruct,
+			List<ObjectConstraint> simulationJointList,
+			SimulationObject[] simulationObjs,
+			SimulationParameters simulationParameters)
+		{
+			List<JacobianContact> constraint = new List<JacobianContact>();
+
+			#region Collision Contact
+
+			constraint.AddRange(
+				ContactConstraint.BuildJoints(
+					collisionPointsStruct,
+					simulationObjs,
+					simulationParameters));
+
+			#endregion
+
+			#region Joint
+
+			foreach (ObjectConstraint item in simulationJointList)
+			{
+				foreach (IConstraintBuilder constraintItem in item.ConstraintList)
+				{
+					constraint.AddRange(
+						constraintItem.BuildJacobian(
+							item.IndexA,
+							item.IndexB,
+							simulationObjs));
+				}
+			}
+
+			#endregion
+
+			return constraint;
+		}
+
+		#endregion
+
+		#region Solver Matrix Computation
 
 		/// <summary>
 		/// Builds the LCP matrix for solver.
@@ -493,7 +530,7 @@ namespace MonoPhysicsEngine
 				}
 
 				//Critical section variable
-				Object sync = new object ();
+				var sync = new object ();
 
 				Parallel.For (0, 
 					contact.Length, 
