@@ -87,6 +87,7 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			double constraintValue,
+			double cfm,
 			double constraintLimit,
 			ConstraintType type,
 			int? contactReference = null)
@@ -108,6 +109,7 @@ namespace MonoPhysicsEngine
 				angularComponentB,
 				type,
 				jacobianVelocityValue,
+				cfm,
 				constraintLimit,
 				0.0);
 		}
@@ -121,6 +123,7 @@ namespace MonoPhysicsEngine
 			Vector3 r1, 
 			Vector3 r2,
 			double K,
+			double C,
 			double linearLimitMin,
 			double linearLimitMax)
 		{
@@ -142,7 +145,8 @@ namespace MonoPhysicsEngine
 					Vector3.Cross (r2, sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB, 
-					linearLimit, 
+					linearLimit,
+					C,
 					0.0,
 					ConstraintType.JointLimit);
 			}
@@ -160,7 +164,8 @@ namespace MonoPhysicsEngine
 					-1.0 * Vector3.Cross (r2, sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB, 
-					linearLimit, 
+					linearLimit,
+					C,
 					0.0,
 					ConstraintType.JointLimit);
 			}
@@ -173,6 +178,7 @@ namespace MonoPhysicsEngine
 			int indexB, 
 			double angle,
 			double K,
+			double C,
 			SimulationObject simulationObjectA, 
 			SimulationObject simulationObjectB,
 			Vector3 rotationAxis,
@@ -195,6 +201,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
+					C,
 					0.0,
 					ConstraintType.JointLimit);
 
@@ -216,7 +223,8 @@ namespace MonoPhysicsEngine
 					rotationAxis, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
+					angularLimit,
+					C,
 					0.0,
 					ConstraintType.JointLimit);
 			}

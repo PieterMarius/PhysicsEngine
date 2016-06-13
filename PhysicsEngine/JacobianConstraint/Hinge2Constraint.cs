@@ -11,13 +11,14 @@ namespace MonoPhysicsEngine
 
 		public readonly double C;
 		public readonly double K;
+		public readonly double KHinge;
 		public readonly Vector3 StartAnchorPoint;
 		public readonly Vector3 StartErrorAxis1;
 		public readonly Vector3 StartErrorAxis2;
 		public readonly Quaternion RelativeOrientation1;
 		public readonly Quaternion RelativeOrientation2;
-		public readonly Vector3 JointActDirection1;
-		public readonly Vector3 JointActDirection2;
+		public readonly Vector3 HingeAxis;
+		public readonly Vector3 RotationAxis;
 		public readonly double? AngularLimitMin1 = null;
 		public readonly double? AngularLimitMax1 = null;
 		public readonly double? AngularLimitMin2 = null;
@@ -41,8 +42,8 @@ namespace MonoPhysicsEngine
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
-			this.JointActDirection1 = hingeAxis.Normalize ();
-			this.JointActDirection2 = rotationAxis.Normalize ();
+			this.HingeAxis = hingeAxis.Normalize ();
+			this.RotationAxis = rotationAxis.Normalize ();
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -55,8 +56,8 @@ namespace MonoPhysicsEngine
 			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
 				(this.AnchorPoint - objectB.Position);
 
-			Vector3 rHingeAxis = objectA.RotationMatrix * this.JointActDirection1;
-			Vector3 rRotationAxis = objectB.RotationMatrix * this.JointActDirection2;
+			Vector3 rHingeAxis = objectA.RotationMatrix * this.HingeAxis;
+			Vector3 rRotationAxis = objectB.RotationMatrix * this.RotationAxis;
 
 			this.RelativeOrientation1 = calculateRelativeOrientation (
 				rHingeAxis,
@@ -150,8 +151,8 @@ namespace MonoPhysicsEngine
 
 			#region Init Angular
 
-			Vector3 hingeAxis = simulationObjectA.RotationMatrix * this.JointActDirection1;
-			Vector3 rotationAxis = simulationObjectB.RotationMatrix * this.JointActDirection2;
+			Vector3 hingeAxis = simulationObjectA.RotationMatrix * this.HingeAxis;
+			Vector3 rotationAxis = simulationObjectB.RotationMatrix * this.RotationAxis;
 
 			double k = hingeAxis.Dot (rotationAxis);
 			Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
@@ -175,6 +176,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
@@ -192,27 +194,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
 
-			double relVelocity = JacobianCommon.GetDOF (
-				indexA,
-				indexB,
-				hingeAxis,
-				-1.0 * hingeAxis,
-				Vector3.Cross (r1, hingeAxis),
-				-1.0 * Vector3.Cross (r2, hingeAxis),
-				simulationObjectA,
-				simulationObjectB,
-				0.0,
-				0.0,
-				ConstraintType.Joint).B;
-
-			//TODO è instabile con C > 0
-			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError) +
-				this.C * relVelocity;
+			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
 				indexA,
@@ -224,6 +212,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				KHinge,
 				0.0,
 				ConstraintType.Joint));
 			
@@ -241,7 +230,8 @@ namespace MonoPhysicsEngine
 					-1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
+					angularLimit,
+					C,
 					0.0,
 					ConstraintType.Joint));
 
@@ -253,7 +243,7 @@ namespace MonoPhysicsEngine
 				double angle1 = getAngle1(
 					hingeAxis,
 					rotationAxis,
-					this.JointActDirection1,
+					this.HingeAxis,
 					simulationObjectA.RotationStatus,
 					this.RelativeOrientation1);
 
@@ -262,6 +252,7 @@ namespace MonoPhysicsEngine
 					indexB, 
 					angle1,
 					this.K,
+					C,
 					simulationObjectA, 
 					simulationObjectB, 
 					hingeAxis,
@@ -276,7 +267,7 @@ namespace MonoPhysicsEngine
 				double angle2 = getAngle2 (
 					hingeAxis,
 					rotationAxis,
-					this.JointActDirection2,
+					this.RotationAxis,
 					simulationObjectB.RotationStatus,
 					this.RelativeOrientation2);
 
@@ -285,6 +276,7 @@ namespace MonoPhysicsEngine
 					indexB, 
 					angle2,
 					this.K,
+					C,
 					simulationObjectA, 
 					simulationObjectB, 
 					rotationAxis,

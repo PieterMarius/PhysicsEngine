@@ -161,6 +161,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit,
+					C,
 					0.0,
 					ConstraintType.Joint));
 
@@ -179,7 +180,8 @@ namespace MonoPhysicsEngine
 					-1.0 * t2, 
 					simulationObjectA, 
 					simulationObjectB, 
-					angularLimit, 
+					angularLimit,
+					C,
 					0.0,
 					ConstraintType.Joint));
 
@@ -197,6 +199,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
@@ -214,6 +217,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
@@ -235,6 +239,7 @@ namespace MonoPhysicsEngine
 					r1,
 					r2,
 					this.K,
+					C,
 					linearLimitMin,
 					linearLimitMax));
 
@@ -254,6 +259,7 @@ namespace MonoPhysicsEngine
 					indexB, 
 					angle,
 					this.K,
+					C,
 					simulationObjectA, 
 					simulationObjectB, 
 					sliderAxis,

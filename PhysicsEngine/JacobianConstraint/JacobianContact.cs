@@ -64,6 +64,11 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		public readonly double StartImpulseValue;
 
+		/// <summary>
+		/// The CFM (Constraint Force Mixing).
+		/// </summary>
+		public readonly double CFM;
+
 		#endregion
 
 		#region Constructor
@@ -78,6 +83,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentB,
 			ConstraintType type,
 			double b,
+			double cfm,
 			double constraintLimit,
 			double startImpulseValue)
 		{
@@ -90,6 +96,7 @@ namespace MonoPhysicsEngine
 			this.AngularComponentB = angularComponentB;
 			this.Type = type;
 			this.B = b;
+			this.CFM = cfm;
 			this.ConstraintLimit = constraintLimit;
 			this.StartImpulseValue = startImpulseValue;
 		}

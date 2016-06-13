@@ -76,6 +76,7 @@ namespace MonoPhysicsEngine
 						simulationObjs [indexA],
 						simulationObjs [indexB],
 						correctedBounce,
+						simulationParameters.CFM,
 						0.0,
 						ConstraintType.Collision);
 
@@ -169,6 +170,7 @@ namespace MonoPhysicsEngine
 				simulationObjects [indexA],
 				simulationObjects [indexB],
 				0.0,
+				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
 				-1);
@@ -193,6 +195,7 @@ namespace MonoPhysicsEngine
 				simulationObjects [indexA],
 				simulationObjects [indexB],
 				0.0,
+				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
 				-2);

@@ -552,7 +552,7 @@ namespace MonoPhysicsEngine
 									contactB);
 
 								if (i == j) {
-									mValue += SimulationEngineParameters.CFM + 1E-30;
+									mValue += contactA.CFM + 1E-30;
 									D [i] = 1.0 / mValue;
 									continue;
 								}

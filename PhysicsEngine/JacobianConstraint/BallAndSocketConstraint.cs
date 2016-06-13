@@ -105,6 +105,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
@@ -122,6 +123,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
@@ -139,6 +141,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
+				C,
 				0.0,
 				ConstraintType.Joint));
 
