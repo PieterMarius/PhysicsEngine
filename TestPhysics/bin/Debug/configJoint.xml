@@ -24,9 +24,9 @@
        <Object>
             <Position x="0,0" y="5,6" z="0,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,5" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>1</ObjectType>
+            <ObjectType>0</ObjectType>
             <Mass>10,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
@@ -170,11 +170,11 @@
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>3</ObjectIndexB>
         <JointProperties>
-            <JointType>6</JointType>
+            <JointType>7</JointType>
             <Position x="3,0" y="-1,0" z="-1,5" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>6,6</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <StretchCoefficient>0,1</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>

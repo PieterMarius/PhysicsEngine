@@ -78,6 +78,22 @@ namespace MonoPhysicsEngine
 			double K,
 			double C,
 			double? angularLimitMin1,
+			double? angularLimitMax1)
+			:this(objectA, objectB, startAnchorPosition, hingeAxis, rotationAxis, K, C)
+		{
+			this.AngularLimitMin1 = angularLimitMin1;
+			this.AngularLimitMax1 = angularLimitMax1;
+		}
+
+		public Hinge2Constraint(
+			SimulationObject objectA,
+			SimulationObject objectB,
+			Vector3 startAnchorPosition,
+			Vector3 hingeAxis,
+			Vector3 rotationAxis,
+			double K,
+			double C,
+			double? angularLimitMin1,
 			double? angularLimitMax1,
 			double? angularLimitMin2,
 			double? angularLimitMax2)
@@ -124,9 +140,6 @@ namespace MonoPhysicsEngine
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
 				this.StartErrorAxis2;
-
-			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
-			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -183,7 +196,24 @@ namespace MonoPhysicsEngine
 				ConstraintType.Joint));
 
 			//DOF 3
-			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError);
+
+			double relVelocity = JacobianCommon.GetDOF (
+				indexA,
+				indexB,
+				hingeAxis,
+				-1.0 * hingeAxis,
+				Vector3.Cross (r1, hingeAxis),
+				-1.0 * Vector3.Cross (r2, hingeAxis),
+				simulationObjectA,
+				simulationObjectB,
+				0.0,
+				0.0,
+				ConstraintType.Joint).B;
+
+			Console.WriteLine ("relVel:" + relVelocity);
+
+			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError) +
+				this.C * relVelocity;
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
 				indexA,

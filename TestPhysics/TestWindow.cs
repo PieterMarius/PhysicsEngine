@@ -67,12 +67,10 @@ namespace TestPhysics
 			try
 			{
 
-
-
 			//LoadObject loadObject = new LoadObject ("startJoint.xml");
-			LoadObject loadObject = new LoadObject ("configJoint.xml");
+			//LoadObject loadObject = new LoadObject ("configJoint.xml");
 			//LoadObject loadObject = new LoadObject ("startConfig.xml");
-			//LoadObject loadObject = new LoadObject ("carConfig.xml");
+			LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 			simulationObjects = loadObject.LoadSimulationObjects ();
 			simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -99,7 +97,7 @@ namespace TestPhysics
 //			LoadEngineConfig engineConfig = new LoadEngineConfig ("startConfig.xml");
 //			this.simulationParameters = engineConfig.ReadEngineConfig ();
 //
-			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -1.2, 0.0));
+			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -2.2, 0.0));
 			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
 			this.physicsEngine = new PhysicsEngine (
 				this.collisionEngine,

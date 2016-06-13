@@ -301,7 +301,7 @@ namespace Loading
 								C,
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText),
-								0.0,
+								3.0,
 								0.15);
 							break;
 
@@ -330,9 +330,9 @@ namespace Loading
 								K,
 								C,
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+								//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 							break;
 
 						default:
