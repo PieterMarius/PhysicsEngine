@@ -210,8 +210,7 @@ namespace MonoPhysicsEngine
 				0.0,
 				ConstraintType.Joint).B;
 
-			Console.WriteLine ("relVel:" + relVelocity);
-
+			//TODO è instabile con C > 0
 			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError) +
 				this.C * relVelocity;
 

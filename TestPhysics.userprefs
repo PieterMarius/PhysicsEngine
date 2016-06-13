@@ -1,34 +1,6 @@
-﻿<Properties StartupItem="TestPhysics/TestPhysics.csproj" RefactoringSettings.EnableRefactorings="True">
+﻿<Properties RefactoringSettings.EnableRefactorings="True" StartupItem="TestPhysics\TestPhysics.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Loading/LoadObject.cs">
-    <Files>
-      <File FileName="PhysicsEngine/JacobianConstraint/UniversalConstraint.cs" Line="343" Column="13" />
-      <File FileName="MathUtility/Matrix3x3.cs" Line="265" Column="3" />
-      <File FileName="MathUtility/Quaternion.cs" Line="169" Column="56" />
-      <File FileName="PhysicsEngine/PhysicsEngine.cs" Line="213" Column="4" />
-      <File FileName="ObjectDefinition/JointType.cs" Line="14" Column="14" />
-      <File FileName="PhysicsEngine/JacobianConstraint/IConstraint.cs" Line="1" Column="14" />
-      <File FileName="PhysicsEngine/JacobianConstraint/IConstraintBuilder.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/Hinge2Constraint.cs" Line="105" Column="9" />
-      <File FileName="PhysicsEngine/JacobianConstraint/FixedJointConstraint.cs" Line="204" Column="10" />
-      <File FileName="Loading/LoadEngineConfig.cs" Line="1" Column="1" />
-      <File FileName="Loading/LoadObject.cs" Line="326" Column="6" />
-    </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="LCPSolver" expanded="True" />
-          <Node name="Loading" expanded="True" />
-          <Node name="MonoPhysicsEngine" expanded="True">
-            <Node name="JacobianConstraint" expanded="True" />
-          </Node>
-          <Node name="PhysicsEngineMathUtility" expanded="True" selected="True" />
-          <Node name="SimulationObjectDefinition" expanded="True" />
-          <Node name="TestPhysics" expanded="True" />
-        </State>
-      </Pad>
-    </Pads>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/Utility/LoadBMP.cs" line="44" column="1" />
@@ -42,8 +14,24 @@
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/MathUtility/Matrix3x3.cs" line="281" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs">
+    <Files>
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="343" Column="13" />
+      <File FileName="MathUtility\Matrix3x3.cs" Line="265" Column="3" />
+      <File FileName="MathUtility\Quaternion.cs" Line="169" Column="56" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="213" Column="4" />
+      <File FileName="ObjectDefinition\JointType.cs" Line="14" Column="14" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="1" Column="14" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="211" Column="29" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="204" Column="10" />
+      <File FileName="Loading\LoadEngineConfig.cs" Line="1" Column="1" />
+      <File FileName="Loading\LoadObject.cs" Line="326" Column="6" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="100" Column="95" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <DisabledProjects>
     <String>../OpenTKTutorialContent-master/OpenTKTutorial7/OpenTKTutorial7/OpenTKTutorial7.csproj</String>
   </DisabledProjects>
+  <MonoDevelop.Ide.ItemProperties.TestPhysics PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
