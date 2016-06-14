@@ -13,16 +13,17 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 SliderAxis;
 		public readonly double? LinearLimitMin = null;
 		public readonly double? LinearLimitMax = null;
-		public readonly double? SpeedLimit = null;
-		public readonly double? ForceLimit = null;
+
+		public double? SpeedValue { get; private set; } = null;
+		public double? ForceLimit { get; private set; } = null;
 
 		private Vector3 AnchorPoint;
+		private readonly Vector3 StartErrorAxis1;
+		private readonly Vector3 StartErrorAxis2;
+		private readonly Quaternion RelativeOrientation;
 
 		#endregion
 
@@ -69,25 +70,6 @@ namespace MonoPhysicsEngine
 		{
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
-		}
-
-		public SliderConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
-			Vector3 startAnchorPosition,
-			Vector3 sliderAxis,
-			double K,
-			double C,
-			double linearLimitMin,
-			double linearLimitMax,
-			double speedLimit,
-			double forceLimit)
-			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
-		{
-			this.LinearLimitMin = linearLimitMin;
-			this.LinearLimitMax = linearLimitMax;
-			this.SpeedLimit = speedLimit;
-			this.ForceLimit = forceLimit;
 		}
 
 		#endregion
@@ -269,7 +251,7 @@ namespace MonoPhysicsEngine
 			#region Motor Constraint
 
 			if (ForceLimit.HasValue &&
-				SpeedLimit.HasValue)
+				SpeedValue.HasValue)
 			{
 				sliderConstraints.Add (JacobianCommon.GetDOF (
 					indexA,
@@ -280,7 +262,7 @@ namespace MonoPhysicsEngine
 					new Vector3(),
 					simulationObjectA,
 					simulationObjectB,
-					this.SpeedLimit.Value,
+					this.SpeedValue.Value,
 					C,
 					this.ForceLimit.Value,
 					ConstraintType.JointMotor));
@@ -301,6 +283,17 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			SpeedValue = speedValue;
+			ForceLimit = forceLimit;
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

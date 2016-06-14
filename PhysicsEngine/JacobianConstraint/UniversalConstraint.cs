@@ -12,18 +12,18 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation1;
-		public readonly Quaternion RelativeOrientation2;
-		public readonly Vector3 JointActDirection1;
-		public readonly Vector3 JointActDirection2;
+		public readonly Vector3 HingeAxis;
+		public readonly Vector3 RotationAxis;
 		public readonly double? AngularLimitMin1 = null;
 		public readonly double? AngularLimitMax1 = null;
 		public readonly double? AngularLimitMin2 = null;
 		public readonly double? AngularLimitMax2 = null;
 
 		private Vector3 AnchorPoint;
+		private readonly Vector3 StartErrorAxis1;
+		private readonly Vector3 StartErrorAxis2;
+		private readonly Quaternion RelativeOrientation1;
+		private readonly Quaternion RelativeOrientation2;
 
 		#endregion
 
@@ -41,8 +41,8 @@ namespace MonoPhysicsEngine
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
-			this.JointActDirection1 = hingeAxis.Normalize ();
-			this.JointActDirection2 = rotationAxis.Normalize ();
+			this.HingeAxis = hingeAxis.Normalize ();
+			this.RotationAxis = rotationAxis.Normalize ();
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -55,8 +55,8 @@ namespace MonoPhysicsEngine
 			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
 				(this.AnchorPoint - objectB.Position);
 
-			Vector3 rHingeAxis = objectA.RotationMatrix * this.JointActDirection1;
-			Vector3 rRotationAxis = objectB.RotationMatrix * this.JointActDirection2;
+			Vector3 rHingeAxis = objectA.RotationMatrix * this.HingeAxis;
+			Vector3 rRotationAxis = objectB.RotationMatrix * this.RotationAxis;
 
 			this.RelativeOrientation1 = calculateRelativeOrientation (
 				rHingeAxis,
@@ -137,8 +137,8 @@ namespace MonoPhysicsEngine
 
 			#region Init Angular
 
-			Vector3 hingeAxis = simulationObjectA.RotationMatrix * this.JointActDirection1;
-			Vector3 rotationAxis = simulationObjectB.RotationMatrix * this.JointActDirection2;
+			Vector3 hingeAxis = simulationObjectA.RotationMatrix * this.HingeAxis;
+			Vector3 rotationAxis = simulationObjectB.RotationMatrix * this.RotationAxis;
 
 			double k = hingeAxis.Dot (rotationAxis);
 			Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
@@ -229,7 +229,7 @@ namespace MonoPhysicsEngine
 				double angle1 = getAngle1(
 					hingeAxis,
 					rotationAxis,
-					this.JointActDirection1,
+					this.HingeAxis,
 					simulationObjectA.RotationStatus,
 					this.RelativeOrientation1);
 
@@ -253,7 +253,7 @@ namespace MonoPhysicsEngine
 				double angle2 = getAngle2 (
 					hingeAxis,
 					rotationAxis,
-					this.JointActDirection2,
+					this.RotationAxis,
 					simulationObjectB.RotationStatus,
 					this.RelativeOrientation2);
 
@@ -286,6 +286,16 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

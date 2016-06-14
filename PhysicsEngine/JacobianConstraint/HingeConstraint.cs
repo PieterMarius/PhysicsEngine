@@ -12,16 +12,17 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 HingeAxis;
 		public readonly double? AngularLimitMin = null;
 		public readonly double? AngularLimitMax = null;
-		public readonly double? SpeedLimit = null;
-		public readonly double? ForceLimit = null;
+
+		public double? SpeedValue { get; private set; } = null;
+		public double? ForceLimit { get; private set; } = null;
 
 		private Vector3 AnchorPoint;
+		private readonly Vector3 StartErrorAxis1;
+		private readonly Vector3 StartErrorAxis2;
+		private readonly Quaternion RelativeOrientation;
 
 		#endregion
 
@@ -64,16 +65,12 @@ namespace MonoPhysicsEngine
 			double K,
 			double C,
 			double? angularLimitMin,
-			double? angularLimitMax,
-			double? speedLimit = null,
-			double? forceLimit = null)
+			double? angularLimitMax)
 			:this (objectA, objectB, startAnchorPosition, hingeAxis, K, C)
 			
 		{
 			this.AngularLimitMin = angularLimitMin;
 			this.AngularLimitMax = angularLimitMax;
-			this.SpeedLimit = speedLimit;
-			this.ForceLimit = forceLimit;
 		}
 
 		#endregion
@@ -259,7 +256,7 @@ namespace MonoPhysicsEngine
 
 			#region Motor Contraint
 
-			if(this.SpeedLimit.HasValue &&
+			if(this.SpeedValue.HasValue &&
 				this.ForceLimit.HasValue)
 			{
 				hingeConstraints.Add (
@@ -272,7 +269,7 @@ namespace MonoPhysicsEngine
 						1.0 * axisRotated, 
 						simulationObjectA, 
 						simulationObjectB, 
-						this.SpeedLimit.Value,
+						this.SpeedValue.Value,
 						C,
 						this.ForceLimit.Value,
 						ConstraintType.JointMotor));
@@ -293,6 +290,17 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			SpeedValue = speedValue;
+			ForceLimit = forceLimit;
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

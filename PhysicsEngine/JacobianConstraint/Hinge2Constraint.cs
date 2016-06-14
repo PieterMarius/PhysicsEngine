@@ -13,10 +13,6 @@ namespace MonoPhysicsEngine
 		public readonly double K;
 		public readonly double KHinge;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation1;
-		public readonly Quaternion RelativeOrientation2;
 		public readonly Vector3 HingeAxis;
 		public readonly Vector3 RotationAxis;
 		public readonly double? AngularLimitMin1 = null;
@@ -24,7 +20,16 @@ namespace MonoPhysicsEngine
 		public readonly double? AngularLimitMin2 = null;
 		public readonly double? AngularLimitMax2 = null;
 
+		public double? SpeedHingeAxisLimit { get; private set; } = null;
+		public double? ForceHingeAxisLimit { get; private set; } = null;
+		public double? SpeedRotationAxisLimit { get; private set; } = null;
+		public double? ForceRotationAxisLimit { get; private set; } = null;
+
 		private Vector3 AnchorPoint;
+		private readonly Vector3 StartErrorAxis1;
+		private readonly Vector3 StartErrorAxis2;
+		private readonly Quaternion RelativeOrientation1;
+		private readonly Quaternion RelativeOrientation2;
 
 		#endregion
 
@@ -162,6 +167,8 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
+			#region Base Constraint
+
 			//DOF 1
 
 			double constraintLimit = this.K * Vector3.Dot (t1,linearError);
@@ -235,6 +242,8 @@ namespace MonoPhysicsEngine
 					0.0,
 					ConstraintType.Joint));
 
+			#endregion
+
 			#region Limit Constraints 
 
 			if (this.AngularLimitMin1.HasValue && 
@@ -287,6 +296,48 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
+			#region Motor Constraint
+
+			if (this.SpeedHingeAxisLimit.HasValue &&
+				this.ForceHingeAxisLimit.HasValue)
+			{
+				hinge2Constraints.Add(
+					JacobianCommon.GetDOF(
+						indexA,
+						indexB,
+						new Vector3(),
+						new Vector3(),
+						-1.0 * hingeAxis,
+						1.0 * hingeAxis,
+						simulationObjectA,
+						simulationObjectB,
+						this.SpeedHingeAxisLimit.Value,
+						C,
+						this.ForceHingeAxisLimit.Value,
+						ConstraintType.JointMotor));
+			}
+
+			if (this.SpeedRotationAxisLimit.HasValue &&
+				this.ForceRotationAxisLimit.HasValue)
+			{
+				hinge2Constraints.Add(
+					JacobianCommon.GetDOF(
+						indexA,
+						indexB,
+						new Vector3(),
+						new Vector3(),
+						-1.0 * rotationAxis,
+						1.0 * rotationAxis,
+						simulationObjectA,
+						simulationObjectB,
+						this.SpeedRotationAxisLimit.Value,
+						C,
+						this.ForceRotationAxisLimit.Value,
+						ConstraintType.JointMotor));
+			}
+
+			#endregion
+
 			#endregion
 
 			return hinge2Constraints;
@@ -300,6 +351,18 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			SpeedHingeAxisLimit = speedValue;
+			ForceHingeAxisLimit = forceLimit;
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			SpeedRotationAxisLimit = speedValue;
+			ForceRotationAxisLimit = forceLimit;
 		}
 
 		#endregion

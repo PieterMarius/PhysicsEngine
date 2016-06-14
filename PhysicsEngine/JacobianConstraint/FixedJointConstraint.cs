@@ -12,11 +12,11 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation;
 
 		private Vector3 AnchorPoint;
+		private Vector3 StartErrorAxis1;
+		private Vector3 StartErrorAxis2;
+		private Quaternion RelativeOrientation;
 
 		#endregion
 
@@ -224,6 +224,16 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

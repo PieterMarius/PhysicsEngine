@@ -300,9 +300,9 @@ namespace Loading
 								K,
 								C,
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText),
-								3.0,
-								0.15);
+								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+
+								joint[j].SetAxis1Motor(3.0, 0.15);
 							break;
 
 						case JointType.Universal:
@@ -331,8 +331,10 @@ namespace Loading
 								C,
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
-								//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+
+								joint[j].SetAxis2Motor(4.0, 1.0);
 							break;
 
 						default:

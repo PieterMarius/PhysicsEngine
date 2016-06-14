@@ -14,20 +14,28 @@
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/MathUtility/Matrix3x3.cs" line="281" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="LCPSolver\NonLinearConjugateGradient.cs">
     <Files>
-      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="343" Column="13" />
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="16" Column="39" />
       <File FileName="MathUtility\Matrix3x3.cs" Line="265" Column="3" />
       <File FileName="MathUtility\Quaternion.cs" Line="169" Column="56" />
       <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="213" Column="4" />
       <File FileName="ObjectDefinition\JointType.cs" Line="14" Column="14" />
-      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="1" Column="14" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="13" Column="16" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="211" Column="29" />
-      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="204" Column="10" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="15" Column="44" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="18" Column="19" />
       <File FileName="Loading\LoadEngineConfig.cs" Line="1" Column="1" />
-      <File FileName="Loading\LoadObject.cs" Line="326" Column="6" />
+      <File FileName="Loading\LoadObject.cs" Line="305" Column="9" />
       <File FileName="TestPhysics\TestWindow.cs" Line="100" Column="95" />
+      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="294" Column="3" />
+      <File FileName="LCPSolver\ClampSolution.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="22" Column="22" />
+      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="290" Column="40" />
+      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="291" Column="28" />
+      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="1" Column="1" />
+      <File FileName="LCPSolver\NonLinearConjugateGradient.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <DisabledProjects>

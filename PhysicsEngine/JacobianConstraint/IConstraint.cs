@@ -9,6 +9,8 @@ namespace MonoPhysicsEngine
 	{
 		Vector3 GetStartAnchorPosition ();
 		Vector3 GetAnchorPosition ();
+		void SetAxis1Motor(double speedValue, double forceLimit);
+		void SetAxis2Motor(double speedValue, double forceLimit);
 	}
 }
 

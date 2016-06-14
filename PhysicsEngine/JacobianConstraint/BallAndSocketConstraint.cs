@@ -12,10 +12,10 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
 
 		private Vector3 AnchorPoint;
+		private readonly Vector3 StartErrorAxis1;
+		private readonly Vector3 StartErrorAxis2;
 
 		#endregion
 
@@ -160,6 +160,15 @@ namespace MonoPhysicsEngine
 			return this.AnchorPoint;
 		}
 
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
 
 		#endregion
 	}

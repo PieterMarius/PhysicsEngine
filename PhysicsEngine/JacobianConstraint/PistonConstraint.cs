@@ -12,16 +12,16 @@ namespace MonoPhysicsEngine
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 StartErrorAxis1;
-		public readonly Vector3 StartErrorAxis2;
-		public readonly Quaternion RelativeOrientation;
 		public readonly Vector3 PistonAxis;
-		public readonly Vector3 AngularLimitMin = new Vector3 ();
-		public readonly Vector3 AngularLimitMax = new Vector3 ();
-		public readonly Vector3 LinearLimitMin = new Vector3 ();
-		public readonly Vector3 LinearLimitMax = new Vector3();
+		public readonly double? AngularLimitMin = null;
+		public readonly double? AngularLimitMax = null;
+		public readonly double? LinearLimitMin = null;
+		public readonly double? LinearLimitMax = null;
 
 		private Vector3 AnchorPoint;
+		private Vector3 StartErrorAxis1;
+		private Vector3 StartErrorAxis2;
+		private Quaternion RelativeOrientation;
 
 		#endregion
 
@@ -67,8 +67,8 @@ namespace MonoPhysicsEngine
 			double linearLimitMax)
 			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
 		{
-			this.LinearLimitMin = this.PistonAxis * linearLimitMin;
-			this.LinearLimitMax = this.PistonAxis * linearLimitMax;
+			this.LinearLimitMin = linearLimitMin;
+			this.LinearLimitMax = linearLimitMax;
 		}
 		
 		public PistonConstraint(
@@ -84,16 +84,18 @@ namespace MonoPhysicsEngine
 			double angularLimitMax)
 			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
 		{
-			this.LinearLimitMin = this.PistonAxis * linearLimitMin;
-			this.LinearLimitMax = this.PistonAxis * linearLimitMax;
+			this.LinearLimitMin = linearLimitMin;
+			this.LinearLimitMax = linearLimitMax;
 
-			this.AngularLimitMin = this.PistonAxis * angularLimitMin;
-			this.AngularLimitMax = this.PistonAxis * angularLimitMax;
+			this.AngularLimitMin = angularLimitMin;
+			this.AngularLimitMax = angularLimitMax;
 		}
 
 		#endregion
 
 		#region Public Methods
+
+		#region IConstraint
 
 		/// <summary>
 		/// Builds the piston joint.
@@ -143,7 +145,7 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
-			#region Constraints
+			#region Base Constraints
 
 			//DOF 1
 
@@ -225,46 +227,46 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			// Limit extraction
-			double linearLimitMin = this.PistonAxis.Dot (this.LinearLimitMin);
-			double linearLimitMax = this.PistonAxis.Dot (this.LinearLimitMax);
+			if (LinearLimitMin.HasValue &&
+				LinearLimitMax.HasValue)
+			{
+				pistonConstraints.Add(
+					JacobianCommon.GetLinearLimit(
+						indexA,
+						indexB,
+						simulationObjectA,
+						simulationObjectB,
+						sliderAxis,
+						r1,
+						r2,
+						this.K,
+						C,
+						LinearLimitMin.Value,
+						LinearLimitMax.Value));
+			}
 
-			pistonConstraints.Add (
-				JacobianCommon.GetLinearLimit(
-					indexA,
-					indexB,
+			if (AngularLimitMin.HasValue &&
+				AngularLimitMax.HasValue)
+			{
+				double angle = JacobianCommon.GetAngle(
 					simulationObjectA,
 					simulationObjectB,
-					sliderAxis,
-					r1,
-					r2,
-					this.K,
-					C,
-					linearLimitMin,
-					linearLimitMax));
+					this.RelativeOrientation,
+					this.PistonAxis);
 
-			// Limit extraction
-			double angularLimitMin = this.PistonAxis.Dot (this.AngularLimitMin);
-			double angularLimitMax = this.PistonAxis.Dot (this.AngularLimitMax);
-
-			double angle = JacobianCommon.GetAngle (
-				simulationObjectA,
-				simulationObjectB,
-				this.RelativeOrientation,
-				this.PistonAxis);
-
-			pistonConstraints.Add(
-				JacobianCommon.GetAngularLimit (
-					indexA, 
-					indexB, 
-					angle,
-					this.K,
-					C,
-					simulationObjectA, 
-					simulationObjectB, 
-					sliderAxis,
-					angularLimitMin,
-					angularLimitMax));
+				pistonConstraints.Add(
+					JacobianCommon.GetAngularLimit(
+						indexA,
+						indexB,
+						angle,
+						this.K,
+						C,
+						simulationObjectA,
+						simulationObjectB,
+						sliderAxis,
+						AngularLimitMin.Value,
+						AngularLimitMax.Value));
+			}
 
 			#endregion
 
@@ -282,6 +284,18 @@ namespace MonoPhysicsEngine
 		{
 			return this.AnchorPoint;
 		}
+
+		public void SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 
 		#endregion
 	}
