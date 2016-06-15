@@ -13,6 +13,8 @@ namespace MonoPhysicsEngine
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
 
+		private readonly int IndexA;
+		private readonly int IndexB;
 		private Vector3 AnchorPoint;
 		private Vector3 StartErrorAxis1;
 		private Vector3 StartErrorAxis2;
@@ -23,13 +25,20 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public FixedJointConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.C = C;
 			this.K = K;
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
+
 			this.StartAnchorPoint = (objectB.Position - objectA.Position) * 0.5;
 
 			Vector3 relativePos = this.StartAnchorPoint - objectA.StartPosition;
@@ -59,15 +68,12 @@ namespace MonoPhysicsEngine
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
 			List<JacobianContact> fixedConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
+			SimulationObject simulationObjectA = simulationObjs [IndexA];
+			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
 								(this.StartAnchorPoint -
@@ -108,8 +114,8 @@ namespace MonoPhysicsEngine
 			//DOF 1
 
 			fixedConstraints.Add (JacobianCommon.GetDOF(
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (1.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
 				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
@@ -126,8 +132,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * linearError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF(
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 1.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
 				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
@@ -144,8 +150,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * linearError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 1.0),
 				new Vector3 (0.0, 0.0, -1.0),
 				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
@@ -162,8 +168,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * 2.0 * angularError.x;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
@@ -180,8 +186,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * 2.0 * angularError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
@@ -198,8 +204,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * 2.0 * angularError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, -1.0),
@@ -234,6 +240,21 @@ namespace MonoPhysicsEngine
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotImplementedException();
+		}
+
+		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		#endregion

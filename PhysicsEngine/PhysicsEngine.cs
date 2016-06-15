@@ -27,7 +27,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The simulation joints.
 		/// </summary>
-		public List<ObjectConstraint> SimulationJoints { get; private set; }
+		public List<IConstraint> SimulationJoints { get; private set; }
 
 		#endregion
 
@@ -56,7 +56,7 @@ namespace MonoPhysicsEngine
 		#region Execution Properties
 
 		private List<List<CollisionPointStructure>> collisionPartitionedPoints;
-		private List<List<ObjectConstraint>> partitionedJoint;
+		private List<List<IConstraint>> partitionedJoint;
 
 		#endregion
 
@@ -89,7 +89,7 @@ namespace MonoPhysicsEngine
 			this.SimulationEngineParameters = simulationParameters;
 			this.contactPartitioningEngine = contactPartitioningEngine;
 
-			SimulationJoints = new List<ObjectConstraint> ();
+			SimulationJoints = new List<IConstraint> ();
 		}
 
 		#endregion
@@ -146,7 +146,7 @@ namespace MonoPhysicsEngine
 
 		#region Simulation Joint
 
-		public void AddJoint(ObjectConstraint simulationJoint)
+		public void AddJoint(IConstraint simulationJoint)
 		{
 			this.SimulationJoints.Add (simulationJoint);
 		}
@@ -158,7 +158,7 @@ namespace MonoPhysicsEngine
 
 		public void RemoveAllJoints()
 		{
-			this.SimulationJoints = new List<ObjectConstraint> ();
+			this.SimulationJoints = new List<IConstraint> ();
 		}
 
 		#endregion
@@ -333,12 +333,12 @@ namespace MonoPhysicsEngine
 			if (partitions != null) {
 
 				collisionPartitionedPoints = new List<List<CollisionPointStructure>> ();
-				partitionedJoint = new List<List<ObjectConstraint>> ();
+				partitionedJoint = new List<List<IConstraint>> ();
 
 				for (int i = 0; i < partitions.Count; i++) 
 				{
 					List<CollisionPointStructure> partitionedCollision = new List<CollisionPointStructure> ();
-					List<ObjectConstraint> partJoint = new List<ObjectConstraint> ();
+					List<IConstraint> partJoint = new List<IConstraint> ();
 
 					for (int j = 0; j < partitions [i].ObjectList.Count; j++) 
 					{
@@ -352,9 +352,9 @@ namespace MonoPhysicsEngine
 
 						} else {
 
-							ObjectConstraint smJoint = this.SimulationJoints.Find (item => 
-													   item.IndexA == partitions [i].ObjectList [j].IndexA &&
-							                           item.IndexB == partitions [i].ObjectList [j].IndexB);
+							IConstraint smJoint = this.SimulationJoints.Find(item =>
+																				  item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
+																				  item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
 							partJoint.Add (smJoint);
 
 						}
@@ -455,7 +455,7 @@ namespace MonoPhysicsEngine
 
 		public List<JacobianContact> GetJacobianConstraint(
 			List<CollisionPointStructure> collisionPointsStruct,
-			List<ObjectConstraint> simulationJointList,
+			List<IConstraint> simulationJointList,
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
@@ -473,16 +473,10 @@ namespace MonoPhysicsEngine
 
 			#region Joint
 
-			foreach (ObjectConstraint item in simulationJointList)
+			foreach (IConstraintBuilder constraintItem in simulationJointList)
 			{
-				foreach (IConstraintBuilder constraintItem in item.ConstraintList)
-				{
-					constraint.AddRange(
-						constraintItem.BuildJacobian(
-							item.IndexA,
-							item.IndexB,
-							simulationObjs));
-				}
+				constraint.AddRange(
+					constraintItem.BuildJacobian(simulationObjs));
 			}
 
 			#endregion

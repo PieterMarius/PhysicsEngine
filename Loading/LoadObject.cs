@@ -202,7 +202,7 @@ namespace Loading
 			return objects;
 		}
 
-		public ObjectConstraint[] LoadSimulationJoints(
+		public IConstraint[] LoadSimulationJoints(
 			SimulationObject[] objects)
 		{
 			XmlDocument xmlDoc = new XmlDocument();
@@ -210,7 +210,7 @@ namespace Loading
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathJoints);
 
-			ObjectConstraint[] joints = new ObjectConstraint[xmlList.Count];
+			IConstraint[] joints = new IConstraint[xmlList.Count];
 
 			for (int i = 0; i < xmlList.Count; i++) 
 			{
@@ -250,16 +250,18 @@ namespace Loading
 					switch (jointType) {
 						case JointType.Fixed:
 							joint [j] = new FixedJointConstraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								K,
 								C);
 							break;
 
 						case JointType.BallAndSocket:
 							joint [j] = new BallAndSocketConstraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								K,
 								C);
@@ -322,8 +324,9 @@ namespace Loading
 
 						case JointType.Hinge2:
 							joint [j] = new Hinge2Constraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								actionAxis,
 								new Vector3 (1.0, 0.0, 0.0),
@@ -334,18 +337,16 @@ namespace Loading
 							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
 							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
 
-								joint[j].SetAxis2Motor(4.0, 1.0);
+								joint[j].SetAxis2Motor(4.0, 2.0);
 							break;
 
 						default:
 							break;
 					}
+					joints[i] = joint[j];
 				}
 
-				joints [i] = new ObjectConstraint (
-					indexA,
-					indexB,
-					joint);
+
 			}
 
 			return joints;

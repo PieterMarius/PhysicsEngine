@@ -9,6 +9,8 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
+		public readonly int IndexA;
+		public readonly int IndexB;
 		public readonly double C;
 		public readonly double K;
 		public readonly double KHinge;
@@ -36,19 +38,25 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public Hinge2Constraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
 			this.HingeAxis = hingeAxis.Normalize ();
 			this.RotationAxis = rotationAxis.Normalize ();
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -76,8 +84,9 @@ namespace MonoPhysicsEngine
 		}
 
 		public Hinge2Constraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
@@ -85,15 +94,16 @@ namespace MonoPhysicsEngine
 			double C,
 			double? angularLimitMin1,
 			double? angularLimitMax1)
-			:this(objectA, objectB, startAnchorPosition, hingeAxis, rotationAxis, K, C)
+			:this(indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, rotationAxis, K, C)
 		{
 			this.AngularLimitMin1 = angularLimitMin1;
 			this.AngularLimitMax1 = angularLimitMax1;
 		}
 
 		public Hinge2Constraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
@@ -103,7 +113,7 @@ namespace MonoPhysicsEngine
 			double? angularLimitMax1,
 			double? angularLimitMin2,
 			double? angularLimitMax2)
-			:this(objectA, objectB, startAnchorPosition, hingeAxis, rotationAxis, K, C)
+			:this(indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, rotationAxis, K, C)
 		{
 			this.AngularLimitMin1 = angularLimitMin1;
 			this.AngularLimitMax1 = angularLimitMax1;
@@ -124,15 +134,12 @@ namespace MonoPhysicsEngine
 		/// <param name="indexA">Index a.</param>
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
 			List<JacobianContact> hinge2Constraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
+			SimulationObject simulationObjectA = simulationObjs [IndexA];
+			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
 				(this.StartAnchorPoint -
@@ -174,8 +181,8 @@ namespace MonoPhysicsEngine
 			double constraintLimit = this.K * Vector3.Dot (t1,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				t1,
 				-1.0 * t1,
 				Vector3.Cross (r1, t1),
@@ -192,8 +199,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * Vector3.Dot (tempPerpendicular,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				tempPerpendicular,
 				-1.0 * tempPerpendicular,
 				Vector3.Cross (r1, tempPerpendicular),
@@ -210,8 +217,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * Vector3.Dot (hingeAxis,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				hingeAxis,
 				-1.0 * hingeAxis,
 				Vector3.Cross (r1, hingeAxis),
@@ -229,8 +236,8 @@ namespace MonoPhysicsEngine
 
 			hinge2Constraints.Add (
 				JacobianCommon.GetDOF (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					new Vector3(), 
 					new Vector3(), 
 					t1, 
@@ -257,8 +264,8 @@ namespace MonoPhysicsEngine
 					this.RelativeOrientation1);
 
 				hinge2Constraints.Add(JacobianCommon.GetAngularLimit (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					angle1,
 					this.K,
 					C,
@@ -281,8 +288,8 @@ namespace MonoPhysicsEngine
 					this.RelativeOrientation2);
 
 				hinge2Constraints.Add(JacobianCommon.GetAngularLimit (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					angle2,
 					this.K,
 					C,
@@ -303,8 +310,8 @@ namespace MonoPhysicsEngine
 			{
 				hinge2Constraints.Add(
 					JacobianCommon.GetDOF(
-						indexA,
-						indexB,
+						IndexA,
+						IndexB,
 						new Vector3(),
 						new Vector3(),
 						-1.0 * hingeAxis,
@@ -322,8 +329,8 @@ namespace MonoPhysicsEngine
 			{
 				hinge2Constraints.Add(
 					JacobianCommon.GetDOF(
-						indexA,
-						indexB,
+						IndexA,
+						IndexB,
 						new Vector3(),
 						new Vector3(),
 						-1.0 * rotationAxis,
@@ -361,8 +368,23 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
-			SpeedRotationAxisLimit = speedValue;
-			ForceRotationAxisLimit = forceLimit;
+			this.SpeedRotationAxisLimit = speedValue;
+			this.ForceRotationAxisLimit = forceLimit;
+		}
+
+		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		#endregion

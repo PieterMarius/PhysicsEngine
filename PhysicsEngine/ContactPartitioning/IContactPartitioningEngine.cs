@@ -9,7 +9,7 @@ namespace MonoPhysicsEngine
 	{
 		List<SpatialPartition> calculateSpatialPartitioning (
 			List<CollisionPointStructure> collisionPoints,
-			List<ObjectConstraint> simulationJoint,
+			List<IConstraint> simulationJoint,
 			SimulationObject[] simulationObjects);
 
 	}

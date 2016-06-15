@@ -9,6 +9,8 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
+		public readonly int IndexA;
+		public readonly int IndexB;
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
@@ -85,15 +87,12 @@ namespace MonoPhysicsEngine
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
 			List<JacobianContact> hingeConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
+			SimulationObject simulationObjectA = simulationObjs [IndexA];
+			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
 								(this.StartAnchorPoint -
@@ -139,8 +138,8 @@ namespace MonoPhysicsEngine
 			double constraintLimit = this.K * linearError.x;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF(
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (1.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
 				new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
@@ -157,8 +156,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * linearError.y;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 1.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
 				new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
@@ -175,8 +174,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * linearError.z;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 1.0),
 				new Vector3 (0.0, 0.0, -1.0),
 				new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
@@ -195,8 +194,8 @@ namespace MonoPhysicsEngine
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					new Vector3(), 
 					new Vector3(), 
 					-1.0 * t1, 
@@ -215,8 +214,8 @@ namespace MonoPhysicsEngine
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					new Vector3(), 
 					new Vector3(), 
 					-1.0 * t2, 
@@ -240,8 +239,8 @@ namespace MonoPhysicsEngine
 					this.HingeAxis);
 
 				hingeConstraints.Add(JacobianCommon.GetAngularLimit (
-					indexA, 
-					indexB, 
+					IndexA, 
+					IndexB, 
 					angle,
 					this.K,
 					C,
@@ -261,8 +260,8 @@ namespace MonoPhysicsEngine
 			{
 				hingeConstraints.Add (
 					JacobianCommon.GetDOF (
-						indexA, 
-						indexB, 
+						IndexA, 
+						IndexB, 
 						new Vector3(), 
 						new Vector3(), 
 						-1.0 * axisRotated, 
@@ -301,6 +300,21 @@ namespace MonoPhysicsEngine
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotImplementedException();
+		}
+
+		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		#endregion

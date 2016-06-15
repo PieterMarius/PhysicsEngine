@@ -12,7 +12,7 @@ namespace MonoPhysicsEngine
 
 		public List<SpatialPartition> calculateSpatialPartitioning(
 			List<CollisionPointStructure> collisionPoints,
-			List<ObjectConstraint> simulationJoint,
+			List<IConstraint> simulationJoint,
 			SimulationObject[] simulationObjects)
 		{
 			if (collisionPoints.Count > 0 ||
@@ -35,8 +35,8 @@ namespace MonoPhysicsEngine
 				for (int i = 0; i < simulationJoint.Count; i++) 
 				{
 					contactIndex.Add (new ContactIndex (
-						simulationJoint [i].IndexA,
-						simulationJoint [i].IndexB,
+						simulationJoint [i].GetObjectIndexA(),
+						simulationJoint [i].GetObjectIndexB(),
 						ContactGroupType.Joint));
 				}
 

@@ -5,10 +5,12 @@ using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
-	public sealed class BallAndSocketConstraint: IConstraint, IConstraintBuilder
+	public sealed class BallAndSocketConstraint : IConstraint, IConstraintBuilder
 	{
 		#region Public Fields
 
+		public readonly int IndexA;
+		public readonly int IndexB;
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
@@ -22,26 +24,32 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public BallAndSocketConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
 			this.AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectA.Position);
+			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
+									(this.AnchorPoint - objectA.Position);
 
-			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectB.Position);
+			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
+									(this.AnchorPoint - objectB.Position);
 		}
 
 		#endregion
@@ -56,15 +64,12 @@ namespace MonoPhysicsEngine
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> ballSocketConstraints = new List<JacobianContact> ();
+			List<JacobianContact> ballSocketConstraints = new List<JacobianContact>();
 
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
+			SimulationObject simulationObjectA = simulationObjs[IndexA];
+			SimulationObject simulationObjectB = simulationObjs[IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
 								(this.StartAnchorPoint -
@@ -79,8 +84,8 @@ namespace MonoPhysicsEngine
 			Vector3 r2 = simulationObjectB.RotationMatrix *
 				this.StartErrorAxis2;
 
-			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix ();
-			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix ();
+			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix();
+			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix();
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -95,13 +100,13 @@ namespace MonoPhysicsEngine
 
 			//DOF 1
 
-			ballSocketConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
-				new Vector3 (1.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
-				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
+			ballSocketConstraints.Add(JacobianCommon.GetDOF(
+				IndexA,
+				IndexB,
+				new Vector3(1.0, 0.0, 0.0),
+				new Vector3(-1.0, 0.0, 0.0),
+				new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+				new Vector3(skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -113,13 +118,13 @@ namespace MonoPhysicsEngine
 
 			constraintLimit = this.K * linearError.y;
 
-			ballSocketConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 1.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
-				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
+			ballSocketConstraints.Add(JacobianCommon.GetDOF(
+				IndexA,
+				IndexB,
+				new Vector3(0.0, 1.0, 0.0),
+				new Vector3(0.0, -1.0, 0.0),
+				new Vector3(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+				new Vector3(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -131,13 +136,13 @@ namespace MonoPhysicsEngine
 
 			constraintLimit = this.K * linearError.z;
 
-			ballSocketConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
-				new Vector3 (0.0, 0.0, 1.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
-				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
+			ballSocketConstraints.Add(JacobianCommon.GetDOF(
+				IndexA,
+				IndexB,
+				new Vector3(0.0, 0.0, 1.0),
+				new Vector3(0.0, 0.0, -1.0),
+				new Vector3(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+				new Vector3(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
@@ -168,6 +173,21 @@ namespace MonoPhysicsEngine
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotImplementedException();
+		}
+
+		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		#endregion

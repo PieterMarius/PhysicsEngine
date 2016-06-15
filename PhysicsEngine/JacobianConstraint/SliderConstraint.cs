@@ -10,6 +10,8 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
+		public readonly int IndexA;
+		public readonly int IndexB;
 		public readonly double C;
 		public readonly double K;
 		public readonly Vector3 StartAnchorPoint;
@@ -84,15 +86,12 @@ namespace MonoPhysicsEngine
 		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
 			List<JacobianContact> sliderConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [indexA];
-			SimulationObject simulationObjectB = simulationObjs [indexB];
+			SimulationObject simulationObjectA = simulationObjs [IndexA];
+			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
 								(this.StartAnchorPoint -
@@ -137,8 +136,8 @@ namespace MonoPhysicsEngine
 			//DOF 1
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
@@ -155,8 +154,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * 2.0 * angularError.y;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
@@ -173,8 +172,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * 2.0 * angularError.z;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, 0.0),
 				new Vector3 (0.0, 0.0, -1.0),
@@ -191,8 +190,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * Vector3.Dot (t1,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				t1,
 				-1.0 * t1,
 				Vector3.Cross (r1, t1),
@@ -209,8 +208,8 @@ namespace MonoPhysicsEngine
 			constraintLimit = this.K * Vector3.Dot (t2,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				indexA,
-				indexB,
+				IndexA,
+				IndexB,
 				t2,
 				-1.0 * t2,
 				Vector3.Cross (r1, t2),
@@ -233,8 +232,8 @@ namespace MonoPhysicsEngine
 
 				sliderConstraints.Add (
 					JacobianCommon.GetLinearLimit(
-						indexA,
-						indexB,
+						IndexA,
+						IndexB,
 						simulationObjectA,
 						simulationObjectB,
 						sliderAxis,
@@ -254,8 +253,8 @@ namespace MonoPhysicsEngine
 				SpeedValue.HasValue)
 			{
 				sliderConstraints.Add (JacobianCommon.GetDOF (
-					indexA,
-					indexB,
+					IndexA,
+					IndexB,
 					sliderAxis,
 					-1.0 * sliderAxis,
 					new Vector3(),
@@ -294,6 +293,21 @@ namespace MonoPhysicsEngine
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotImplementedException();
+		}
+
+		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		#endregion

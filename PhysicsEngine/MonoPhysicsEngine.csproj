@@ -65,7 +65,6 @@
     <Compile Include="JacobianConstraint\HingeConstraint.cs" />
     <Compile Include="JacobianConstraint\ContactConstraint.cs" />
     <Compile Include="JacobianConstraint\IConstraint.cs" />
-    <Compile Include="JacobianConstraint\ObjectConstraint.cs" />
     <Compile Include="JacobianConstraint\JacobianCommon.cs" />
     <Compile Include="JacobianConstraint\UniversalConstraint.cs" />
     <Compile Include="JacobianConstraint\IConstraintBuilder.cs" />

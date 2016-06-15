@@ -6,9 +6,7 @@ namespace MonoPhysicsEngine
 {
 	internal interface IConstraintBuilder
 	{
-		List<JacobianContact> BuildJacobian(int indexA,
-											 int indexB,
-											 SimulationObject[] simulationObjs);
+		List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs);
 
 	}
 }
