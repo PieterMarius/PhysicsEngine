@@ -9,8 +9,8 @@ namespace MonoPhysicsEngine
 	{
 		#region Get Methods
 
-		Vector3 GetStartAnchorPosition ();
 		Vector3 GetAnchorPosition ();
+		JointType GetJointType();
 		int GetObjectIndexA();
 		int GetObjectIndexB();
 
@@ -18,6 +18,9 @@ namespace MonoPhysicsEngine
 
 		#region Set Methods
 
+		void SetLinearLimit(double linearLimitMin, double linearLimitMax);
+		void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);
+		void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
 		void SetAxis1Motor(double speedValue, double forceLimit);
 		void SetAxis2Motor(double speedValue, double forceLimit);
 		void AddTorque(double torqueAxis1, double torqueAxis2);

@@ -9,16 +9,19 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public readonly int IndexA;
-		public readonly int IndexB;
-		public readonly double C;
-		public readonly double K;
-		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 PistonAxis;
-		public readonly double? AngularLimitMin = null;
-		public readonly double? AngularLimitMax = null;
-		public readonly double? LinearLimitMin = null;
-		public readonly double? LinearLimitMax = null;
+		private const JointType jointType = JointType.Piston;
+
+		private readonly int IndexA;
+		private readonly int IndexB;
+		private readonly double C;
+		private readonly double K;
+		private readonly Vector3 StartAnchorPoint;
+		private readonly Vector3 PistonAxis;
+
+		private readonly double? AngularLimitMin = null;
+		private readonly double? AngularLimitMax = null;
+		private readonly double? LinearLimitMin = null;
+		private readonly double? LinearLimitMax = null;
 
 		private Vector3 AnchorPoint;
 		private Vector3 StartErrorAxis1;
@@ -30,18 +33,24 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public PistonConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
 
 			this.PistonAxis = -1.0 * pistonAxis.Normalize ();
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
@@ -59,23 +68,25 @@ namespace MonoPhysicsEngine
 		}
 
 		public PistonConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
 			double C,
 			double linearLimitMin,
 			double linearLimitMax)
-			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
+			:this(indexA, indexB, simulationObject, startAnchorPosition, pistonAxis, K, C)
 		{
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
 		}
 		
 		public PistonConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double K,
@@ -84,7 +95,7 @@ namespace MonoPhysicsEngine
 			double linearLimitMax,
 			double angularLimitMin,
 			double angularLimitMax)
-			:this(objectA, objectB, startAnchorPosition, pistonAxis, K, C)
+			:this(indexA, indexB, simulationObject, startAnchorPosition, pistonAxis, K, C)
 		{
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
@@ -97,7 +108,7 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-		#region IConstraint
+		#region IConstraintBuilder
 
 		/// <summary>
 		/// Builds the piston joint.
@@ -274,9 +285,13 @@ namespace MonoPhysicsEngine
 			return pistonConstraints;
 		}
 
-		public Vector3 GetStartAnchorPosition()
+		#endregion
+
+		#region IConstraint
+
+		public JointType GetJointType()
 		{
-			return this.StartAnchorPoint;
+			return jointType;
 		}
 
 		public Vector3 GetAnchorPosition()
@@ -286,17 +301,17 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public int GetObjectIndexA()
@@ -307,6 +322,21 @@ namespace MonoPhysicsEngine
 		public int GetObjectIndexB()
 		{
 			return IndexB;
+		}
+
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

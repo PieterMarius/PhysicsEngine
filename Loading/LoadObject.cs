@@ -212,40 +212,41 @@ namespace Loading
 
 			IConstraint[] joints = new IConstraint[xmlList.Count];
 
-			for (int i = 0; i < xmlList.Count; i++) 
+			for (int i = 0; i < xmlList.Count; i++)
 			{
 				//Object index A
-				int indexA = Convert.ToInt32 (xmlList [i] [this.objectIndexAAttribute].InnerText);
+				int indexA = Convert.ToInt32(xmlList[i][this.objectIndexAAttribute].InnerText);
 
 				//Object index B
-				int indexB = Convert.ToInt32 (xmlList [i] [this.objectIndexBAttribute].InnerText);
+				int indexB = Convert.ToInt32(xmlList[i][this.objectIndexBAttribute].InnerText);
 
-				XmlNodeList jointPropertiesList = xmlList [i].SelectNodes (this.jointProperties);
+				XmlNodeList jointPropertiesList = xmlList[i].SelectNodes(this.jointProperties);
 
 				IConstraint[] joint = new IConstraint[jointPropertiesList.Count];
 
-				for (int j = 0; j < jointPropertiesList.Count; j++) {
+				for (int j = 0; j < jointPropertiesList.Count; j++)
+				{
 
 					//Joint type
-					JointType jointType = (JointType)Convert.ToInt32 (jointPropertiesList [j] [this.jointType].InnerText);
+					JointType jointType = (JointType)Convert.ToInt32(jointPropertiesList[j][this.jointType].InnerText);
 
 					//Restore coefficient
-					double K = Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText);
+					double K = Convert.ToDouble(jointPropertiesList[j][this.restoreCoeffAttribute].InnerText);
 
 					//Stretch coefficient
-					double C = Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText);
+					double C = Convert.ToDouble(jointPropertiesList[j][this.stretchCoeffAttribute].InnerText);
 
 					//Position
-					Vector3 startAnchorPosition = new Vector3 (
-						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["x"].Value),
-						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["y"].Value),
-						Convert.ToDouble (jointPropertiesList [j] [this.positionJointAttribute].Attributes ["z"].Value));
+					Vector3 startAnchorPosition = new Vector3(
+						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["x"].Value),
+						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["y"].Value),
+						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["z"].Value));
 
 					//Action Axis
-					Vector3 actionAxis = new Vector3 (
-						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["x"].Value),
-						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["y"].Value),
-						Convert.ToDouble (jointPropertiesList [j] [this.actionAxis].Attributes ["z"].Value));
+					Vector3 actionAxis = new Vector3(
+						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["x"].Value),
+						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["y"].Value),
+						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["z"].Value));
 
 					switch (jointType) {
 						case JointType.Fixed:
@@ -269,8 +270,9 @@ namespace Loading
 
 						case JointType.Slider:
 							joint [j] = new SliderConstraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								actionAxis,
 								K,
@@ -281,8 +283,9 @@ namespace Loading
 
 						case JointType.Piston:
 							joint [j] = new PistonConstraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								actionAxis,
 								Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
@@ -295,8 +298,9 @@ namespace Loading
 
 						case JointType.Hinge:
 							joint [j] = new HingeConstraint (
-								objects [indexA],
-								objects [indexB],
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								actionAxis,
 								K,
@@ -308,18 +312,20 @@ namespace Loading
 							break;
 
 						case JointType.Universal:
-							joint [j] = new UniversalConstraint (
-								objects [indexA],
-								objects [indexB],
+							joint[j] = new UniversalConstraint(
+								indexA,
+								indexB,
+								objects,
 								startAnchorPosition,
 								actionAxis,
-								new Vector3 (1.0, 0.0, 0.0),
+								new Vector3(1.0, 0.0, 0.0),
 								K,
-								C,
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+								C);
+
+							joint[j].SetAxis1AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText));
+							joint[j].SetAxis2AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText));
 							break;
 
 						case JointType.Hinge2:

@@ -10,46 +10,53 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public readonly int IndexA;
-		public readonly int IndexB;
-		public readonly double C;
-		public readonly double K;
-		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 SliderAxis;
-		public readonly double? LinearLimitMin = null;
-		public readonly double? LinearLimitMax = null;
+		private const JointType jointType = JointType.Slider;
 
-		public double? SpeedValue { get; private set; } = null;
-		public double? ForceLimit { get; private set; } = null;
-
-		private Vector3 AnchorPoint;
+		private readonly int IndexA;
+		private readonly int IndexB;
+		private readonly double C;
+		private readonly double K;
+		private readonly Vector3 StartAnchorPoint;
+		private readonly Vector3 SliderAxis;
 		private readonly Vector3 StartErrorAxis1;
 		private readonly Vector3 StartErrorAxis2;
 		private readonly Quaternion RelativeOrientation;
+
+		private readonly double? LinearLimitMin = null;
+		private readonly double? LinearLimitMax = null;
+		private double? SpeedValue = null;
+		private double? ForceLimit = null;
+		private Vector3 AnchorPoint;
 
 		#endregion
 
 		#region Constructor
 
 		public SliderConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
 			this.SliderAxis = -1.0 * sliderAxis.Normalize ();
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
 
 			this.AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
+			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
 				(this.AnchorPoint - objectA.Position);
 
 			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
@@ -60,15 +67,16 @@ namespace MonoPhysicsEngine
 		}
 
 		public SliderConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
 			double K,
 			double C,
 			double linearLimitMin,
 			double linearLimitMax)
-			:this(objectA, objectB, startAnchorPosition, sliderAxis, K, C)
+			:this(indexA, indexB, simulationObject, startAnchorPosition, sliderAxis, K, C)
 		{
 			this.LinearLimitMin = linearLimitMin;
 			this.LinearLimitMax = linearLimitMax;
@@ -77,6 +85,8 @@ namespace MonoPhysicsEngine
 		#endregion
 
 		#region Public Methods
+
+		#region IConstraintBuilder
 
 		/// <summary>
 		/// Builds the slider joint.
@@ -274,9 +284,13 @@ namespace MonoPhysicsEngine
 			return sliderConstraints;
 		}
 
-		public Vector3 GetStartAnchorPosition()
+		#endregion
+
+		#region IConstraint
+
+		public JointType GetJointType()
 		{
-			return this.StartAnchorPoint;
+			return jointType;
 		}
 
 		public Vector3 GetAnchorPosition()
@@ -290,14 +304,11 @@ namespace MonoPhysicsEngine
 			ForceLimit = forceLimit;
 		}
 
-		public void SetAxis2Motor(double speedValue, double forceLimit)
-		{
-			throw new NotImplementedException();
-		}
+
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public int GetObjectIndexA()
@@ -309,6 +320,28 @@ namespace MonoPhysicsEngine
 		{
 			return IndexB;
 		}
+
+		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 
 		#endregion
 

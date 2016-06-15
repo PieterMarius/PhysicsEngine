@@ -9,12 +9,14 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public readonly double C;
-		public readonly double K;
-		public readonly Vector3 StartAnchorPoint;
+		private const JointType jointType = JointType.Fixed;
 
 		private readonly int IndexA;
 		private readonly int IndexB;
+		private readonly double C;
+		private readonly double K;
+		private readonly Vector3 StartAnchorPoint;
+
 		private Vector3 AnchorPoint;
 		private Vector3 StartErrorAxis1;
 		private Vector3 StartErrorAxis2;
@@ -59,6 +61,8 @@ namespace MonoPhysicsEngine
 		#endregion
 
 		#region Public Methods
+
+		#region IConstraintBuilder
 
 		/// <summary>
 		/// Builds the fixed joint.
@@ -222,29 +226,13 @@ namespace MonoPhysicsEngine
 			return fixedConstraints;
 		}
 
-		public Vector3 GetStartAnchorPosition()
-		{
-			return this.StartAnchorPoint;
-		}
+		#endregion
 
-		public Vector3 GetAnchorPosition()
-		{
-			return this.AnchorPoint;
-		}
+		#region IConstraint
 
-		public void SetAxis1Motor(double speedValue, double forceLimit)
+		public JointType GetJointType()
 		{
-			throw new NotImplementedException();
-		}
-
-		public void SetAxis2Motor(double speedValue, double forceLimit)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
-		{
-			throw new NotImplementedException();
+			return jointType;
 		}
 
 		public int GetObjectIndexA()
@@ -256,6 +244,52 @@ namespace MonoPhysicsEngine
 		{
 			return IndexB;
 		}
+
+		public Vector3 GetStartAnchorPosition()
+		{
+			return this.StartAnchorPoint;
+		}
+
+		public Vector3 GetAnchorPosition()
+		{
+			return this.AnchorPoint;
+		}
+
+		#region NotSupportedMethods
+
+		void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.AddTorque(double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
+
+		#endregion
 
 		#endregion
 	}

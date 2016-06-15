@@ -9,38 +9,47 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public readonly int IndexA;
-		public readonly int IndexB;
-		public readonly double C;
-		public readonly double K;
-		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 HingeAxis;
-		public readonly double? AngularLimitMin = null;
-		public readonly double? AngularLimitMax = null;
+		private const JointType jointType = JointType.Hinge;
 
-		public double? SpeedValue { get; private set; } = null;
-		public double? ForceLimit { get; private set; } = null;
+		private readonly int IndexA;
+		private readonly int IndexB;
+		private readonly double C;
+		private readonly double K;
+		private readonly Vector3 StartAnchorPoint;
+		private readonly Vector3 HingeAxis;
+		private readonly double? AngularLimitMin = null;
+		private readonly double? AngularLimitMax = null;
 
-		private Vector3 AnchorPoint;
 		private readonly Vector3 StartErrorAxis1;
 		private readonly Vector3 StartErrorAxis2;
 		private readonly Quaternion RelativeOrientation;
+
+		private double? SpeedValue = null;
+		private double? ForceLimit = null;
+
+		private Vector3 AnchorPoint;
 
 		#endregion
 
 		#region Constructor
 
 		public HingeConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			double K,
 			double C)
 		{
+			this.IndexA = indexA;
+			this.IndexB = indexB;
 			this.K = K;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
+
+			SimulationObject objectA = simulationObject[IndexA];
+			SimulationObject objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -60,15 +69,16 @@ namespace MonoPhysicsEngine
 		}
 
 		public HingeConstraint(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			int indexA,
+			int indexB,
+			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			double K,
 			double C,
 			double? angularLimitMin,
 			double? angularLimitMax)
-			:this (objectA, objectB, startAnchorPosition, hingeAxis, K, C)
+			:this (indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, K, C)
 			
 		{
 			this.AngularLimitMin = angularLimitMin;
@@ -78,6 +88,8 @@ namespace MonoPhysicsEngine
 		#endregion
 
 		#region Public Methods
+
+		#region IConstraintBuilder
 
 		/// <summary>
 		/// Builds the hinge joint.
@@ -281,9 +293,13 @@ namespace MonoPhysicsEngine
 			return hingeConstraints;
 		}
 
-		public Vector3 GetStartAnchorPosition()
+		#endregion
+
+		#region IConstraint
+
+		public JointType GetJointType()
 		{
-			return this.StartAnchorPoint;
+			return jointType;
 		}
 
 		public Vector3 GetAnchorPosition()
@@ -299,12 +315,12 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		public int GetObjectIndexA()
@@ -316,6 +332,23 @@ namespace MonoPhysicsEngine
 		{
 			return IndexB;
 		}
+
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 
 		#endregion
 

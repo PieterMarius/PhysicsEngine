@@ -9,29 +9,32 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		public readonly int IndexA;
-		public readonly int IndexB;
-		public readonly double C;
-		public readonly double K;
-		public readonly double KHinge;
-		public readonly Vector3 StartAnchorPoint;
-		public readonly Vector3 HingeAxis;
-		public readonly Vector3 RotationAxis;
-		public readonly double? AngularLimitMin1 = null;
-		public readonly double? AngularLimitMax1 = null;
-		public readonly double? AngularLimitMin2 = null;
-		public readonly double? AngularLimitMax2 = null;
+		private const JointType jointType = JointType.Hinge2;
 
-		public double? SpeedHingeAxisLimit { get; private set; } = null;
-		public double? ForceHingeAxisLimit { get; private set; } = null;
-		public double? SpeedRotationAxisLimit { get; private set; } = null;
-		public double? ForceRotationAxisLimit { get; private set; } = null;
-
-		private Vector3 AnchorPoint;
+		private readonly int IndexA;
+		private readonly int IndexB;
+		private readonly double C;
+		private readonly double K;
+		private readonly double KHinge;
+		private readonly Vector3 StartAnchorPoint;
+		private readonly Vector3 HingeAxis;
+		private readonly Vector3 RotationAxis;
 		private readonly Vector3 StartErrorAxis1;
 		private readonly Vector3 StartErrorAxis2;
 		private readonly Quaternion RelativeOrientation1;
 		private readonly Quaternion RelativeOrientation2;
+
+		private readonly double? AngularLimitMin1 = null;
+		private readonly double? AngularLimitMax1 = null;
+		private readonly double? AngularLimitMin2 = null;
+		private readonly double? AngularLimitMax2 = null;
+
+		private double? SpeedHingeAxisLimit = null;
+		private double? ForceHingeAxisLimit = null;
+		private double? SpeedRotationAxisLimit = null;
+		private double? ForceRotationAxisLimit = null;
+		private Vector3 AnchorPoint;
+
 
 		#endregion
 
@@ -126,6 +129,8 @@ namespace MonoPhysicsEngine
 
 
 		#region Public Methods
+
+		#region IConstraintBuilder
 
 		/// <summary>
 		/// Builds the Universal joint.
@@ -350,9 +355,23 @@ namespace MonoPhysicsEngine
 			return hinge2Constraints;
 		}
 
-		public Vector3 GetStartAnchorPosition()
+		#endregion
+
+		#region IConstraint
+
+		public JointType GetJointType()
 		{
-			return this.StartAnchorPoint;
+			return jointType;
+		}
+
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
 		}
 
 		public Vector3 GetAnchorPosition()
@@ -374,44 +393,29 @@ namespace MonoPhysicsEngine
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
+			throw new NotSupportedException();
+		}
+
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
 			throw new NotImplementedException();
-		}
-
-		public int GetObjectIndexA()
-		{
-			return IndexA;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return IndexB;
 		}
 
 		#endregion
 
+		#endregion
+
 		#region Private Static Methods
-
-		//TODO verificare se è possibile fondere in un unico metodo
-		private double getAngle1(
-			Vector3 axis1,
-			Vector3 axis2,
-			Vector3 startAxis,
-			Quaternion rotationStatus,
-			Quaternion startRelativeRotation)
-		{
-			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix (axis1, axis2);
-			Quaternion rotationQ = Quaternion.GetQuaternion (rotationMatrix);
-
-			Quaternion mult1 = Quaternion.Multiply1 (rotationStatus, rotationQ);
-			Quaternion mult2 = Quaternion.Multiply2 (mult1, startRelativeRotation);
-
-			Vector3 quaternionVectorPart = new Vector3 (
-				mult2.b,
-				mult2.c,
-				mult2.d);
-
-			return JacobianCommon.GetRotationAngle (quaternionVectorPart, mult2.a, startAxis);
-		}
 
 		private double getAngle2(
 			Vector3 axis1,
@@ -420,18 +424,28 @@ namespace MonoPhysicsEngine
 			Quaternion rotationStatus,
 			Quaternion startRelativeRotation)
 		{
-			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix (axis2, axis1);
-			Quaternion rotationQ = Quaternion.GetQuaternion (rotationMatrix);
+			return -getAngle1(axis2, axis1, startAxis, rotationStatus, startRelativeRotation);
+		}
 
-			Quaternion mult1 = Quaternion.Multiply1 (rotationStatus, rotationQ);
-			Quaternion mult2 = Quaternion.Multiply2 (mult1, startRelativeRotation);
+		private double getAngle1(
+			Vector3 axis1,
+			Vector3 axis2,
+			Vector3 startAxis,
+			Quaternion rotationStatus,
+			Quaternion startRelativeRotation)
+		{
+			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix(axis1, axis2);
+			Quaternion rotationQ = Quaternion.GetQuaternion(rotationMatrix);
 
-			Vector3 quaternionVectorPart = new Vector3 (
+			Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
+			Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
+
+			Vector3 quaternionVectorPart = new Vector3(
 				mult2.b,
 				mult2.c,
 				mult2.d);
 
-			return - JacobianCommon.GetRotationAngle (quaternionVectorPart, mult2.a, startAxis);
+			return JacobianCommon.GetRotationAngle(quaternionVectorPart, mult2.a, startAxis);
 		}
 
 		private Quaternion calculateRelativeOrientation(
@@ -444,6 +458,8 @@ namespace MonoPhysicsEngine
 
 			return Quaternion.Multiply1 (bodyRotationStatus, rotationQ);
 		}
+
+
 
 		#endregion
 	}
