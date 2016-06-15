@@ -276,9 +276,10 @@ namespace Loading
 								startAnchorPosition,
 								actionAxis,
 								K,
-								C,
-								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText));
+								C);
+
+							joint[j].SetLinearLimit(Convert.ToDouble(jointPropertiesList[j][this.linearLimitMin].InnerText), Convert.ToDouble(jointPropertiesList[j][this.linearLimitMax].InnerText));
+
 							break;
 
 						case JointType.Piston:

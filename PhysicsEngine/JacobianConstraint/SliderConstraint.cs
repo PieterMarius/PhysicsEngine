@@ -22,8 +22,8 @@ namespace MonoPhysicsEngine
 		private readonly Vector3 StartErrorAxis2;
 		private readonly Quaternion RelativeOrientation;
 
-		private readonly double? LinearLimitMin = null;
-		private readonly double? LinearLimitMax = null;
+		private double? LinearLimitMin = null;
+		private double? LinearLimitMax = null;
 		private double? SpeedValue = null;
 		private double? ForceLimit = null;
 		private Vector3 AnchorPoint;
@@ -64,22 +64,6 @@ namespace MonoPhysicsEngine
 
 			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
 				objectA.RotationStatus;
-		}
-
-		public SliderConstraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 sliderAxis,
-			double K,
-			double C,
-			double linearLimitMin,
-			double linearLimitMax)
-			:this(indexA, indexB, simulationObject, startAnchorPosition, sliderAxis, K, C)
-		{
-			this.LinearLimitMin = linearLimitMin;
-			this.LinearLimitMax = linearLimitMax;
 		}
 
 		#endregion
@@ -288,6 +272,16 @@ namespace MonoPhysicsEngine
 
 		#region IConstraint
 
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
+		}
+
 		public JointType GetJointType()
 		{
 			return jointType;
@@ -304,21 +298,15 @@ namespace MonoPhysicsEngine
 			ForceLimit = forceLimit;
 		}
 
-
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			LinearLimitMin = linearLimitMin;
+			LinearLimitMax = linearLimitMax;
+		}
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotSupportedException();
-		}
-
-		public int GetObjectIndexA()
-		{
-			return IndexA;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return IndexB;
 		}
 
 		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
@@ -334,11 +322,6 @@ namespace MonoPhysicsEngine
 		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
-		}
-
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
-		{
-			throw new NotImplementedException();
 		}
 
 		#endregion

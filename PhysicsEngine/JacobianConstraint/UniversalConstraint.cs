@@ -291,6 +291,18 @@ namespace MonoPhysicsEngine
 			return this.AnchorPoint;
 		}
 
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			this.AngularLimitMin1 = angularLimitMin;
+			this.AngularLimitMax1 = angularLimitMax;
+		}
+
+		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			this.AngularLimitMin2 = angularLimitMin;
+			this.AngularLimitMax2 = angularLimitMax;
+		}
+
 		public void SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
@@ -306,22 +318,14 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
-		{
-			this.AngularLimitMin1 = angularLimitMin;
-			this.AngularLimitMax1 = angularLimitMax;
-		}
+		#region NotImplementedMethods
 
-		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
-		{
-			this.AngularLimitMin2 = angularLimitMin;
-			this.AngularLimitMax2 = angularLimitMax;
-		}
-
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion
 
 		#endregion
 
