@@ -17,13 +17,13 @@ namespace MonoPhysicsEngine
 		private readonly double K;
 		private readonly Vector3 StartAnchorPoint;
 		private readonly Vector3 HingeAxis;
-		private readonly double? AngularLimitMin = null;
-		private readonly double? AngularLimitMax = null;
 
 		private readonly Vector3 StartErrorAxis1;
 		private readonly Vector3 StartErrorAxis2;
 		private readonly Quaternion RelativeOrientation;
 
+		private double? AngularLimitMin = null;
+		private double? AngularLimitMax = null;
 		private double? SpeedValue = null;
 		private double? ForceLimit = null;
 
@@ -297,6 +297,16 @@ namespace MonoPhysicsEngine
 
 		#region IConstraint
 
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
+		}
+
 		public JointType GetJointType()
 		{
 			return jointType;
@@ -313,9 +323,10 @@ namespace MonoPhysicsEngine
 			ForceLimit = forceLimit;
 		}
 
-		public void SetAxis2Motor(double speedValue, double forceLimit)
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			throw new NotSupportedException();
+			AngularLimitMin = angularLimitMin;
+			AngularLimitMax = angularLimitMax;
 		}
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
@@ -323,30 +334,24 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public int GetObjectIndexA()
-		{
-			return IndexA;
-		}
+		#region NotImplementedMethods
 
-		public int GetObjectIndexB()
-		{
-			return IndexB;
-		}
-
-		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
 
-		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotImplementedException();
 		}
+
+		#endregion
 
 		#endregion
 

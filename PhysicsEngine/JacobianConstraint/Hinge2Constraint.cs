@@ -15,7 +15,7 @@ namespace MonoPhysicsEngine
 		private readonly int IndexB;
 		private readonly double C;
 		private readonly double K;
-		private readonly double KHinge;
+		private readonly double KHingeAxis;
 		private readonly Vector3 StartAnchorPoint;
 		private readonly Vector3 HingeAxis;
 		private readonly Vector3 RotationAxis;
@@ -24,10 +24,10 @@ namespace MonoPhysicsEngine
 		private readonly Quaternion RelativeOrientation1;
 		private readonly Quaternion RelativeOrientation2;
 
-		private readonly double? AngularLimitMin1 = null;
-		private readonly double? AngularLimitMax1 = null;
-		private readonly double? AngularLimitMin2 = null;
-		private readonly double? AngularLimitMax2 = null;
+		private double? AngularLimitMin1 = null;
+		private double? AngularLimitMax1 = null;
+		private double? AngularLimitMin2 = null;
+		private double? AngularLimitMax2 = null;
 
 		private double? SpeedHingeAxisLimit = null;
 		private double? ForceHingeAxisLimit = null;
@@ -48,11 +48,13 @@ namespace MonoPhysicsEngine
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
 			double K,
+			double KHingeAxis,
 			double C)
 		{
 			this.IndexA = indexA;
 			this.IndexB = indexB;
 			this.K = K;
+			this.KHingeAxis = KHingeAxis;
 			this.C = C;
 			this.StartAnchorPoint = startAnchorPosition;
 			this.HingeAxis = hingeAxis.Normalize ();
@@ -84,45 +86,6 @@ namespace MonoPhysicsEngine
 				rRotationAxis,
 				rHingeAxis,
 				objectB.RotationStatus);
-		}
-
-		public Hinge2Constraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 hingeAxis,
-			Vector3 rotationAxis,
-			double K,
-			double C,
-			double? angularLimitMin1,
-			double? angularLimitMax1)
-			:this(indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, rotationAxis, K, C)
-		{
-			this.AngularLimitMin1 = angularLimitMin1;
-			this.AngularLimitMax1 = angularLimitMax1;
-		}
-
-		public Hinge2Constraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 hingeAxis,
-			Vector3 rotationAxis,
-			double K,
-			double C,
-			double? angularLimitMin1,
-			double? angularLimitMax1,
-			double? angularLimitMin2,
-			double? angularLimitMax2)
-			:this(indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, rotationAxis, K, C)
-		{
-			this.AngularLimitMin1 = angularLimitMin1;
-			this.AngularLimitMax1 = angularLimitMax1;
-
-			this.AngularLimitMin2 = angularLimitMin2;
-			this.AngularLimitMax2 = angularLimitMax2;
 		}
 
 		#endregion
@@ -231,7 +194,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				KHinge,
+				KHingeAxis,
 				0.0,
 				ConstraintType.Joint));
 			
@@ -398,12 +361,14 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			throw new NotSupportedException();
+			this.AngularLimitMin1 = angularLimitMin;
+			this.AngularLimitMax1 = angularLimitMax;
 		}
 
 		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			throw new NotSupportedException();
+			this.AngularLimitMin2 = angularLimitMin;
+			this.AngularLimitMax2 = angularLimitMax;
 		}
 
 		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)

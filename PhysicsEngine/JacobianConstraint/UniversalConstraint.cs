@@ -27,7 +27,6 @@ namespace MonoPhysicsEngine
 		private double? AngularLimitMax1 = null;
 		private double? AngularLimitMin2 = null;
 		private double? AngularLimitMax2 = null;
-
 		private Vector3 AnchorPoint;
 
 		#endregion

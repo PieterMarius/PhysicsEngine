@@ -309,6 +309,8 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
+		#region NotImplementedMethods
+
 		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
@@ -323,6 +325,8 @@ namespace MonoPhysicsEngine
 		{
 			throw new NotSupportedException();
 		}
+
+		#endregion
 
 		#endregion
 

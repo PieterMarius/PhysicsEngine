@@ -324,9 +324,9 @@ namespace Loading
 								C);
 
 							joint[j].SetAxis1AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText));
+														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 							joint[j].SetAxis2AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText));
+														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 							break;
 
 						case JointType.Hinge2:
@@ -338,13 +338,14 @@ namespace Loading
 								actionAxis,
 								new Vector3 (1.0, 0.0, 0.0),
 								K,
-								C,
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
+								1.0,
+								C);
+							
+							joint [j].SetAxis1AngularLimit (Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
 								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
-							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-							//Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+								
+							joint[j].SetAxis2Motor(4.0, 2.0);
 
-								joint[j].SetAxis2Motor(4.0, 2.0);
 							break;
 
 						default:

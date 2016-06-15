@@ -18,10 +18,10 @@ namespace MonoPhysicsEngine
 		private readonly Vector3 StartAnchorPoint;
 		private readonly Vector3 PistonAxis;
 
-		private readonly double? AngularLimitMin = null;
-		private readonly double? AngularLimitMax = null;
-		private readonly double? LinearLimitMin = null;
-		private readonly double? LinearLimitMax = null;
+		private double? AngularLimitMin = null;
+		private double? AngularLimitMax = null;
+		private double? LinearLimitMin = null;
+		private double? LinearLimitMax = null;
 
 		private Vector3 AnchorPoint;
 		private Vector3 StartErrorAxis1;
@@ -289,6 +289,16 @@ namespace MonoPhysicsEngine
 
 		#region IConstraint
 
+		public int GetObjectIndexA()
+		{
+			return IndexA;
+		}
+
+		public int GetObjectIndexB()
+		{
+			return IndexB;
+		}
+
 		public JointType GetJointType()
 		{
 			return jointType;
@@ -297,6 +307,18 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return this.AnchorPoint;
+		}
+
+		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			AngularLimitMin = angularLimitMin;
+			AngularLimitMax = angularLimitMax;
+		}
+
+		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		{
+			LinearLimitMin = linearLimitMin;
+			LinearLimitMax = linearLimitMax;
 		}
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)
@@ -314,29 +336,9 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public int GetObjectIndexA()
-		{
-			return IndexA;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return IndexB;
-		}
-
-		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
-		{
-			throw new NotSupportedException();
-		}
-
 		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
-		}
-
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
-		{
-			throw new NotImplementedException();
 		}
 
 		#endregion
