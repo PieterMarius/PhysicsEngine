@@ -92,16 +92,10 @@ namespace MonoPhysicsEngine
 			ConstraintType type,
 			int? contactReference = null)
 		{
-			Vector3 linearVelocityA = simulationObjectA.LinearVelocity + simulationObjectA.ForceAccumulator;
-			Vector3 linearVelocityB = simulationObjectB.LinearVelocity + simulationObjectB.ForceAccumulator;
-
-			Vector3 angularVelocityA = simulationObjectA.AngularVelocity + simulationObjectA.TorqueAccumulator;
-			Vector3 angularVelocityB = simulationObjectB.AngularVelocity + simulationObjectB.TorqueAccumulator;
-
-			double jacobianVelocityValue = linearComponentA.Dot (linearVelocityA) +
-			                               linearComponentB.Dot (linearVelocityB) +
-			                               angularComponentA.Dot (angularVelocityA) +
-			                               angularComponentB.Dot (angularVelocityB);
+			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
+			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
+			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
+			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
 			jacobianVelocityValue -= constraintValue;
 

@@ -304,14 +304,6 @@ namespace MonoPhysicsEngine
 			LinearLimitMax = linearLimitMax;
 		}
 
-		public void AddTorque(
-			SimulationObject[] simObj, 
-			double torqueAxis1, 
-			double torqueAxis2)
-		{
-			throw new NotSupportedException();
-		}
-
 		#region NotImplementedMethods
 
 		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)

@@ -280,20 +280,6 @@ namespace MonoPhysicsEngine
 			this.ForceRotationAxisLimit = forceLimit;
 		}
 
-		public void AddTorque(
-			SimulationObject[] simObj, 
-			double torqueAxis1, 
-			double torqueAxis2)
-		{
-			Vector3 hingeAxis = simObj[IndexA].RotationMatrix * HingeAxis;
-			Vector3 rotationAxis = simObj[IndexB].RotationMatrix * RotationAxis;
-
-			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
-
-			simObj[IndexA].SetTorqueAccumulator(simObj[IndexA].TorqueAccumulator + torque);
-			simObj[IndexB].SetTorqueAccumulator(simObj[IndexB].TorqueAccumulator - torque);
-		}
-
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			this.AngularLimitMin1 = angularLimitMin;

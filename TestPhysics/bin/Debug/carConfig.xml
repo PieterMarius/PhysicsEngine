@@ -48,7 +48,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
@@ -63,7 +63,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>    
         <Object>
@@ -78,14 +78,14 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
             <Position x="-5,0" y="4,6" z="1,5" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="1,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>1,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
@@ -93,7 +93,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         
@@ -101,7 +101,7 @@
             <Position x="0,0" y="-4" z="0,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>1</ObjectType>
             <Mass>1000,0</Mass>
             <RestitutionCoeff>0,01</RestitutionCoeff>

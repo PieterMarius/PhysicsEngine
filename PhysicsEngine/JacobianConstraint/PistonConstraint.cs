@@ -265,14 +265,6 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public void AddTorque(
-			SimulationObject[] simObj, 
-			double torqueAxis1, 
-			double torqueAxis2)
-		{
-			throw new NotSupportedException();
-		}
-
 		#region NotImplementedMethod
 
 		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)

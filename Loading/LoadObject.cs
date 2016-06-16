@@ -355,7 +355,7 @@ namespace Loading
 								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 
 							//joint[j].SetAxis2Motor(4.0, 2.0);
-							joint[j].AddTorque(objects, 0.0, 2.0);
+
 
 							break;
 
