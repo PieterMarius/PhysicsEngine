@@ -48,7 +48,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
@@ -63,7 +63,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>    
         <Object>
@@ -78,7 +78,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
@@ -93,7 +93,7 @@
             <StaticFriction>0,9</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>1,0</Scale>
-            <ObjectGeometry>cilindro1.obj</ObjectGeometry>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         
