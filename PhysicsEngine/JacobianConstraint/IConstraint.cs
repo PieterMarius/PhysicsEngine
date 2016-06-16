@@ -23,7 +23,7 @@ namespace MonoPhysicsEngine
 		void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
 		void SetAxis1Motor(double speedValue, double forceLimit);
 		void SetAxis2Motor(double speedValue, double forceLimit);
-		void AddTorque(double torqueAxis1, double torqueAxis2);
+		void AddTorque(SimulationObject[] simObj, double torqueAxis1, double torqueAxis2);
 
 		#endregion
 	}

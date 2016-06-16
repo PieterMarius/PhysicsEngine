@@ -109,6 +109,18 @@ namespace SimulationObjectDefinition
 		/// <value>The rotation matrix.</value>
 		public Matrix3x3 RotationMatrix{ get; private set; }
 
+		/// <summary>
+		/// Gets the torque accumulator.
+		/// </summary>
+		/// <value>The torque accumulator.</value>
+		public Vector3 TorqueAccumulator{ get; private set; } 
+
+		/// <summary>
+		/// Gets the force accumulator.
+		/// </summary>
+		/// <value>The force accumulator.</value>
+		public Vector3 ForceAccumulator{ get; private set; }
+
 		#endregion
 
 		#region Simulation Properties
@@ -118,11 +130,6 @@ namespace SimulationObjectDefinition
 		/// </summary>
 		/// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
 		public bool ExcludeFromCollisionDetection{ get; private set; } 
-
-		#endregion
-
-		#region Constructor
-
 
 		#endregion
 
@@ -215,6 +222,16 @@ namespace SimulationObjectDefinition
 		public void SetObjectType(ObjectType type)
 		{
 			this.ObjectType = type;
+		}
+
+		public void SetForceAccumulator(Vector3 force)
+		{
+			ForceAccumulator = force;
+		}
+
+		public void SetTorqueAccumulator(Vector3 torque)
+		{
+			TorqueAccumulator = torque;
 		}
 
 		#endregion

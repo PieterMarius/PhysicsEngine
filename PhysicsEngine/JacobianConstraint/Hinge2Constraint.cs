@@ -221,95 +221,21 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			if (this.AngularLimitMin1.HasValue && 
-				this.AngularLimitMax1.HasValue)
-			{
-				double angle1 = getAngle1(
-					hingeAxis,
-					rotationAxis,
-					this.HingeAxis,
-					simulationObjectA.RotationStatus,
-					this.RelativeOrientation1);
-
-				hinge2Constraints.Add(JacobianCommon.GetAngularLimit (
-					IndexA, 
-					IndexB, 
-					angle1,
-					this.K,
-					C,
-					simulationObjectA, 
-					simulationObjectB, 
-					hingeAxis,
-					this.AngularLimitMin1.Value,
-					this.AngularLimitMax1.Value));
-			}
-
-			if (this.AngularLimitMin2.HasValue &&
-				this.AngularLimitMax2.HasValue)
-			{
-
-				double angle2 = getAngle2 (
-					hingeAxis,
-					rotationAxis,
-					this.RotationAxis,
-					simulationObjectB.RotationStatus,
-					this.RelativeOrientation2);
-
-				hinge2Constraints.Add(JacobianCommon.GetAngularLimit (
-					IndexA, 
-					IndexB, 
-					angle2,
-					this.K,
-					C,
-					simulationObjectA, 
-					simulationObjectB, 
-					rotationAxis,
-					this.AngularLimitMin2.Value,
-					this.AngularLimitMax2.Value));
-
-			}
+			hinge2Constraints.AddRange(getAngularLimit(
+				simulationObjectA,
+				simulationObjectB,
+				hingeAxis,
+				rotationAxis));
 
 			#endregion
 
 			#region Motor Constraint
 
-			if (this.SpeedHingeAxisLimit.HasValue &&
-				this.ForceHingeAxisLimit.HasValue)
-			{
-				hinge2Constraints.Add(
-					JacobianCommon.GetDOF(
-						IndexA,
-						IndexB,
-						new Vector3(),
-						new Vector3(),
-						-1.0 * hingeAxis,
-						1.0 * hingeAxis,
-						simulationObjectA,
-						simulationObjectB,
-						this.SpeedHingeAxisLimit.Value,
-						C,
-						this.ForceHingeAxisLimit.Value,
-						ConstraintType.JointMotor));
-			}
-
-			if (this.SpeedRotationAxisLimit.HasValue &&
-				this.ForceRotationAxisLimit.HasValue)
-			{
-				hinge2Constraints.Add(
-					JacobianCommon.GetDOF(
-						IndexA,
-						IndexB,
-						new Vector3(),
-						new Vector3(),
-						-1.0 * rotationAxis,
-						1.0 * rotationAxis,
-						simulationObjectA,
-						simulationObjectB,
-						this.SpeedRotationAxisLimit.Value,
-						C,
-						this.ForceRotationAxisLimit.Value,
-						ConstraintType.JointMotor));
-			}
+			hinge2Constraints.AddRange(getMotorConstraint(
+				simulationObjectA,
+				simulationObjectB,
+				hingeAxis,
+				rotationAxis));
 
 			#endregion
 
@@ -354,9 +280,18 @@ namespace MonoPhysicsEngine
 			this.ForceRotationAxisLimit = forceLimit;
 		}
 
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		public void AddTorque(
+			SimulationObject[] simObj, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
-			throw new NotSupportedException();
+			Vector3 hingeAxis = simObj[IndexA].RotationMatrix * HingeAxis;
+			Vector3 rotationAxis = simObj[IndexB].RotationMatrix * RotationAxis;
+
+			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
+
+			simObj[IndexA].SetTorqueAccumulator(simObj[IndexA].TorqueAccumulator + torque);
+			simObj[IndexB].SetTorqueAccumulator(simObj[IndexB].TorqueAccumulator - torque);
 		}
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -371,7 +306,9 @@ namespace MonoPhysicsEngine
 			this.AngularLimitMax2 = angularLimitMax;
 		}
 
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		#region NotImplementedMethods
+
+		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotImplementedException();
 		}
@@ -380,7 +317,9 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-		#region Private Static Methods
+		#endregion
+
+		#region Private Methods
 
 		private double getAngle2(
 			Vector3 axis1,
@@ -424,7 +363,113 @@ namespace MonoPhysicsEngine
 			return Quaternion.Multiply1 (bodyRotationStatus, rotationQ);
 		}
 
+		private List<JacobianContact> getAngularLimit(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Vector3 hingeAxis,
+			Vector3 rotationAxis)
+		{
+			var angularConstraint = new List<JacobianContact>();
 
+			if (this.AngularLimitMin1.HasValue &&
+				this.AngularLimitMax1.HasValue)
+			{
+				double angle1 = getAngle1(
+					hingeAxis,
+					rotationAxis,
+					this.HingeAxis,
+					simulationObjectA.RotationStatus,
+					this.RelativeOrientation1);
+
+				angularConstraint.Add(JacobianCommon.GetAngularLimit(
+					IndexA,
+					IndexB,
+					angle1,
+					this.K,
+					C,
+					simulationObjectA,
+					simulationObjectB,
+					hingeAxis,
+					this.AngularLimitMin1.Value,
+					this.AngularLimitMax1.Value));
+			}
+
+			if (this.AngularLimitMin2.HasValue &&
+				this.AngularLimitMax2.HasValue)
+			{
+
+				double angle2 = getAngle2(
+					hingeAxis,
+					rotationAxis,
+					this.RotationAxis,
+					simulationObjectB.RotationStatus,
+					this.RelativeOrientation2);
+
+				angularConstraint.Add(JacobianCommon.GetAngularLimit(
+					IndexA,
+					IndexB,
+					angle2,
+					this.K,
+					C,
+					simulationObjectA,
+					simulationObjectB,
+					rotationAxis,
+					this.AngularLimitMin2.Value,
+					this.AngularLimitMax2.Value));
+
+			}
+
+			return angularConstraint;
+		}
+
+		private List<JacobianContact> getMotorConstraint(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Vector3 hingeAxis,
+			Vector3 rotationAxis)
+		{
+			var motorConstraint = new List<JacobianContact>();
+
+			if (this.SpeedHingeAxisLimit.HasValue &&
+				this.ForceHingeAxisLimit.HasValue)
+			{
+				motorConstraint.Add(
+					JacobianCommon.GetDOF(
+						IndexA,
+						IndexB,
+						new Vector3(),
+						new Vector3(),
+						-1.0 * hingeAxis,
+						1.0 * hingeAxis,
+						simulationObjectA,
+						simulationObjectB,
+						this.SpeedHingeAxisLimit.Value,
+						C,
+						this.ForceHingeAxisLimit.Value,
+						ConstraintType.JointMotor));
+			}
+
+			if (this.SpeedRotationAxisLimit.HasValue &&
+				this.ForceRotationAxisLimit.HasValue)
+			{
+				motorConstraint.Add(
+					JacobianCommon.GetDOF(
+						IndexA,
+						IndexB,
+						new Vector3(),
+						new Vector3(),
+						-1.0 * rotationAxis,
+						1.0 * rotationAxis,
+						simulationObjectA,
+						simulationObjectB,
+						this.SpeedRotationAxisLimit.Value,
+						C,
+						this.ForceRotationAxisLimit.Value,
+						ConstraintType.JointMotor));
+			}
+
+			return motorConstraint;
+		}
 
 		#endregion
 	}

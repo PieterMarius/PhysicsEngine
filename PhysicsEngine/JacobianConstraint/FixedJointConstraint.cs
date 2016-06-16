@@ -267,7 +267,10 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.AddTorque(double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(
+			SimulationObject[] simObj, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

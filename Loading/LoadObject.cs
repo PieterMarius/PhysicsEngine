@@ -283,33 +283,40 @@ namespace Loading
 							break;
 
 						case JointType.Piston:
-							joint [j] = new PistonConstraint (
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
-								actionAxis,
-								Convert.ToDouble (jointPropertiesList [j] [this.restoreCoeffAttribute].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.stretchCoeffAttribute].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.linearLimitMax].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));						
-							break;
-
-						case JointType.Hinge:
-							joint [j] = new HingeConstraint (
+							joint[j] = new PistonConstraint(
 								indexA,
 								indexB,
 								objects,
 								startAnchorPosition,
 								actionAxis,
 								K,
-								C,
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+								C);
 
-								joint[j].SetAxis1Motor(3.0, 0.15);
+							joint[j].SetAxis1AngularLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+
+							joint[j].SetLinearLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.linearLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.linearLimitMax].InnerText));
+							
+							break;
+
+						case JointType.Hinge:
+							joint[j] = new HingeConstraint(
+								indexA,
+								indexB,
+								objects,
+								startAnchorPosition,
+								actionAxis,
+								K,
+								C);
+
+							joint[j].SetAxis1AngularLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+
+							joint[j].SetAxis1Motor(3.0, 0.15);
 							break;
 
 						case JointType.Universal:
@@ -323,10 +330,12 @@ namespace Loading
 								K,
 								C);
 
-							joint[j].SetAxis1AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
-							joint[j].SetAxis2AngularLimit(Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-														  Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+							joint[j].SetAxis1AngularLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+							joint[j].SetAxis2AngularLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 							break;
 
 						case JointType.Hinge2:
@@ -340,9 +349,10 @@ namespace Loading
 								K,
 								1.0,
 								C);
-							
-							joint [j].SetAxis1AngularLimit (Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMin].InnerText),
-								Convert.ToDouble (jointPropertiesList [j] [this.angularLimitMax].InnerText));
+
+							joint[j].SetAxis1AngularLimit(
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 								
 							joint[j].SetAxis2Motor(4.0, 2.0);
 

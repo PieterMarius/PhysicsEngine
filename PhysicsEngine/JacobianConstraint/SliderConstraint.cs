@@ -304,7 +304,10 @@ namespace MonoPhysicsEngine
 			LinearLimitMax = linearLimitMax;
 		}
 
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		public void AddTorque(
+			SimulationObject[] simObj, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

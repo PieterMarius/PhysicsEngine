@@ -68,23 +68,6 @@ namespace MonoPhysicsEngine
 			this.HingeAxis = hingeAxis.Normalize ();
 		}
 
-		public HingeConstraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 hingeAxis,
-			double K,
-			double C,
-			double? angularLimitMin,
-			double? angularLimitMax)
-			:this (indexA, indexB, simulationObject, startAnchorPosition, hingeAxis, K, C)
-			
-		{
-			this.AngularLimitMin = angularLimitMin;
-			this.AngularLimitMax = angularLimitMax;
-		}
-
 		#endregion
 
 		#region Public Methods
@@ -329,7 +312,10 @@ namespace MonoPhysicsEngine
 			AngularLimitMax = angularLimitMax;
 		}
 
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		public void AddTorque(
+			SimulationObject[] simObj, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

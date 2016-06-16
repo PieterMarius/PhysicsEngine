@@ -67,43 +67,6 @@ namespace MonoPhysicsEngine
 									   objectA.RotationStatus;
 		}
 
-		public PistonConstraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 pistonAxis,
-			double K,
-			double C,
-			double linearLimitMin,
-			double linearLimitMax)
-			:this(indexA, indexB, simulationObject, startAnchorPosition, pistonAxis, K, C)
-		{
-			this.LinearLimitMin = linearLimitMin;
-			this.LinearLimitMax = linearLimitMax;
-		}
-		
-		public PistonConstraint(
-			int indexA,
-			int indexB,
-			SimulationObject[] simulationObject,
-			Vector3 startAnchorPosition,
-			Vector3 pistonAxis,
-			double K,
-			double C,
-			double linearLimitMin,
-			double linearLimitMax,
-			double angularLimitMin,
-			double angularLimitMax)
-			:this(indexA, indexB, simulationObject, startAnchorPosition, pistonAxis, K, C)
-		{
-			this.LinearLimitMin = linearLimitMin;
-			this.LinearLimitMax = linearLimitMax;
-
-			this.AngularLimitMin = angularLimitMin;
-			this.AngularLimitMax = angularLimitMax;
-		}
-
 		#endregion
 
 		#region Public Methods
@@ -120,7 +83,7 @@ namespace MonoPhysicsEngine
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> pistonConstraints = new List<JacobianContact> ();
+			var pistonConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -237,46 +200,17 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			if (LinearLimitMin.HasValue &&
-				LinearLimitMax.HasValue)
-			{
-				pistonConstraints.Add(
-					JacobianCommon.GetLinearLimit(
-						IndexA,
-						IndexB,
-						simulationObjectA,
-						simulationObjectB,
-						sliderAxis,
-						r1,
-						r2,
-						this.K,
-						C,
-						LinearLimitMin.Value,
-						LinearLimitMax.Value));
-			}
+			pistonConstraints.AddRange(getLinearLimit(
+				simulationObjectA,
+				simulationObjectB,
+				sliderAxis,
+				r1,
+				r2));
 
-			if (AngularLimitMin.HasValue &&
-				AngularLimitMax.HasValue)
-			{
-				double angle = JacobianCommon.GetAngle(
-					simulationObjectA,
-					simulationObjectB,
-					this.RelativeOrientation,
-					this.PistonAxis);
-
-				pistonConstraints.Add(
-					JacobianCommon.GetAngularLimit(
-						IndexA,
-						IndexB,
-						angle,
-						this.K,
-						C,
-						simulationObjectA,
-						simulationObjectB,
-						sliderAxis,
-						AngularLimitMin.Value,
-						AngularLimitMax.Value));
-			}
+			pistonConstraints.AddRange(getAnguarLimit(
+				simulationObjectA,
+				simulationObjectB,
+				sliderAxis));
 
 			#endregion
 
@@ -331,17 +265,91 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
+		public void AddTorque(
+			SimulationObject[] simObj, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}
 
-		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		#region NotImplementedMethod
+
+		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
 		#endregion
+
+		#endregion
+
+		#endregion
+
+		#region Private Methods
+
+		private List<JacobianContact> getLinearLimit(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Vector3 sliderAxis,
+			Vector3 r1,
+			Vector3 r2)
+		{
+			var linearConstraints = new List<JacobianContact>();
+
+			if (LinearLimitMin.HasValue &&
+				LinearLimitMax.HasValue)
+			{
+				linearConstraints.Add(
+					JacobianCommon.GetLinearLimit(
+						IndexA,
+						IndexB,
+						simulationObjectA,
+						simulationObjectB,
+						sliderAxis,
+						r1,
+						r2,
+						K,
+						C,
+						LinearLimitMin.Value,
+						LinearLimitMax.Value));
+			}
+
+			return linearConstraints;
+		}
+
+		private List<JacobianContact> getAnguarLimit(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Vector3 sliderAxis)
+		{
+			var angularConstraints = new List<JacobianContact>();
+
+			if (AngularLimitMin.HasValue &&
+				AngularLimitMax.HasValue)
+			{
+				double angle = JacobianCommon.GetAngle(
+					simulationObjectA,
+					simulationObjectB,
+					this.RelativeOrientation,
+					this.PistonAxis);
+
+				angularConstraints.Add(
+					JacobianCommon.GetAngularLimit(
+						IndexA,
+						IndexB,
+						angle,
+						K,
+						C,
+						simulationObjectA,
+						simulationObjectB,
+						sliderAxis,
+						AngularLimitMin.Value,
+						AngularLimitMax.Value));
+			}
+
+			return angularConstraints;
+		}
 
 		#endregion
 	}
