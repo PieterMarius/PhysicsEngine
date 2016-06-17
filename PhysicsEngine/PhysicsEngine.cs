@@ -754,15 +754,15 @@ namespace MonoPhysicsEngine
 
 					double angularVelocity = simObj.AngularVelocity.Length();
 
-					Console.WriteLine("Angular :" + angularVelocity);
+					Console.WriteLine("angular " + angularVelocity);
 
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
 					//Inertia parameter
-//					angularVelocity = Math.Max (0.0, 
-//						angularVelocity + 
-//						angularVelocity * 
-//						this.simulationParameters.InertiaParameter);
+					//					angularVelocity = Math.Max (0.0, 
+					//						angularVelocity + 
+					//						angularVelocity * 
+					//						this.simulationParameters.InertiaParameter);
 
 					double rotationAngle = angularVelocity * TimeStep;
 

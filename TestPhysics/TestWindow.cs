@@ -207,7 +207,7 @@ namespace TestPhysics
 					this.physicsEngine.Simulate(null);
 					for (int i = 0; i < this.physicsEngine.SimulationJoints.Count; i++)
 					{
-						this.physicsEngine.SimulationJoints[i].AddTorque(this.physicsEngine.SimulationObjects, 0.0, 1.0);
+						this.physicsEngine.SimulationJoints[i].AddTorque(this.physicsEngine.SimulationObjects, 0.0, 0.4);
 					}
 
 

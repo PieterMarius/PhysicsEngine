@@ -19,7 +19,7 @@
       <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="372" Column="53" />
       <File FileName="MathUtility\Matrix3x3.cs" Line="1" Column="1" />
       <File FileName="MathUtility\Quaternion.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="746" Column="6" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="757" Column="54" />
       <File FileName="ObjectDefinition\JointType.cs" Line="14" Column="14" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="26" Column="45" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="12" Column="2" />
@@ -27,7 +27,7 @@
       <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="285" Column="53" />
       <File FileName="Loading\LoadEngineConfig.cs" Line="1" Column="1" />
       <File FileName="Loading\LoadObject.cs" Line="175" Column="5" />
-      <File FileName="TestPhysics\TestWindow.cs" Line="213" Column="6" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="212" Column="6" />
       <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="332" Column="53" />
       <File FileName="LCPSolver\ClampSolution.cs" Line="1" Column="1" />
       <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="205" Column="4" />
@@ -46,13 +46,6 @@
       <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="1" Column="1" />
       <File FileName="TestPhysics\Program.cs" Line="1" Column="1" />
     </Files>
-    <Pads>
-      <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State>
-          <Value>angularTorqueValue</Value>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <DisabledProjects>
     <String>../OpenTKTutorialContent-master/OpenTKTutorial7/OpenTKTutorial7/OpenTKTutorial7.csproj</String>
