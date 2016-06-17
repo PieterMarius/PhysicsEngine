@@ -718,13 +718,7 @@ namespace MonoPhysicsEngine
 
 					simObj.SetLinearVelocity (linearVelocityValue);
 
-					Vector3 angularTorqueValue = simObj.AngularVelocity +
-											     simObj.InertiaTensor * simObj.TorqueValue;
-
-					simObj.SetAngularVelocity(angularTorqueValue);
-
 					double linearVelocity = simObj.LinearVelocity.Length ();
-					double angularVelocity = simObj.AngularVelocity.Length ();
 
 					/* TODO Stabilizza l'animazione*/		
 					//Velocità lineare e angolare
@@ -750,6 +744,13 @@ namespace MonoPhysicsEngine
 					#endregion
 
 					#region Angular Velocity
+
+					Vector3 angularTorqueValue = simObj.AngularVelocity +
+												 simObj.InertiaTensor * simObj.TorqueValue;
+
+					simObj.SetAngularVelocity(angularTorqueValue);
+
+					double angularVelocity = simObj.AngularVelocity.Length();
 
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
