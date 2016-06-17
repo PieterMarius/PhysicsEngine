@@ -109,6 +109,10 @@ namespace SimulationObjectDefinition
 		/// <value>The rotation matrix.</value>
 		public Matrix3x3 RotationMatrix{ get; private set; }
 
+		public Vector3 ForceValue { get; private set;}
+
+		public Vector3 TorqueValue { get; private set;}
+
 		#endregion
 
 		#region Simulation Properties
@@ -210,6 +214,16 @@ namespace SimulationObjectDefinition
 		public void SetObjectType(ObjectType type)
 		{
 			this.ObjectType = type;
+		}
+
+		public void SetTorque(Vector3 torque)
+		{
+			this.TorqueValue = torque;
+		}
+
+		public void SetForce(Vector3 force)
+		{
+			this.ForceValue = force;
 		}
 
 		#endregion

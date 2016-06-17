@@ -712,10 +712,16 @@ namespace MonoPhysicsEngine
 				{
 					#region Linear Velocity
 
-					simObj.SetLinearVelocity (
-						simObj.LinearVelocity +
-						TimeStep *
-						(SimulationEngineParameters.ExternalForce));
+					Vector3 linearVelocityValue = simObj.LinearVelocity +
+										     (simObj.ForceValue * simObj.InverseMass) +
+										     (TimeStep * SimulationEngineParameters.ExternalForce);
+
+					simObj.SetLinearVelocity (linearVelocityValue);
+
+					Vector3 angularTorqueValue = simObj.AngularVelocity +
+											     simObj.InertiaTensor * simObj.TorqueValue;
+
+					simObj.SetAngularVelocity(angularTorqueValue);
 
 					double linearVelocity = simObj.LinearVelocity.Length ();
 					double angularVelocity = simObj.AngularVelocity.Length ();
