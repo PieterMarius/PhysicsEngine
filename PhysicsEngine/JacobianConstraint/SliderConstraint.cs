@@ -321,6 +321,11 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
+		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 
 		#endregion

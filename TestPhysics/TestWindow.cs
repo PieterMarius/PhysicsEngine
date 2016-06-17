@@ -197,31 +197,28 @@ namespace TestPhysics
 
 			try {
 
-			if (!pause){
-				stopwatch.Reset ();
-				stopwatch.Start ();
+				if (!pause)
+				{
+					stopwatch.Reset();
+					stopwatch.Start();
 
-				collPoint.Clear ();
+					collPoint.Clear();
 
-				this.physicsEngine.Simulate (null);
+					this.physicsEngine.Simulate(null);
+					for (int i = 0; i < this.physicsEngine.SimulationJoints.Count; i++)
+					{
+						this.physicsEngine.SimulationJoints[i].AddTorque(this.physicsEngine.SimulationObjects, 0.0, 1.0);
+					}
 
-				
-				//DEBUG
-//				count++;
-//				Console.WriteLine ("Solver Error: " + this.physicsEngine.GetSolverError ());
-//				Console.WriteLine ("Position:" + this.physicsEngine.GetObject (0).Position.x + " ; " +
-//					this.physicsEngine.GetObject (0).Position.y + " ; " +
-//					this.physicsEngine.GetObject (0).Position.z);
-//				Console.WriteLine ("Velocity:" + this.physicsEngine.GetObject (0).LinearVelocity.x + " ; " +
-//					this.physicsEngine.GetObject (0).LinearVelocity.y + " ; " +
-//					this.physicsEngine.GetObject (0).LinearVelocity.z);
 
-				stopwatch.Stop ();
+					stopwatch.Stop();
 
-				Console.WriteLine("Engine Elapsed={0}",stopwatch.ElapsedMilliseconds);
-				Console.WriteLine ();
-			}
-			}catch (Exception) {
+					Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+					Console.WriteLine();
+				}
+			} 
+			catch (Exception) 
+			{
 				throw new Exception ("Physics engine error.");
 			}
 			collPoint = this.physicsEngine.GetCollisionPointStrucureList ();

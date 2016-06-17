@@ -717,6 +717,7 @@ namespace MonoPhysicsEngine
 										     (TimeStep * SimulationEngineParameters.ExternalForce);
 
 					simObj.SetLinearVelocity (linearVelocityValue);
+					simObj.SetForce(new Vector3());
 
 					double linearVelocity = simObj.LinearVelocity.Length ();
 
@@ -749,8 +750,11 @@ namespace MonoPhysicsEngine
 												 simObj.InertiaTensor * simObj.TorqueValue;
 
 					simObj.SetAngularVelocity(angularTorqueValue);
+					simObj.SetTorque(new Vector3());
 
 					double angularVelocity = simObj.AngularVelocity.Length();
+
+					Console.WriteLine("Angular :" + angularVelocity);
 
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 

@@ -354,7 +354,7 @@ namespace Loading
 								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
 								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
 
-							joint[j].SetAxis2Motor(4.0, 3.0);
+							//joint[j].SetAxis2Motor(4.0, 3.0);
 
 
 							break;

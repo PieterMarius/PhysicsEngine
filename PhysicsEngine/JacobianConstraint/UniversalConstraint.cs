@@ -369,6 +369,11 @@ namespace MonoPhysicsEngine
 			return Quaternion.Multiply1 (bodyRotationStatus, rotationQ);
 		}
 
+		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		{
+			throw new NotImplementedException();
+		}
+
 		#endregion
 	}
 }

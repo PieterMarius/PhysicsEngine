@@ -292,6 +292,16 @@ namespace MonoPhysicsEngine
 			this.AngularLimitMax2 = angularLimitMax;
 		}
 
+		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		{
+			//Vector3 hingeAxis = objects[IndexA].RotationMatrix * this.HingeAxis;
+			Vector3 rotationAxis = objects[IndexB].RotationMatrix * this.RotationAxis;
+
+			Vector3 torque = rotationAxis * torqueAxis2;
+
+			objects[IndexB].SetTorque(torque);
+		}
+
 		#region NotImplementedMethods
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
