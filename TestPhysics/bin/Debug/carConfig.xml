@@ -26,7 +26,7 @@
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>1</ObjectType>
+            <ObjectType>0</ObjectType>
             <Mass>40,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>

@@ -294,12 +294,13 @@ namespace MonoPhysicsEngine
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			//Vector3 hingeAxis = objects[IndexA].RotationMatrix * this.HingeAxis;
+			Vector3 hingeAxis = objects[IndexA].RotationMatrix * this.HingeAxis;
 			Vector3 rotationAxis = objects[IndexB].RotationMatrix * this.RotationAxis;
 
-			Vector3 torque = rotationAxis * torqueAxis2;
+			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
 
-			objects[IndexB].SetTorque(torque);
+			objects[IndexA].SetTorque(objects[IndexA].TorqueValue + torque);
+			objects[IndexB].SetTorque(objects[IndexB].TorqueValue - torque);
 		}
 
 		#region NotImplementedMethods

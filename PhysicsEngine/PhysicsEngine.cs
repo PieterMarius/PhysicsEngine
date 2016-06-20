@@ -754,8 +754,6 @@ namespace MonoPhysicsEngine
 
 					double angularVelocity = simObj.AngularVelocity.Length();
 
-					Console.WriteLine("angular " + angularVelocity);
-
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
 					//Inertia parameter
