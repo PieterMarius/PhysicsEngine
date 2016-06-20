@@ -206,12 +206,12 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotImplementedException();
 		}

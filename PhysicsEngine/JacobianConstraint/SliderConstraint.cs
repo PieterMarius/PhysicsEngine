@@ -123,7 +123,7 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
-			#region Constraints
+			#region Base Constraints
 
 			double constraintLimit = this.K * 2.0 * angularError.x;
 
@@ -321,7 +321,7 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotImplementedException();
 		}

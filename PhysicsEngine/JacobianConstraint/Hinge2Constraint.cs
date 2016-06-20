@@ -265,7 +265,7 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
 		}
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)
@@ -276,20 +276,20 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis2Motor(double speedValue, double forceLimit)
 		{
-			this.SpeedRotationAxisLimit = speedValue;
-			this.ForceRotationAxisLimit = forceLimit;
+			SpeedRotationAxisLimit = speedValue;
+			ForceRotationAxisLimit = forceLimit;
 		}
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			this.AngularLimitMin1 = angularLimitMin;
-			this.AngularLimitMax1 = angularLimitMax;
+			AngularLimitMin1 = angularLimitMin;
+			AngularLimitMax1 = angularLimitMax;
 		}
 
 		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			this.AngularLimitMin2 = angularLimitMin;
-			this.AngularLimitMax2 = angularLimitMax;
+			AngularLimitMin2 = angularLimitMin;
+			AngularLimitMax2 = angularLimitMax;
 		}
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)

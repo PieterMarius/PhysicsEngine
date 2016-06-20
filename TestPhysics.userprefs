@@ -14,16 +14,16 @@
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/MathUtility/Matrix3x3.cs" line="281" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\PhysicsEngine.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs">
     <Files>
       <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="372" Column="53" />
       <File FileName="MathUtility\Matrix3x3.cs" Line="1" Column="1" />
       <File FileName="MathUtility\Quaternion.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="755" Column="36" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="755" Column="63" />
       <File FileName="ObjectDefinition\JointType.cs" Line="14" Column="14" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="26" Column="45" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="12" Column="2" />
-      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="302" Column="30" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="296" Column="4" />
       <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="285" Column="53" />
       <File FileName="Loading\LoadEngineConfig.cs" Line="1" Column="1" />
       <File FileName="Loading\LoadObject.cs" Line="175" Column="5" />
@@ -38,7 +38,7 @@
       <File FileName="LCPSolver\NonLinearConjugateGradient.cs" Line="1" Column="1" />
       <File FileName="ObjectDefinition\ObjectGeometry.cs" Line="1" Column="1" />
       <File FileName="ObjectDefinition\ConstraintType.cs" Line="1" Column="1" />
-      <File FileName="ObjectDefinition\SimulationObject.cs" Line="226" Column="27" />
+      <File FileName="ObjectDefinition\SimulationObject.cs" Line="219" Column="15" />
       <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="67" Column="1" />
       <File FileName="PhysicsEngine\ContactPartitioning\ContactIndex.cs" Line="1" Column="1" />
       <File FileName="PhysicsEngine\ContactPartitioning\IContactPartitioningEngine.cs" Line="9" Column="3" />

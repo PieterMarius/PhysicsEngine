@@ -20,8 +20,14 @@ namespace MonoPhysicsEngine
 
 		private double? AngularLimitMin = null;
 		private double? AngularLimitMax = null;
+
 		private double? LinearLimitMin = null;
 		private double? LinearLimitMax = null;
+
+		private double? LinearSpeedValue = null;
+		private double? LinearForceLimit = null;
+		private double? AngularSpeedValue = null;
+		private double? AngularForceLimit = null;
 
 		private Vector3 AnchorPoint;
 		private Vector3 StartErrorAxis1;
@@ -214,6 +220,15 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
+			#region Motor Constraint
+
+			pistonConstraints.AddRange(getMotorConstraint(
+				simulationObjectA,
+				simulationObjectB,
+				sliderAxis));
+
+			#endregion
+
 			#endregion
 
 			return pistonConstraints;
@@ -257,17 +272,23 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)
 		{
-			throw new NotSupportedException();
+			LinearSpeedValue = speedValue;
+			LinearForceLimit = forceLimit;
 		}
 
-		public void SetAxis2Motor(double speedValue, double forceLimit)
+		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		#region NotImplementedMethod
 
 		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		{
+			throw new NotSupportedException();
+		}
+
+		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
@@ -343,9 +364,50 @@ namespace MonoPhysicsEngine
 			return angularConstraints;
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		private List<JacobianContact> getMotorConstraint(
+			SimulationObject simulationObjectA,
+			SimulationObject simulationObjectB,
+			Vector3 sliderAxis)
 		{
-			throw new NotImplementedException();
+			var motorConstraints = new List<JacobianContact>();
+
+			if (LinearForceLimit.HasValue &&
+				LinearSpeedValue.HasValue)
+			{
+				motorConstraints.Add(JacobianCommon.GetDOF(
+					IndexA,
+					IndexB,
+					sliderAxis,
+					-1.0 * sliderAxis,
+					new Vector3(),
+					new Vector3(),
+					simulationObjectA,
+					simulationObjectB,
+					this.LinearSpeedValue.Value,
+					C,
+					this.LinearForceLimit.Value,
+					ConstraintType.JointMotor));
+			}
+
+			if (AngularForceLimit.HasValue &&
+			   AngularSpeedValue.HasValue)
+			{
+				motorConstraints.Add(JacobianCommon.GetDOF(
+					IndexA,
+					IndexB,
+					new Vector3(),
+					new Vector3(),
+					sliderAxis,
+					-1.0 * sliderAxis,
+					simulationObjectA,
+					simulationObjectB,
+					this.AngularSpeedValue.Value,
+					C,
+					this.AngularForceLimit.Value,
+					ConstraintType.JointMotor));
+			}
+
+			return motorConstraints;
 		}
 
 		#endregion

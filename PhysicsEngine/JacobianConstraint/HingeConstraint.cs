@@ -128,6 +128,8 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
+			#region Base Constraint
+
 			//DOF 1
 
 			double constraintLimit = this.K * linearError.x;
@@ -222,6 +224,8 @@ namespace MonoPhysicsEngine
 					0.0,
 					ConstraintType.Joint));
 
+			#endregion
+
 			#region Limit Constraints 
 
 			if (this.AngularLimitMin.HasValue && 
@@ -312,6 +316,16 @@ namespace MonoPhysicsEngine
 			AngularLimitMax = angularLimitMax;
 		}
 
+		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		{
+			Vector3 hingeAxis = objects[IndexA].RotationMatrix * this.HingeAxis;
+
+			Vector3 torque = hingeAxis * torqueAxis1;
+
+			objects[IndexA].SetTorque(objects[IndexA].TorqueValue + torque);
+			objects[IndexB].SetTorque(objects[IndexB].TorqueValue - torque);
+		}
+
 		#region NotImplementedMethods
 
 		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
@@ -329,7 +343,7 @@ namespace MonoPhysicsEngine
 			throw new NotImplementedException();
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotImplementedException();
 		}
