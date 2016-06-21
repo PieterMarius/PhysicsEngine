@@ -10,23 +10,23 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		private const JointType jointType = JointType.Slider;
+		const JointType jointType = JointType.Slider;
 
-		private readonly int IndexA;
-		private readonly int IndexB;
-		private readonly double C;
-		private readonly double K;
-		private readonly Vector3 StartAnchorPoint;
-		private readonly Vector3 SliderAxis;
-		private readonly Vector3 StartErrorAxis1;
-		private readonly Vector3 StartErrorAxis2;
-		private readonly Quaternion RelativeOrientation;
+		readonly int IndexA;
+		readonly int IndexB;
+		readonly double SpringCoefficient;
+		readonly double RestoreCoefficient;
+		readonly Vector3 StartAnchorPoint;
+		readonly Vector3 SliderAxis;
+		readonly Vector3 StartErrorAxis1;
+		readonly Vector3 StartErrorAxis2;
+		readonly Quaternion RelativeOrientation;
 
-		private double? LinearLimitMin = null;
-		private double? LinearLimitMax = null;
-		private double? SpeedValue = null;
-		private double? ForceLimit = null;
-		private Vector3 AnchorPoint;
+		double? LinearLimitMin = null;
+		double? LinearLimitMax = null;
+		double? SpeedValue = null;
+		double? ForceLimit = null;
+		Vector3 AnchorPoint;
 
 		#endregion
 
@@ -38,15 +38,15 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
-			double K,
-			double C)
+			double restoreCoefficient,
+			double springCoefficient)
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
-			this.K = K;
-			this.C = C;
-			this.StartAnchorPoint = startAnchorPosition;
-			this.SliderAxis = -1.0 * sliderAxis.Normalize ();
+			IndexA = indexA;
+			IndexB = indexB;
+			RestoreCoefficient = restoreCoefficient;
+			SpringCoefficient = springCoefficient;
+			StartAnchorPoint = startAnchorPosition;
+			SliderAxis = -1.0 * sliderAxis.Normalize ();
 
 			SimulationObject objectA = simulationObject[IndexA];
 			SimulationObject objectB = simulationObject[IndexB];
@@ -54,16 +54,16 @@ namespace MonoPhysicsEngine
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
 
-			this.AnchorPoint = relativePos + objectA.Position;
+			AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
-				(this.AnchorPoint - objectA.Position);
+			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectA.Position);
 
-			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
-				(this.AnchorPoint - objectB.Position);
+			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectB.Position);
 
-			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
-				objectA.RotationStatus;
+			RelativeOrientation = objectB.RotationStatus.Inverse() *
+										 objectA.RotationStatus;
 		}
 
 		#endregion
@@ -87,10 +87,9 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
-			this.AnchorPoint = (simulationObjectA.RotationMatrix *
-								(this.StartAnchorPoint -
-								simulationObjectA.StartPosition)) +
-								simulationObjectA.Position;	
+			AnchorPoint = (simulationObjectA.RotationMatrix *
+						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
+						  simulationObjectA.Position;	
 
 			#region Init Linear
 
@@ -100,10 +99,10 @@ namespace MonoPhysicsEngine
 			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+										  StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+										  StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -117,7 +116,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularError = JacobianCommon.GetFixedAngularError (
 				simulationObjectA,
 				simulationObjectB,
-				this.RelativeOrientation);
+				RelativeOrientation);
 
 			#endregion
 
@@ -125,7 +124,7 @@ namespace MonoPhysicsEngine
 
 			#region Base Constraints
 
-			double constraintLimit = this.K * 2.0 * angularError.x;
+			double constraintLimit = RestoreCoefficient * 2.0 * angularError.x;
 
 			//DOF 1
 
@@ -139,13 +138,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
 
-			constraintLimit = this.K * 2.0 * angularError.y;
+			constraintLimit = RestoreCoefficient * 2.0 * angularError.y;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -157,13 +156,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
 
-			constraintLimit = this.K * 2.0 * angularError.z;
+			constraintLimit = RestoreCoefficient * 2.0 * angularError.z;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -175,13 +174,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
 
-			constraintLimit = this.K * Vector3.Dot (t1,linearError);
+			constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -193,13 +192,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 5
 
-			constraintLimit = this.K * Vector3.Dot (t2,linearError);
+			constraintLimit = RestoreCoefficient * Vector3.Dot (t2,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -211,7 +210,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
@@ -220,8 +219,8 @@ namespace MonoPhysicsEngine
 			#region Limit Constraints 
 
 			// Limit extraction
-			if (this.LinearLimitMin.HasValue &&
-				this.LinearLimitMax.HasValue)
+			if (LinearLimitMin.HasValue &&
+				LinearLimitMax.HasValue)
 			{
 
 				sliderConstraints.Add (
@@ -233,10 +232,10 @@ namespace MonoPhysicsEngine
 						sliderAxis,
 						r1,
 						r2,
-						this.K,
-						C,
-						this.LinearLimitMin.Value,
-						this.LinearLimitMax.Value));
+						RestoreCoefficient,
+						SpringCoefficient,
+						LinearLimitMin.Value,
+						LinearLimitMax.Value));
 			}
 
 			#endregion
@@ -255,9 +254,9 @@ namespace MonoPhysicsEngine
 					new Vector3(),
 					simulationObjectA,
 					simulationObjectB,
-					this.SpeedValue.Value,
-					C,
-					this.ForceLimit.Value,
+					SpeedValue.Value,
+					SpringCoefficient,
+					ForceLimit.Value,
 					ConstraintType.JointMotor));
 			}
 

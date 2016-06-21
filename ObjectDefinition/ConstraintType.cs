@@ -4,10 +4,9 @@ namespace SimulationObjectDefinition
 {
 	public enum ConstraintType
 	{
-		Collision,
+		CollisionAndJointLimit,
 		Friction,
 		Joint,
-		JointLimit,
 		JointMotor,
 	}
 }

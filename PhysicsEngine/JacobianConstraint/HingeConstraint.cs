@@ -7,27 +7,27 @@ namespace MonoPhysicsEngine
 {
 	public sealed class HingeConstraint: IConstraint, IConstraintBuilder
 	{
-		#region Public Fields
+		#region Private Fields
 
-		private const JointType jointType = JointType.Hinge;
+		const JointType jointType = JointType.Hinge;
 
-		private readonly int IndexA;
-		private readonly int IndexB;
-		private readonly double C;
-		private readonly double K;
-		private readonly Vector3 StartAnchorPoint;
-		private readonly Vector3 HingeAxis;
+		readonly int IndexA;
+		readonly int IndexB;
+		readonly double SpringCoefficient;
+		readonly double RestoreCoefficient;
+		readonly Vector3 StartAnchorPoint;
+		readonly Vector3 HingeAxis;
 
-		private readonly Vector3 StartErrorAxis1;
-		private readonly Vector3 StartErrorAxis2;
-		private readonly Quaternion RelativeOrientation;
+		readonly Vector3 StartErrorAxis1;
+		readonly Vector3 StartErrorAxis2;
+		readonly Quaternion RelativeOrientation;
 
-		private double? AngularLimitMin = null;
-		private double? AngularLimitMax = null;
-		private double? SpeedValue = null;
-		private double? ForceLimit = null;
+		double? AngularLimitMin = null;
+		double? AngularLimitMax = null;
+		double? SpeedValue = null;
+		double? ForceLimit = null;
 
-		private Vector3 AnchorPoint;
+		Vector3 AnchorPoint;
 
 		#endregion
 
@@ -39,14 +39,14 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
-			double K,
-			double C)
+			double restoreCoefficient,
+			double springCoefficient)
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
-			this.K = K;
-			this.C = C;
-			this.StartAnchorPoint = startAnchorPosition;
+			IndexA = indexA;
+			IndexB = indexB;
+			RestoreCoefficient = restoreCoefficient;
+			SpringCoefficient = springCoefficient;
+			StartAnchorPoint = startAnchorPosition;
 
 			SimulationObject objectA = simulationObject[IndexA];
 			SimulationObject objectB = simulationObject[IndexB];
@@ -54,18 +54,18 @@ namespace MonoPhysicsEngine
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
-			this.AnchorPoint = relativePos + objectA.Position;
+			AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectA.Position);
+			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectA.Position);
 
-			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectB.Position);
+			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectB.Position);
 
-			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
+			RelativeOrientation = objectB.RotationStatus.Inverse () *
 										objectA.RotationStatus;
 
-			this.HingeAxis = hingeAxis.Normalize ();
+			HingeAxis = hingeAxis.Normalize ();
 		}
 
 		#endregion
@@ -89,23 +89,22 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
-			this.AnchorPoint = (simulationObjectA.RotationMatrix *
-								(this.StartAnchorPoint -
-								simulationObjectA.StartPosition)) +
-								simulationObjectA.Position;
+			AnchorPoint = (simulationObjectA.RotationMatrix *
+						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
+						  simulationObjectA.Position;
 
 			#region Init Linear
 
-			Vector3 axisRotated = simulationObjectA.RotationMatrix * this.HingeAxis;
+			Vector3 axisRotated = simulationObjectA.RotationMatrix * HingeAxis;
 
 			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (axisRotated).Normalize ();
 			Vector3 t2 = Vector3.Cross (axisRotated, t1).Normalize ();
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+										  StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+										  StartErrorAxis2;
 
 			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
 			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
@@ -122,7 +121,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularError = JacobianCommon.GetFixedAngularError (
 				simulationObjectA,
 				simulationObjectB,
-				this.RelativeOrientation);
+				RelativeOrientation);
 
 			#endregion
 
@@ -132,7 +131,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 1
 
-			double constraintLimit = this.K * linearError.x;
+			double constraintLimit = RestoreCoefficient * linearError.x;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF(
 				IndexA,
@@ -144,13 +143,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
 
-			constraintLimit = this.K * linearError.y;
+			constraintLimit = RestoreCoefficient * linearError.y;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -162,13 +161,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
 
-			constraintLimit = this.K * linearError.z;
+			constraintLimit = RestoreCoefficient * linearError.z;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -180,14 +179,14 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
 
-			double angularLimit = this.K *
-				t1.Dot (angularError);
+			double angularLimit = RestoreCoefficient *
+				t1.Dot(angularError);
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
@@ -200,14 +199,14 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit, 
-					C,
+					SpringCoefficient,
 					0.0,
 					ConstraintType.Joint));
 
 			//DOF 5
 
-			angularLimit = this.K *
-				t2.Dot (angularError);
+			angularLimit = RestoreCoefficient *
+				t2.Dot(angularError);
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
@@ -220,7 +219,7 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit,
-					C,
+					SpringCoefficient,
 					0.0,
 					ConstraintType.Joint));
 
@@ -228,34 +227,34 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			if (this.AngularLimitMin.HasValue && 
-				this.AngularLimitMax.HasValue)
+			if (AngularLimitMin.HasValue && 
+				AngularLimitMax.HasValue)
 			{
 				double angle = JacobianCommon.GetAngle (
 					simulationObjectA,
 					simulationObjectB,
-					this.RelativeOrientation,
-					this.HingeAxis);
+					RelativeOrientation,
+					HingeAxis);
 
 				hingeConstraints.Add(JacobianCommon.GetAngularLimit (
 					IndexA, 
 					IndexB, 
 					angle,
-					this.K,
-					C,
+					RestoreCoefficient,
+					SpringCoefficient,
 					simulationObjectA, 
 					simulationObjectB, 
 					axisRotated,
-					this.AngularLimitMin.Value,
-					this.AngularLimitMax.Value));
+					AngularLimitMin.Value,
+					AngularLimitMax.Value));
 			}
 
 			#endregion
 
 			#region Motor Contraint
 
-			if(this.SpeedValue.HasValue &&
-				this.ForceLimit.HasValue)
+			if(SpeedValue.HasValue &&
+				ForceLimit.HasValue)
 			{
 				hingeConstraints.Add (
 					JacobianCommon.GetDOF (
@@ -267,9 +266,9 @@ namespace MonoPhysicsEngine
 						1.0 * axisRotated, 
 						simulationObjectA, 
 						simulationObjectB, 
-						this.SpeedValue.Value,
-						C,
-						this.ForceLimit.Value,
+						SpeedValue.Value,
+						SpringCoefficient,
+						ForceLimit.Value,
 						ConstraintType.JointMotor));
 			}
 

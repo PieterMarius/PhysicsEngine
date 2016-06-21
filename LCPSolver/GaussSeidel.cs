@@ -9,10 +9,15 @@ namespace LCPSolver
 {
     public class GaussSeidel : ISolver
     {
+		#region Fields
+
         // Successive over relaxation term
-		private double SOR;
+		double SOR;
+		double mse;
 
 		public readonly SolverParameters solverParameters;
+
+		#endregion
 
         #region Constructor
 
@@ -20,7 +25,7 @@ namespace LCPSolver
 			SolverParameters solverParameters)
         {
 			this.solverParameters = solverParameters;
-			this.SOR = this.solverParameters.SOR;
+			SOR = this.solverParameters.SOR;
         }
 
         #endregion
@@ -39,11 +44,11 @@ namespace LCPSolver
 				oldX [i] = X [i];
 			}
 
-			double internalSOR = this.SOR;
+			double internalSOR = SOR;
 
-			for (int k = 0; k < this.solverParameters.MaxIteration; k++) 
+			for (int k = 0; k < solverParameters.MaxIteration; k++) 
 			{
-				double[] sum = this.lowerTriangularMatrix(input, X);
+				double[] sum = lowerTriangularMatrix(input, X);
 
 				for (int i = 0; i < input.Count; i++)
 				{
@@ -76,9 +81,9 @@ namespace LCPSolver
 					oldX [i] = X [i];
 				}
 					
-				double error = this.getMediumSquareError (diffX);
+				mse = getMediumSquareError (diffX);
 
-				if (error < this.solverParameters.ErrorTolerance)
+				if (mse < solverParameters.ErrorTolerance)
 					return X;
 			}
 
@@ -89,6 +94,15 @@ namespace LCPSolver
         {
             this.SOR = SOR;
         }
+
+		/// <summary>
+		/// Gets the medium square error.
+		/// </summary>
+		/// <returns>The mse.</returns>
+		public double GetMSE()
+		{
+			return mse;
+		}
 
         #endregion
 
@@ -104,7 +118,7 @@ namespace LCPSolver
 				input.Count, 
 				new ParallelOptions { MaxDegreeOfParallelism = this.solverParameters.MaxThreadNumber }, 
 				i => {
-					sum [i] = this.kernel (input, X, i);
+					sum [i] = kernel (input, X, i);
 				});
 				
             return sum;

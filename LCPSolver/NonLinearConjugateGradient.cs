@@ -125,6 +125,11 @@ namespace LCPSolver
 			return errorResult;
 		}
 
+		public double GetMSE()
+		{
+			throw new NotImplementedException();
+		}
+
         #endregion
 
         #region Private Methods
@@ -214,6 +219,6 @@ namespace LCPSolver
 			return diff / a.Length;
 		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

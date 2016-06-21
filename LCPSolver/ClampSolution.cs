@@ -14,26 +14,26 @@ namespace LCPSolver
 
 			switch (input.ConstraintType[i]) 
 			{
-				case ConstraintType.Collision:
+				case ConstraintType.CollisionAndJointLimit:
 					return Math.Max (0.0, X [i]);
 
 				case ConstraintType.Friction:
-					return GeometryUtilities.Clamp (
-						X [i],
-						X [i + input.Constraints [i].Value] * input.ConstraintLimit [i],
-						-X [i + input.Constraints [i].Value] * input.ConstraintLimit [i]);
-					
-				case ConstraintType.Joint:
-					return X [i];
 
-				case ConstraintType.JointLimit:
-					return Math.Max (0.0, X [i]);
+					double frictionLimit = X [i + input.Constraints[i].Value] * input.ConstraintLimit[i];
+
+					return GeometryUtilities.Clamp(
+						X[i],
+						frictionLimit,
+						-frictionLimit);
 
 				case ConstraintType.JointMotor:
+					
+					double limit = input.ConstraintLimit[i];
+
 					return GeometryUtilities.Clamp (
 						X [i],
-						input.ConstraintLimit [i],
-						-input.ConstraintLimit [i]);
+						limit,
+						-limit);
 				
 				default:
 					return X [i];

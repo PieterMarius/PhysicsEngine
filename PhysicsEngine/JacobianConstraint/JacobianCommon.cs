@@ -148,7 +148,7 @@ namespace MonoPhysicsEngine
 					linearLimit,
 					C,
 					0.0,
-					ConstraintType.JointLimit);
+					ConstraintType.CollisionAndJointLimit);
 			}
 			else if (sliderDistance > linearLimitMax) 
 			{
@@ -167,7 +167,7 @@ namespace MonoPhysicsEngine
 					linearLimit,
 					C,
 					0.0,
-					ConstraintType.JointLimit);
+					ConstraintType.CollisionAndJointLimit);
 			}
 
 			return new JacobianContact ();
@@ -203,7 +203,7 @@ namespace MonoPhysicsEngine
 					angularLimit, 
 					C,
 					0.0,
-					ConstraintType.JointLimit);
+					ConstraintType.CollisionAndJointLimit);
 
 			} 
 
@@ -226,7 +226,7 @@ namespace MonoPhysicsEngine
 					angularLimit,
 					C,
 					0.0,
-					ConstraintType.JointLimit);
+					ConstraintType.CollisionAndJointLimit);
 			}
 
 			return new JacobianContact ();

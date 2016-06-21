@@ -72,7 +72,7 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-		private IContactPartitioningEngine contactPartitioningEngine;
+		IContactPartitioningEngine contactPartitioningEngine;
 
 		#endregion
 

@@ -9,30 +9,30 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		private const JointType jointType = JointType.Piston;
+		const JointType jointType = JointType.Piston;
 
-		private readonly int IndexA;
-		private readonly int IndexB;
-		private readonly double C;
-		private readonly double K;
-		private readonly Vector3 StartAnchorPoint;
-		private readonly Vector3 PistonAxis;
+		readonly int IndexA;
+		readonly int IndexB;
+		readonly double SpringCoefficient;
+		readonly double RestoreCoefficient;
+		readonly Vector3 StartAnchorPoint;
+		readonly Vector3 PistonAxis;
 
-		private double? AngularLimitMin = null;
-		private double? AngularLimitMax = null;
+		double? AngularLimitMin = null;
+		double? AngularLimitMax = null;
 
-		private double? LinearLimitMin = null;
-		private double? LinearLimitMax = null;
+		double? LinearLimitMin = null;
+		double? LinearLimitMax = null;
 
-		private double? LinearSpeedValue = null;
-		private double? LinearForceLimit = null;
-		private double? AngularSpeedValue = null;
-		private double? AngularForceLimit = null;
+		double? LinearSpeedValue = null;
+		double? LinearForceLimit = null;
+		double? AngularSpeedValue = null;
+		double? AngularForceLimit = null;
 
-		private Vector3 AnchorPoint;
-		private Vector3 StartErrorAxis1;
-		private Vector3 StartErrorAxis2;
-		private Quaternion RelativeOrientation;
+		Vector3 AnchorPoint;
+		Vector3 StartErrorAxis1;
+		Vector3 StartErrorAxis2;
+		Quaternion RelativeOrientation;
 
 		#endregion
 
@@ -44,16 +44,16 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
-			double K,
-			double C)
+			double restoreCoefficient,
+			double springCoefficient)
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
-			this.K = K;
-			this.C = C;
-			this.StartAnchorPoint = startAnchorPosition;
+			IndexA = indexA;
+			IndexB = indexB;
+			RestoreCoefficient = restoreCoefficient;
+			SpringCoefficient = springCoefficient;
+			StartAnchorPoint = startAnchorPosition;
 
-			this.PistonAxis = -1.0 * pistonAxis.Normalize ();
+			PistonAxis = -1.0 * pistonAxis.Normalize ();
 
 			SimulationObject objectA = simulationObject[IndexA];
 			SimulationObject objectB = simulationObject[IndexB];
@@ -61,16 +61,16 @@ namespace MonoPhysicsEngine
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
 
-			this.AnchorPoint = relativePos + objectA.Position;
+			AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectA.Position);
+			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectA.Position);
 
-			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose () *
-			                        (this.AnchorPoint - objectB.Position);
+			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectB.Position);
 
-			this.RelativeOrientation = objectB.RotationStatus.Inverse () *
-									   objectA.RotationStatus;
+			RelativeOrientation = objectB.RotationStatus.Inverse() *
+										 objectA.RotationStatus;
 		}
 
 		#endregion
@@ -95,22 +95,22 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
 			this.AnchorPoint = (simulationObjectA.RotationMatrix *
-								(this.StartAnchorPoint -
+								(StartAnchorPoint -
 								simulationObjectA.StartPosition)) +
 								simulationObjectA.Position;
 
 			#region Init Linear
 
-			Vector3 sliderAxis = simulationObjectA.RotationMatrix * this.PistonAxis;
+			Vector3 sliderAxis = simulationObjectA.RotationMatrix * PistonAxis;
 
 			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+										  StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+										  StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -120,7 +120,7 @@ namespace MonoPhysicsEngine
 			#endregion
 
 			Vector3 angularError = sliderAxis.Cross (
-				                       (simulationObjectB.RotationMatrix * this.PistonAxis));
+				                       (simulationObjectB.RotationMatrix * PistonAxis));
 
 			#region Jacobian Constraint
 
@@ -128,7 +128,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 1
 
-			double angularLimit = this.K *
+			double angularLimit = RestoreCoefficient *
 				t1.Dot (angularError);
 
 			pistonConstraints.Add (
@@ -142,13 +142,13 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit,
-					C,
+					SpringCoefficient,
 					0.0,
 					ConstraintType.Joint));
 
 			//DOF 2
 
-			angularLimit = this.K *
+			angularLimit = RestoreCoefficient *
 				t2.Dot (angularError);
 
 			pistonConstraints.Add (
@@ -162,13 +162,13 @@ namespace MonoPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB, 
 					angularLimit,
-					C,
+					SpringCoefficient,
 					0.0,
 					ConstraintType.Joint));
 
 			//DOF 3
 
-			double constraintLimit = this.K * Vector3.Dot (t1,linearError);
+			double constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -180,13 +180,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 4
 
-			constraintLimit = this.K * Vector3.Dot (t2,linearError);
+			constraintLimit = this.RestoreCoefficient * Vector3.Dot (t2,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -198,7 +198,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
@@ -301,7 +301,7 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-		private List<JacobianContact> getLinearLimit(
+		List<JacobianContact> getLinearLimit(
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			Vector3 sliderAxis,
@@ -322,8 +322,8 @@ namespace MonoPhysicsEngine
 						sliderAxis,
 						r1,
 						r2,
-						K,
-						C,
+						RestoreCoefficient,
+						SpringCoefficient,
 						LinearLimitMin.Value,
 						LinearLimitMax.Value));
 			}
@@ -331,7 +331,7 @@ namespace MonoPhysicsEngine
 			return linearConstraints;
 		}
 
-		private List<JacobianContact> getAnguarLimit(
+		List<JacobianContact> getAnguarLimit(
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			Vector3 sliderAxis)
@@ -352,8 +352,8 @@ namespace MonoPhysicsEngine
 						IndexA,
 						IndexB,
 						angle,
-						K,
-						C,
+						RestoreCoefficient,
+						SpringCoefficient,
 						simulationObjectA,
 						simulationObjectB,
 						sliderAxis,
@@ -364,7 +364,7 @@ namespace MonoPhysicsEngine
 			return angularConstraints;
 		}
 
-		private List<JacobianContact> getMotorConstraint(
+		List<JacobianContact> getMotorConstraint(
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			Vector3 sliderAxis)
@@ -383,9 +383,9 @@ namespace MonoPhysicsEngine
 					new Vector3(),
 					simulationObjectA,
 					simulationObjectB,
-					this.LinearSpeedValue.Value,
-					C,
-					this.LinearForceLimit.Value,
+					LinearSpeedValue.Value,
+					SpringCoefficient,
+					LinearForceLimit.Value,
 					ConstraintType.JointMotor));
 			}
 
@@ -401,9 +401,9 @@ namespace MonoPhysicsEngine
 					-1.0 * sliderAxis,
 					simulationObjectA,
 					simulationObjectB,
-					this.AngularSpeedValue.Value,
-					C,
-					this.AngularForceLimit.Value,
+					AngularSpeedValue.Value,
+					SpringCoefficient,
+					AngularForceLimit.Value,
 					ConstraintType.JointMotor));
 			}
 

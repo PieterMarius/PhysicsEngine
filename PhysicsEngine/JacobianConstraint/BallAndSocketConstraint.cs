@@ -9,18 +9,18 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		private const JointType jointType = JointType.BallAndSocket;
+		const JointType jointType = JointType.BallAndSocket;
 
-		private readonly int IndexA;
-		private readonly int IndexB;
-		private readonly double C;
-		private readonly double K;
-		private readonly Vector3 StartAnchorPoint;
+		readonly int IndexA;
+		readonly int IndexB;
+		readonly double SpringCoefficient;
+		readonly double RestoreCoefficient;
+		readonly Vector3 StartAnchorPoint;
 
-		private readonly Vector3 StartErrorAxis1;
-		private readonly Vector3 StartErrorAxis2;
+		readonly Vector3 StartErrorAxis1;
+		readonly Vector3 StartErrorAxis2;
 
-		private Vector3 AnchorPoint;
+		Vector3 AnchorPoint;
 
 		#endregion
 
@@ -31,14 +31,14 @@ namespace MonoPhysicsEngine
 			int indexB,
 			SimulationObject[] simulationObject,
 			Vector3 startAnchorPosition,
-			double K,
-			double C)
+			double restoreCoefficient,
+			double springCoefficient)
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
-			this.K = K;
-			this.C = C;
-			this.StartAnchorPoint = startAnchorPosition;
+			IndexA = indexA;
+			IndexB = indexB;
+			RestoreCoefficient = restoreCoefficient;
+			SpringCoefficient = springCoefficient;
+			StartAnchorPoint = startAnchorPosition;
 
 			SimulationObject objectA = simulationObject[IndexA];
 			SimulationObject objectB = simulationObject[IndexB];
@@ -46,13 +46,13 @@ namespace MonoPhysicsEngine
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
 
-			this.AnchorPoint = relativePos + objectA.Position;
+			AnchorPoint = relativePos + objectA.Position;
 
-			this.StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
-									(this.AnchorPoint - objectA.Position);
+			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectA.Position);
 
-			this.StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
-									(this.AnchorPoint - objectB.Position);
+			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
+									 (AnchorPoint - objectB.Position);
 		}
 
 		#endregion
@@ -76,18 +76,17 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs[IndexA];
 			SimulationObject simulationObjectB = simulationObjs[IndexB];
 
-			this.AnchorPoint = (simulationObjectA.RotationMatrix *
-								(this.StartAnchorPoint -
-								simulationObjectA.StartPosition)) +
-								simulationObjectA.Position;
+			AnchorPoint = (simulationObjectA.RotationMatrix *
+						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
+						  simulationObjectA.Position;
 
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+										  StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+										  StartErrorAxis2;
 
 			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix();
 			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix();
@@ -101,7 +100,7 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
-			double constraintLimit = this.K * linearError.x;
+			double constraintLimit = RestoreCoefficient * linearError.x;
 
 			//DOF 1
 
@@ -115,13 +114,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 2
 
-			constraintLimit = this.K * linearError.y;
+			constraintLimit = RestoreCoefficient * linearError.y;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
 				IndexA,
@@ -133,13 +132,13 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
 			//DOF 3
 
-			constraintLimit = this.K * linearError.z;
+			constraintLimit = RestoreCoefficient * linearError.z;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
 				IndexA,
@@ -151,7 +150,7 @@ namespace MonoPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				constraintLimit,
-				C,
+				SpringCoefficient,
 				0.0,
 				ConstraintType.Joint));
 
@@ -181,7 +180,7 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
 		}
 
 		#region NotSupportedMethods

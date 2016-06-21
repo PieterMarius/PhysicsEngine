@@ -78,7 +78,7 @@ namespace MonoPhysicsEngine
 						correctedBounce,
 						simulationParameters.CFM,
 						0.0,
-						ConstraintType.Collision);
+						ConstraintType.CollisionAndJointLimit);
 
 					#endregion
 
@@ -121,12 +121,12 @@ namespace MonoPhysicsEngine
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
-			Vector3 linearComponentA = new Vector3 ();
-			Vector3 linearComponentB = new Vector3 ();
-			Vector3 angularComponentA = new Vector3 ();
-			Vector3 angularComponentB = new Vector3 ();
+			var linearComponentA = new Vector3 ();
+			var linearComponentB = new Vector3 ();
+			var angularComponentA = new Vector3 ();
+			var angularComponentB = new Vector3 ();
 
-			Vector3 t = new Vector3 ();
+			var t = new Vector3 ();
 
 			double constraintLimit = 0.0;
 
@@ -135,17 +135,13 @@ namespace MonoPhysicsEngine
 			if (Vector3.Length (tangentialVelocity) >
 				simulationParameters.ShiftToStaticFrictionTolerance) 
 			{
-				constraintLimit = 0.5 *
-					(simulationObjects [indexA].DynamicFrictionCoeff +
-						simulationObjects [indexB].DynamicFrictionCoeff);
+				constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff + simulationObjects [indexB].DynamicFrictionCoeff);
 
 				t = tangentialVelocity.Normalize ();
 			} 
 			else 
 			{
-				constraintLimit = 0.5 *
-					(simulationObjects [indexA].StaticFrictionCoeff +
-						simulationObjects [indexB].StaticFrictionCoeff);
+				constraintLimit = 0.5 * (simulationObjects[indexA].StaticFrictionCoeff + simulationObjects[indexB].StaticFrictionCoeff);
 
 				t = GeometryUtilities.ProjectVectorOnPlane (normal);
 			}
