@@ -14,10 +14,8 @@ namespace MonoPhysicsEngine
 		readonly int IndexA;
 		readonly int IndexB;
 		readonly double SpringCoefficient;
-		readonly double RestoreCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 HingeAxis;
-
 		readonly Vector3 StartErrorAxis1;
 		readonly Vector3 StartErrorAxis2;
 		readonly Quaternion RelativeOrientation;
@@ -27,6 +25,7 @@ namespace MonoPhysicsEngine
 		double? SpeedValue = null;
 		double? ForceLimit = null;
 
+		double RestoreCoefficient;
 		Vector3 AnchorPoint;
 
 		#endregion
@@ -300,7 +299,12 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
+		}
+
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
 		}
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)

@@ -15,7 +15,6 @@ namespace MonoPhysicsEngine
 		readonly int IndexA;
 		readonly int IndexB;
 		readonly double SpringCoefficient;
-		readonly double RestoreCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 SliderAxis;
 		readonly Vector3 StartErrorAxis1;
@@ -27,6 +26,7 @@ namespace MonoPhysicsEngine
 		double? SpeedValue = null;
 		double? ForceLimit = null;
 		Vector3 AnchorPoint;
+		double RestoreCoefficient;
 
 		#endregion
 
@@ -301,6 +301,11 @@ namespace MonoPhysicsEngine
 		{
 			LinearLimitMin = linearLimitMin;
 			LinearLimitMax = linearLimitMax;
+		}
+
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
 		}
 
 		#region NotImplementedMethods

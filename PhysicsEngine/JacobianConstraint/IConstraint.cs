@@ -24,6 +24,7 @@ namespace MonoPhysicsEngine
 		void SetAxis1Motor(double speedValue, double forceLimit);
 		void SetAxis2Motor(double speedValue, double forceLimit);
 		void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2);
+		void SetRestoreCoefficient(double restoreCoefficient);
 
 		#endregion
 	}

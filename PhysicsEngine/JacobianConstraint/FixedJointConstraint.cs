@@ -9,18 +9,18 @@ namespace MonoPhysicsEngine
 	{
 		#region Public Fields
 
-		private const JointType jointType = JointType.Fixed;
+		const JointType jointType = JointType.Fixed;
 
-		private readonly int IndexA;
-		private readonly int IndexB;
-		private readonly double SpringCoefficient;
-		private readonly double RestoreCoefficient;
-		private readonly Vector3 StartAnchorPoint;
+		readonly int IndexA;
+		readonly int IndexB;
+		readonly double SpringCoefficient;
+		readonly Vector3 StartAnchorPoint;
 
-		private Vector3 AnchorPoint;
-		private Vector3 StartErrorAxis1;
-		private Vector3 StartErrorAxis2;
-		private Quaternion RelativeOrientation;
+		Vector3 AnchorPoint;
+		Vector3 StartErrorAxis1;
+		Vector3 StartErrorAxis2;
+		Quaternion RelativeOrientation;
+		double RestoreCoefficient;
 
 		#endregion
 
@@ -252,6 +252,11 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return AnchorPoint;
+		}
+
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
 		}
 
 		#region NotSupportedMethods

@@ -14,7 +14,6 @@ namespace MonoPhysicsEngine
 		readonly int IndexA;
 		readonly int IndexB;
 		readonly double SpringCoefficient;
-		readonly double RestoreCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 HingeAxis;
 		readonly Vector3 RotationAxis;
@@ -33,6 +32,7 @@ namespace MonoPhysicsEngine
 		double? SpeedRotationAxisLimit = null;
 		double? ForceRotationAxisLimit = null;
 		Vector3 AnchorPoint;
+		double RestoreCoefficient;
 
 		#endregion
 
@@ -278,6 +278,11 @@ namespace MonoPhysicsEngine
 		{
 			SpeedRotationAxisLimit = speedValue;
 			ForceRotationAxisLimit = forceLimit;
+		}
+
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
 		}
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)

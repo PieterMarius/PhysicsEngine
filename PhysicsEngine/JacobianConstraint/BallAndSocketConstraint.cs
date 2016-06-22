@@ -14,12 +14,11 @@ namespace MonoPhysicsEngine
 		readonly int IndexA;
 		readonly int IndexB;
 		readonly double SpringCoefficient;
-		readonly double RestoreCoefficient;
 		readonly Vector3 StartAnchorPoint;
-
 		readonly Vector3 StartErrorAxis1;
 		readonly Vector3 StartErrorAxis2;
 
+		double RestoreCoefficient;
 		Vector3 AnchorPoint;
 
 		#endregion
@@ -181,6 +180,11 @@ namespace MonoPhysicsEngine
 		public Vector3 GetAnchorPosition()
 		{
 			return AnchorPoint;
+		}
+
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
 		}
 
 		#region NotSupportedMethods

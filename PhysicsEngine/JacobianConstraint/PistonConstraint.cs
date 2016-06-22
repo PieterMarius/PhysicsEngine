@@ -14,7 +14,6 @@ namespace MonoPhysicsEngine
 		readonly int IndexA;
 		readonly int IndexB;
 		readonly double SpringCoefficient;
-		readonly double RestoreCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 PistonAxis;
 
@@ -29,6 +28,7 @@ namespace MonoPhysicsEngine
 		double? AngularSpeedValue = null;
 		double? AngularForceLimit = null;
 
+		double RestoreCoefficient;
 		Vector3 AnchorPoint;
 		Vector3 StartErrorAxis1;
 		Vector3 StartErrorAxis2;
@@ -276,6 +276,11 @@ namespace MonoPhysicsEngine
 			LinearForceLimit = forceLimit;
 		}
 
+		public void SetRestoreCoefficient(double restoreCoefficient)
+		{
+			RestoreCoefficient = restoreCoefficient;
+		}
+
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotImplementedException();
@@ -409,6 +414,8 @@ namespace MonoPhysicsEngine
 
 			return motorConstraints;
 		}
+
+
 
 		#endregion
 	}

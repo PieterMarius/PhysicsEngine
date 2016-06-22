@@ -47,22 +47,28 @@ namespace MonoPhysicsEngine
 
 		#region Collision Engine
 
-		private ICollisionEngine collisionEngine;
+		ICollisionEngine collisionEngine;
 
-		private List<CollisionPointStructure> collisionPoints;
+		List<CollisionPointStructure> collisionPoints;
 
 		#endregion
 
 		#region Execution Properties
 
-		private List<List<CollisionPointStructure>> collisionPartitionedPoints;
-		private List<List<IConstraint>> partitionedJoint;
+		List<List<CollisionPointStructure>> collisionPartitionedPoints;
+		List<List<IConstraint>> partitionedJoint;
 
 		#endregion
 
 		#region LCP properties
 
-		private ISolver solver;
+		ISolver solver;
+		double solverError;
+
+		public double GetSolverError()
+		{
+			return solverError;
+		}
 
 		#endregion
 
@@ -116,7 +122,7 @@ namespace MonoPhysicsEngine
 			} 
 			else 
 			{
-				List<SimulationObject> bufferList = new List<SimulationObject> ();
+				var bufferList = new List<SimulationObject> ();
 				bufferList.Add (simulationObject);
 				this.SimulationObjects = bufferList.ToArray ();
 			}
@@ -165,34 +171,10 @@ namespace MonoPhysicsEngine
 
 		#region Collision Engine
 
-		public void SetCollisionEngine(ICollisionEngine collisionEngine)
-		{
-			this.collisionEngine = collisionEngine;
-		}
-
 		public List<CollisionPointStructure> GetCollisionPointStrucureList()
 		{
 			return this.collisionPoints;
 		}
-
-		#endregion
-
-		#region Solver
-
-		public void SetSolver(ISolver solver)
-		{
-			this.solver = solver;
-		}
-
-//		public double GetSolverError()
-//		{
-//			if (this.X == null || this.X.Length == 0)
-//				return 0.0;
-//
-//			return this.solver.GetMediumSquareError (this.linearProblemProperties, this.X);
-//		}
-
-		//TODO aggiungere GetSolverErrorList
 
 		#endregion
 
@@ -392,10 +374,13 @@ namespace MonoPhysicsEngine
 					//Build solver data
 					LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
 
+					solverError = 0.0;
+
 					if (contactConstraints.Count > 0 &&
 					    linearProblemProperties != null) {
 
-						double[] X = this.solver.Solve (linearProblemProperties);
+						double[] X = solver.Solve (linearProblemProperties);
+						solverError += solver.GetMSE();
 
 						//Update Objects velocity
 						this.updateVelocity (

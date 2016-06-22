@@ -25,8 +25,8 @@ namespace MonoPhysicsEngine
 				int indexB = collisionPointStr.ObjectB;
 
 				double restitutionCoefficient =
-					(simulationObjs [indexA].RestitutionCoeff +
-						simulationObjs [indexB].RestitutionCoeff) * 0.5;
+					(simulationObjs[indexA].RestitutionCoeff +
+					 simulationObjs[indexB].RestitutionCoeff) * 0.5;
 
 				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
