@@ -47,5 +47,6 @@
     <Compile Include="GaussSeidel.cs" />
     <Compile Include="ClampSolution.cs" />
     <Compile Include="NonLinearConjugateGradient.cs" />
+    <Compile Include="SolverType.cs" />
   </ItemGroup>
 </Project>

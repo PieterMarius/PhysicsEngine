@@ -89,21 +89,21 @@ namespace TestPhysics
 
 			//Set Solver
 			this.solverParameters = new SolverParameters();
-			this.lcpSolver = new LCPSolver.GaussSeidel (this.solverParameters);
+			
 			//this.lcpSolver = new LCPSolver.NonLinearConjugateGradient (this.solverParameters);
 
 			//Set Physics engine
 			this.simulationParameters = new SimulationParameters();
 //			LoadEngineConfig engineConfig = new LoadEngineConfig ("startConfig.xml");
 //			this.simulationParameters = engineConfig.ReadEngineConfig ();
-//
+
+
 			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
 			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
-			this.physicsEngine = new PhysicsEngine (
-				this.collisionEngine,
-				this.lcpSolver,
-				contactPartitionEngine,
-				this.simulationParameters);
+				this.physicsEngine = new PhysicsEngine(
+					simulationParameters,
+					collisionEngineParameters,
+						solverParameters);
 
 			for (int i = 0; i < this.simulationObjects.Count (); i++) 
 			{

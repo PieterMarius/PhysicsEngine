@@ -20,6 +20,18 @@ namespace MonoPhysicsEngine
 		public SimulationParameters SimulationEngineParameters { get; private set; }
 
 		/// <summary>
+		/// Gets the collision engine parameters.
+		/// </summary>
+		/// <value>The collision engine parameter.</value>
+		public CollisionEngineParameters CollisionEngineParam { get; private set; }
+
+		/// <summary>
+		/// Gets the solver parameters.
+		/// </summary>
+		/// <value>The solver parameter.</value>
+		public SolverParameters SolverParam { get; private set; }
+
+		/// <summary>
 		/// The simulation objects.
 		/// </summary>
 		public SimulationObject[] SimulationObjects { get; private set; }
@@ -29,6 +41,12 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		public List<IConstraint> SimulationJoints { get; private set; }
 
+		/// <summary>
+		/// Gets the time step.
+		/// </summary>
+		/// <value>The time step.</value>
+		public double TimeStep { get; private set; }
+
 		#endregion
 
 		#region Private Properties
@@ -37,46 +55,24 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The simulation objects Countinuos Collision Detecttion.
 		/// </summary>
-		private SimulationObject[] simulationObjectsCCD;
+		SimulationObject[] simulationObjectsCCD;
 
 		/// <summary>
 		/// The objects geometry.
 		/// </summary>
-		private ObjectGeometry[] objectsGeometry;
-
-
-		#region Collision Engine
+		ObjectGeometry[] objectsGeometry;
 
 		ICollisionEngine collisionEngine;
 
 		List<CollisionPointStructure> collisionPoints;
 
-		#endregion
-
-		#region Execution Properties
-
 		List<List<CollisionPointStructure>> collisionPartitionedPoints;
+
 		List<List<IConstraint>> partitionedJoint;
 
-		#endregion
-
-		#region LCP properties
-
 		ISolver solver;
+
 		double solverError;
-
-		public double GetSolverError()
-		{
-			return solverError;
-		}
-
-		#endregion
-
-		#region CCD parameters
-
-		public double TimeStep { get; private set;}
-
-		#endregion
 
 		IContactPartitioningEngine contactPartitioningEngine;
 
@@ -85,15 +81,17 @@ namespace MonoPhysicsEngine
 		#region Constructor
 
 		public PhysicsEngine (
-			ICollisionEngine collisionEngine,
-			ISolver solver,
-			IContactPartitioningEngine contactPartitioningEngine,
-			SimulationParameters simulationParameters)
+			SimulationParameters simulationParameters,
+			CollisionEngineParameters collisionEngineParameters,
+			SolverParameters solverParameters)
 		{
-			this.collisionEngine = collisionEngine;
-			this.solver = solver;
-			this.SimulationEngineParameters = simulationParameters;
-			this.contactPartitioningEngine = contactPartitioningEngine;
+			collisionEngine = new CollisionDetectionEngine(collisionEngineParameters);
+
+			solver = new GaussSeidel(solverParameters); ;
+
+			SimulationEngineParameters = simulationParameters;
+
+			contactPartitioningEngine = new ContactPartitioningEngine();
 
 			SimulationJoints = new List<IConstraint> ();
 		}
@@ -102,50 +100,74 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-		#region Simulation Parameters
+		public double GetSolverError()
+		{
+			return solverError;
+		}
 
 		public void SetSimulationParameters(SimulationParameters simulationParameters)
 		{
-			this.SimulationEngineParameters = simulationParameters;
+			SimulationEngineParameters = simulationParameters;
 		}
-
-		#endregion
 
 		#region Object 
 
 		public void AddObject(SimulationObject simulationObject)
 		{
-			if (this.SimulationObjects != null && this.SimulationObjects.Length > 0) {
-				List<SimulationObject> bufferList = this.SimulationObjects.ToList ();
+			if (SimulationObjects != null && 
+			    SimulationObjects.Length > 0) 
+			{
+				List<SimulationObject> bufferList = SimulationObjects.ToList ();
 				bufferList.Add (simulationObject);
-				this.SimulationObjects = bufferList.ToArray ();
+				SimulationObjects = bufferList.ToArray ();
 			} 
 			else 
 			{
 				var bufferList = new List<SimulationObject> ();
 				bufferList.Add (simulationObject);
-				this.SimulationObjects = bufferList.ToArray ();
+				SimulationObjects = bufferList.ToArray ();
 			}
-
 		}
 
 		public void RemoveObject(int objectIndex)
 		{
-			if (this.SimulationObjects != null && this.SimulationObjects.Length > 0) {
-				List<SimulationObject> bufferList = this.SimulationObjects.ToList ();
+			if (SimulationObjects != null && 
+			    SimulationObjects.Length > 0) 
+			{
+				#region Remove object
+				
+				List<SimulationObject> bufferList = SimulationObjects.ToList ();
 				bufferList.RemoveAt (objectIndex);
-				this.SimulationObjects = bufferList.ToArray ();
+				SimulationObjects = bufferList.ToArray ();
+
+				#endregion
+
+				#region Remove Constraint
+
+				if (SimulationJoints != null)
+				{
+					var constraintIndex = SimulationJoints.Select((x,i) => x.GetObjectIndexA() == objectIndex || 
+					                                              x.GetObjectIndexB() == objectIndex ? i : -1).Where(i => i != -1).ToArray();
+
+					foreach (int i in constraintIndex)
+					{
+						SimulationJoints.RemoveAt(i);
+					}
+				}
+
+				#endregion
 			}
 		}
 
 		public void RemoveAllObjects()
 		{
-			this.SimulationObjects = null;
+			SimulationObjects = null;
+			SimulationJoints = null;
 		}
 
 		public SimulationObject GetObject(int objectIndex)
 		{
-			return this.simulationObjectsCCD [objectIndex];
+			return simulationObjectsCCD [objectIndex];
 		}
 					
 		#endregion
@@ -154,17 +176,38 @@ namespace MonoPhysicsEngine
 
 		public void AddJoint(IConstraint simulationJoint)
 		{
-			this.SimulationJoints.Add (simulationJoint);
+			if (SimulationJoints != null &&
+				SimulationJoints.Count > 0)
+			{
+				SimulationJoints.Add(simulationJoint);
+			}
+			else
+			{
+				SimulationJoints = new List<IConstraint>();
+				SimulationJoints.Add(simulationJoint);
+			}
 		}
 
 		public void Removejoint(int jointIndex)
 		{
-			this.SimulationJoints.RemoveAt (jointIndex);
+			if (SimulationJoints != null)
+			{
+				SimulationJoints.RemoveAt(jointIndex);
+			}
 		}
 
 		public void RemoveAllJoints()
 		{
-			this.SimulationJoints = new List<IConstraint> ();
+			SimulationJoints = null;
+		}
+
+		public IConstraint GetConstraint(int constraintId)
+		{
+			if (SimulationJoints != null &&
+				SimulationJoints.Count > constraintId)
+				return SimulationJoints[constraintId];
+			
+			return null;
 		}
 
 		#endregion
@@ -173,17 +216,22 @@ namespace MonoPhysicsEngine
 
 		public List<CollisionPointStructure> GetCollisionPointStrucureList()
 		{
-			return this.collisionPoints;
+			return collisionPoints;
 		}
 
 		#endregion
+
+		public void SetSolver(SolverType type)
+		{
+			
+		}
 
 		#region Start Engine
 
 		/// <summary>
 		/// Runs the engine.
 		/// </summary>
-		public void Simulate(double? timeStep)
+		public void Simulate(double? timeStep = null)
 		{
 //			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
 //			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
@@ -208,7 +256,6 @@ namespace MonoPhysicsEngine
 			this.simulationObjectsCCD = new SimulationObject[this.SimulationObjects.Length];
 			Array.Copy (this.SimulationObjects, this.simulationObjectsCCD, this.SimulationObjects.Length);
 
-//
 //			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
 //			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
 //			for (int k = 0; k < this.simulationObjects.Length; k++) 
@@ -294,7 +341,6 @@ namespace MonoPhysicsEngine
 //			{
 //				this.simulationObjectsCCD [k] = this.simulationObjects [k];
 //			}
-
 		}
 
 		#endregion
@@ -319,8 +365,8 @@ namespace MonoPhysicsEngine
 
 				for (int i = 0; i < partitions.Count; i++) 
 				{
-					List<CollisionPointStructure> partitionedCollision = new List<CollisionPointStructure> ();
-					List<IConstraint> partJoint = new List<IConstraint> ();
+					var partitionedCollision = new List<CollisionPointStructure> ();
+					var partJoint = new List<IConstraint> ();
 
 					for (int j = 0; j < partitions [i].ObjectList.Count; j++) 
 					{
@@ -334,9 +380,9 @@ namespace MonoPhysicsEngine
 
 						} else {
 
-							IConstraint smJoint = this.SimulationJoints.Find(item =>
+							IConstraint smJoint = SimulationJoints.Find(item =>
 																				  item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
-																				  item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
+																			 item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
 							partJoint.Add (smJoint);
 
 						}

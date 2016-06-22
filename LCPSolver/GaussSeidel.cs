@@ -11,9 +11,12 @@ namespace LCPSolver
     {
 		#region Fields
 
-        // Successive over relaxation term
+		/// <summary>
+		/// Successive over relaxation term.
+		/// </summary>
 		double SOR;
-		double mse;
+
+		double MSE;
 
 		public readonly SolverParameters solverParameters;
 
@@ -81,9 +84,9 @@ namespace LCPSolver
 					oldX [i] = X [i];
 				}
 					
-				mse = getMediumSquareError (diffX);
+				MSE = getMediumSquareError (diffX);
 
-				if (mse < solverParameters.ErrorTolerance)
+				if (MSE < solverParameters.ErrorTolerance)
 					return X;
 			}
 
@@ -101,7 +104,7 @@ namespace LCPSolver
 		/// <returns>The mse.</returns>
 		public double GetMSE()
 		{
-			return mse;
+			return MSE;
 		}
 
         #endregion

@@ -48,14 +48,14 @@ namespace CollisionEngine
 
 		public CollisionEngineParameters ()
 		{
-			this.MaxGJKIteration = 7;
-			this.MaxEPAIteration = 50;
-			this.Precision = 0.0000001;
-			this.GJKManifoldTolerance = 0.006;
-			this.EPAManifoldTolerance = 0.006;
-			this.ManifoldPointNumber = 4;
-			this.MaxThreadNumber = 2;
-			this.ActivateSweepAndPrune = true;
+			MaxGJKIteration = 7;
+			MaxEPAIteration = 50;
+			Precision = 0.0000001;
+			GJKManifoldTolerance = 0.006;
+			EPAManifoldTolerance = 0.006;
+			ManifoldPointNumber = 4;
+			MaxThreadNumber = 2;
+			ActivateSweepAndPrune = true;
 		}
 
 		public CollisionEngineParameters (
@@ -69,14 +69,14 @@ namespace CollisionEngine
 			int maxThreadNumber,
 			bool activateSweepAndPrune)
 		{
-			this.MaxGJKIteration = maxGJKIteration;
-			this.MaxEPAIteration = maxEPAIteration;
-			this.Precision = precision;
-			this.GJKManifoldTolerance = gjkTolerance;
-			this.EPAManifoldTolerance = epaTolerance;
-			this.ManifoldPointNumber = manifoldPointNumber;
-			this.MaxThreadNumber = maxThreadNumber;
-			this.ActivateSweepAndPrune = activateSweepAndPrune;
+			MaxGJKIteration = maxGJKIteration;
+			MaxEPAIteration = maxEPAIteration;
+			Precision = precision;
+			GJKManifoldTolerance = gjkTolerance;
+			EPAManifoldTolerance = epaTolerance;
+			ManifoldPointNumber = manifoldPointNumber;
+			MaxThreadNumber = maxThreadNumber;
+			ActivateSweepAndPrune = activateSweepAndPrune;
 		}
 
 		#endregion
@@ -85,17 +85,17 @@ namespace CollisionEngine
 
 		public void SetMaxGJKIteration(int maxIteration)
 		{
-			this.MaxGJKIteration = maxIteration;
+			MaxGJKIteration = maxIteration;
 		}
 
 		public void SetMaxEPAIteration(int maxIteration)
 		{
-			this.MaxEPAIteration = maxIteration;
+			MaxEPAIteration = maxIteration;
 		}
 			
 		public void SetPrecision(double precision)
 		{
-			this.Precision = precision;
+			Precision = precision;
 		}
 			
 		#endregion
