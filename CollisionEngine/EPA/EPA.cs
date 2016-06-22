@@ -28,12 +28,12 @@ namespace CollisionEngine
 			double epaTolerance,
 			int manifoldPointNumber)
 		{
-			this.MaxIterations = maxIterations;
-			this.Precision = precision;
-			this.EPAManifoldTolerance = epaTolerance;
-			this.ManifoldPointNumber = manifoldPointNumber;
+			MaxIterations = maxIterations;
+			Precision = precision;
+			EPAManifoldTolerance = epaTolerance;
+			ManifoldPointNumber = manifoldPointNumber;
 
-			this.origin = new Vector3 (0.0, 0.0, 0.0);
+			origin = new Vector3 (0.0, 0.0, 0.0);
 		}
 
 		#endregion
@@ -41,31 +41,26 @@ namespace CollisionEngine
 		#region Private Methods
 
 		private Vector3 findPolygonCentroid(List<Support> vertex) {
-			Vector3 sum = new Vector3 ();
+			var sum = new Vector3 ();
+
 			for (int i = 0; i < vertex.Count; i++) {
 				sum = sum + vertex [i].s;
 			}
 
 			return sum * (1.0 / vertex.Count);
 		}
-			
-		private Vector3 findTriangleCentroid(EpaTriangle triangle)
-		{
-			Vector3 result = (triangle.a.s + triangle.b.s + triangle.c.s) * (1.0 / 3.0);
-			return result;
-		}
 
 		private EpaTriangle turnClockWiseNormal(
 			EpaTriangle triangle,
 			Vector3 v)
 		{
-			Vector3 centridDiff = triangle.a.s - v;
+			Vector3 centroidDiff = triangle.a.s - v;
 			Vector3 normal = triangle.normal;
 
-			if (Vector3.Dot (triangle.normal, centridDiff) < 0.0)
+			if (Vector3.Dot (triangle.normal, centroidDiff) < 0.0)
 				normal = triangle.normal * -1.0;
 
-			EpaTriangle tr = new EpaTriangle (
+			var tr = new EpaTriangle (
 				                triangle.a,
 				                triangle.b,
 				                triangle.c,
@@ -104,7 +99,7 @@ namespace CollisionEngine
 
 			int a = getFarthestPoint (obj1, direction);
 			int b = getFarthestPoint (obj2, direction * -1.0);
-			Support sp = new Support (
+			var sp = new Support (
 				obj1.VertexPosition [a] - obj2.VertexPosition [b],
 				a,
 				b);
@@ -174,7 +169,7 @@ namespace CollisionEngine
 			//First triangle
 
 			triangles.Add (
-				this.addTriangle (
+				addTriangle (
 				triangleSupport [0],
 				triangleSupport [1],
 				triangleSupport [2]));
@@ -182,7 +177,7 @@ namespace CollisionEngine
 			//Second triangle
 
 			triangles.Add (
-				this.addTriangle (
+				addTriangle (
 				triangleSupport [0],
 				triangleSupport [1],
 				triangleSupport [3]));
@@ -190,7 +185,7 @@ namespace CollisionEngine
 			//Third triangle
 
 			triangles.Add (
-				this.addTriangle (
+				addTriangle (
 				triangleSupport [0],
 				triangleSupport [2],
 				triangleSupport [3]));
@@ -198,7 +193,7 @@ namespace CollisionEngine
 			//Fourth triangle
 
 			triangles.Add (
-				this.addTriangle (
+				addTriangle (
 				triangleSupport [1],
 				triangleSupport [2],
 				triangleSupport [3]));
@@ -246,7 +241,7 @@ namespace CollisionEngine
 			for (int i = 0; i < edge.Count; i++) 
 			{
 				 
-				EpaTriangle tri = new EpaTriangle (
+				var tri = new EpaTriangle (
 					                  edge [i].a,
 					                  edge [i].b,
 					                  p,
@@ -266,10 +261,12 @@ namespace CollisionEngine
 			while (i < edge.Count) 
 			{
 				if (edge [i].a.s == ed.a.s &&
-				    edge [i].b.s == ed.b.s) {
+				    edge [i].b.s == ed.b.s) 
+				{
 					test = true;
 					edge.RemoveAt (i);
-				} else
+				} 
+				else
 					i++;
 			}
 			if (!test)
@@ -283,12 +280,12 @@ namespace CollisionEngine
 			ref List<EpaTriangle> triangles,
 			Vector3 direction)
 		{
-			Support vt = this.getMinkowskiFarthestPoint (
+			Support vt = getMinkowskiFarthestPoint (
 				             shape1,
 				             shape2,
 				             direction);
 			
-			List<Edge> edges = new List<Edge> ();
+			var edges = new List<Edge> ();
 			int i = 0;
 			while (i < triangles.Count) 
 			{
@@ -299,11 +296,11 @@ namespace CollisionEngine
 				{
 					//Edge 1
 
-					Edge edge = new Edge (
+					var edge = new Edge (
 						            triangles [i].a,
 						            triangles [i].b);
 
-					this.checkEdge (ref edges, edge);
+					checkEdge (ref edges, edge);
 
 					//Edge 2
 
@@ -311,7 +308,7 @@ namespace CollisionEngine
 						triangles [i].a,
 						triangles [i].c);
 
-					this.checkEdge (ref edges, edge);
+					checkEdge (ref edges, edge);
 
 					//Edge 3
 
@@ -319,7 +316,7 @@ namespace CollisionEngine
 						triangles [i].b,
 						triangles [i].c);
 
-					this.checkEdge (ref edges, edge);
+					checkEdge (ref edges, edge);
 
 					triangles.RemoveAt (i);
 
@@ -374,7 +371,7 @@ namespace CollisionEngine
 			Support[] startPoint)
 		{
 
-			EpaCollisionPoint epaCollisionPoint = new EpaCollisionPoint (
+			var epaCollisionPoint = new EpaCollisionPoint (
 				new Vector3 (),
 				new Vector3 (),
 				new Vector3 (),
@@ -383,19 +380,20 @@ namespace CollisionEngine
 			double s = 0.0;
 			double t = 0.0;
 
-			List<EpaTriangle> triangles = new List<EpaTriangle> ();
+			var triangles = new List<EpaTriangle> ();
 			Vector3 centroid = this.startTriangle (
 				                   ref triangles,
 				                   startPoint);
 
-			Vector3 direction = new Vector3 ();
-			Vector3 oldDirection = new Vector3 ();
-			Vector3 vDistance = new Vector3 ();
+			var direction = new Vector3 ();
+			var oldDirection = new Vector3 ();
+			var vDistance = new Vector3 ();
+
 			EpaTriangle epaBuffer;
 
 			if (triangles.Count > 0) 
 			{
-				for (int k = 0; k < this.MaxIterations; k++) 
+				for (int k = 0; k < MaxIterations; k++) 
 				{
 					double minDistance = double.MaxValue;
 
@@ -450,7 +448,7 @@ namespace CollisionEngine
 						direction = this.getRandomDirection ();	
 					}
 						
-					this.addPointToConvexPolygon (
+					addPointToConvexPolygon (
 						shape1,
 						shape2,
 						centroid,
@@ -484,7 +482,7 @@ namespace CollisionEngine
 				                                      objectB,
 				                                      startTriangles);
 
-			CollisionPoint collisionPoint = new CollisionPoint (
+			var collisionPoint = new CollisionPoint (
 				epaCollisionPoint.a,
 				epaCollisionPoint.b,
 				epaCollisionPoint.normal);

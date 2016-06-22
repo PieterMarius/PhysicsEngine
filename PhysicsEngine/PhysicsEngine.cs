@@ -87,7 +87,7 @@ namespace MonoPhysicsEngine
 		{
 			collisionEngine = new CollisionDetectionEngine(collisionEngineParameters);
 
-			solver = new GaussSeidel(solverParameters); ;
+			solver = new ProjectedGaussSeidel(solverParameters); ;
 
 			SimulationEngineParameters = simulationParameters;
 
@@ -100,17 +100,14 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-		public double GetSolverError()
-		{
-			return solverError;
-		}
+
 
 		public void SetSimulationParameters(SimulationParameters simulationParameters)
 		{
 			SimulationEngineParameters = simulationParameters;
 		}
 
-		#region Object 
+		#region Simulation Object 
 
 		public void AddObject(SimulationObject simulationObject)
 		{
@@ -221,10 +218,46 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
+		#region Solver
+
+		public SolverParameters GetSolverParameters()
+		{
+			return SolverParam;
+		}
+
+		public void SetSolverParameters(SolverParameters parameters)
+		{
+			SolverParam = parameters;
+
+			var type = (SolverType)Enum.Parse(typeof(SolverType), solver.GetType().Name);
+
+			SetSolver(type);
+		}
+
+		public double GetSolverError()
+		{
+			return solverError;
+		}
+
 		public void SetSolver(SolverType type)
 		{
-			
+			switch (type)
+			{
+				case SolverType.ProjectedGaussSeidel:
+					solver = new ProjectedGaussSeidel(SolverParam);
+					break;
+
+				case SolverType.NonLinearConjugateGradient:
+					solver = new NonLinearConjugateGradient(SolverParam);
+					break;
+
+				default:
+					solver = new ProjectedGaussSeidel(SolverParam);
+					break;
+			}
 		}
+
+		#endregion
 
 		#region Start Engine
 
@@ -233,14 +266,11 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		public void Simulate(double? timeStep = null)
 		{
-//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
+			TimeStep = SimulationEngineParameters.TimeStep;
 
 			if (timeStep.HasValue)
 				TimeStep = timeStep.Value;
-			else
-				TimeStep = SimulationEngineParameters.TimeStep;
-
+			
 			#region Simulation Workflow
 
 			collisionDetection ();
@@ -253,94 +283,104 @@ namespace MonoPhysicsEngine
 
 			collisionPartitionedPoints = null;
 
-			this.simulationObjectsCCD = new SimulationObject[this.SimulationObjects.Length];
-			Array.Copy (this.SimulationObjects, this.simulationObjectsCCD, this.SimulationObjects.Length);
+			simulationObjectsCCD = new SimulationObject[SimulationObjects.Length];
+			Array.Copy (SimulationObjects, simulationObjectsCCD, SimulationObjects.Length);
 
-//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
-//			for (int k = 0; k < this.simulationObjects.Length; k++) 
-//			{
-//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
-//			}
-//
-//			List<CollisionPointStructure> bufferCollisionPoints;
-//
-//			this.timeStep = this.simulationParameters.TimeStep;
-//
-//			double intersectionTimeStep = 0.0;
-//			double noCollisionTimeStep = 0.0;
-//
-//			bool exit = false;
-//
-//			if (this.simulationParameters.DiscreteCCD && !exit) 
-//			{
-//
-//				for (int i = 0; i < 20; i++) 
-//				{
-//					//Collision detection
-//					this.collisionDetection ();
-//					this.extractValidCollisionPoint ();
-//
-//					int firstCount = this.collisionPoints.Count ();
-//
-//					//Set start context
-//					this.physicsExecutionFlow ();
-//
-//					//bufferCollisionPoints = new List<CollisionPointStructure> (this.collisionPoints);
-//
-//					//After postion update the collision is retested
-//					this.collisionDetection ();
-//					this.extractValidCollisionPoint ();
-//
-//					//No collision detection
-//					if (firstCount == 0 && 
-//						this.collisionPoints.Count == 0 &&
-//						i == 0)
-//						break;
-//
-//					exit = false;
-//
-//					//Test for intersection
-//					for (int j = 0; j < this.collisionPoints.Count; j++) 
-//					{
-//						Console.WriteLine ("Distance " + this.collisionPoints[j].collisionDistance);
-//						//Check intersection
-//						if (this.collisionPoints [j].intersection ) 
-//						{
-//							exit = true;
-//							intersectionTimeStep = this.timeStep;
-//							this.timeStep = (this.timeStep + noCollisionTimeStep) / 2.0;
-//							break;
-//						}
-//					}
-//					//No intersection, only collision
-//					if (!exit)
-//						break;
-//
-//					//Increase TimeStep (up to reference time step)
-//					if (this.collisionPoints.Count == 0) 
-//					{
-//						noCollisionTimeStep = this.timeStep;
-//						this.timeStep = (this.timeStep + intersectionTimeStep) / 2.0;
-//					}
-//					
-//					//Array.Copy (this.simulationObjectsCCD, this.simulationObjects, this.simulationObjects.Length);
-//					for (int k = 0; k < this.simulationObjects.Length; k++) 
-//					{
-//						this.simulationObjects [k] = this.simulationObjectsCCD [k];
-//					}
-//					//DEBUG
-//					Console.WriteLine (this.timeStep);
-//				}
-//
-//			}
-//				
-//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
-//			for (int k = 0; k < this.simulationObjects.Length; k++) 
-//			{
-//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
-//			}
+		}
+
+		public void SimulateCCD()
+		{
+			throw new NotImplementedException();
+			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
+			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
+
+
+			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
+			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
+			//			for (int k = 0; k < this.simulationObjects.Length; k++) 
+			//			{
+			//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
+			//			}
+			//
+			//			List<CollisionPointStructure> bufferCollisionPoints;
+			//
+			//			this.timeStep = this.simulationParameters.TimeStep;
+			//
+			//			double intersectionTimeStep = 0.0;
+			//			double noCollisionTimeStep = 0.0;
+			//
+			//			bool exit = false;
+			//
+			//			if (this.simulationParameters.DiscreteCCD && !exit) 
+			//			{
+			//
+			//				for (int i = 0; i < 20; i++) 
+			//				{
+			//					//Collision detection
+			//					this.collisionDetection ();
+			//					this.extractValidCollisionPoint ();
+			//
+			//					int firstCount = this.collisionPoints.Count ();
+			//
+			//					//Set start context
+			//					this.physicsExecutionFlow ();
+			//
+			//					//bufferCollisionPoints = new List<CollisionPointStructure> (this.collisionPoints);
+			//
+			//					//After postion update the collision is retested
+			//					this.collisionDetection ();
+			//					this.extractValidCollisionPoint ();
+			//
+			//					//No collision detection
+			//					if (firstCount == 0 && 
+			//						this.collisionPoints.Count == 0 &&
+			//						i == 0)
+			//						break;
+			//
+			//					exit = false;
+			//
+			//					//Test for intersection
+			//					for (int j = 0; j < this.collisionPoints.Count; j++) 
+			//					{
+			//						Console.WriteLine ("Distance " + this.collisionPoints[j].collisionDistance);
+			//						//Check intersection
+			//						if (this.collisionPoints [j].intersection ) 
+			//						{
+			//							exit = true;
+			//							intersectionTimeStep = this.timeStep;
+			//							this.timeStep = (this.timeStep + noCollisionTimeStep) / 2.0;
+			//							break;
+			//						}
+			//					}
+			//					//No intersection, only collision
+			//					if (!exit)
+			//						break;
+			//
+			//					//Increase TimeStep (up to reference time step)
+			//					if (this.collisionPoints.Count == 0) 
+			//					{
+			//						noCollisionTimeStep = this.timeStep;
+			//						this.timeStep = (this.timeStep + intersectionTimeStep) / 2.0;
+			//					}
+			//					
+			//					//Array.Copy (this.simulationObjectsCCD, this.simulationObjects, this.simulationObjects.Length);
+			//					for (int k = 0; k < this.simulationObjects.Length; k++) 
+			//					{
+			//						this.simulationObjects [k] = this.simulationObjectsCCD [k];
+			//					}
+			//					//DEBUG
+			//					Console.WriteLine (this.timeStep);
+			//				}
+			//
+			//			}
+			//				
+			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
+			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
+			//			for (int k = 0; k < this.simulationObjects.Length; k++) 
+			//			{
+			//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
+			//			}
+
 		}
 
 		#endregion
@@ -353,10 +393,10 @@ namespace MonoPhysicsEngine
 
 		private void partitionEngineExecute()
 		{
-			List<SpatialPartition> partitions = this.contactPartitioningEngine.calculateSpatialPartitioning (
-				                                    this.collisionPoints,
-				                                    this.SimulationJoints,
-				                                    this.SimulationObjects);
+			List<SpatialPartition> partitions = contactPartitioningEngine.calculateSpatialPartitioning (
+				                                    collisionPoints,
+				                                    SimulationJoints,
+				                                    SimulationObjects);
 
 			if (partitions != null) {
 

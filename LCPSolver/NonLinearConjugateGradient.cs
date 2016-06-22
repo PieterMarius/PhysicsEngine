@@ -8,7 +8,7 @@ namespace LCPSolver
 {
 	public class NonLinearConjugateGradient : ISolver
     {
-		private GaussSeidel gaussSeidelSolver;
+		private ProjectedGaussSeidel gaussSeidelSolver;
 
 		private readonly SolverParameters solverParameters;
 
@@ -26,7 +26,7 @@ namespace LCPSolver
 				                                          this.solverParameters.MaxThreadNumber,
 				                                          0.007);
 			
-			this.gaussSeidelSolver = new GaussSeidel(gaussSeidelSolverParam);
+			this.gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }
 
         #endregion

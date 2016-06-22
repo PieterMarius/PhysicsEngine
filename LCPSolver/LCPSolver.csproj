@@ -44,7 +44,7 @@
     <Compile Include="LinearProblemProperties.cs" />
     <Compile Include="ISolver.cs" />
     <Compile Include="SolverParameters.cs" />
-    <Compile Include="GaussSeidel.cs" />
+    <Compile Include="ProjectedGaussSeidel.cs" />
     <Compile Include="ClampSolution.cs" />
     <Compile Include="NonLinearConjugateGradient.cs" />
     <Compile Include="SolverType.cs" />

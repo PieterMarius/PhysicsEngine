@@ -17,7 +17,7 @@ namespace CollisionEngine
 		public double GJKManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		private Vector3 origin = new Vector3 (0.0, 0.0, 0.0);
+		Vector3 origin = new Vector3 (0.0, 0.0, 0.0);
 
 		#endregion
 
@@ -29,10 +29,10 @@ namespace CollisionEngine
 			double gjkTolerance,
 			int manifoldPointNumber)
 		{
-			this.MaxIterations = maxIterations;
-			this.Precision = precision;
-			this.GJKManifoldTolerance = gjkTolerance;
-			this.ManifoldPointNumber = manifoldPointNumber;
+			MaxIterations = maxIterations;
+			Precision = precision;
+			GJKManifoldTolerance = gjkTolerance;
+			ManifoldPointNumber = manifoldPointNumber;
 		}
 
 		#endregion
@@ -80,7 +80,8 @@ namespace CollisionEngine
 			
 			int a = getFarthestPoint (obj1, direction.Value);
 			int b = getFarthestPoint (obj2, direction.Value * -1.0);
-			Support sp = new Support (
+
+			var sp = new Support (
 				             obj1.VertexPosition [a] - obj2.VertexPosition [b],
 				             a,
 				             b);
@@ -339,7 +340,7 @@ namespace CollisionEngine
 			double minDistance = double.MaxValue;
 			double s = 0.0, t = 0.0;
 
-			Simplex simplex = new Simplex ();
+			var simplex = new Simplex ();
 
 			Vector3? direction = this.getRandomDirection ();
 
@@ -524,9 +525,9 @@ namespace CollisionEngine
 			ObjectGeometry objectA, 
 			ObjectGeometry objectB)
 		{
-			CollisionPoint collisionPoint = new CollisionPoint();
-			Vector3 collisionNormal = new Vector3();
-			Simplex minSimplex = new Simplex();
+			var collisionPoint = new CollisionPoint();
+			var collisionNormal = new Vector3();
+			var minSimplex = new Simplex();
 			bool isIntersection = false;
 
 			double collisionDistance = this.executeGJKAlgorithm (

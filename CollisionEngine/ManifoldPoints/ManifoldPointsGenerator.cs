@@ -22,9 +22,9 @@ namespace CollisionEngine
 			double manifoldPlaneTolerance,
 			double manifoldStabilizeValue)
 		{
-			this.ManifoldPointNumber = manifoldPointNumber;
-			this.ManifoldPlaneTolerance = manifoldPlaneTolerance;
-			this.ManifoldStabilizeValue = manifoldStabilizeValue;
+			ManifoldPointNumber = manifoldPointNumber;
+			ManifoldPlaneTolerance = manifoldPlaneTolerance;
+			ManifoldStabilizeValue = manifoldStabilizeValue;
 		}
 
 		#endregion
@@ -37,19 +37,19 @@ namespace CollisionEngine
 			CollisionPoint collisionPoint,
 			Vector3 collisionNormal)
 		{
-			List<Vector3> collisionA = this.getNearestPoint (
+			List<Vector3> collisionA = getNearestPoint (
 				objectA,
 				collisionPoint.collisionPointA,
 				collisionNormal,
 				this.ManifoldPlaneTolerance);
 
-			List<Vector3> collisionB = this.getNearestPoint (
+			List<Vector3> collisionB = getNearestPoint (
 				objectB,
 				collisionPoint.collisionPointB,
 				collisionNormal,
 				this.ManifoldPlaneTolerance);
 
-			List<CollisionPoint> collisionPointsList = this.findCollisionPoints (
+			List<CollisionPoint> collisionPointsList = findCollisionPoints (
 				collisionA.ToArray (),
 				collisionB.ToArray (),
 				collisionNormal,
@@ -80,7 +80,7 @@ namespace CollisionEngine
 			Vector3 planeNormal,
 			double tolerance)
 		{
-			List<Vector3> collisionPoints = new List<Vector3> ();
+			var collisionPoints = new List<Vector3> ();
 
 			Vector3 normal = Vector3.Normalize(planeNormal);
 			for (int i = 0; i < shape.VertexPosition.Length; i++) 
@@ -102,7 +102,7 @@ namespace CollisionEngine
 		/// <param name="na">Na.</param>
 		/// <param name="cb">Cb.</param>
 		/// <param name="initp">Initp.</param>
-		private void testIfPointIsOnPlane(
+		private void testPointIsOnPlane(
 			Vector3[] ca,
 			Vector3[] cb,
 			CollisionPoint initPoint,
@@ -124,9 +124,9 @@ namespace CollisionEngine
 						initPoint.collisionPointB);
 
 					//Inserito il minore per gestire problemi di approssimazione
-					if (angle + this.ManifoldStabilizeValue >= 2.0 * Math.PI) 
+					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
 					{
-						CollisionPoint cp = new CollisionPoint (
+						var cp = new CollisionPoint (
 							ca [i],
 							project,
 							na);
@@ -149,10 +149,10 @@ namespace CollisionEngine
 						na,
 						initPoint.collisionPointA);
 
-					if (angle + this.ManifoldStabilizeValue >= 2.0 * Math.PI) 
+					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
 					{
 
-						CollisionPoint cp = new CollisionPoint (
+						var cp = new CollisionPoint (
 							project,
 							cb [i],
 							na);
@@ -168,7 +168,7 @@ namespace CollisionEngine
 			Vector3 vectorDistance,
 			CollisionPoint cp)
 		{
-			List<CollisionPoint> result = new List<CollisionPoint> ();
+			var result = new List<CollisionPoint> ();
 
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
@@ -189,7 +189,7 @@ namespace CollisionEngine
 					ca,
 					vectorDistance);
 
-				this.testIfPointIsOnPlane (
+				testPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -218,7 +218,7 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				this.testIfPointIsOnPlane (
+				testPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -250,7 +250,7 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				this.testIfPointIsOnPlane (
+				this.testPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -321,8 +321,8 @@ namespace CollisionEngine
 			Vector3 p4,
 			Vector3 normal)
 		{
-			Vector3 a = new Vector3 ();
-			Vector3 b = new Vector3 ();
+			var a = new Vector3 ();
+			var b = new Vector3 ();
 			double mua = 0.0;
 			double mub = 0.0;
 

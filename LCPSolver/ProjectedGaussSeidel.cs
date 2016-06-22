@@ -7,7 +7,7 @@ using PhysicsEngineMathUtility;
 
 namespace LCPSolver
 {
-    public class GaussSeidel : ISolver
+    public class ProjectedGaussSeidel : ISolver
     {
 		#region Fields
 
@@ -18,17 +18,17 @@ namespace LCPSolver
 
 		double MSE;
 
-		public readonly SolverParameters solverParameters;
+		public readonly SolverParameters SolverParameters;
 
 		#endregion
 
         #region Constructor
 
-        public GaussSeidel(
+        public ProjectedGaussSeidel(
 			SolverParameters solverParameters)
         {
-			this.solverParameters = solverParameters;
-			SOR = this.solverParameters.SOR;
+			SolverParameters = solverParameters;
+			SOR = SolverParameters.SOR;
         }
 
         #endregion
@@ -49,7 +49,7 @@ namespace LCPSolver
 
 			double internalSOR = SOR;
 
-			for (int k = 0; k < solverParameters.MaxIteration; k++) 
+			for (int k = 0; k < SolverParameters.MaxIteration; k++) 
 			{
 				double[] sum = lowerTriangularMatrix(input, X);
 
@@ -86,7 +86,7 @@ namespace LCPSolver
 					
 				MSE = getMediumSquareError (diffX);
 
-				if (MSE < solverParameters.ErrorTolerance)
+				if (MSE < SolverParameters.ErrorTolerance)
 					return X;
 			}
 
@@ -119,7 +119,7 @@ namespace LCPSolver
 
 			Parallel.For (0, 
 				input.Count, 
-				new ParallelOptions { MaxDegreeOfParallelism = this.solverParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = this.SolverParameters.MaxThreadNumber }, 
 				i => {
 					sum [i] = kernel (input, X, i);
 				});

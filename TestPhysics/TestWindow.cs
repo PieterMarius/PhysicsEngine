@@ -43,7 +43,6 @@ namespace TestPhysics
 		PhysicsEngine physicsEngine;
 
 		ICollisionEngine collisionEngine;
-		ISolver lcpSolver;
 
 		bool pause = false;
 
@@ -94,9 +93,6 @@ namespace TestPhysics
 
 			//Set Physics engine
 			this.simulationParameters = new SimulationParameters();
-//			LoadEngineConfig engineConfig = new LoadEngineConfig ("startConfig.xml");
-//			this.simulationParameters = engineConfig.ReadEngineConfig ();
-
 
 			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
 			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
