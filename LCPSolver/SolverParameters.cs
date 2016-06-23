@@ -42,11 +42,11 @@ namespace LCPSolver
 
 		public SolverParameters ()
 		{
-			this.MaxIteration = 100;
-			this.ErrorTolerance = 1E-30;
-			this.SOR = 1.0;
-			this.SORStep = 0.007;
-			this.MaxThreadNumber = 2;
+			MaxIteration = 100;
+			ErrorTolerance = 1E-30;
+			SOR = 1.0;
+			SORStep = 0.007;
+			MaxThreadNumber = 2;
 		}
 
 		public SolverParameters (
@@ -56,10 +56,10 @@ namespace LCPSolver
 			int maxThreadNumber,
 			double SORStep )
 		{
-			this.MaxIteration = maxIteration;
-			this.ErrorTolerance = errorTolerance;
+			MaxIteration = maxIteration;
+			ErrorTolerance = errorTolerance;
 			this.SOR = SOR;
-			this.MaxThreadNumber = maxThreadNumber;
+			MaxThreadNumber = maxThreadNumber;
 			this.SORStep = SORStep;
 		}
 			

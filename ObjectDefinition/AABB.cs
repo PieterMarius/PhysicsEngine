@@ -24,15 +24,15 @@ namespace SimulationObjectDefinition
 			double maxZ,
 			bool positionChanged)
 		{
-			this.Min = new double[3];
-			this.Max = new double[3];
-			this.Min[0] = minX;
-			this.Max[0] = maxX;
-			this.Min[1] = minY;
-			this.Max[1] = maxY;
-			this.Min[2] = minZ;
-			this.Max[2] = maxZ;
-			this.positionAABBChanged = positionChanged;
+			Min = new double[3];
+			Max = new double[3];
+			Min[0] = minX;
+			Max[0] = maxX;
+			Min[1] = minY;
+			Max[1] = maxY;
+			Min[2] = minZ;
+			Max[2] = maxZ;
+			positionAABBChanged = positionChanged;
 		}
 
 		#endregion
@@ -41,7 +41,7 @@ namespace SimulationObjectDefinition
 
 		public void SetPositionChanged(bool value)
 		{
-			this.positionAABBChanged = value; 
+			positionAABBChanged = value; 
 		}
 
 		#endregion

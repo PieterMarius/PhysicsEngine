@@ -8,62 +8,66 @@ namespace LCPSolver
 {
 	public class NonLinearConjugateGradient : ISolver
     {
-		private ProjectedGaussSeidel gaussSeidelSolver;
+		#region Private Fields
 
-		private readonly SolverParameters solverParameters;
+		ProjectedGaussSeidel gaussSeidelSolver;
+
+		readonly SolverParameters solverParam;
+
+		double deltaErrorCheck = -1.0;
+
+		#endregion
 
         #region Constructor
 
         public NonLinearConjugateGradient(
             SolverParameters solverParameters)
         {
-            this.solverParameters = solverParameters;
+            solverParam = solverParameters;
 
-			SolverParameters gaussSeidelSolverParam = new SolverParameters (
-				                                          1,
-				                                          1E-20,
-				                                          this.solverParameters.SOR,
-				                                          this.solverParameters.MaxThreadNumber,
-				                                          0.007);
+			var gaussSeidelSolverParam = new SolverParameters (
+				                                          3,
+				                                          1E-50,
+				                                          solverParam.SOR,
+				                                          solverParam.MaxThreadNumber,
+				                                          solverParam.SORStep);
 			
-			this.gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
+			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }
 
         #endregion
 
         #region Public Methods
 
-
-		//TODO da correggere
         public double[] Solve(LinearProblemProperties input)
         {
-            double[] Xk = this.gaussSeidelSolver.Solve(input);
-            double[] delta = this.calculateDelta(Xk, input.StartX);
-            double[] searchDirection = this.negateArray(delta);
+            double[] Xk = gaussSeidelSolver.Solve(input);
+            double[] delta = calculateDelta(Xk, input.StartX);
+            double[] searchDirection = negateArray(delta);
 
             input.SetStartValue(Xk);
 
-            for (int i = 0; i < this.solverParameters.MaxIteration; i++)
+            for (int i = 0; i < solverParam.MaxIteration; i++)
             {
-                double[] Xk1 = this.gaussSeidelSolver.Solve(input);
+                double[] Xk1 = gaussSeidelSolver.Solve(input);
                                 
-                double[] deltaK = this.calculateDelta(Xk1, Xk);
+                double[] deltaK = calculateDelta(Xk1, Xk);
 
-                double deltaCheck = this.arraySquareModule(delta);
+                deltaErrorCheck = arraySquareModule(delta);
 
 				//early exit
-				if (deltaCheck < this.solverParameters.ErrorTolerance)
+				if (deltaErrorCheck < solverParam.ErrorTolerance)
 					return Xk1;
 
                 double betaK = 0.0;
-                if (deltaCheck != 0.0)
-                    betaK = this.arraySquareModule(deltaK) / deltaCheck;
+				if (Math.Abs(deltaErrorCheck) > 10E-40)
+                    betaK = arraySquareModule(deltaK) / deltaErrorCheck;
 
 				if (betaK > 1.0)
 					searchDirection = new double[searchDirection.Length];
                 else
                 {
-					Xk = this.calculateDirection (
+					Xk = calculateDirection (
 						input,
 						Xk1, 
 						deltaK, 
@@ -72,62 +76,15 @@ namespace LCPSolver
 
                     input.SetStartValue(Xk);
                 }
-					
-				for (int j = 0; j < deltaK.Length; j++) 
-				{
-					delta [j] = deltaK [j];
-				}
+
+				Array.Copy(deltaK, delta, deltaK.Length);
             }
             return Xk;
         }
 
-
-		public double[] GetError(
-			LinearProblemProperties input,
-			double[] X)
-		{
-			if (input.Count > 0) {
-				double[] result = new double[input.Count];
-				for (int i = 0; i < input.Count; i++) {
-					result [i] = 0.0;
-					for (int j = 0; j < input.Count; j++) {
-						result [i] += input.M [i].Value[j] * X [input.M [i].Index[j]];
-					}
-					result [i] = (input.B [i] - result [i]);
-					result [i] = result [i] * result [i];
-				}
-
-				return result;
-			} 
-			else 
-			{
-				throw new Exception ("Empty solver parameters");
-			}
-		}
-
-		public double GetMediumSquareError (
-			LinearProblemProperties input, 
-			double[] X)
-		{
-			double[] errors = this.GetError (
-				input,
-				X);
-
-			double errorResult = 0.0;
-
-			for (int i = 0; i < errors.Length; i++) 
-			{
-				errorResult += errors [i];
-			}
-
-			errorResult = errorResult / errors.Length;
-
-			return errorResult;
-		}
-
 		public double GetMSE()
 		{
-			throw new NotImplementedException();
+			return deltaErrorCheck;
 		}
 
         #endregion
@@ -138,17 +95,17 @@ namespace LCPSolver
             double[] a,
             double[] b)
         {
-            if (a.Length < 0 ||
-                b.Length < 0 ||
-                b.Length != a.Length)
-                throw new Exception("Different array size.");
+			if (a.Length < 0 ||
+				b.Length < 0 ||
+				b.Length != a.Length)
+			{
+				throw new Exception("Different array size.");
+			}
 
             double[] result = new double[a.Length];
 
             for (int i = 0; i < a.Length; i++)
-            {
                 result[i] = -(a[i] - b[i]);
-            }
             
             return result;
         }
@@ -187,37 +144,20 @@ namespace LCPSolver
             double betak)
         {
             double[] result = new double[Xk1.Length];
+
             for (int i = 0; i < Xk1.Length; i++)
             {
 				double bDirection = betak * searchDirection[i];
 
-                result[i] = Xk1[i] + 
-					bDirection;
+                result[i] = Xk1[i] + bDirection;
                 
-				searchDirection[i] = bDirection -
-                    deltaK[i];
+				searchDirection[i] = bDirection - deltaK[i];
 				
 				result[i] = ClampSolution.ClampX (input, result, i);
             }
 
             return result;
         }
-
-		private double getMediumSquareErrorDiff(
-			double[] a,
-			double[] b)
-		{
-			double diff = 0.0;
-			double buf;
-
-			for (int i = 0; i < a.Length; i++) 
-			{
-				buf = a [i] - b [i];	
-				diff += buf * buf;
-			}
-
-			return diff / a.Length;
-		}
 
 		#endregion
 	}

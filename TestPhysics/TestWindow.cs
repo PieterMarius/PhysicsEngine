@@ -96,10 +96,13 @@ namespace TestPhysics
 
 			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
 			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
-				this.physicsEngine = new PhysicsEngine(
-					simulationParameters,
-					collisionEngineParameters,
-						solverParameters);
+
+			physicsEngine = new PhysicsEngine(
+				simulationParameters,
+				collisionEngineParameters,
+				solverParameters);
+
+			//physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
 
 			for (int i = 0; i < this.simulationObjects.Count (); i++) 
 			{

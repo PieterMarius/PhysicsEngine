@@ -85,9 +85,13 @@ namespace MonoPhysicsEngine
 			CollisionEngineParameters collisionEngineParameters,
 			SolverParameters solverParameters)
 		{
-			collisionEngine = new CollisionDetectionEngine(collisionEngineParameters);
+			SolverParam = solverParameters;
 
 			solver = new ProjectedGaussSeidel(solverParameters); ;
+
+			CollisionEngineParam = collisionEngineParameters;
+
+			collisionEngine = new CollisionDetectionEngine(collisionEngineParameters);
 
 			SimulationEngineParameters = simulationParameters;
 
@@ -437,7 +441,7 @@ namespace MonoPhysicsEngine
 
 		private void physicsExecutionFlow()
 		{
-			Stopwatch stopwatch = new Stopwatch();
+			var stopwatch = new Stopwatch();
 
 			stopwatch.Reset ();
 
@@ -445,7 +449,9 @@ namespace MonoPhysicsEngine
 
 			#region Contact and Joint elaboration
 
-			if (this.collisionPartitionedPoints != null) {
+			solverError = 0.0;
+
+			if (collisionPartitionedPoints != null) {
 
 				for (int i = 0; i<  collisionPartitionedPoints.Count;i++)
 				{
@@ -458,21 +464,21 @@ namespace MonoPhysicsEngine
 					JacobianContact[] contactArray = contactConstraints.ToArray ();
 
 					//Build solver data
-					LinearProblemProperties linearProblemProperties = this.buildLCPMatrix (contactArray);
-
-					solverError = 0.0;
+					LinearProblemProperties linearProblemProperties = buildLCPMatrix (contactArray);
 
 					if (contactConstraints.Count > 0 &&
-					    linearProblemProperties != null) {
+					    linearProblemProperties != null) 
+					{
 
 						double[] X = solver.Solve (linearProblemProperties);
+
 						solverError += solver.GetMSE();
 
 						//Update Objects velocity
-						this.updateVelocity (
+						updateVelocity(
 							contactArray,
 							X,
-							this.SimulationObjects);
+							SimulationObjects);
 					}
 				}
 			}
@@ -482,7 +488,7 @@ namespace MonoPhysicsEngine
 			#region Position and Velocity integration
 
 			//Update Objects position
-			this.integrateObjectsPosition (SimulationObjects);
+			integrateObjectsPosition (SimulationObjects);
 
 			#endregion
 
@@ -612,7 +618,7 @@ namespace MonoPhysicsEngine
 							    contactA.ObjectA == contactB.ObjectB ||
 							    contactA.ObjectB == contactB.ObjectA) {
 
-								mValue = this.addLCPValue (
+								mValue = addLCPValue (
 									contactA,
 									contactB);
 
@@ -622,7 +628,7 @@ namespace MonoPhysicsEngine
 									continue;
 								}
 
-								if (mValue != 0.0) {
+								if (Math.Abs(mValue) > 1E-100) {
 									lock (sync) {
 										index [i].Add (j);
 										value [i].Add (mValue);
