@@ -12,8 +12,8 @@ namespace MonoPhysicsEngine
 
 		const JointType jointType = JointType.Slider;
 
-		readonly int IndexA;
-		readonly int IndexB;
+		int IndexA;
+		int IndexB;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 SliderAxis;
@@ -279,6 +279,16 @@ namespace MonoPhysicsEngine
 		public int GetObjectIndexB()
 		{
 			return IndexB;
+		}
+
+		public void SetObjectIndexA(int index)
+		{
+			IndexA = index;
+		}
+
+		public void SetObjectIndexB(int index)
+		{
+			IndexB = index;
 		}
 
 		public JointType GetJointType()

@@ -18,6 +18,8 @@ namespace MonoPhysicsEngine
 
 		#region Set Methods
 
+		void SetObjectIndexA(int index);
+		void SetObjectIndexB(int index);
 		void SetLinearLimit(double linearLimitMin, double linearLimitMax);
 		void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);
 		void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);

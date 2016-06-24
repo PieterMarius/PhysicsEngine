@@ -11,8 +11,8 @@ namespace MonoPhysicsEngine
 
 		const JointType jointType = JointType.Fixed;
 
-		readonly int IndexA;
-		readonly int IndexB;
+		int IndexA;
+		int IndexB;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 
@@ -242,6 +242,16 @@ namespace MonoPhysicsEngine
 		public int GetObjectIndexB()
 		{
 			return IndexB;
+		}
+
+		public void SetObjectIndexA(int index)
+		{
+			IndexA = index;
+		}
+
+		public void SetObjectIndexB(int index)
+		{
+			IndexB = index;
 		}
 
 		public Vector3 GetStartAnchorPosition()

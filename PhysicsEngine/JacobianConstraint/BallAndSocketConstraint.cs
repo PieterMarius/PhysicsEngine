@@ -11,8 +11,8 @@ namespace MonoPhysicsEngine
 
 		const JointType jointType = JointType.BallAndSocket;
 
-		readonly int IndexA;
-		readonly int IndexB;
+		int IndexA;
+		int IndexB;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 StartErrorAxis1;
@@ -172,6 +172,16 @@ namespace MonoPhysicsEngine
 			return IndexA;
 		}
 
+		public void SetObjectIndexA(int index)
+		{
+			IndexA = index;
+		}
+
+		public void SetObjectIndexB(int index)
+		{
+			IndexB = index;
+		}
+
 		public int GetObjectIndexB()
 		{
 			return IndexB;
@@ -211,12 +221,12 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion

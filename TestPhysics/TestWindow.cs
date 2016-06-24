@@ -78,7 +78,6 @@ namespace TestPhysics
 				textureID = loadObject.LoadTexture ();
 				redTexture = OpenGLUtilities.LoadTexture ("red.bmp");
 
-
 				//Set Collision Detection
 				collisionEngineParameters = new CollisionEngineParameters();
 
@@ -106,7 +105,27 @@ namespace TestPhysics
 					physicsEngine.AddJoint (simulationJoints [i]);
 				}
 
-				physicsEngine.RemoveObject(0);
+				#region Object Removing
+
+				//physicsEngine.RemoveAllJoints();
+
+				//physicsEngine.RemoveAllObjects();
+
+				//int objectIndex = 2;
+
+				//physicsEngine.RemoveObject(objectIndex);
+
+				////Graphics engine
+				//var buf = displayList.ToList();
+				//buf.RemoveAt(objectIndex);
+				//displayList = buf.ToArray();
+
+				//var buf1 = textureID.ToList();
+				//buf1.RemoveAt(objectIndex);
+				//textureID = buf1.ToArray();
+
+				#endregion
+
 
 				collPoint = new List<CollisionPointStructure> ();
 
@@ -202,7 +221,6 @@ namespace TestPhysics
 					{
 						this.physicsEngine.SimulationJoints[i].AddTorque(this.physicsEngine.SimulationObjects, 0.0, 0.4);
 					}
-
 
 					stopwatch.Stop();
 

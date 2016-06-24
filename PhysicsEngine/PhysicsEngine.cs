@@ -57,9 +57,6 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		SimulationObject[] simulationObjectsCCD;
 
-		/// <summary>
-		/// The objects geometry.
-		/// </summary>
 		ObjectGeometry[] objectsGeometry;
 
 		ICollisionEngine collisionEngine;
@@ -87,7 +84,7 @@ namespace MonoPhysicsEngine
 		{
 			SolverParam = solverParameters;
 
-			solver = new ProjectedGaussSeidel(solverParameters); ;
+			solver = new ProjectedGaussSeidel(solverParameters);
 
 			CollisionEngineParam = collisionEngineParameters;
 
@@ -97,6 +94,7 @@ namespace MonoPhysicsEngine
 
 			contactPartitioningEngine = new ContactPartitioningEngine();
 
+			SimulationObjects = new SimulationObject[0];
 			SimulationJoints = new List<IConstraint> ();
 		}
 
@@ -131,7 +129,7 @@ namespace MonoPhysicsEngine
 		public void RemoveObject(int objectIndex)
 		{
 			if (SimulationObjects != null && 
-			    SimulationObjects.Length > 0) 
+			    SimulationObjects.Length > objectIndex) 
 			{
 				#region Remove object
 				
@@ -141,16 +139,25 @@ namespace MonoPhysicsEngine
 
 				#endregion
 
-				#region Remove Constraint
+				#region Remove Object Constraint
 
 				if (SimulationJoints != null)
 				{
-					var constraintIndex = SimulationJoints.Select((x,i) => x.GetObjectIndexA() == objectIndex || 
-					                                              x.GetObjectIndexB() == objectIndex ? i : -1).Where(i => i != -1).ToArray();
-
-					for (int i = 0; i < constraintIndex.Length; i++)
+					for (int i = SimulationJoints.Count - 1; i >= 0; i--)
 					{
-						SimulationJoints.RemoveAt(constraintIndex[i] - i);
+						if (SimulationJoints[i].GetObjectIndexA() == objectIndex ||
+							SimulationJoints[i].GetObjectIndexB() == objectIndex)
+						{
+							Removejoint(i);
+						}
+					}
+
+					foreach(IConstraint constraint in SimulationJoints)
+					{
+						if (constraint.GetObjectIndexA() > objectIndex)
+							constraint.SetObjectIndexA(constraint.GetObjectIndexA() - 1);
+						if (constraint.GetObjectIndexB() > objectIndex)
+							constraint.SetObjectIndexB(constraint.GetObjectIndexB() - 1);
 					}
 				}
 
@@ -160,8 +167,8 @@ namespace MonoPhysicsEngine
 
 		public void RemoveAllObjects()
 		{
-			SimulationObjects = null;
-			SimulationJoints = null;
+			SimulationObjects = new SimulationObject[0];
+			SimulationJoints = new List<IConstraint>();
 		}
 
 		public SimulationObject GetObject(int objectIndex)
@@ -189,7 +196,8 @@ namespace MonoPhysicsEngine
 
 		public void Removejoint(int jointIndex)
 		{
-			if (SimulationJoints != null)
+			if (SimulationJoints != null &&
+			   SimulationJoints.Count > jointIndex)
 			{
 				SimulationJoints.RemoveAt(jointIndex);
 			}
@@ -197,7 +205,7 @@ namespace MonoPhysicsEngine
 
 		public void RemoveAllJoints()
 		{
-			SimulationJoints = null;
+			SimulationJoints = new List<IConstraint>();
 		}
 
 		public IConstraint GetConstraint(int constraintId)
@@ -415,16 +423,16 @@ namespace MonoPhysicsEngine
 						if (partitions [i].ObjectList [j].Type == ContactGroupType.Collision) 
 						{
 
-							CollisionPointStructure cpStruct = this.collisionPoints.Find (item => 
-																item.ObjectA == partitions [i].ObjectList [j].IndexA &&
-							                                   	item.ObjectB == partitions [i].ObjectList [j].IndexB);
+							CollisionPointStructure cpStruct = collisionPoints.Find(item =>
+															   item.ObjectA == partitions[i].ObjectList[j].IndexA &&
+															   item.ObjectB == partitions[i].ObjectList[j].IndexB);
 							partitionedCollision.Add (cpStruct);
 
 						} else {
 
 							IConstraint smJoint = SimulationJoints.Find(item =>
-																				  item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
-																			 item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
+																     item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
+																	 item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
 							partJoint.Add (smJoint);
 
 						}
@@ -454,10 +462,10 @@ namespace MonoPhysicsEngine
 				for (int i = 0; i<  collisionPartitionedPoints.Count;i++)
 				{
 					List<JacobianContact> contactConstraints = GetJacobianConstraint (
-						                                           this.collisionPartitionedPoints [i],
-						                                           this.partitionedJoint [i],
-						                                           this.SimulationObjects,
-						                                           this.SimulationEngineParameters);
+						                                           collisionPartitionedPoints [i],
+						                                           partitionedJoint [i],
+						                                           SimulationObjects,
+						                                           SimulationEngineParameters);
 
 					JacobianContact[] contactArray = contactConstraints.ToArray ();
 
@@ -470,7 +478,7 @@ namespace MonoPhysicsEngine
 
 						double[] X = solver.Solve (linearProblemProperties);
 
-						solverError += solver.GetMSE();
+						solverError += solver.GetDifferentialMSE();
 
 						//Update Objects velocity
 						updateVelocity(
@@ -485,7 +493,6 @@ namespace MonoPhysicsEngine
 
 			#region Position and Velocity integration
 
-			//Update Objects position
 			integrateObjectsPosition (SimulationObjects);
 
 			#endregion
@@ -503,21 +510,22 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private void collisionDetection()
 		{
-			this.collisionPoints = new List<CollisionPointStructure> ();
+			collisionPoints = new List<CollisionPointStructure> ();
 
 			//Creo l'array contenente la geometria degli oggetti
-			this.objectsGeometry = Array.ConvertAll (this.SimulationObjects, 
+			objectsGeometry = Array.ConvertAll (SimulationObjects, 
 				item => (item.ExcludeFromCollisionDetection) ? null : item.ObjectGeometry);
 
-			Stopwatch stopwatch = new Stopwatch();
+
+			var stopwatch = new Stopwatch();
 
 			stopwatch.Reset ();
 			stopwatch.Start ();
 
 			//Eseguo il motore che gestisce le collisioni
-			this.collisionPoints = this.collisionEngine.RunTestCollision (
-				this.objectsGeometry,
-				this.SimulationEngineParameters.CollisionDistance);
+			collisionPoints = collisionEngine.RunTestCollision (
+				objectsGeometry,
+				SimulationEngineParameters.CollisionDistance);
 			
 			stopwatch.Stop ();
 
@@ -534,7 +542,7 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
-			List<JacobianContact> constraint = new List<JacobianContact>();
+			var constraint = new List<JacobianContact>();
 
 			#region Collision Contact
 
@@ -593,7 +601,7 @@ namespace MonoPhysicsEngine
 
 				Parallel.For (0, 
 					contact.Length, 
-					new ParallelOptions { MaxDegreeOfParallelism = this.SimulationEngineParameters.MaxThreadNumber }, 
+					new ParallelOptions { MaxDegreeOfParallelism = SimulationEngineParameters.MaxThreadNumber }, 
 					i => {
 
 						JacobianContact contactA = contact [i];
@@ -673,35 +681,35 @@ namespace MonoPhysicsEngine
 			if (contactA.ObjectA == contactB.ObjectA) {
 
 				linearA = contactA.LinearComponentA.Dot (
-					contactB.LinearComponentA * this.SimulationObjects [contactA.ObjectA].InverseMass);
+					contactB.LinearComponentA * SimulationObjects [contactA.ObjectA].InverseMass);
 				
 				angularA = contactA.AngularComponentA.Dot (
-					this.SimulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentA);
+					SimulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentA);
 
 			} else if (contactB.ObjectB == contactA.ObjectA) {
 
 				linearA = contactA.LinearComponentA.Dot (
-					contactB.LinearComponentB * this.SimulationObjects [contactA.ObjectA].InverseMass);
+					contactB.LinearComponentB * SimulationObjects [contactA.ObjectA].InverseMass);
 				
 				angularA = contactA.AngularComponentA.Dot (
-					this.SimulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentB);
+					SimulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentB);
 			}
 
 			if (contactB.ObjectA == contactA.ObjectB) {
 				
 				linearB = contactA.LinearComponentB.Dot (
-					contactB.LinearComponentA * this.SimulationObjects [contactA.ObjectB].InverseMass);
+					contactB.LinearComponentA * SimulationObjects [contactA.ObjectB].InverseMass);
 				
 				angularB = contactA.AngularComponentB.Dot(
-					this.SimulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentA);
+					SimulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentA);
 				
 			} else if (contactB.ObjectB == contactA.ObjectB) {
 				
 				linearB = contactA.LinearComponentB.Dot (
-					contactB.LinearComponentB * this.SimulationObjects [contactA.ObjectB].InverseMass);
+					contactB.LinearComponentB * SimulationObjects [contactA.ObjectB].InverseMass);
 				
 				angularB = contactA.AngularComponentB.Dot (
-					this.SimulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentB);
+					SimulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentB);
 			}
 
 			return (linearA + angularA) + (linearB + angularB);
@@ -722,18 +730,18 @@ namespace MonoPhysicsEngine
 			int index = 0;
 			foreach (JacobianContact ct in contact) 
 			{
-				this.updateObjectVelocity (
+				updateObjectVelocity(
 					simulationObj,
-					ct.LinearComponentA, 
+					ct.LinearComponentA,
 					ct.AngularComponentA,
-					X [index],
+					X[index],
 					ct.ObjectA);
-			
-				this.updateObjectVelocity (
+
+				updateObjectVelocity(
 					simulationObj,
-					ct.LinearComponentB, 
+					ct.LinearComponentB,
 					ct.AngularComponentB,
-					X [index],
+					X[index],
 					ct.ObjectB);
 				
 				index++;
@@ -756,7 +764,7 @@ namespace MonoPhysicsEngine
 			double X,
 			int objectIndex)
 		{
-			if (this.SimulationObjects [objectIndex].ObjectType != ObjectType.StaticRigidBody) 
+			if (SimulationObjects [objectIndex].ObjectType != ObjectType.StaticRigidBody) 
 			{
 				Vector3 linearImpulse = X * linearComponent;
 				Vector3 angularImpuse = X * angularComponent;
@@ -782,7 +790,6 @@ namespace MonoPhysicsEngine
 			int index = 0;
 			foreach (SimulationObject simObj in simulationObj) 
 			{
-				
 				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 				{
 					#region Linear Velocity
@@ -869,7 +876,7 @@ namespace MonoPhysicsEngine
 						}
 
 						//TODO refactoring
-						AABB box = new AABB (
+						var box = new AABB (
 							simObj.ObjectGeometry.VertexPosition.Min (point => point.x),
 							simObj.ObjectGeometry.VertexPosition.Max (point => point.x),
 							simObj.ObjectGeometry.VertexPosition.Min (point => point.y),
@@ -884,7 +891,7 @@ namespace MonoPhysicsEngine
 					#endregion
 
 				}
-				this.SimulationObjects [index] = simObj;
+				SimulationObjects [index] = simObj;
 				index++;
 			}
 		}

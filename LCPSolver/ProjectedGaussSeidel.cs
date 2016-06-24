@@ -99,10 +99,10 @@ namespace LCPSolver
         }
 
 		/// <summary>
-		/// Gets the medium square error.
+		/// Gets the difference between second to last/last vector solution.
 		/// </summary>
 		/// <returns>The mse.</returns>
-		public double GetMSE()
+		public double GetDifferentialMSE()
 		{
 			return MSE;
 		}
