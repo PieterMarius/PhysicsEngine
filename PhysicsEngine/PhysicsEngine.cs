@@ -104,8 +104,6 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-
-
 		public void SetSimulationParameters(SimulationParameters simulationParameters)
 		{
 			SimulationEngineParameters = simulationParameters;
@@ -150,9 +148,9 @@ namespace MonoPhysicsEngine
 					var constraintIndex = SimulationJoints.Select((x,i) => x.GetObjectIndexA() == objectIndex || 
 					                                              x.GetObjectIndexB() == objectIndex ? i : -1).Where(i => i != -1).ToArray();
 
-					foreach (int i in constraintIndex)
+					for (int i = 0; i < constraintIndex.Length; i++)
 					{
-						SimulationJoints.RemoveAt(i);
+						SimulationJoints.RemoveAt(constraintIndex[i] - i);
 					}
 				}
 

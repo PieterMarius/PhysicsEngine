@@ -109,8 +109,16 @@ namespace SimulationObjectDefinition
 		/// <value>The rotation matrix.</value>
 		public Matrix3x3 RotationMatrix{ get; private set; }
 
+		/// <summary>
+		/// Gets the force value.
+		/// </summary>
+		/// <value>The force value.</value>
 		public Vector3 ForceValue { get; private set;}
 
+		/// <summary>
+		/// Gets the torque value.
+		/// </summary>
+		/// <value>The torque value.</value>
 		public Vector3 TorqueValue { get; private set;}
 
 		#endregion
@@ -129,48 +137,48 @@ namespace SimulationObjectDefinition
 
 		public void SetMass(double mass)
 		{
-			this.Mass = mass;
-			this.InverseMass = 1.0 / this.Mass;
+			Mass = mass;
+			InverseMass = 1.0 / Mass;
 		}
 
 		public void SetRestitutionCoeff(double restitutionCoeff)
 		{
-			this.RestitutionCoeff = restitutionCoeff;
+			RestitutionCoeff = restitutionCoeff;
 		}
 
 		public void SetStaticFrictionCoeff(double staticFrictionCoeff)
 		{
-			this.StaticFrictionCoeff = staticFrictionCoeff;
+			StaticFrictionCoeff = staticFrictionCoeff;
 		}
 
 		public void SetDynamicFrictionCoeff(double dynamicFrictionCoeff)
 		{
-			this.DynamicFrictionCoeff = dynamicFrictionCoeff;
+			DynamicFrictionCoeff = dynamicFrictionCoeff;
 		}
 
 		public void SetRelativePositions(Vector3[] inputRelativePositions)
 		{
-			Array.Copy (inputRelativePositions, this.RelativePositions, inputRelativePositions.Length);
+			Array.Copy (inputRelativePositions, RelativePositions, inputRelativePositions.Length);
 		}
 
 		public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
 		{
-			this.BaseInertiaTensor = Matrix3x3.Invert(inputIntertiaTensor);
+			BaseInertiaTensor = Matrix3x3.Invert(inputIntertiaTensor);
 		}
 
 		public void SetInertiaTensor(Matrix3x3 inertiaTensor)
 		{
-			this.InertiaTensor = inertiaTensor;
+			InertiaTensor = inertiaTensor;
 		}
 
 		public void SetPosition(Vector3 inputPosition)
 		{
-			this.Position = inputPosition;
+			Position = inputPosition;
 		}
 
 		public void SetStartPosition(Vector3 inputStartPosition)
 		{
-			this.StartPosition = new Vector3 (
+			StartPosition = new Vector3 (
 				inputStartPosition.x, 
 				inputStartPosition.y, 
 				inputStartPosition.z);
@@ -178,22 +186,22 @@ namespace SimulationObjectDefinition
 
 		public void SetLinearVelocity(Vector3 inputLinearVelocity)
 		{
-			this.LinearVelocity = inputLinearVelocity;
+			LinearVelocity = inputLinearVelocity;
 		}
 
 		public void SetAngularVelocity(Vector3 inputAngularVelocity)
 		{
-			this.AngularVelocity = inputAngularVelocity;
+			AngularVelocity = inputAngularVelocity;
 		}
 
 		public void SetRotationStatus(Quaternion inputRotationStatus)
 		{
-			this.RotationStatus = inputRotationStatus;
+			RotationStatus = inputRotationStatus;
 		}
 
 		public void SetRotationMatrix(Matrix3x3 inputRotationMatrix)
 		{
-			this.RotationMatrix = inputRotationMatrix;
+			RotationMatrix = inputRotationMatrix;
 		}
 
 		public void SetExcludeFromCollisionDetection(bool excludeFromCollisionDetection)
@@ -203,27 +211,27 @@ namespace SimulationObjectDefinition
 
 		public void SetRelativePosition()
 		{
-			if (this.ObjectGeometry.VertexInitialPosition.Length > 0) 
+			if (ObjectGeometry.VertexInitialPosition.Length > 0) 
 			{
-				this.RelativePositions = new Vector3[this.ObjectGeometry.VertexInitialPosition.Length];
-				for (int i = 0; i < this.ObjectGeometry.VertexInitialPosition.Length; i++) 
-					this.RelativePositions [i] = this.ObjectGeometry.VertexInitialPosition [i] - this.StartPosition;
+				RelativePositions = new Vector3[ObjectGeometry.VertexInitialPosition.Length];
+				for (int i = 0; i < ObjectGeometry.VertexInitialPosition.Length; i++) 
+					RelativePositions [i] = ObjectGeometry.VertexInitialPosition [i] - StartPosition;
 			}
 		}
 
 		public void SetObjectType(ObjectType type)
 		{
-			this.ObjectType = type;
+			ObjectType = type;
 		}
 
 		public void SetTorque(Vector3 torque)
 		{
-			this.TorqueValue = torque;
+			TorqueValue = torque;
 		}
 
 		public void SetForce(Vector3 force)
 		{
-			this.ForceValue = force;
+			ForceValue = force;
 		}
 
 		#endregion

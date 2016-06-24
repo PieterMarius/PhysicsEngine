@@ -10,7 +10,7 @@ using ObjLoader;
 using ObjLoader.Loader.Loaders;
 using Utility;
 
-namespace Loading
+namespace TestPhysics
 {
 	public class LoadObject
 	{

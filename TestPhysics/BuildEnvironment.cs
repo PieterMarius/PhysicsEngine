@@ -1,8 +1,13 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using CollisionEngine;
 using LCPSolver;
 using MonoPhysicsEngine;
+using ObjLoader.Loader.Loaders;
+using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
+using Utility;
 
 namespace TestPhysics
 {
@@ -30,6 +35,9 @@ namespace TestPhysics
 													collisionEngineParam,
 													solverParameters);
 
+			physicsEnvironment.AddObject(getSimulationObjects()[0]);
+			physicsEnvironment.RemoveObject(0);
+
 			return physicsEnvironment;
 		}
 
@@ -39,120 +47,115 @@ namespace TestPhysics
 
 		private SimulationObject[] getSimulationObjects()
 		{
-			SimulationObject[] objects = new SimulationObject[5];
+			SimulationObject[] objects = new SimulationObject[1];
 
-			//objects[i] = new SimulationObject();
+			objects[0] = new SimulationObject();
+			objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
+			objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+			objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+			objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0,0.0,0.0), 0.0));
+			objects[0].SetObjectType(ObjectType.StaticRigidBody);
+			objects[0].SetMass(1000.0);
+			objects[0].SetRestitutionCoeff(0.1);
+			objects[0].SetDynamicFrictionCoeff(1.0);
+			objects[0].SetStaticFrictionCoeff(1.0);
+			objects[0].SetExcludeFromCollisionDetection(false);
+			objects[0].ObjectGeometry = GetObjectGeometry("cube.obj", 25);
 
-			////Position
-			//objects[i].SetPosition(new Vector3(
-			//	Convert.ToDouble(xmlList[i][this.positionAttribute].Attributes["x"].Value),
-			//	Convert.ToDouble(xmlList[i][this.positionAttribute].Attributes["y"].Value),
-			//	Convert.ToDouble(xmlList[i][this.positionAttribute].Attributes["z"].Value)));
+			var inertiaTensor = new InertiaTensor(
+				objects[0].ObjectGeometry.VertexInitialPosition,
+				objects[0].ObjectGeometry.Triangle,
+				objects[0].Mass);
 
-			////Linear Velocity
-			//objects[i].SetLinearVelocity(new Vector3(
-			//	Convert.ToDouble(xmlList[i][this.linearVelAttribute].Attributes["x"].Value),
-			//	Convert.ToDouble(xmlList[i][this.linearVelAttribute].Attributes["y"].Value),
-			//	Convert.ToDouble(xmlList[i][this.linearVelAttribute].Attributes["z"].Value)));
+			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
+			for (int j = 0; j < objects[0].ObjectGeometry.VertexInitialPosition.Length; j++)
+			{
+				objects[0].ObjectGeometry.SetVertexInitialPosition(
+					objects[0].ObjectGeometry.VertexInitialPosition[j] - inertiaTensor.GetMassCenter(),
+					j);
+			}
 
-			////Angular Velocity
-			//objects[i].SetAngularVelocity(new Vector3(
-			//	Convert.ToDouble(xmlList[i][this.angularVelAttribute].Attributes["x"].Value),
-			//	Convert.ToDouble(xmlList[i][this.angularVelAttribute].Attributes["y"].Value),
-			//	Convert.ToDouble(xmlList[i][this.angularVelAttribute].Attributes["z"].Value)));
+			var inertiaTensor1 = new InertiaTensor(
+				objects[0].ObjectGeometry.VertexInitialPosition,
+				objects[0].ObjectGeometry.Triangle,
+				objects[0].Mass);
 
-			////Rotation Status
-			//Vector3 versor = new Vector3(
-			//	Convert.ToDouble(xmlList[i][this.rotationStatusAttribute].Attributes["x"].Value),
-			//	Convert.ToDouble(xmlList[i][this.rotationStatusAttribute].Attributes["y"].Value),
-			//	Convert.ToDouble(xmlList[i][this.rotationStatusAttribute].Attributes["z"].Value));
+			objects[0].SetStartPosition(inertiaTensor1.GetMassCenter());
+			objects[0].SetBaseInertiaTensor(inertiaTensor1.GetInertiaTensor());
+			objects[0].SetRelativePosition();
+			objects[0].SetRotationMatrix(Quaternion.ConvertToMatrix(Quaternion.Normalize(objects[0].RotationStatus)));
+			objects[0].SetInertiaTensor((objects[0].RotationMatrix * objects[0].BaseInertiaTensor) *
+				Matrix3x3.Transpose(objects[0].RotationMatrix));
 
-			//double angle = Convert.ToDouble(xmlList[i][this.rotationStatusAttribute].Attributes["angle"].Value);
+			for (int j = 0; j < objects[0].ObjectGeometry.VertexPosition.Length; j++)
+			{
+				Vector3 relPositionRotate = objects[0].RotationMatrix * objects[0].RelativePositions[j];
+				objects[0].ObjectGeometry.SetVertexPosition(objects[0].Position + relPositionRotate, j);
+			}
 
-			//objects[i].SetRotationStatus(new Quaternion(versor, angle));
+			var box = new AABB(objects[0].ObjectGeometry.VertexPosition.Min(point => point.x),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.x),
+				objects[0].ObjectGeometry.VertexPosition.Min(point => point.y),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.y),
+				objects[0].ObjectGeometry.VertexPosition.Min(point => point.z),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.z),
+				false);
 
-			////Object type
-			//objects[i].SetObjectType((ObjectType)Convert.ToInt32(xmlList[i][this.objectType].InnerText));
-
-			////Mass
-			//objects[i].SetMass(Convert.ToDouble(xmlList[i][this.massAttribute].InnerText));
-
-			////Restitution Coefficient
-			//objects[i].SetRestitutionCoeff(Convert.ToDouble(xmlList[i][this.restitutionCoeffAttribute].InnerText));
-
-			////Dynamic friction
-			//objects[i].SetDynamicFrictionCoeff(Convert.ToDouble(xmlList[i][this.dynamicFrictionAttribute].InnerText));
-
-			////Static friction
-			//objects[i].SetStaticFrictionCoeff(Convert.ToDouble(xmlList[i][this.staticFrictionAttribute].InnerText));
-
-			////Collision detection
-			//objects[i].SetExcludeFromCollisionDetection(Convert.ToBoolean(xmlList[i][this.excludeFromCollisionDetection].InnerText));
-
-			////Scale
-			//float scale = Convert.ToSingle(xmlList[i][this.scaleAttribute].InnerText);
-
-			////Object geometry file name
-			//String geometryFileName = xmlList[i][this.objectGeometryAttribute].InnerText;
-
-			//objects[i].ObjectGeometry = this.GetObjectGeometry(
-			//	geometryFileName,
-			//	scale);
-
-			////Inertia Tensor and Geometry
-
-			//InertiaTensor inertiaTensor = new InertiaTensor(
-			//	objects[i].ObjectGeometry.VertexInitialPosition,
-			//	objects[i].ObjectGeometry.Triangle,
-			//	objects[i].Mass);
-
-			////Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-			//for (int j = 0; j < objects[i].ObjectGeometry.VertexInitialPosition.Length; j++)
-			//{
-			//	objects[i].ObjectGeometry.SetVertexInitialPosition(
-			//		objects[i].ObjectGeometry.VertexInitialPosition[j] - inertiaTensor.GetMassCenter(),
-			//		j);
-			//}
-
-			//InertiaTensor inertiaTensor1 = new InertiaTensor(
-			//	objects[i].ObjectGeometry.VertexInitialPosition,
-			//	objects[i].ObjectGeometry.Triangle,
-			//	objects[i].Mass);
-
-			//objects[i].SetStartPosition(inertiaTensor1.GetMassCenter());
-			//objects[i].SetBaseInertiaTensor(inertiaTensor1.GetInertiaTensor());
-
-			//objects[i].SetRelativePosition();
-
-			//objects[i].SetRotationMatrix(
-			//	Quaternion.ConvertToMatrix(
-			//		Quaternion.Normalize(objects[i].RotationStatus)));
-
-			//objects[i].SetInertiaTensor(
-			//	(objects[i].RotationMatrix * objects[i].BaseInertiaTensor) *
-			//	Matrix3x3.Transpose(objects[i].RotationMatrix));
-
-			//for (int j = 0; j < objects[i].ObjectGeometry.VertexPosition.Length; j++)
-			//{
-			//	Vector3 relPositionRotate = objects[i].RotationMatrix * objects[i].RelativePositions[j];
-			//	objects[i].ObjectGeometry.SetVertexPosition(objects[i].Position + relPositionRotate, j);
-			//}
-
-			//AABB box = new AABB(objects[i].ObjectGeometry.VertexPosition.Min(point => point.x),
-			//	objects[i].ObjectGeometry.VertexPosition.Max(point => point.x),
-			//	objects[i].ObjectGeometry.VertexPosition.Min(point => point.y),
-			//	objects[i].ObjectGeometry.VertexPosition.Max(point => point.y),
-			//	objects[i].ObjectGeometry.VertexPosition.Min(point => point.z),
-			//	objects[i].ObjectGeometry.VertexPosition.Max(point => point.z),
-			//	false);
-
-			//objects[i].ObjectGeometry.SetAABB(box);
+			objects[0].ObjectGeometry.SetAABB(box);
 
 			return objects;
 		}
 
 		private void getSimulationConstraints()
 		{
+		}
+
+		private ObjectGeometry GetObjectGeometry(
+			String fileName,
+			float scale)
+		{
+			LoadResult objectGeometry = this.LoadObjSolid(fileName, scale);
+
+			Vector3[] vertexStartPoint = new Vector3[objectGeometry.Vertices.Count];
+
+			for (int i = 0; i < objectGeometry.Vertices.Count; i++)
+			{
+				vertexStartPoint[i] = new Vector3(
+					objectGeometry.Vertices[i].X,
+					objectGeometry.Vertices[i].Y,
+					objectGeometry.Vertices[i].Z);
+			}
+
+			int[][] triangleIndex = new int[objectGeometry.Groups[0].Faces.Count][];
+
+			for (int i = 0; i < objectGeometry.Groups[0].Faces.Count; i++)
+			{
+				triangleIndex[i] = new int[3];
+				triangleIndex[i][0] = objectGeometry.Groups[0].Faces[i][0].VertexIndex - 1;
+				triangleIndex[i][1] = objectGeometry.Groups[0].Faces[i][1].VertexIndex - 1;
+				triangleIndex[i][2] = objectGeometry.Groups[0].Faces[i][2].VertexIndex - 1;
+			}
+
+			return new ObjectGeometry(
+				vertexStartPoint,
+				vertexStartPoint,
+				triangleIndex);
+		}
+
+		private LoadResult LoadObjSolid(
+			String fileName,
+			float scale)
+		{
+			var objLoaderFactory = new ObjLoaderFactory();
+			var objLoader = objLoaderFactory.Create();
+			var fileStream = new FileStream(fileName, FileMode.OpenOrCreate);
+			LoadResult solid = objLoader.Load(fileStream);
+			fileStream.Close();
+
+			OpenGLUtilities.UnitizeObject(ref solid);
+			OpenGLUtilities.ScaleObject(ref solid, scale);
+
+			return solid;
 		}
 
 		#endregion

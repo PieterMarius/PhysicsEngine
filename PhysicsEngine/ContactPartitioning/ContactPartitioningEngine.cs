@@ -18,9 +18,9 @@ namespace MonoPhysicsEngine
 			if (collisionPoints.Count > 0 ||
 				simulationJoint.Count > 0) 
 			{
-				List<SpatialPartition> partitions = new List<SpatialPartition> ();
+				var partitions = new List<SpatialPartition> ();
 
-				List<ContactIndex> contactIndex = new List<ContactIndex>();
+				var contactIndex = new List<ContactIndex>();
 
 				// Add contacts
 				for (int i = 0; i < collisionPoints.Count; i++) 
@@ -41,7 +41,7 @@ namespace MonoPhysicsEngine
 				}
 
 				while (contactIndex.Count != 0) {
-					List<ContactIndex> partition = new List<ContactIndex> ();
+					var partition = new List<ContactIndex> ();
 
 					partition.Add (contactIndex [0]);
 					recursiveSearch (
@@ -52,7 +52,7 @@ namespace MonoPhysicsEngine
 
 					for (int i = 0; i < partition.Count; i++) 
 					{
-						List<int> index = new List<int> ();
+						var index = new List<int> ();
 						for (int j = 0; j < contactIndex.Count; j++) 
 						{
 							if (contactIndex [j].IndexA == partition [i].IndexA &&

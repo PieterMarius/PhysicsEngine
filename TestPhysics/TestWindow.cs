@@ -16,7 +16,6 @@ using SimulationObjectDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
-using Loading;
 
 namespace TestPhysics
 {
@@ -42,13 +41,9 @@ namespace TestPhysics
 		SimulationParameters simulationParameters;
 		PhysicsEngine physicsEngine;
 
-		ICollisionEngine collisionEngine;
-
 		bool pause = false;
 
 		int redTexture;
-
-		//ObjectGeometry[] objectsGeometry;
 
 		#region Keyboard and mouse variables
 
@@ -66,55 +61,54 @@ namespace TestPhysics
 			try
 			{
 
-			//LoadObject loadObject = new LoadObject ("startJoint.xml");
-			//LoadObject loadObject = new LoadObject ("configJoint.xml");
-			//LoadObject loadObject = new LoadObject ("startConfig.xml");
-			LoadObject loadObject = new LoadObject ("carConfig.xml");
+				//var env = new BuildEnvironment();
+				//env.GetPhysicsEnvironment();
 
-			simulationObjects = loadObject.LoadSimulationObjects ();
-			simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
+				//LoadObject loadObject = new LoadObject ("startJoint.xml");
+				//LoadObject loadObject = new LoadObject ("configJoint.xml");
+				//LoadObject loadObject = new LoadObject ("startConfig.xml");
+				LoadObject loadObject = new LoadObject ("carConfig.xml");
 
-			displayList = loadObject.GetOpenGLObjectList ();
+				simulationObjects = loadObject.LoadSimulationObjects ();
+				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
 
-			//Carico le texture
-			textureID = loadObject.LoadTexture ();
-			redTexture = OpenGLUtilities.LoadTexture ("red.bmp");
+				displayList = loadObject.GetOpenGLObjectList ();
+
+				//Carico le texture
+				textureID = loadObject.LoadTexture ();
+				redTexture = OpenGLUtilities.LoadTexture ("red.bmp");
 
 
-			//Set Collision Detection
-			this.collisionEngineParameters = new CollisionEngineParameters();
-			this.collisionEngine = new CollisionDetectionEngine(
-				this.collisionEngineParameters);
+				//Set Collision Detection
+				collisionEngineParameters = new CollisionEngineParameters();
 
-			//Set Solver
-			this.solverParameters = new SolverParameters();
-			
-			//this.lcpSolver = new LCPSolver.NonLinearConjugateGradient (this.solverParameters);
+				//Set Solver
+				solverParameters = new SolverParameters();
+				
+				//Set Physics engine
+				simulationParameters = new SimulationParameters();
+				simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
+				
+				physicsEngine = new PhysicsEngine(
+					simulationParameters,
+					collisionEngineParameters,
+					solverParameters);
 
-			//Set Physics engine
-			this.simulationParameters = new SimulationParameters();
+				//physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
 
-			this.simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
-			IContactPartitioningEngine contactPartitionEngine = new ContactPartitioningEngine ();
+				for (int i = 0; i < simulationObjects.Count (); i++) 
+				{
+					physicsEngine.AddObject (simulationObjects [i]);
+				}
 
-			physicsEngine = new PhysicsEngine(
-				simulationParameters,
-				collisionEngineParameters,
-				solverParameters);
+				for (int i = 0; i < simulationJoints.Count (); i++) 
+				{
+					physicsEngine.AddJoint (simulationJoints [i]);
+				}
 
-			//physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
+				physicsEngine.RemoveObject(0);
 
-			for (int i = 0; i < this.simulationObjects.Count (); i++) 
-			{
-				this.physicsEngine.AddObject (this.simulationObjects [i]);
-			}
-
-			for (int i = 0; i < this.simulationJoints.Count (); i++) 
-			{
-				this.physicsEngine.AddJoint (this.simulationJoints [i]);
-			}
-
-			this.collPoint = new List<CollisionPointStructure> ();
+				collPoint = new List<CollisionPointStructure> ();
 
 			}
 			catch (Exception e) 
@@ -162,7 +156,7 @@ namespace TestPhysics
 			//displayVertex (1);
 			//displayVertex (2);
 
-			for (int i = 0; i < displayList.Length; i++) 
+			for (int i = 0; i < physicsEngine.SimulationObjects.Length; i++) 
 				SetOpenGLObjectMatrix (i);
 				
 			GL.Flush ();

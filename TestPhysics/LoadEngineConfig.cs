@@ -3,7 +3,7 @@ using System.Xml;
 using MonoPhysicsEngine;
 using PhysicsEngineMathUtility;
 
-namespace Loading
+namespace TestPhysics
 {
 	public class LoadEngineConfig
 	{

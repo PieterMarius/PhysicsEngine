@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoPhysicsEngine", "Physic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCPSolver", "LCPSolver\LCPSolver.csproj", "{38021940-DA65-406D-A9FF-7739B85913F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loading", "Loading\Loading.csproj", "{462F00A5-8891-4D82-A347-E886056EB4CD}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -43,10 +41,6 @@ Global
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Debug|x86.Build.0 = Debug|x86
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Release|x86.ActiveCfg = Release|x86
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Release|x86.Build.0 = Release|x86
-		{462F00A5-8891-4D82-A347-E886056EB4CD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{462F00A5-8891-4D82-A347-E886056EB4CD}.Debug|x86.Build.0 = Debug|Any CPU
-		{462F00A5-8891-4D82-A347-E886056EB4CD}.Release|x86.ActiveCfg = Release|Any CPU
-		{462F00A5-8891-4D82-A347-E886056EB4CD}.Release|x86.Build.0 = Release|Any CPU
 		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x86.ActiveCfg = Debug|x86
 		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x86.Build.0 = Debug|x86
 		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Release|x86.ActiveCfg = Release|x86
