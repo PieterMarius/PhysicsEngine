@@ -84,7 +84,7 @@ namespace MonoPhysicsEngine
 		{
 			SolverParam = solverParameters;
 
-			solver = new ProjectedGaussSeidel(solverParameters);
+			SetSolver(SolverType.ProjectedGaussSeidel);
 
 			CollisionEngineParam = collisionEngineParameters;
 
@@ -408,8 +408,8 @@ namespace MonoPhysicsEngine
 				                                    SimulationJoints,
 				                                    SimulationObjects);
 
-			if (partitions != null) {
-
+			if (partitions != null) 
+			{
 				collisionPartitionedPoints = new List<List<CollisionPointStructure>> ();
 				partitionedJoint = new List<List<IConstraint>> ();
 
@@ -428,7 +428,9 @@ namespace MonoPhysicsEngine
 															   item.ObjectB == partitions[i].ObjectList[j].IndexB);
 							partitionedCollision.Add (cpStruct);
 
-						} else {
+						} 
+						else 
+						{
 
 							IConstraint smJoint = SimulationJoints.Find(item =>
 																     item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&

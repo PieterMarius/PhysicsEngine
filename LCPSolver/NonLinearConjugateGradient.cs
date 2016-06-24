@@ -82,7 +82,7 @@ namespace LCPSolver
             return Xk;
         }
 
-		public double GetMSE()
+		public double GetDifferentialMSE()
 		{
 			return deltaErrorCheck;
 		}
