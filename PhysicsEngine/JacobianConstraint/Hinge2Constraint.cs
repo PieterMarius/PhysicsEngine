@@ -25,15 +25,15 @@ namespace MonoPhysicsEngine
 
 		double RestoreCoefficient;
 
-		double? AngularLimitMin1 = null;
-		double? AngularLimitMax1 = null;
-		double? AngularLimitMin2 = null;
-		double? AngularLimitMax2 = null;
+		double? AngularLimitMinHingeAxis;
+		double? AngularLimitMaxHingeAxis;
+		double? AngularLimitMinRotationAxis;
+		double? AngularLimitMaxRotationAxis;
 
-		double? SpeedHingeAxisLimit = null;
-		double? ForceHingeAxisLimit = null;
-		double? SpeedRotationAxisLimit = null;
-		double? ForceRotationAxisLimit = null;
+		double? SpeedHingeAxisLimit;
+		double? ForceHingeAxisLimit;
+		double? SpeedRotationAxisLimit;
+		double? ForceRotationAxisLimit;
 		Vector3 AnchorPoint;
 
 		#endregion
@@ -99,12 +99,10 @@ namespace MonoPhysicsEngine
 		/// Builds the Universal joint.
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> hinge2Constraints = new List<JacobianContact> ();
+			var hinge2Constraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -296,14 +294,14 @@ namespace MonoPhysicsEngine
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			AngularLimitMin1 = angularLimitMin;
-			AngularLimitMax1 = angularLimitMax;
+			AngularLimitMinHingeAxis = angularLimitMin;
+			AngularLimitMaxHingeAxis = angularLimitMax;
 		}
 
 		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
-			AngularLimitMin2 = angularLimitMin;
-			AngularLimitMax2 = angularLimitMax;
+			AngularLimitMinRotationAxis = angularLimitMin;
+			AngularLimitMaxRotationAxis = angularLimitMax;
 		}
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
@@ -321,7 +319,7 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion
@@ -355,7 +353,7 @@ namespace MonoPhysicsEngine
 			Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
 			Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
 
-			Vector3 quaternionVectorPart = new Vector3(
+			var quaternionVectorPart = new Vector3(
 				mult2.b,
 				mult2.c,
 				mult2.d);
@@ -382,9 +380,10 @@ namespace MonoPhysicsEngine
 		{
 			var angularConstraint = new List<JacobianContact>();
 
-			if (AngularLimitMin1.HasValue &&
-				AngularLimitMax1.HasValue)
+			if (AngularLimitMinHingeAxis.HasValue &&
+				AngularLimitMaxHingeAxis.HasValue)
 			{
+
 				double angle1 = getAngle1(
 					hingeAxis,
 					rotationAxis,
@@ -401,12 +400,13 @@ namespace MonoPhysicsEngine
 					simulationObjectA,
 					simulationObjectB,
 					hingeAxis,
-					AngularLimitMin1.Value,
-					AngularLimitMax1.Value));
+					AngularLimitMinHingeAxis.Value,
+					AngularLimitMaxHingeAxis.Value));
+
 			}
 
-			if (AngularLimitMin2.HasValue &&
-				AngularLimitMax2.HasValue)
+			if (AngularLimitMinRotationAxis.HasValue &&
+				AngularLimitMaxRotationAxis.HasValue)
 			{
 
 				double angle2 = getAngle2(
@@ -425,8 +425,8 @@ namespace MonoPhysicsEngine
 					simulationObjectA,
 					simulationObjectB,
 					rotationAxis,
-					AngularLimitMin2.Value,
-					AngularLimitMax2.Value));
+					AngularLimitMinRotationAxis.Value,
+					AngularLimitMaxRotationAxis.Value));
 
 			}
 

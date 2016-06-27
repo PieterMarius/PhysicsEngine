@@ -46,7 +46,7 @@ namespace LCPSolver
 			ErrorTolerance = 1E-30;
 			SOR = 1.0;
 			SORStep = 0.007;
-			MaxThreadNumber = 2;
+			MaxThreadNumber = 4;
 		}
 
 		public SolverParameters (

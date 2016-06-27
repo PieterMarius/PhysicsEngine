@@ -131,8 +131,8 @@ namespace MonoPhysicsEngine
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
 				IndexB,
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
+				new Vector3 (),
+				new Vector3 (),
 				new Vector3 (-1.0, 0.0, 0.0),
 				new Vector3 (1.0, 0.0, 0.0),
 				simulationObjectA,
@@ -149,8 +149,8 @@ namespace MonoPhysicsEngine
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
 				IndexB,
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
+				new Vector3 (),
+				new Vector3 (),
 				new Vector3 (0.0, -1.0, 0.0),
 				new Vector3 (0.0, 1.0, 0.0),
 				simulationObjectA,
@@ -167,8 +167,8 @@ namespace MonoPhysicsEngine
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
 				IndexB,
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
+				new Vector3 (),
+				new Vector3 (),
 				new Vector3 (0.0, 0.0, -1.0),
 				new Vector3 (0.0, 0.0, 1.0),
 				simulationObjectA,
@@ -222,7 +222,6 @@ namespace MonoPhysicsEngine
 			if (LinearLimitMin.HasValue &&
 				LinearLimitMax.HasValue)
 			{
-
 				sliderConstraints.Add (
 					JacobianCommon.GetLinearLimit(
 						IndexA,

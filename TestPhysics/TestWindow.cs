@@ -66,8 +66,8 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				LoadObject loadObject = new LoadObject ("startConfig.xml");
-				//LoadObject loadObject = new LoadObject ("carConfig.xml");
+				//LoadObject loadObject = new LoadObject ("startConfig.xml");
+				LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);

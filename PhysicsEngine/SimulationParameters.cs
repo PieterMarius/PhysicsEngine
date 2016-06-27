@@ -86,7 +86,7 @@ namespace MonoPhysicsEngine
 			this.AngularVelDisable = 0.0;
 			this.ShiftToStaticFrictionTolerance = 0.000001;
 			this.DiscreteCCD = false;
-			this.CollisionDistance = 0.0001;
+			this.CollisionDistance = 0.0005;
 			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			this.InertiaParameter = -0.00009;
 			this.MaxThreadNumber = 4;
