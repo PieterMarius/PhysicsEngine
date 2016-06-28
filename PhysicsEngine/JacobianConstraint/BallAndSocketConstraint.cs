@@ -64,13 +64,10 @@ namespace MonoPhysicsEngine
 		/// Builds the ball socket joint.
 		/// </summary>
 		/// <returns>The ball socket joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
-		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> ballSocketConstraints = new List<JacobianContact>();
+			var ballSocketConstraints = new List<JacobianContact>();
 
 			SimulationObject simulationObjectA = simulationObjs[IndexA];
 			SimulationObject simulationObjectB = simulationObjs[IndexB];

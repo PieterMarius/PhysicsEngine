@@ -1,6 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
-using LCPSolver;
+﻿using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
 
 namespace MonoPhysicsEngine
@@ -87,18 +85,18 @@ namespace MonoPhysicsEngine
 			double constraintLimit,
 			double startImpulseValue)
 		{
-			this.ObjectA = objectA;
-			this.ObjectB = objectB;
-			this.ContactReference = contactReference;
-			this.LinearComponentA = linearComponentA;
-			this.LinearComponentB = linearComponentB;
-			this.AngularComponentA = angularComponentA;
-			this.AngularComponentB = angularComponentB;
-			this.Type = type;
-			this.B = b;
-			this.CFM = cfm;
-			this.ConstraintLimit = constraintLimit;
-			this.StartImpulseValue = startImpulseValue;
+			ObjectA = objectA;
+			ObjectB = objectB;
+			ContactReference = contactReference;
+			LinearComponentA = linearComponentA;
+			LinearComponentB = linearComponentB;
+			AngularComponentA = angularComponentA;
+			AngularComponentB = angularComponentB;
+			Type = type;
+			B = b;
+			CFM = cfm;
+			ConstraintLimit = constraintLimit;
+			StartImpulseValue = startImpulseValue;
 		}
 
 		#endregion

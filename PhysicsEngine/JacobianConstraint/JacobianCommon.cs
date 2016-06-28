@@ -17,7 +17,7 @@ namespace MonoPhysicsEngine
 			Quaternion relativeOrientationError = relativeOrientation.Inverse () *
 			                                      currentRelativeOrientation;
 
-			Vector3 angularError = new Vector3 (
+			var angularError = new Vector3 (
 				relativeOrientationError.b, 
 				relativeOrientationError.c, 
 				relativeOrientationError.d);
@@ -64,14 +64,14 @@ namespace MonoPhysicsEngine
 			Quaternion relativeOrientation = relativeRotation.Inverse () *
 				currentRelativeOrientation;
 
-			Vector3 quaternionVectorPart = new Vector3 (
+			var quaternionVectorPart = new Vector3 (
 				relativeOrientation.b,
 				relativeOrientation.c,
 				relativeOrientation.d);
 
 			quaternionVectorPart = simulationObjectA.RotationMatrix * quaternionVectorPart;
 
-			return JacobianCommon.GetRotationAngle (
+			return GetRotationAngle (
 				quaternionVectorPart,
 				relativeOrientation.a,
 				rotationAxis);

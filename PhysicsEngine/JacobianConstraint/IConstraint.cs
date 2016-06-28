@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SimulationObjectDefinition;
+﻿using SimulationObjectDefinition;
 using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine

@@ -1,6 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+﻿using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
@@ -8,14 +6,14 @@ namespace MonoPhysicsEngine
 	{
 		#region Private properties
 
-		private Vector3 massCenter;
-		private Matrix3x3 inertiaTensor;
-		private double objMass;
+		Vector3 massCenter;
+		Matrix3x3 inertiaTensor;
+		readonly double objMass;
 
-		private Vector3[] vertexStartPosition;
-		private int[][] triangleVertexIndex;
+		readonly Vector3[] vertexStartPosition;
+		readonly int[][] triangleVertexIndex;
 
-		private static readonly double[] mult =
+		static readonly double[] mult =
 		{
 			1.0 / 6.0,
 			1.0 / 24.0,
@@ -29,7 +27,7 @@ namespace MonoPhysicsEngine
 			1.0 / 120.0
 		};
 
-		private static  readonly double[] intg = 
+		static  readonly double[] intg = 
 		{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
 
@@ -44,23 +42,23 @@ namespace MonoPhysicsEngine
 		{
 			this.vertexStartPosition = vertexStartPosition;
 			this.triangleVertexIndex = triangleVertexIndex;
-			this.objMass = mass;
+			objMass = mass;
 
-			this.massCenter = new Vector3 ();
-			this.inertiaTensor = new Matrix3x3 (); 
-			this.computeInertiaTensor ();
+			massCenter = new Vector3 ();
+			inertiaTensor = new Matrix3x3 (); 
+			computeInertiaTensor ();
 		}
 
 		#endregion
 
 		public Vector3 GetMassCenter()
 		{
-			return this.massCenter;
+			return massCenter;
 		}
 
 		public Matrix3x3 GetInertiaTensor()
 		{
-			return this.inertiaTensor;
+			return inertiaTensor;
 		}
 
 		#region Public Methods
@@ -94,25 +92,25 @@ namespace MonoPhysicsEngine
 		private void computeInertiaTensor()
 		{
 			
-			for (int i = 0; i < this.triangleVertexIndex.Length; i++) 
+			for (int i = 0; i < triangleVertexIndex.Length; i++) 
 			{
 				//Vertice 1 triangolo
 
-				double x0 = this.vertexStartPosition [triangleVertexIndex [i] [0]].x;
-				double y0 = this.vertexStartPosition [triangleVertexIndex [i] [0]].y;
-				double z0 = this.vertexStartPosition [triangleVertexIndex [i] [0]].z;
+				double x0 = vertexStartPosition [triangleVertexIndex [i] [0]].x;
+				double y0 = vertexStartPosition [triangleVertexIndex [i] [0]].y;
+				double z0 = vertexStartPosition [triangleVertexIndex [i] [0]].z;
 
 				//Vertice 2 triangolo
 
-				double x1 = this.vertexStartPosition [triangleVertexIndex [i] [1]].x;
-				double y1 = this.vertexStartPosition [triangleVertexIndex [i] [1]].y;
-				double z1 = this.vertexStartPosition [triangleVertexIndex [i] [1]].z;
+				double x1 = vertexStartPosition [triangleVertexIndex [i] [1]].x;
+				double y1 = vertexStartPosition [triangleVertexIndex [i] [1]].y;
+				double z1 = vertexStartPosition [triangleVertexIndex [i] [1]].z;
 
 				//Vertice 3 triangolo
 
-				double x2 = this.vertexStartPosition [triangleVertexIndex [i] [2]].x;
-				double y2 = this.vertexStartPosition [triangleVertexIndex [i] [2]].y;
-				double z2 = this.vertexStartPosition [triangleVertexIndex [i] [2]].z;
+				double x2 = vertexStartPosition [triangleVertexIndex [i] [2]].x;
+				double y2 = vertexStartPosition [triangleVertexIndex [i] [2]].y;
+				double z2 = vertexStartPosition [triangleVertexIndex [i] [2]].z;
 
 				//Bordi e prodotto vettoriale 
 
@@ -156,28 +154,28 @@ namespace MonoPhysicsEngine
 			double massCenterY = intg [2] / mass;
 			double massCenterZ = intg [3] / mass;
 
-			this.massCenter = new Vector3 (massCenterX, massCenterY, massCenterZ);
+			massCenter = new Vector3 (massCenterX, massCenterY, massCenterZ);
 			//matrice tensore d'inerzia sul centro di massa
 
-			double r1x = intg [5] + intg [6] - mass * (this.massCenter.y * this.massCenter.y + this.massCenter.z * this.massCenter.z);
-			double r2y = intg [4] + intg [6] - mass * (this.massCenter.z * this.massCenter.z + this.massCenter.x * this.massCenter.x);
-			double r3z = intg [4] + intg [5] - mass * (this.massCenter.x * this.massCenter.x + this.massCenter.y * this.massCenter.y);
-			double r1y = -(intg [7] - mass * this.massCenter.x * this.massCenter.y);
-			double r2z = -(intg [8] - mass * this.massCenter.y * this.massCenter.z);
-			double r1z = -(intg [9] - mass * this.massCenter.z * this.massCenter.x);
-			double r2x = -(intg [7] - mass * this.massCenter.x * this.massCenter.y);
-			double r3y = -(intg [8] - mass * this.massCenter.y * this.massCenter.z);
-			double r3x = -(intg [9] - mass * this.massCenter.z * this.massCenter.x);
+			double r1x = intg [5] + intg [6] - mass * (massCenter.y * massCenter.y + massCenter.z * massCenter.z);
+			double r2y = intg [4] + intg [6] - mass * (massCenter.z * massCenter.z + massCenter.x * massCenter.x);
+			double r3z = intg [4] + intg [5] - mass * (massCenter.x * massCenter.x + massCenter.y * massCenter.y);
+			double r1y = -(intg [7] - mass * massCenter.x * massCenter.y);
+			double r2z = -(intg [8] - mass * massCenter.y * massCenter.z);
+			double r1z = -(intg [9] - mass * massCenter.z * massCenter.x);
+			double r2x = -(intg [7] - mass * massCenter.x * massCenter.y);
+			double r3y = -(intg [8] - mass * massCenter.y * massCenter.z);
+			double r3x = -(intg [9] - mass * massCenter.z * massCenter.x);
 		
-			this.inertiaTensor = new Matrix3x3 (
+			inertiaTensor = new Matrix3x3 (
 				r1x, r1y, r1z,
 				r2x, r2y, r2z,
 				r3x, r3y, r3z);
 			
 			//L'oggetto ha massa totale 1, l'adatto alla massa richiesta
-			double bufferMass = this.objMass / mass;
+			double bufferMass = objMass / mass;
 
-			this.inertiaTensor = this.inertiaTensor * bufferMass;
+			inertiaTensor = inertiaTensor * bufferMass;
 			
 		}
 

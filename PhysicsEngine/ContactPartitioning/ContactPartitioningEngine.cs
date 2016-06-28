@@ -1,5 +1,4 @@
-﻿using System;
-using SimulationObjectDefinition;
+﻿using SimulationObjectDefinition;
 using System.Collections.Generic;
 using CollisionEngine;
 

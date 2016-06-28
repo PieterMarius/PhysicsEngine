@@ -22,15 +22,15 @@ namespace MonoPhysicsEngine
 		readonly Quaternion RelativeOrientation1;
 		readonly Quaternion RelativeOrientation2;
 
-		double? AngularLimitMin1 = null;
-		double? AngularLimitMax1 = null;
-		double? AngularLimitMin2 = null;
-		double? AngularLimitMax2 = null;
+		double? AngularLimitMin1;
+		double? AngularLimitMax1;
+		double? AngularLimitMin2;
+		double? AngularLimitMax2;
 
-		double? SpeedHingeAxisLimit = null;
-		double? ForceHingeAxisLimit = null;
-		double? SpeedRotationAxisLimit = null;
-		double? ForceRotationAxisLimit = null;
+		double? SpeedHingeAxisLimit;
+		double? ForceHingeAxisLimit;
+		double? SpeedRotationAxisLimit;
+		double? ForceRotationAxisLimit;
 		Vector3 AnchorPoint;
 		double RestoreCoefficient;
 
@@ -95,12 +95,10 @@ namespace MonoPhysicsEngine
 		/// Builds the Universal joint.
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> universalConstraints = new List<JacobianContact> ();
+			var universalConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -180,7 +178,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 3
 
-			constraintLimit = this.RestoreCoefficient * linearError.z;
+			constraintLimit = RestoreCoefficient * linearError.z;
 
 			universalConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -263,7 +261,7 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
 		}
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -295,16 +293,25 @@ namespace MonoPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		public void AddTorque(
+			SimulationObject[] objects, 
+			double torqueAxis1, 
+			double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			Vector3 hingeAxis = objects[IndexA].RotationMatrix * HingeAxis;
+			Vector3 rotationAxis = objects[IndexB].RotationMatrix * RotationAxis;
+
+			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
+
+			objects[IndexA].SetTorque(objects[IndexA].TorqueValue + torque);
+			objects[IndexB].SetTorque(objects[IndexB].TorqueValue - torque);
 		}
 
 		#region NotImplementedMethods
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion
@@ -397,7 +404,7 @@ namespace MonoPhysicsEngine
 			Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
 			Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
 
-			Vector3 quaternionVectorPart = new Vector3(
+			var quaternionVectorPart = new Vector3(
 				mult2.b,
 				mult2.c,
 				mult2.d);

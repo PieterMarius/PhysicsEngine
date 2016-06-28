@@ -21,10 +21,10 @@ namespace MonoPhysicsEngine
 		readonly Vector3 StartErrorAxis2;
 		readonly Quaternion RelativeOrientation;
 
-		double? LinearLimitMin = null;
-		double? LinearLimitMax = null;
-		double? SpeedValue = null;
-		double? ForceLimit = null;
+		double? LinearLimitMin;
+		double? LinearLimitMax;
+		double? SpeedValue;
+		double? ForceLimit;
 		Vector3 AnchorPoint;
 		double RestoreCoefficient;
 
@@ -76,13 +76,10 @@ namespace MonoPhysicsEngine
 		/// Builds the slider joint.
 		/// </summary>
 		/// <returns>The slider joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
-		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> sliderConstraints = new List<JacobianContact> ();
+			var sliderConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -93,7 +90,7 @@ namespace MonoPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 sliderAxis = simulationObjectA.RotationMatrix * this.SliderAxis;
+			Vector3 sliderAxis = simulationObjectA.RotationMatrix * SliderAxis;
 
 			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
@@ -297,7 +294,7 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
 		}
 
 		public void SetAxis1Motor(double speedValue, double forceLimit)
@@ -336,7 +333,7 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion

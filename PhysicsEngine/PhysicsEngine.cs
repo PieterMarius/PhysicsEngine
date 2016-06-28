@@ -422,7 +422,6 @@ namespace MonoPhysicsEngine
 					{
 						if (partitions [i].ObjectList [j].Type == ContactGroupType.Collision) 
 						{
-
 							CollisionPointStructure cpStruct = collisionPoints.Find(item =>
 															   item.ObjectA == partitions[i].ObjectList[j].IndexA &&
 															   item.ObjectB == partitions[i].ObjectList[j].IndexB);
@@ -431,7 +430,6 @@ namespace MonoPhysicsEngine
 						} 
 						else 
 						{
-
 							IConstraint smJoint = SimulationJoints.Find(item =>
 																     item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
 																	 item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
@@ -848,7 +846,7 @@ namespace MonoPhysicsEngine
 
 					double rotationAngle = angularVelocity * TimeStep;
 
-					Quaternion rotationQuaternion = new Quaternion (versor, rotationAngle); 
+					var rotationQuaternion = new Quaternion (versor, rotationAngle); 
 
 					simObj.SetRotationStatus (
 						(rotationQuaternion * simObj.RotationStatus).Normalize ());

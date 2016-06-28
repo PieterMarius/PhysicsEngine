@@ -1,5 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
+﻿using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
 {
@@ -79,22 +78,22 @@ namespace MonoPhysicsEngine
 
 		public SimulationParameters ()
 		{
-			this.TimeStep = 0.015;
-			this.CFM = 0.0001;
-			this.BaumStabilization = 6.6;
-			this.LinearVelDisable = 0.0;
-			this.AngularVelDisable = 0.0;
-			this.ShiftToStaticFrictionTolerance = 0.000001;
-			this.DiscreteCCD = false;
-			this.CollisionDistance = 0.0005;
-			this.ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			this.InertiaParameter = -0.00009;
-			this.MaxThreadNumber = 4;
+			TimeStep = 0.015;
+			CFM = 0.0001;
+			BaumStabilization = 6.6;
+			LinearVelDisable = 0.0;
+			AngularVelDisable = 0.0;
+			ShiftToStaticFrictionTolerance = 0.000001;
+			DiscreteCCD = false;
+			CollisionDistance = 0.0005;
+			ExternalForce = new Vector3(0.0, -9.81, 0.0);
+			InertiaParameter = -0.00009;
+			MaxThreadNumber = 4;
 		}
 
 		public SimulationParameters (
 			double timeStep,
-			double CFM,
+			double cfm,
 			double baumStabilization,
 			double linearVelDisable,
 			double angularVelDisable,
@@ -104,16 +103,16 @@ namespace MonoPhysicsEngine
 			Vector3 externalForce,
 			int maxThreadNumber)
 		{
-			this.TimeStep = timeStep;
-			this.CFM = CFM;
-			this.BaumStabilization = baumStabilization;
-			this.LinearVelDisable = linearVelDisable;
-			this.AngularVelDisable = angularVelDisable;
-			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
-			this.DiscreteCCD = discreteCCD;
-			this.CollisionDistance = collisionDistance;
-			this.ExternalForce = externalForce;
-			this.MaxThreadNumber = maxThreadNumber;
+			TimeStep = timeStep;
+			CFM = cfm;
+			BaumStabilization = baumStabilization;
+			LinearVelDisable = linearVelDisable;
+			AngularVelDisable = angularVelDisable;
+			ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
+			DiscreteCCD = discreteCCD;
+			CollisionDistance = collisionDistance;
+			ExternalForce = externalForce;
+			MaxThreadNumber = maxThreadNumber;
 		}
 			
 		#endregion
@@ -122,7 +121,7 @@ namespace MonoPhysicsEngine
 
 		public void SetTimeStep(double timeStep)
 		{
-			this.TimeStep = timeStep;
+			TimeStep = timeStep;
 		}
 
 		public void SetCFM(double CFM)
@@ -132,27 +131,27 @@ namespace MonoPhysicsEngine
 
 		public void SetBaumStabilization(double baumStabilization)
 		{
-			this.BaumStabilization = baumStabilization;
+			BaumStabilization = baumStabilization;
 		}
 
 		public void SetLinearVelDisable(double linearVelDisable)
 		{
-			this.LinearVelDisable = linearVelDisable;
+			LinearVelDisable = linearVelDisable;
 		}
 
 		public void SetAngularVelDisable(double angularVelDisable)
 		{
-			this.AngularVelDisable = angularVelDisable;
+			AngularVelDisable = angularVelDisable;
 		}
 
 		public void SetShiftToStaticFrictionTolerance(double shiftToStaticFrictionTolerance)
 		{
-			this.ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
+			ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
 		}
 
 		public void SetExternalForce(Vector3 externalForce)
 		{
-			this.ExternalForce = externalForce;
+			ExternalForce = externalForce;
 		}
 			
 		#endregion

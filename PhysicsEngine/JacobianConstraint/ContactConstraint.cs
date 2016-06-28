@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CollisionEngine;
 using SimulationObjectDefinition;
 using PhysicsEngineMathUtility;
@@ -15,7 +14,7 @@ namespace MonoPhysicsEngine
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
-			List<JacobianContact> contactConstraints = new List<JacobianContact> ();
+			var contactConstraints = new List<JacobianContact> ();
 
 			for (int i = 0; i < collisionPointsStruct.Count; i++) 
 			{

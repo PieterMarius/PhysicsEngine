@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace PhysicsEngineMathUtility
 {
@@ -8,8 +6,8 @@ namespace PhysicsEngineMathUtility
 	{
 		#region Private Static Methods
 
-		private static readonly Random random = new Random();
-		private static readonly object syncLock = new object();
+		static readonly Random random = new Random();
+		static readonly object syncLock = new object();
 
 		#endregion
 
@@ -288,7 +286,7 @@ namespace PhysicsEngineMathUtility
 				}
 				else  // region 0, interior
 				{
-					if (det != 0.0) {
+					if (Math.Abs(det) > 1E-100) {
 						double invDet = 1.0 / det;
 						t0 *= invDet;
 						t1 *= invDet;
@@ -434,7 +432,7 @@ namespace PhysicsEngineMathUtility
 		/// <param name="vertex">Vertex.</param>
 		public static Vector3 GetBarycentricPoint(Vector3[] vertex)
 		{
-			Vector3 t = new Vector3 ();
+			var t = new Vector3 ();
 			for (int i = 0; i < vertex.Length; i++) {
 				t = t + vertex [i];
 			}
@@ -616,7 +614,7 @@ namespace PhysicsEngineMathUtility
 			double a,
 			double b)
 		{
-			if (a == 0.0 || b == 0.0)
+			if (a.Equals(0.0) || b.Equals(0.0))
 				return true;
 
  			if (Math.Sign (a) == Math.Sign (b))
@@ -627,16 +625,18 @@ namespace PhysicsEngineMathUtility
 
 		public static Vector3 GetPerpendicularVector(Vector3 a)
 		{
-			if (a.x == 0 && a.y == 0 && a.z == 0.0) 
+			if (a.x.Equals(0.0) && 
+			    a.y.Equals(0.0) && 
+			    a.z.Equals(0.0)) 
 			{
 				throw new Exception ("Zero Vector");
 			}
 
-			if (a.x == 0)
+			if (a.x.Equals(0))
 				return new Vector3 (1.0, 0.0, 0.0);
-			if (a.y == 0)
+			if (a.y.Equals(0))
 				return new Vector3 (0.0, 1.0, 0.0);
-			if (a.z == 0)
+			if (a.z.Equals(0))
 				return new Vector3 (0.0, 0.0, 1.0);
 
 			return new Vector3 (1.0, 1.0, -1.0 * (a.x + a.y) / a.z);

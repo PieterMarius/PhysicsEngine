@@ -35,9 +35,9 @@ namespace PhysicsEngineMathUtility
 		{
 			if (mat.Length == 8) 
 			{
-				this.r1c1 = mat [0]; this.r1c2 = mat [1]; this.r1c3 = mat [2];
-				this.r2c1 = mat [3]; this.r2c2 = mat [4]; this.r2c3 = mat [5];
-				this.r3c1 = mat [6]; this.r3c2 = mat [7]; this.r3c3 = mat [8]; 
+				r1c1 = mat [0]; r1c2 = mat [1]; r1c3 = mat [2];
+				r2c1 = mat [3]; r2c2 = mat [4]; r2c3 = mat [5];
+				r3c1 = mat [6]; r3c2 = mat [7]; r3c3 = mat [8]; 
 			} 
 			else 
 			{
@@ -107,7 +107,7 @@ namespace PhysicsEngineMathUtility
 
 		public static Vector3 operator*(Matrix3x3 a, Vector3 v)
 		{
-			Vector3 result = new Vector3 (
+			var result = new Vector3 (
 				                 a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
 				                 a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
 				                 a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
@@ -116,7 +116,7 @@ namespace PhysicsEngineMathUtility
 
 		public static Vector3 operator*(Vector3 v, Matrix3x3 a)
 		{
-			Vector3 result = new Vector3 (
+			var result = new Vector3 (
 				a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
 				a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
 				a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
@@ -170,7 +170,7 @@ namespace PhysicsEngineMathUtility
 
 		public Matrix3x3 Transpose()
 		{
-			return Matrix3x3.Transpose (this);
+			return Transpose (this);
 		}
 
 		/// <summary>
@@ -188,7 +188,7 @@ namespace PhysicsEngineMathUtility
 				+(a.r1c1 * a.r2c2 * a.r3c3);
 			
 			// Evaluate using of small value
-			if (den != 0.0) {
+			if (Math.Abs(den) < 1E-100) {
 				den = 1.0 / den;
 
 				double r1c1 = (-(a.r2c3 * a.r3c2) + (a.r2c2 * a.r3c3)) * den;
@@ -219,9 +219,9 @@ namespace PhysicsEngineMathUtility
 		/// <param name="a">The alpha component.</param>
 		public static Matrix3x3 NormalizeRows(Matrix3x3 a)
 		{
-			Vector3 r1 = new Vector3 (a.r1c1, a.r1c2, a.r1c3);
-			Vector3 r2 = new Vector3 (a.r2c1, a.r2c2, a.r2c3);
-			Vector3 r3 = new Vector3 (a.r3c1, a.r3c2, a.r3c3);
+			var r1 = new Vector3 (a.r1c1, a.r1c2, a.r1c3);
+			var r2 = new Vector3 (a.r2c1, a.r2c2, a.r2c3);
+			var r3 = new Vector3 (a.r3c1, a.r3c2, a.r3c3);
 			r1 = Vector3.Normalize (r1);
 			r2 = Vector3.Normalize (r2);
 			r3 = Vector3.Normalize (r3);
@@ -236,8 +236,8 @@ namespace PhysicsEngineMathUtility
 		/// Gets the rotation matrix.
 		/// </summary>
 		/// <returns>The rotation matrix.</returns>
-		/// <param name="versor">Versor.</param>
-		/// <param name="angle" in radian>Angle.</param>
+		/// <param name="versor">versor.</param>
+		/// <param name="angle">angle.</param>
 		public static Matrix3x3 GetRotationMatrix(Vector3 versor, double angle)
 		{
 			Vector3 p = versor * versor;

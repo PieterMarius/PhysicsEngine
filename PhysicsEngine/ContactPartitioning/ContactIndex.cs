@@ -1,6 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
-
+﻿
 namespace MonoPhysicsEngine
 {
 	public struct ContactIndex
@@ -20,9 +18,9 @@ namespace MonoPhysicsEngine
 			int indexB,
 			ContactGroupType type)
 		{
-			this.IndexA = indexA;
-			this.IndexB = indexB;
-			this.Type = type;
+			IndexA = indexA;
+			IndexB = indexB;
+			Type = type;
 		}
 
 		#endregion

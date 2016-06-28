@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using SimulationObjectDefinition;
+﻿using System.Collections.Generic;
 
 namespace MonoPhysicsEngine
 {
@@ -17,7 +15,7 @@ namespace MonoPhysicsEngine
 		public SpatialPartition (
 			List<ContactIndex> objectList)
 		{
-			this.ObjectList = objectList;
+			ObjectList = objectList;
 		}
 
 		#endregion

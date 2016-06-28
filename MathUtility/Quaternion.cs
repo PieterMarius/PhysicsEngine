@@ -36,10 +36,10 @@ namespace PhysicsEngineMathUtility
 		{
 			if (vec.Length == 4) 
 			{
-				this.a = vec [0];
-				this.b = vec [1];
-				this.c = vec [2];
-				this.d = vec [3];
+				a = vec [0];
+				b = vec [1];
+				c = vec [2];
+				d = vec [3];
 			} 
 			else 
 			{
@@ -51,15 +51,15 @@ namespace PhysicsEngineMathUtility
 		/// Initializes a new instance of the <see cref="MathUtility.Quaternion"/> class.
 		/// </summary>
 		/// <param name="versor">Versor.</param>
-		/// <param name="angle in radian">Angle.</param>
+		/// <param name="angle">Angle.</param>
 		public Quaternion(Vector3 versor, double angle)
 		{
 			double coeff = Math.Sin (angle * 0.5);
 
-			this.a = Math.Cos (angle * 0.5);
-			this.b = versor.x * coeff;
-			this.c = versor.y * coeff;
-			this.d = versor.z * coeff;
+			a = Math.Cos (angle * 0.5);
+			b = versor.x * coeff;
+			c = versor.y * coeff;
+			d = versor.z * coeff;
 		}
 
 		#endregion
@@ -101,7 +101,8 @@ namespace PhysicsEngineMathUtility
 		/// Gets the vector.
 		/// </summary>
 		/// <returns>The vector.</returns>
-		/// <param name="q">Q.</param>
+		/// <param name="q1">Q1.</param>
+		/// <param name="q2">Q2.</param>
 		public static Vector3 GetVector(Quaternion q1, Quaternion q2)
 		{
 			double x = (q1.a * q2.b + q1.b * q2.a + q1.c * q2.d - q1.d * q2.c);
@@ -205,8 +206,8 @@ namespace PhysicsEngineMathUtility
 
 		public Quaternion Inverse()
 		{
-			double d = 1.0 / (this.a * this.a + this.b * this.b + this.c * this.c + this.d * this.d);
-			return new Quaternion (this.a * d, -this.b * d, -this.c * d, -this.d * d);
+			double den = 1.0 / (a * a + b * b + c * c + d * d);
+			return new Quaternion (a * den, -b * den, -c * den, -d * den);
 		}
 
 		public static Matrix3x3 ConvertToMatrix(Quaternion q)

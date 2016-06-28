@@ -17,16 +17,16 @@ namespace MonoPhysicsEngine
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 PistonAxis;
 
-		double? AngularLimitMin = null;
-		double? AngularLimitMax = null;
+		double? AngularLimitMin;
+		double? AngularLimitMax;
 
-		double? LinearLimitMin = null;
-		double? LinearLimitMax = null;
+		double? LinearLimitMin;
+		double? LinearLimitMax;
 
-		double? LinearSpeedValue = null;
-		double? LinearForceLimit = null;
-		double? AngularSpeedValue = null;
-		double? AngularForceLimit = null;
+		double? LinearSpeedValue;
+		double? LinearForceLimit;
+		double? AngularSpeedValue;
+		double? AngularForceLimit;
 
 		double RestoreCoefficient;
 		Vector3 AnchorPoint;
@@ -83,9 +83,6 @@ namespace MonoPhysicsEngine
 		/// Builds the piston joint.
 		/// </summary>
 		/// <returns>The piston joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
-		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
@@ -94,7 +91,7 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
 
-			this.AnchorPoint = (simulationObjectA.RotationMatrix *
+			AnchorPoint = (simulationObjectA.RotationMatrix *
 								(StartAnchorPoint -
 								simulationObjectA.StartPosition)) +
 								simulationObjectA.Position;
@@ -186,7 +183,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = this.RestoreCoefficient * Vector3.Dot (t2,linearError);
+			constraintLimit = RestoreCoefficient * Vector3.Dot (t2,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -265,7 +262,7 @@ namespace MonoPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return this.AnchorPoint;
+			return AnchorPoint;
 		}
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -286,6 +283,18 @@ namespace MonoPhysicsEngine
 			LinearForceLimit = forceLimit;
 		}
 
+		/// <summary>
+		/// Sets the rotation motor.
+		/// </summary>
+		/// <returns>The axis2 motor.</returns>
+		/// <param name="speedValue">Speed value.</param>
+		/// <param name="forceLimit">Force limit.</param>
+		public void SetAxis2Motor(double speedValue, double forceLimit)
+		{
+			AngularSpeedValue = speedValue;
+			AngularForceLimit = forceLimit;
+		}
+
 		public void SetRestoreCoefficient(double restoreCoefficient)
 		{
 			RestoreCoefficient = restoreCoefficient;
@@ -293,17 +302,17 @@ namespace MonoPhysicsEngine
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			Vector3 pistonAxis = objects[IndexA].RotationMatrix * PistonAxis;
+
+			Vector3 torque = PistonAxis * torqueAxis1;
+
+			objects[IndexA].SetTorque(objects[IndexA].TorqueValue + torque);
+			objects[IndexB].SetTorque(objects[IndexB].TorqueValue - torque);
 		}
 
 		#region NotImplementedMethod
 
 		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
-		{
-			throw new NotSupportedException();
-		}
-
-		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
@@ -359,8 +368,8 @@ namespace MonoPhysicsEngine
 				double angle = JacobianCommon.GetAngle(
 					simulationObjectA,
 					simulationObjectB,
-					this.RelativeOrientation,
-					this.PistonAxis);
+					RelativeOrientation,
+					PistonAxis);
 
 				angularConstraints.Add(
 					JacobianCommon.GetAngularLimit(
