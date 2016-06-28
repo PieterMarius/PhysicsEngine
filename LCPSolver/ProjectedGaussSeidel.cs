@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
 
 namespace LCPSolver
@@ -119,7 +115,7 @@ namespace LCPSolver
 
 			Parallel.For (0, 
 				input.Count, 
-				new ParallelOptions { MaxDegreeOfParallelism = this.SolverParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber }, 
 				i => {
 					sum [i] = kernel (input, X, i);
 				});

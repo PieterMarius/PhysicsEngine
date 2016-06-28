@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace CollisionEngine
 {
 	public class CollisionEngineParameters
@@ -37,7 +36,7 @@ namespace CollisionEngine
 		public int MaxThreadNumber { get; private set;}
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="CollisionEngine.CollisionEngineParameters"/> activate sweep and prune.
+		/// Gets a value indicating whether this CollisionEngineParameters activate sweep and prune.
 		/// </summary>
 		/// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
 		public bool ActivateSweepAndPrune { get; private set;}

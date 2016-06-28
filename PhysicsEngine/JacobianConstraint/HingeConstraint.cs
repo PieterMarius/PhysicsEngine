@@ -20,10 +20,10 @@ namespace MonoPhysicsEngine
 		readonly Vector3 StartErrorAxis2;
 		readonly Quaternion RelativeOrientation;
 
-		double? AngularLimitMin;
-		double? AngularLimitMax;
-		double? SpeedValue;
-		double? ForceLimit;
+		double? AngularLimitMin = null;
+		double? AngularLimitMax = null;
+		double? SpeedValue = null;
+		double? ForceLimit = null;
 
 		double RestoreCoefficient;
 		Vector3 AnchorPoint;
@@ -77,10 +77,13 @@ namespace MonoPhysicsEngine
 		/// Builds the hinge joint.
 		/// </summary>
 		/// <returns>The hinge joint.</returns>
+		/// <param name="indexA">Index a.</param>
+		/// <param name="indexB">Index b.</param>
+		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			var hingeConstraints = new List<JacobianContact> ();
+			List<JacobianContact> hingeConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -328,7 +331,7 @@ namespace MonoPhysicsEngine
 
 		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			Vector3 hingeAxis = objects[IndexA].RotationMatrix * HingeAxis;
+			Vector3 hingeAxis = objects[IndexA].RotationMatrix * this.HingeAxis;
 
 			Vector3 torque = hingeAxis * torqueAxis1;
 
@@ -350,12 +353,12 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		#endregion

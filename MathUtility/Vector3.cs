@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace PhysicsEngineMathUtility
 {
@@ -29,9 +28,9 @@ namespace PhysicsEngineMathUtility
 		{
 			if (vec.Length == 3) 
 			{
-				this.x = vec [0];
-				this.y = vec [1];
-				this.z = vec [2];
+				x = vec [0];
+				y = vec [1];
+				z = vec [2];
 			} 
 			else 
 			{
@@ -41,9 +40,9 @@ namespace PhysicsEngineMathUtility
 
 		public Vector3(Vector3 v)
 		{
-			this.x = v.x;
-			this.y = v.y;
-			this.z = v.z;
+			x = v.x;
+			y = v.y;
+			z = v.z;
 		}
 
 
@@ -105,7 +104,7 @@ namespace PhysicsEngineMathUtility
 		{
 			get
 			{
-				return new[] { this.x, this.y, this.z };
+				return new[] { x, y, z };
 			}
 		}
 
@@ -116,13 +115,13 @@ namespace PhysicsEngineMathUtility
 				switch (index)
 				{
 				case 0:
-					return this.x;
+					return x;
 				case 1:
-					return this.y;
+					return y;
 				case 2:
-					return this.z;
+					return z;
 				default:
-					throw new ArgumentException(COMPONENT_EXCEPTION, "index");
+					throw new ArgumentException(COMPONENT_EXCEPTION, nameof(index));
 				}
 			}
 		}
@@ -184,7 +183,7 @@ namespace PhysicsEngineMathUtility
 
 		public double Dot(Vector3 a)
 		{
-			return (this.x * a.x) + (this.y * a.y) + (this.z * a.z);
+			return (x * a.x) + (y * a.y) + (z * a.z);
 		}
 
 		public static double Length(Vector3 a)
@@ -194,7 +193,7 @@ namespace PhysicsEngineMathUtility
 
 		public double Length()
 		{
-			return Math.Sqrt (this.Dot (this));
+			return Math.Sqrt (Dot (this));
 		}
 
 		public static Vector3 ToZero()
@@ -220,12 +219,12 @@ namespace PhysicsEngineMathUtility
 
 		public Vector3 Normalize()
 		{
-			return Vector3.Normalize (this);
+			return Normalize (this);
 		}
 
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{
-			Vector3 p= new Vector3();
+			var p= new Vector3();
 			p = versor * versor;
 			double c = Math.Cos (angle);
 			double s = Math.Sin (angle);
@@ -247,7 +246,7 @@ namespace PhysicsEngineMathUtility
 
 		public Vector3 Cross(Vector3 a)
 		{
-			return Vector3.Cross (this, a);
+			return Cross (this, a);
 		}
 
 		public static Vector3 ProjectVectorOnPlane(Vector3 normal)
@@ -286,9 +285,9 @@ namespace PhysicsEngineMathUtility
 		public Matrix3x3 GetSkewSymmetricMatrix()
 		{
 			return new Matrix3x3 (
-				0.0, -this.z, this.y,
-				this.z, 0.0, -this.x,
-				-this.y, this.x, 0.0);
+				0.0, -z, y,
+				z, 0.0, -x,
+				-y, x, 0.0);
 		}
 
 
@@ -299,7 +298,7 @@ namespace PhysicsEngineMathUtility
 		{
 			if (obj is Vector3)
 			{
-				return this.CompareTo((Vector3)obj);
+				return CompareTo((Vector3)obj);
 			}
 
 			throw new ArgumentException ();
@@ -327,14 +326,14 @@ namespace PhysicsEngineMathUtility
 
 		public bool Equals (Vector3 other)
 		{
-			return this == (Vector3)other;
+			return this == other;
 		}
 
 		public override bool Equals(object obj)
 		{
 			if(obj is Vector3)
 			{
-				Vector3 otherVector = (Vector3)obj;
+				var otherVector = (Vector3)obj;
 
 				return otherVector.Equals(this);
 			}
@@ -348,9 +347,9 @@ namespace PhysicsEngineMathUtility
 		{
 			unchecked
 			{
-				var hashCode = this.x.GetHashCode();
-				hashCode = (hashCode * 397) ^ this.y.GetHashCode();
-				hashCode = (hashCode * 397) ^ this.z.GetHashCode();
+				var hashCode = x.GetHashCode();
+				hashCode = (hashCode * 397) ^ y.GetHashCode();
+				hashCode = (hashCode * 397) ^ z.GetHashCode();
 				return hashCode;
 			}
 		}

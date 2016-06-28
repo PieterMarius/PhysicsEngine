@@ -41,13 +41,13 @@ namespace CollisionEngine
 				objectA,
 				collisionPoint.collisionPointA,
 				collisionNormal,
-				this.ManifoldPlaneTolerance);
+				ManifoldPlaneTolerance);
 
 			List<Vector3> collisionB = getNearestPoint (
 				objectB,
 				collisionPoint.collisionPointB,
 				collisionNormal,
-				this.ManifoldPlaneTolerance);
+				ManifoldPlaneTolerance);
 
 			List<CollisionPoint> collisionPointsList = findCollisionPoints (
 				collisionA.ToArray (),
@@ -59,7 +59,6 @@ namespace CollisionEngine
 			collisionB.Clear ();
 
 			return collisionPointsList;
-
 		}
 
 		#endregion
@@ -72,7 +71,6 @@ namespace CollisionEngine
 		/// <returns>The nearest point.</returns>
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>
-		/// <param name="direction">Direction.</param>
 		/// <param name="tolerance">Tolerance.</param>
 		private List<Vector3> getNearestPoint(
 			ObjectGeometry shape,
@@ -94,15 +92,15 @@ namespace CollisionEngine
 		}
 
 		/// <summary>
-		/// Tests if point is on plane. 
-		/// Proietto i punti di ca sul piano formato dai punti di cb e verifico
-		/// che siano all'interno di esso.
+		/// Tests the point is on plane.
 		/// </summary>
+		/// <returns>The point is on plane.</returns>
 		/// <param name="ca">Ca.</param>
-		/// <param name="na">Na.</param>
 		/// <param name="cb">Cb.</param>
-		/// <param name="initp">Initp.</param>
-		private void testPointIsOnPlane(
+		/// <param name="initPoint">Init point.</param>
+		/// <param name="na">Na.</param>
+		/// <param name="result">Result.</param>
+		private void TestPointIsOnPlane(
 			Vector3[] ca,
 			Vector3[] cb,
 			CollisionPoint initPoint,
@@ -172,7 +170,7 @@ namespace CollisionEngine
 
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
-				CollisionPoint collisionP = this.testLineIntersection (
+				CollisionPoint collisionP = TestLineIntersection (
 					ca [0],
 					ca [1],
 					cb [0],
@@ -189,7 +187,7 @@ namespace CollisionEngine
 					ca,
 					vectorDistance);
 
-				testPointIsOnPlane (
+				TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -199,7 +197,7 @@ namespace CollisionEngine
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
 
-						CollisionPoint collisionP = this.testLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [0],
@@ -218,7 +216,7 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				testPointIsOnPlane (
+				TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -228,7 +226,7 @@ namespace CollisionEngine
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
 
-						CollisionPoint collisionP = this.testLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [0],
 							ca [1],
 							cb [i],
@@ -250,7 +248,7 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				this.testPointIsOnPlane (
+				TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
@@ -260,7 +258,7 @@ namespace CollisionEngine
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
 
-						CollisionPoint collisionP = this.testLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [j],
@@ -277,25 +275,25 @@ namespace CollisionEngine
 			if (result.Count < 1)
 				result.Add (cp);
 
-			result = this.pruneCollisionPoints (result);
+			result = PruneCollisionPoints (result);
 
 			return result;
 		}
 
 		//Pulisco il vettore da punti ridondanti
 		//al fine della simulazione non necessito più di 4 punti di collisione
-		private List<CollisionPoint> pruneCollisionPoints(
+		private List<CollisionPoint> PruneCollisionPoints(
 			List<CollisionPoint> cpList)
 		{
-			if (cpList.Count > this.ManifoldPointNumber) 
+			if (cpList.Count > ManifoldPointNumber) 
 			{
-				Vector3 center = new Vector3();
+				var center = new Vector3();
 				for (int i = 0; i < cpList.Count; i++)
 					center = center + cpList [i].collisionPointA;
 
 				center = center / Convert.ToDouble(cpList.Count);
 
-				while (cpList.Count > this.ManifoldPointNumber) 
+				while (cpList.Count > ManifoldPointNumber) 
 				{
 					int index = 0;
 					double min = Vector3.Length (cpList [0].collisionPointA - center);
@@ -314,7 +312,7 @@ namespace CollisionEngine
 			return cpList;
 		}
 
-		private CollisionPoint testLineIntersection(
+		private CollisionPoint TestLineIntersection(
 			Vector3 p1,
 			Vector3 p2,
 			Vector3 p3,

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
-using Utility;
-
 
 namespace CollisionEngine
 {
@@ -72,7 +69,7 @@ namespace CollisionEngine
 		/// <param name="obj1">Obj1.</param>
 		/// <param name="obj2">Obj2.</param>
 		/// <param name="direction">Direction.</param>
-		private Support getMinkowskiFarthestPoint(
+		private Support GetMinkowskiFarthestPoint(
 			ObjectGeometry obj1, 
 			ObjectGeometry obj2,
 			Vector3? direction)
@@ -89,7 +86,7 @@ namespace CollisionEngine
 			return sp;
 		}
 
-		private Vector3 getDirectionOnSimplex2(Simplex simplex)
+		private Vector3 GetDirectionOnSimplex2(Simplex simplex)
 		{
 			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
 			Vector3 simplexAO = simplex.Support [0].s * - 1.0;
@@ -102,7 +99,7 @@ namespace CollisionEngine
 			return simplexAO;
 		}
 
-		private Vector3? getDirectionOnSimplex3(ref Simplex simplex)
+		private Vector3? GetDirectionOnSimplex3(ref Simplex simplex)
 		{
 			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
 			Vector3 simplexAC = simplex.Support [2].s - simplex.Support [0].s; 
@@ -127,7 +124,7 @@ namespace CollisionEngine
 			return null;
 		}
 			
-		private bool evaluateOrigionOnSimplex4(Simplex simplex)
+		private bool EvaluateOrigionOnSimplex4(Simplex simplex)
 		{
 			Vector3[] vt = new Vector3[4];
 			vt[0] = new Vector3(simplex.Support[0].s);
@@ -291,7 +288,7 @@ namespace CollisionEngine
 			return mDistance;
 		}
 
-		private Simplex findAndTestSimplex4(
+		private Simplex FindAndTestSimplex4(
 			ObjectGeometry shape1,
 			ObjectGeometry shape2,
 			Simplex simplex,
@@ -299,18 +296,14 @@ namespace CollisionEngine
 			ref bool isIntersection)
 		{
 			//Aggiungo il quarto punto al tetraedro 
-			simplex.Support[3] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[3] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 
-			if (this.evaluateOrigionOnSimplex4 (simplex)) 
-			{
-				//L'origine è contenuta nel poliedro
-				isIntersection = true;
-			}
+			isIntersection |= EvaluateOrigionOnSimplex4(simplex);
 
 			return simplex;
 		}
 
-		private Vector3 getRandomDirection()
+		private Vector3 GetRandomDirection()
 		{
 			return Vector3.Normalize (new Vector3 (
 				GeometryUtilities.GetRandom (-1.0, 1.0), 
@@ -342,36 +335,36 @@ namespace CollisionEngine
 
 			var simplex = new Simplex ();
 
-			Vector3? direction = this.getRandomDirection ();
+			Vector3? direction = GetRandomDirection ();
 
 			//Primo punto del simplex
 
-			simplex.Support [0] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support [0] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 
 			//Secondo punto del simplex
 
 			direction = direction * -1.0;
 
-			simplex.Support[1] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[1] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 
 			//Terzo punto del simplex
 
-			direction = Vector3.Normalize (this.getDirectionOnSimplex2 (simplex));
+			direction = Vector3.Normalize (GetDirectionOnSimplex2 (simplex));
 
-			simplex.Support[2] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 
 			double mod = minDistance;
 
-			for (int i = 0; i < this.MaxIterations; i++) 
+			for (int i = 0; i < MaxIterations; i++) 
 			{
 				//Verifico la direzione e se aggiungere o meno il quarto punto
-				direction = this.getDirectionOnSimplex3 (ref simplex);
+				direction = GetDirectionOnSimplex3 (ref simplex);
 
 				if (direction.HasValue) 
 				{
-					direction = Vector3.Normalize (this.getDirectionOnSimplex2 (simplex));
+					direction = Vector3.Normalize (GetDirectionOnSimplex2 (simplex));
 
-					simplex.Support[2] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+					simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 
 					if (GeometryUtilities.TestCollinearity (
 						simplex.Support [0].s,
@@ -385,10 +378,10 @@ namespace CollisionEngine
 							simplex.Support [1].s,
 							simplex.Support [2].s)) 
 						{
-							direction = this.getRandomDirection ();
+							direction = GetRandomDirection ();
 
 							//Modifico il simplex
-							simplex.Support[2] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+							simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 						}
 
 						#endregion
@@ -409,7 +402,7 @@ namespace CollisionEngine
 
 				if (!direction.HasValue) 
 				{
-					direction = this.getRandomDirection ();
+					direction = GetRandomDirection ();
 				}
 
 				direction = -1.0 * direction;
@@ -425,7 +418,7 @@ namespace CollisionEngine
 						                    simplex.Support [1].s,
 						                    simplex.Support [2].s);
 
-					simplex = this.findAndTestSimplex4 (
+					simplex = FindAndTestSimplex4 (
 						shape1,
 						shape2,
 						simplex,
@@ -438,7 +431,7 @@ namespace CollisionEngine
 						return -1.0;
 					}
 
-					simplex = this.findAndTestSimplex4 (
+					simplex = this.FindAndTestSimplex4 (
 						shape1,
 						shape2,
 						simplex,
@@ -456,7 +449,7 @@ namespace CollisionEngine
 
 				direction = Vector3.Normalize (direction.Value);
 
-				simplex = this.findAndTestSimplex4 (
+				simplex = this.FindAndTestSimplex4 (
 					shape1,
 					shape2,
 					simplex,
@@ -475,8 +468,8 @@ namespace CollisionEngine
 
 				if (!p.HasValue) 
 				{
-					direction = this.getRandomDirection ();
-					simplex.Support[3] = this.getMinkowskiFarthestPoint (shape1, shape2, direction);
+					direction = this.GetRandomDirection ();
+					simplex.Support[3] = this.GetMinkowskiFarthestPoint (shape1, shape2, direction);
 					continue;
 				}
 

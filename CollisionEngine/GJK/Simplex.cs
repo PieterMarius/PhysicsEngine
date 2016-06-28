@@ -12,7 +12,7 @@ namespace CollisionEngine
 
 		public Simplex ()
 		{
-			this.Support = new Support[4];
+			Support = new Support[4];
 		}
 
 		public Simplex (
@@ -20,7 +20,7 @@ namespace CollisionEngine
 			double w,
 			double t)
 		{
-			this.Support = support;
+			Support = support;
 			this.w = w;
 			this.t = t;
 		}
@@ -33,29 +33,26 @@ namespace CollisionEngine
 		{
 			Support[] sup = new Support[4];
 			sup [0] = new Support (
-				this.Support [0].s,
-				this.Support [0].a,
-				this.Support [0].b);
+				Support [0].s,
+				Support [0].a,
+				Support [0].b);
 
 			sup [1] = new Support (
-				this.Support [1].s,
-				this.Support [1].a,
-				this.Support [1].b);
+				Support [1].s,
+				Support [1].a,
+				Support [1].b);
 
 			sup [2] = new Support (
-				this.Support [2].s,
-				this.Support [2].a,
-				this.Support [2].b);
+				Support [2].s,
+				Support [2].a,
+				Support [2].b);
 
 			sup [3] = new Support (
-				this.Support [3].s,
-				this.Support [3].a,
-				this.Support [3].b);
-			
-			return new Simplex (
-				sup, 
-				this.w, 
-				this.t);
+				Support [3].s,
+				Support [3].a,
+				Support [3].b);
+
+			return new Simplex(sup, w, t);
 		}
 
 		#endregion
@@ -64,14 +61,14 @@ namespace CollisionEngine
 
 		public bool Equals (Simplex other)
 		{
-			return (this.Support [0].a == other.Support [0].a &&
-					this.Support [1].a == other.Support [1].a &&
-					this.Support [2].a == other.Support [2].a &&
-					this.Support [3].a == other.Support [3].a &&
-					this.Support [0].b == other.Support [0].b &&
-					this.Support [1].b == other.Support [1].b &&
-					this.Support [2].b == other.Support [2].b &&
-					this.Support [3].b == other.Support [3].b);
+			return (Support [0].a == other.Support [0].a &&
+					Support [1].a == other.Support [1].a &&
+					Support [2].a == other.Support [2].a &&
+					Support [3].a == other.Support [3].a &&
+					Support [0].b == other.Support [0].b &&
+					Support [1].b == other.Support [1].b &&
+					Support [2].b == other.Support [2].b &&
+					Support [3].b == other.Support [3].b);
 		}
 
 		#endregion

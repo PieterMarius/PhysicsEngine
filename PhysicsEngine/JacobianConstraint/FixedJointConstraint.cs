@@ -68,10 +68,13 @@ namespace MonoPhysicsEngine
 		/// Builds the fixed joint.
 		/// </summary>
 		/// <returns>The fixed joint.</returns>
+		/// <param name="indexA">Index a.</param>
+		/// <param name="indexB">Index b.</param>
+		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			var fixedConstraints = new List<JacobianContact> ();
+			List<JacobianContact> fixedConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -83,10 +86,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-										  StartErrorAxis1;
+				this.StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-										  StartErrorAxis2;
+				this.StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -290,12 +293,12 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotSupportedException();
+			throw new NotImplementedException();
 		}
 
 		#endregion

@@ -48,7 +48,7 @@ namespace PhysicsEngineMathUtility
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MathUtility.Quaternion"/> class.
+		/// Initializes a new instance of the Quaternion class.
 		/// </summary>
 		/// <param name="versor">Versor.</param>
 		/// <param name="angle">Angle.</param>
@@ -238,7 +238,7 @@ namespace PhysicsEngineMathUtility
 
 		public Matrix3x3 ConvertToMatrix()
 		{
-			return Quaternion.ConvertToMatrix (this);
+			return ConvertToMatrix (this);
 		}
 
 		public static double Length(Quaternion q)
@@ -252,7 +252,7 @@ namespace PhysicsEngineMathUtility
 
 		public static Quaternion Normalize(Quaternion q)
 		{
-			double l = Quaternion.Length (q);
+			double l = Length (q);
 
 			if (l > 0.0) {
 				
@@ -270,7 +270,7 @@ namespace PhysicsEngineMathUtility
 
 		public Quaternion Normalize()
 		{
-			return Quaternion.Normalize (this);
+			return Normalize (this);
 		}
 
 		public static Quaternion IntegrateQuaternion(
@@ -285,7 +285,7 @@ namespace PhysicsEngineMathUtility
 			double rc = theta.y;
 			double rd = theta.z;
 
-			return Quaternion.Normalize (new Quaternion(ra,rb,rc,rd) * q);
+			return Normalize (new Quaternion(ra,rb,rc,rd) * q);
 		}
 
 		public static Vector3 GetEuler(Quaternion q)

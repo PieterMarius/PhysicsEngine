@@ -1,6 +1,4 @@
-﻿using System;
-using SimulationObjectDefinition;
-using PhysicsEngineMathUtility;
+﻿using PhysicsEngineMathUtility;
 
 namespace CollisionEngine
 {
@@ -25,11 +23,11 @@ namespace CollisionEngine
 			bool intersection,
 			Simplex minSimplex)
 		{
-			this.CollisionDistance = collisionDistance;
-			this.CollisionPoint = collisionPoint;
-			this.CollisionNormal = collisionNormal;
-			this.Intersection = intersection;
-			this.MinSimplex = minSimplex;
+			CollisionDistance = collisionDistance;
+			CollisionPoint = collisionPoint;
+			CollisionNormal = collisionNormal;
+			Intersection = intersection;
+			MinSimplex = minSimplex;
 		}
 
 		#endregion

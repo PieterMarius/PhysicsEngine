@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace CollisionEngine
 {
 	public class CollisionPointStructure
@@ -36,12 +35,12 @@ namespace CollisionEngine
 			CollisionPoint collisionPoint,
 			CollisionPoint[] collisionPoints)
 		{
-			this.ObjectA = objectA;
-			this.ObjectB = objectB;
-			this.ObjectDistance = objectDistance;
-			this.Intersection = intersection;
-			this.CollisionPoint = collisionPoint;
-			this.CollisionPoints = collisionPoints;
+			ObjectA = objectA;
+			ObjectB = objectB;
+			ObjectDistance = objectDistance;
+			Intersection = intersection;
+			CollisionPoint = collisionPoint;
+			CollisionPoints = collisionPoints;
 		}
 
 		#endregion

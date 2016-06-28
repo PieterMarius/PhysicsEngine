@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
 
 namespace CollisionEngine
@@ -11,13 +9,12 @@ namespace CollisionEngine
 	{
 		#region Private Fields
 
-		private GJK collisionEngine;
-		private EPA compenetrationCollisionEngine;
-		private CollisionEngineParameters collisionEngineParameters;
-		private SweepAndPruneEngine sweepAndPruneEngine;
+		GJK collisionEngine;
+		EPA compenetrationCollisionEngine;
+		readonly CollisionEngineParameters collisionEngineParameters;
+		readonly SweepAndPruneEngine sweepAndPruneEngine;
 
 		#endregion
-
 
 		#region Constructor
 
@@ -26,19 +23,19 @@ namespace CollisionEngine
 		{
 			this.collisionEngineParameters = collisionEngineParameters;
 
-			this.collisionEngine = new GJK (
+			collisionEngine = new GJK (
 				collisionEngineParameters.MaxGJKIteration,
 				collisionEngineParameters.Precision,
 				collisionEngineParameters.GJKManifoldTolerance,
 				collisionEngineParameters.ManifoldPointNumber);
 
-			this.compenetrationCollisionEngine = new EPA (
+			compenetrationCollisionEngine = new EPA (
 				collisionEngineParameters.MaxEPAIteration,
 				collisionEngineParameters.Precision,
 				collisionEngineParameters.EPAManifoldTolerance,
 				collisionEngineParameters.ManifoldPointNumber);
 
-			this.sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
+			sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
 		}
 
 		#endregion
@@ -48,25 +45,24 @@ namespace CollisionEngine
 		#region Interface ICollisionEngine
 
 		/// <summary>
-		/// Runs the test collision. 
-		/// Every time this method is called the previuos call is reset.
+		/// Runs the test collision.
 		/// </summary>
-		/// <returns><c>true</c>, if test collision was run, <c>false</c> otherwise.</returns>
-		/// <param name="A">A.</param>
-		/// <param name="B">B.</param>
+		/// <returns>The test collision.</returns>
+		/// <param name="objects">Objects.</param>
+		/// <param name="minDistance">Minimum distance.</param>
 		public List<CollisionPointStructure> RunTestCollision(
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
-			if (this.collisionEngineParameters.ActivateSweepAndPrune) 
+			if (collisionEngineParameters.ActivateSweepAndPrune) 
 			{
-				return this.sweepAndPruneBroadPhase (
+				return SweepAndPruneBroadPhase (
 					objects,
 					minDistance);
 			} 
 			else 
 			{
-				return this.bruteForceBroadPhase (
+				return BruteForceBroadPhase (
 					objects,
 					minDistance);
 			}
@@ -78,7 +74,7 @@ namespace CollisionEngine
 		/// <returns>The engine parameters.</returns>
 		public CollisionEngineParameters GetEngineParameters()
 		{
-			return this.collisionEngineParameters;
+			return collisionEngineParameters;
 		}
 
 		#endregion
@@ -87,7 +83,7 @@ namespace CollisionEngine
 
 		#region Private Methods
 
-		private CollisionPointStructure narrowPhase(
+		private CollisionPointStructure NarrowPhase(
 			ObjectGeometry A,
 			ObjectGeometry B,
 			int indexA,
@@ -95,15 +91,15 @@ namespace CollisionEngine
 			double minDistance)
 		{
 			
-			GJKOutput gjkOutput = this.collisionEngine.ExecuteGJKAlgorithm (A, B);
+			GJKOutput gjkOutput = collisionEngine.ExecuteGJKAlgorithm (A, B);
 
 			if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= minDistance)
 			{
 
-  				ManifoldPointsGenerator mpg = new ManifoldPointsGenerator (
-					                              this.collisionEngineParameters.ManifoldPointNumber,
-					                              this.collisionEngineParameters.GJKManifoldTolerance,
+  				var mpg = new ManifoldPointsGenerator (
+					                              collisionEngineParameters.ManifoldPointNumber,
+					                              collisionEngineParameters.GJKManifoldTolerance,
 					                              0.000001);
 
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
@@ -129,14 +125,14 @@ namespace CollisionEngine
 				startTriangle [2] = gjkOutput.MinSimplex.Support [2];
 				startTriangle [3] = gjkOutput.MinSimplex.Support [3];
 
-				EPAOutput epaOutput = this.compenetrationCollisionEngine.GetCompenetrationDistance (
+				EPAOutput epaOutput = compenetrationCollisionEngine.GetCompenetrationDistance (
 					                      A,
 					                      B,
 					                      startTriangle);
 
-				ManifoldPointsGenerator mpg = new ManifoldPointsGenerator (
-					                              this.collisionEngineParameters.ManifoldPointNumber,
-					                              this.collisionEngineParameters.EPAManifoldTolerance,
+				var mpg = new ManifoldPointsGenerator (
+					                              collisionEngineParameters.ManifoldPointNumber,
+					                              collisionEngineParameters.EPAManifoldTolerance,
 					                              0.00001);
 
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
@@ -157,23 +153,23 @@ namespace CollisionEngine
 			return null;
 		}
 
-		private List<CollisionPointStructure> bruteForceBroadPhase(
+		private List<CollisionPointStructure> BruteForceBroadPhase(
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
 			
-			List<CollisionPointStructure> result = new List<CollisionPointStructure> ();
+			var result = new List<CollisionPointStructure> ();
 
-			object lockMe = new object();
+			var lockMe = new object();
 
 			Parallel.For (0, 
 				objects.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = this.collisionEngineParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				i => {
 					if (objects [i] != null) {
 						for (int j = i + 1; j < objects.Length; j++) {
 							if (objects [j] != null) {
-								CollisionPointStructure collisionPointStruct = this.narrowPhase (
+								CollisionPointStructure collisionPointStruct = NarrowPhase (
 									                                              objects [i], 
 									                                              objects [j],
 									                                              i,
@@ -192,23 +188,23 @@ namespace CollisionEngine
 			return result;
 		}
 
-		private List<CollisionPointStructure> sweepAndPruneBroadPhase(
+		private List<CollisionPointStructure> SweepAndPruneBroadPhase(
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
-			List<CollisionPointStructure> result = new List<CollisionPointStructure> ();
+			var result = new List<CollisionPointStructure> ();
 
 			AABB[] boxs = Array.ConvertAll (objects, item => (item == null) ? null : item.AABBox);
 
-			List<CollisionPair> collisionPair = this.sweepAndPruneEngine.SweepAndPruneTest (boxs);
+			List<CollisionPair> collisionPair = sweepAndPruneEngine.SweepAndPruneTest (boxs);
 
 			var lockMe = new object();
 
 			Parallel.ForEach (
 				collisionPair, 
-				new ParallelOptions { MaxDegreeOfParallelism = this.collisionEngineParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				pair => {
-					CollisionPointStructure collisionPointStruct = this.narrowPhase (
+					CollisionPointStructure collisionPointStruct = NarrowPhase (
 						objects [pair.objectIndexA], 
 						objects [pair.objectIndexB],
 						pair.objectIndexA,

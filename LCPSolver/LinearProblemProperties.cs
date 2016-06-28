@@ -48,12 +48,12 @@ namespace LCPSolver
 		{
 			this.M = M;
 			this.B = B;
-			this.StartX = startX;
-			this.D = d;
-			this.ConstraintLimit = constraintLimit;
-			this.ConstraintType = constraintType;
-			this.Constraints = constraints;
-			this.Count = count;
+			StartX = startX;
+			D = d;
+			ConstraintLimit = constraintLimit;
+			ConstraintType = constraintType;
+			Constraints = constraints;
+			Count = count;
 		}
 
 		#endregion
@@ -62,7 +62,7 @@ namespace LCPSolver
 
 		public void SetStartValue(double[] X)
 		{
-			Array.Copy (X, this.StartX, X.Length);
+			Array.Copy (X, StartX, X.Length);
 		}
 
 		#endregion

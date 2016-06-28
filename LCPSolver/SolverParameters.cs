@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace LCPSolver
 {
 	public class SolverParameters
@@ -46,7 +45,7 @@ namespace LCPSolver
 			ErrorTolerance = 1E-30;
 			SOR = 1.0;
 			SORStep = 0.007;
-			MaxThreadNumber = 4;
+			MaxThreadNumber = 2;
 		}
 
 		public SolverParameters (

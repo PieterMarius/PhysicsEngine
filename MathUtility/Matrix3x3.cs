@@ -188,7 +188,7 @@ namespace PhysicsEngineMathUtility
 				+(a.r1c1 * a.r2c2 * a.r3c3);
 			
 			// Evaluate using of small value
-			if (Math.Abs(den) < 1E-100) {
+			if (den != 0.0) {
 				den = 1.0 / den;
 
 				double r1c1 = (-(a.r2c3 * a.r3c2) + (a.r2c2 * a.r3c3)) * den;
