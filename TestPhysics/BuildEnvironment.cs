@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using CollisionEngine;
 using LCPSolver;
@@ -48,6 +47,8 @@ namespace TestPhysics
 		private SimulationObject[] getSimulationObjects()
 		{
 			SimulationObject[] objects = new SimulationObject[1];
+
+			#region Terrain Base
 
 			objects[0] = new SimulationObject();
 			objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
@@ -103,6 +104,8 @@ namespace TestPhysics
 
 			objects[0].ObjectGeometry.SetAABB(box);
 
+			#endregion
+
 			return objects;
 		}
 
@@ -111,10 +114,10 @@ namespace TestPhysics
 		}
 
 		private ObjectGeometry GetObjectGeometry(
-			String fileName,
+			string fileName,
 			float scale)
 		{
-			LoadResult objectGeometry = this.LoadObjSolid(fileName, scale);
+			LoadResult objectGeometry = LoadObjSolid(fileName, scale);
 
 			Vector3[] vertexStartPoint = new Vector3[objectGeometry.Vertices.Count];
 
@@ -143,7 +146,7 @@ namespace TestPhysics
 		}
 
 		private LoadResult LoadObjSolid(
-			String fileName,
+			string fileName,
 			float scale)
 		{
 			var objLoaderFactory = new ObjLoaderFactory();

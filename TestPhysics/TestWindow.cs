@@ -1,16 +1,10 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.Diagnostics;
 using OpenTK;
-using OpenTK.Input;
 using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using ObjLoader;
-using ObjLoader.Loader.Loaders;  
+using OpenTK.Graphics.OpenGL;  
 using Utility;
 using SimulationObjectDefinition;
 using MonoPhysicsEngine;
@@ -66,8 +60,8 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				//LoadObject loadObject = new LoadObject ("startConfig.xml");
-				LoadObject loadObject = new LoadObject ("carConfig.xml");
+				LoadObject loadObject = new LoadObject ("startConfig.xml");
+				//LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -134,9 +128,6 @@ namespace TestPhysics
 			{
 				throw new Exception (e.StackTrace);
 			}
-
-			/* TODO Fine */
-
 		}
 			
 		#region OpenGL Windows Settings
@@ -204,8 +195,8 @@ namespace TestPhysics
 			GL.MatrixMode (MatrixMode.Modelview);
 
 			//Physics
-			this.UpdateMouse ();
-			this.UpdateKeyboard ();
+			UpdateMouse ();
+			UpdateKeyboard ();
 
 			try {
 
@@ -216,10 +207,10 @@ namespace TestPhysics
 
 					collPoint.Clear();
 
-					this.physicsEngine.Simulate(null);
-					for (int i = 0; i < this.physicsEngine.SimulationJoints.Count; i++)
+					physicsEngine.Simulate(null);
+					for (int i = 0; i < physicsEngine.SimulationJoints.Count; i++)
 					{
-						this.physicsEngine.SimulationJoints[i].AddTorque(this.physicsEngine.SimulationObjects, 0.0, 0.4);
+						physicsEngine.SimulationJoints[i].AddTorque(physicsEngine.SimulationObjects, 0.0, 0.4);
 					}
 
 					stopwatch.Stop();
@@ -232,7 +223,7 @@ namespace TestPhysics
 			{
 				throw new Exception ("Physics engine error.");
 			}
-			collPoint = this.physicsEngine.GetCollisionPointStrucureList ();
+			collPoint = physicsEngine.GetCollisionPointStrucureList ();
 
 		}
 			
@@ -367,9 +358,9 @@ namespace TestPhysics
 		{
 			// TODO parte da modificare
 			//Matrice da utilizzare come costante
-			PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = this.physicsEngine.GetObject (id).RotationMatrix;
-			PhysicsEngineMathUtility.Vector3 position = this.physicsEngine.GetObject (id).Position;
-			ObjectType type = this.physicsEngine.GetObject (id).ObjectType;
+			PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = physicsEngine.GetObject (id).RotationMatrix;
+			PhysicsEngineMathUtility.Vector3 position = physicsEngine.GetObject (id).Position;
+			ObjectType type = physicsEngine.GetObject (id).ObjectType;
 
 			//if (type != ObjectType.JointConnector) {
 
@@ -399,7 +390,7 @@ namespace TestPhysics
 			
 				Matrix4 mView = positionMatrix;
 
-				float[] dmviewData = new float[] {
+				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
 					mView.M21, mView.M22, mView.M23, mView.M24,
 					mView.M31, mView.M32, mView.M33, mView.M34,
@@ -436,7 +427,7 @@ namespace TestPhysics
 						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointA.y), 
 						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointA.z));
 
-					float[] dmviewData = new float[] {
+					var dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,
 						mView.M21, mView.M22, mView.M23, mView.M24,
 						mView.M31, mView.M32, mView.M33, mView.M34,
@@ -457,7 +448,7 @@ namespace TestPhysics
 						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointB.y), 
 						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointB.z));
 
-					float[] dmviewData1 = new float[] {
+					var dmviewData1 = new float[] {
 						mView1.M11, mView1.M12, mView1.M13, mView1.M14,
 						mView1.M21, mView1.M22, mView1.M23, mView1.M24,
 						mView1.M31, mView1.M32, mView1.M33, mView1.M34,
@@ -478,16 +469,16 @@ namespace TestPhysics
 
 		private void displayVertex(int index)
 		{
-			for (int i = 0; i < this.physicsEngine.GetObject (index).ObjectGeometry.VertexPosition.Length; i++) 
+			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry.VertexPosition.Length; i++) 
 			{
 				GL.PushMatrix ();
 
 				Matrix4 mView = Matrix4.CreateTranslation (
-					Convert.ToSingle (this.physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].x), 
-					Convert.ToSingle (this.physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].y), 
-					Convert.ToSingle (this.physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].z));
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].x), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].y), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].z));
 
-				float[] dmviewData = new float[] {
+				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
 					mView.M21, mView.M22, mView.M23, mView.M24,
 					mView.M31, mView.M32, mView.M33, mView.M34,
@@ -504,12 +495,10 @@ namespace TestPhysics
 
 		private void displayJoint()
 		{
-			List<IConstraint> jointList = this.physicsEngine.SimulationJoints;
+			List<IConstraint> jointList = physicsEngine.SimulationJoints;
 
 			for (int i = 0; i < jointList.Count; i++) 
 			{
-				
-
 					GL.PushMatrix ();
 
 					Matrix4 mView = Matrix4.CreateTranslation (
@@ -517,7 +506,7 @@ namespace TestPhysics
 						                Convert.ToSingle (jointList [i].GetAnchorPosition ().y), 
 						                Convert.ToSingle (jointList [i].GetAnchorPosition ().z));
 
-					float[] dmviewData = new float[] {
+					var dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,
 						mView.M21, mView.M22, mView.M23, mView.M24,
 						mView.M31, mView.M32, mView.M33, mView.M34,
@@ -542,7 +531,7 @@ namespace TestPhysics
 				Convert.ToSingle (0.0), 
 				Convert.ToSingle (0.0));
 
-			float[] dmviewData = new float[] {
+			var dmviewData = new float[] {
 				mView.M11, mView.M12, mView.M13, mView.M14,
 				mView.M21, mView.M22, mView.M23, mView.M24,
 				mView.M31, mView.M32, mView.M33, mView.M34,

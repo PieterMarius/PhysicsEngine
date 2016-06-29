@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using OpenTK;
-using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
-using Utility;
-using CollisionEngine;
-using ObjLoader;
-using ObjLoader.Loader.Loaders;
-using System.IO;
-using LCPSolver;
-
+﻿
 namespace TestPhysics
 {
 	class MainClass
@@ -38,7 +26,7 @@ namespace TestPhysics
 
 				test.Run();
 				
-			};
+			}
 
 
 

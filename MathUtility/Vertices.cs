@@ -17,8 +17,8 @@ namespace PhysicsEngineMathUtility
 			Vector3 vertex,
 			double angle)
 		{
-			this.Vertex = vertex;
-			this.Angle = angle;
+			Vertex = vertex;
+			Angle = angle;
 		}
 
 		#endregion
@@ -29,7 +29,7 @@ namespace PhysicsEngineMathUtility
 		{
 			if (obj is Vertices)
 			{
-				return this.CompareTo((Vertices)obj);
+				return CompareTo((Vertices)obj);
 			}
 
 			throw new ArgumentException ();
@@ -37,12 +37,12 @@ namespace PhysicsEngineMathUtility
 
 		public int CompareTo(Vertices other)
 		{
-			if (this.Angle < other.Angle)
+			if (Angle < other.Angle)
 			{
 				return -1;
 			}
 
-			if (this.Angle > other.Angle)
+			if (Angle > other.Angle)
 			{
 				return 1;
 			}
