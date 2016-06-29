@@ -103,7 +103,7 @@ namespace CollisionEngine
 		{
 			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
 			Vector3 simplexAC = simplex.Support [2].s - simplex.Support [0].s; 
-			Vector3 simplexAO = this.origin - simplex.Support [0].s;
+			Vector3 simplexAO = origin - simplex.Support [0].s;
 			Vector3 ABC = Vector3.Cross (simplexAB, simplexAC);
 
 			if (Vector3.Dot (simplexAO, Vector3.Cross (simplexAB, ABC)) > 0.0) 
@@ -190,7 +190,7 @@ namespace CollisionEngine
 			return false;		
 		}
 
-		private CollisionPoint getCoordinatesFromMinkowsky(
+		private CollisionPoint GetCoordinatesFromMinkowsky(
 			Simplex simplex,
 			ObjectGeometry shape1,
 			ObjectGeometry shape2,
@@ -215,7 +215,7 @@ namespace CollisionEngine
 		/// <returns>The distance on simplex4.</returns>
 		/// <param name="startDistance">Start distance.</param>
 		/// <param name="simplex">Simplex.</param>
-		private Vector3? getDistanceOnSimplex4(
+		private Vector3? GetDistanceOnSimplex4(
 			double startDistance,
 			ref Simplex simplex)
 		{
@@ -312,17 +312,16 @@ namespace CollisionEngine
 		}
 							
 		/// <summary>
-		/// Ritorna la distanza se distanza<0.0f allora vi è intersezione o compenetrazione tra gli oggetti, 
-		/// se distanza > 0.0 allora i due oggetti non collidono
+		/// Ritorna la distanza se distanza 0.0f allora vi è intersezione o compenetrazione tra gli oggetti, 
+		/// se distanza 0.0 allora i due oggetti non collidono
 		/// </summary>
 		/// <returns>The GJK algorithm.</returns>
 		/// <param name="shape1">Shape1.</param>
 		/// <param name="shape2">Shape2.</param>
-		/// <param name="vDistance">V distance.</param>
 		/// <param name="cp">Cp.</param>
 		/// <param name="minSimplex">Minimum simplex.</param>
-		/// <param name="isItersection">If set to <c>true</c> is itersection.</param>
-		private Double executeGJKAlgorithm(
+		/// <param name="isIntersection">If set to <c>true</c> is itersection.</param>
+		private double ExecuteGJKAlgorithm(
 			ObjectGeometry shape1,
 			ObjectGeometry shape2,
 			ref Vector3 collisionNormal,
@@ -431,7 +430,7 @@ namespace CollisionEngine
 						return -1.0;
 					}
 
-					simplex = this.FindAndTestSimplex4 (
+					simplex = FindAndTestSimplex4 (
 						shape1,
 						shape2,
 						simplex,
@@ -449,7 +448,7 @@ namespace CollisionEngine
 
 				direction = Vector3.Normalize (direction.Value);
 
-				simplex = this.FindAndTestSimplex4 (
+				simplex = FindAndTestSimplex4 (
 					shape1,
 					shape2,
 					simplex,
@@ -464,12 +463,12 @@ namespace CollisionEngine
 					return -1.0;
 				}
 					
-				Vector3? p = this.getDistanceOnSimplex4 (mod, ref simplex);
+				Vector3? p = GetDistanceOnSimplex4 (mod, ref simplex);
 
 				if (!p.HasValue) 
 				{
-					direction = this.GetRandomDirection ();
-					simplex.Support[3] = this.GetMinkowskiFarthestPoint (shape1, shape2, direction);
+					direction = GetRandomDirection ();
+					simplex.Support[3] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 					continue;
 				}
 
@@ -491,7 +490,7 @@ namespace CollisionEngine
 				}
 			}
 
-			cp = this.getCoordinatesFromMinkowsky (
+			cp = GetCoordinatesFromMinkowsky (
 				minSimplex, 
 				shape1, 
 				shape2, 
@@ -510,10 +509,6 @@ namespace CollisionEngine
 		/// <returns>The collision.</returns>
 		/// <param name="objectA">Object a.</param>
 		/// <param name="objectB">Object b.</param>
-		/// <param name="collisionPoint">Collision point.</param>
-		/// <param name="collisionNormal">Collision normal.</param>
-		/// <param name="isItersection">Is itersection.</param>
-		/// <param name="minSimplex">Minimum simplex.</param>
 		public GJKOutput ExecuteGJKAlgorithm(
 			ObjectGeometry objectA, 
 			ObjectGeometry objectB)
@@ -523,7 +518,7 @@ namespace CollisionEngine
 			var minSimplex = new Simplex();
 			bool isIntersection = false;
 
-			double collisionDistance = this.executeGJKAlgorithm (
+			double collisionDistance = ExecuteGJKAlgorithm (
 				                          objectA,
 				                          objectB,
 				                          ref collisionNormal,
