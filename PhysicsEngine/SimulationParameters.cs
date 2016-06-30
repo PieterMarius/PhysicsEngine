@@ -79,13 +79,13 @@ namespace MonoPhysicsEngine
 		public SimulationParameters ()
 		{
 			TimeStep = 0.015;
-			CFM = 0.0001;
-			BaumStabilization = 6.6;
+			CFM = 0.0005;
+			BaumStabilization = 13.2;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.000001;
 			DiscreteCCD = false;
-			CollisionDistance = 0.0005;
+			CollisionDistance = 0.009;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;
 			MaxThreadNumber = 4;

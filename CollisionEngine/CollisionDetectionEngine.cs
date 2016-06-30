@@ -196,7 +196,7 @@ namespace CollisionEngine
 
 			AABB[] boxs = Array.ConvertAll (objects, item => (item == null) ? null : item.AABBox);
 
-			List<CollisionPair> collisionPair = sweepAndPruneEngine.SweepAndPruneTest (boxs);
+			List<CollisionPair> collisionPair = sweepAndPruneEngine.SweepAndPruneTest (boxs, minDistance);
 
 			var lockMe = new object();
 

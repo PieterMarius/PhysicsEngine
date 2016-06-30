@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SimulationObjectDefinition;
 
@@ -8,31 +6,44 @@ namespace CollisionEngine
 {
 	public class SweepAndPruneEngine
 	{
-		private CollisionEngineParameters collisionEngineParameters;
+		#region Fileds
+
+		CollisionEngineParameters collisionEngineParameters;
+
+		#endregion
+
+		#region Contructor
 
 		public SweepAndPruneEngine(CollisionEngineParameters collisionEngineParameters)
 		{
 			this.collisionEngineParameters = collisionEngineParameters;
 		}
 
+		#endregion
+
 		#region Public Methods
 
-		public List<CollisionPair> SweepAndPruneTest(AABB[] boxs)
+		public List<CollisionPair> SweepAndPruneTest(
+			AABB[] boxs,
+			double distanceTolerance)
 		{
-			List<CollisionPair> collisionPairs = new List<CollisionPair> ();
+			var collisionPairs = new List<CollisionPair> ();
 
-			object lockMe = new object();
+			var lockMe = new object();
 
 			Parallel.For (0, 
 				boxs.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = this.collisionEngineParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				i => {
+					AABB box1 = boxs[i];
+					
 					for (int j = i + 1; j < boxs.Length; j++) {
-
+						AABB box2 = boxs[j];
+						
 						if (boxs[i] != null && boxs[j] != null &&
-							testAABBAABB (boxs [i], boxs [j], 0) &&
-							testAABBAABB (boxs [i], boxs [j], 1) &&
-							testAABBAABB (boxs [i], boxs [j], 2)) 
+							testAABBAABB (box1, box2, 0, distanceTolerance) &&
+							testAABBAABB (box1, box2, 1, distanceTolerance) &&
+							testAABBAABB (box1, box2, 2, distanceTolerance)) 
 						{
 							lock (lockMe) { 
 								collisionPairs.Add (new CollisionPair (i, j));
@@ -51,10 +62,11 @@ namespace CollisionEngine
 		private bool testAABBAABB(
 			AABB a, 
 			AABB b,
-			int axisIndex)
+			int axisIndex,
+			double distanceTolerance)
 		{
-			return a.Min [axisIndex] <= b.Max [axisIndex] &&
-				a.Max [axisIndex] >= b.Min [axisIndex];
+			return a.Min [axisIndex] - b.Max[axisIndex] <= distanceTolerance &&
+				   a.Max [axisIndex] - b.Min[axisIndex] >= -distanceTolerance ;
 		}
 
 		#endregion

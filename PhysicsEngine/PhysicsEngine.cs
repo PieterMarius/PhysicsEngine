@@ -475,7 +475,6 @@ namespace MonoPhysicsEngine
 					if (contactConstraints.Count > 0 &&
 					    linearProblemProperties != null) 
 					{
-
 						double[] X = solver.Solve (linearProblemProperties);
 
 						solverError += solver.GetDifferentialMSE();

@@ -11,8 +11,8 @@ namespace CollisionEngine
 			int indexA,
 			int indexB)
 		{
-			this.objectIndexA = indexA;
-			this.objectIndexB = indexB;
+			objectIndexA = indexA;
+			objectIndexB = indexB;
 		}
 	}
 }
