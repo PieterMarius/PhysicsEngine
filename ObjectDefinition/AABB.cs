@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace SimulationObjectDefinition
 {
 	public class AABB

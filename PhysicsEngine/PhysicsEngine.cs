@@ -874,7 +874,7 @@ namespace MonoPhysicsEngine
 								j);
 						}
 
-						//TODO refactoring
+						//TODO refactoring and testing
 						var box = new AABB (
 							simObj.ObjectGeometry.VertexPosition.Min (point => point.x),
 							simObj.ObjectGeometry.VertexPosition.Max (point => point.x),

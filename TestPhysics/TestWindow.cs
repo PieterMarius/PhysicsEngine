@@ -80,7 +80,7 @@ namespace TestPhysics
 				
 				//Set Physics engine
 				simulationParameters = new SimulationParameters();
-				simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
+				//simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
 				
 				physicsEngine = new PhysicsEngine(
 					simulationParameters,

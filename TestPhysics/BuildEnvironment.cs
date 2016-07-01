@@ -64,20 +64,20 @@ namespace TestPhysics
 			objects[0].ObjectGeometry = GetObjectGeometry("cube.obj", 25);
 
 			var inertiaTensor = new InertiaTensor(
-				objects[0].ObjectGeometry.VertexInitialPosition,
+				objects[0].ObjectGeometry.VertexPosition,
 				objects[0].ObjectGeometry.Triangle,
 				objects[0].Mass);
 
 			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-			for (int j = 0; j < objects[0].ObjectGeometry.VertexInitialPosition.Length; j++)
+			for (int j = 0; j < objects[0].ObjectGeometry.VertexPosition.Length; j++)
 			{
-				objects[0].ObjectGeometry.SetVertexInitialPosition(
-					objects[0].ObjectGeometry.VertexInitialPosition[j] - inertiaTensor.GetMassCenter(),
+				objects[0].ObjectGeometry.SetVertexPosition(
+					objects[0].ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
 					j);
 			}
 
 			var inertiaTensor1 = new InertiaTensor(
-				objects[0].ObjectGeometry.VertexInitialPosition,
+				objects[0].ObjectGeometry.VertexPosition,
 				objects[0].ObjectGeometry.Triangle,
 				objects[0].Mass);
 
@@ -140,7 +140,6 @@ namespace TestPhysics
 			}
 
 			return new ObjectGeometry(
-				vertexStartPoint,
 				vertexStartPoint,
 				triangleIndex);
 		}

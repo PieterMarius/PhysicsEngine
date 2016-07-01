@@ -32,9 +32,9 @@
             <Position x="-1,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -48,9 +48,9 @@
             <Position x="-1,0" y="3,5" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -63,7 +63,7 @@
             <Position x="-1,0" y="2,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -78,9 +78,9 @@
             <Position x="-1,0" y="0,3" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -94,9 +94,9 @@
             <Position x="1,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -109,9 +109,9 @@
             <Position x="1,0" y="3,5" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -124,7 +124,7 @@
             <Position x="1,0" y="2,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -139,9 +139,9 @@
             <Position x="1,0" y="0,3" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -155,9 +155,9 @@
             <Position x="3,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -170,9 +170,9 @@
             <Position x="3,0" y="3,5" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -185,7 +185,7 @@
             <Position x="3,0" y="2,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -200,9 +200,9 @@
             <Position x="3,0" y="0,3" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -218,9 +218,9 @@
             <Position x="-1,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -233,9 +233,9 @@
             <Position x="-1,0" y="3,5" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -250,7 +250,7 @@
             <Position x="-1,0" y="2,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -265,9 +265,9 @@
             <Position x="-1,0" y="0,3" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -281,9 +281,9 @@
             <Position x="1,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -296,9 +296,9 @@
             <Position x="1,0" y="3,5" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -311,7 +311,7 @@
             <Position x="1,0" y="2,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -326,9 +326,9 @@
             <Position x="1,0" y="0,3" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -342,9 +342,9 @@
             <Position x="3,0" y="4,7" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -357,9 +357,9 @@
             <Position x="3,0" y="3,5" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -372,7 +372,7 @@
             <Position x="3,0" y="2,0" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -387,9 +387,9 @@
             <Position x="3,0" y="0,3" z="-1,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -405,9 +405,9 @@
             <Position x="-1,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -420,9 +420,9 @@
             <Position x="-1,0" y="3,5" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -437,7 +437,7 @@
             <Position x="-1,0" y="2,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -452,9 +452,9 @@
             <Position x="-1,0" y="0,3" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -468,9 +468,9 @@
             <Position x="1,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -483,9 +483,9 @@
             <Position x="1,0" y="3,5" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -498,7 +498,7 @@
             <Position x="1,0" y="2,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -513,9 +513,9 @@
             <Position x="1,0" y="0,3" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -529,9 +529,9 @@
             <Position x="3,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="1,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -544,9 +544,9 @@
             <Position x="3,0" y="3,5" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -559,7 +559,7 @@
             <Position x="3,0" y="2,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <Mass>2,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
@@ -574,9 +574,9 @@
             <Position x="3,0" y="0,3" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>1,0</Mass>
+            <Mass>0,5</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>
             <DynamicFriction>0,5</DynamicFriction>
             <StaticFriction>0,5</StaticFriction>
@@ -590,7 +590,7 @@
             <Position x="1,0" y="-8,0" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>1</ObjectType>
             <Mass>1000,0</Mass>
             <RestitutionCoeff>0,6</RestitutionCoeff>

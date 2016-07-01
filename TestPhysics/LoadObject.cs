@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Xml;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
 using SimulationObjectDefinition;
-using ObjLoader;
 using ObjLoader.Loader.Loaders;
 using Utility;
 
@@ -16,61 +14,61 @@ namespace TestPhysics
 	{
 		#region Private Fields
 
-		private String nodePathObjects = "/RigidBodyEngine/ObjectsSettings/Object";
-		private String nodePathJoints = "/RigidBodyEngine/JointsSettings/Joint";
+		string nodePathObjects = "/RigidBodyEngine/ObjectsSettings/Object";
+		string nodePathJoints = "/RigidBodyEngine/JointsSettings/Joint";
 
 		#region Object Attribute
 
-		private String positionAttribute = "Position";
-		private String linearVelAttribute = "LinearVelocity";
-		private String angularVelAttribute = "AngularVelocity";
-		private String rotationStatusAttribute = "RotationStatus";
-		private String massAttribute = "Mass";
-		private String restitutionCoeffAttribute = "RestitutionCoeff";
-		private String dynamicFrictionAttribute = "DynamicFriction";
-		private String staticFrictionAttribute = "StaticFriction";
-		private String objectGeometryAttribute = "ObjectGeometry";
-		private String scaleAttribute = "Scale";
-		private String textureAttribute = "Texture";
-		private String objectType = "ObjectType";
-		private String excludeFromCollisionDetection = "ExludeFromCollisionDetection";
+		string positionAttribute = "Position";
+		string linearVelAttribute = "LinearVelocity";
+		string angularVelAttribute = "AngularVelocity";
+		string rotationStatusAttribute = "RotationStatus";
+		string massAttribute = "Mass";
+		string restitutionCoeffAttribute = "RestitutionCoeff";
+		string dynamicFrictionAttribute = "DynamicFriction";
+		string staticFrictionAttribute = "StaticFriction";
+		string objectGeometryAttribute = "ObjectGeometry";
+		string scaleAttribute = "Scale";
+		string textureAttribute = "Texture";
+		string objectType = "ObjectType";
+		string excludeFromCollisionDetection = "ExludeFromCollisionDetection";
 
 		#endregion
 
 		#region Joint Attribute
 
-		private String jointProperties = "JointProperties";
-		private String objectIndexAAttribute = "ObjectIndexA";
-		private String objectIndexBAttribute = "ObjectIndexB";
-		private String jointType = "JointType";
-		private String positionJointAttribute = "Position";
-		private String actionAxis = "ActionAxis";
-		private String restoreCoeffAttribute = "RestoreCoefficient";
-		private String stretchCoeffAttribute = "StretchCoefficient";
-		private String linearLimitMin = "LinearLimitMin";
-		private String linearLimitMax = "LinearLimitMax";
-		private String angularLimitMin = "AngularLimitMin";
-		private String angularLimitMax = "AngularLimitMax";
+		string jointProperties = "JointProperties";
+		string objectIndexAAttribute = "ObjectIndexA";
+		string objectIndexBAttribute = "ObjectIndexB";
+		string jointType = "JointType";
+		string positionJointAttribute = "Position";
+		string actionAxis = "ActionAxis";
+		string restoreCoeffAttribute = "RestoreCoefficient";
+		string stretchCoeffAttribute = "StretchCoefficient";
+		string linearLimitMin = "LinearLimitMin";
+		string linearLimitMax = "LinearLimitMax";
+		string angularLimitMin = "AngularLimitMin";
+		string angularLimitMax = "AngularLimitMax";
 
 		#endregion
 
-		private Vector3[] translate;
+		Vector3[] translate;
 
 
 		#endregion
 
 		#region Public Fields
 
-		public readonly String FileNameObjectProperties;
+		public readonly string FileNameObjectProperties;
 
 		#endregion
 
 		#region Constructor
 
 		public LoadObject (
-			String fileNameObjectProperties)
+			string fileNameObjectProperties)
 		{
-			this.FileNameObjectProperties = fileNameObjectProperties;
+			FileNameObjectProperties = fileNameObjectProperties;
 		}
 
 		#endregion
@@ -79,14 +77,14 @@ namespace TestPhysics
 
 		public SimulationObject[] LoadSimulationObjects()
 		{
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.Load(this.FileNameObjectProperties);
+			var xmlDoc = new XmlDocument();
+			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
 			SimulationObject[] objects = new SimulationObject[xmlList.Count];
 
-			this.translate = new Vector3[xmlList.Count];
+			translate = new Vector3[xmlList.Count];
 
 			for (int i = 0; i < xmlList.Count; i++)
 			{
@@ -94,77 +92,77 @@ namespace TestPhysics
 
 				//Position
 				objects [i].SetPosition (new Vector3 (
-					Convert.ToDouble (xmlList [i] [this.positionAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [this.positionAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [this.positionAttribute].Attributes ["z"].Value)));
+					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["x"].Value),
+					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["y"].Value),
+					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["z"].Value)));
 
 				//Linear Velocity
 				objects [i].SetLinearVelocity (new Vector3 (
-					Convert.ToDouble (xmlList [i] [this.linearVelAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [this.linearVelAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [this.linearVelAttribute].Attributes ["z"].Value)));
+					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),
+					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["y"].Value),
+					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["z"].Value)));
 
 				//Angular Velocity
 				objects [i].SetAngularVelocity (new Vector3 (
-					Convert.ToDouble (xmlList [i] [this.angularVelAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [this.angularVelAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [this.angularVelAttribute].Attributes ["z"].Value)));
+					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["x"].Value),
+					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["y"].Value),
+					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["z"].Value)));
 
 				//Rotation Status
-				Vector3 versor = new Vector3 (
-					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [this.rotationStatusAttribute].Attributes ["z"].Value));
+				var versor = new Vector3 (
+					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["x"].Value),
+					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["y"].Value),
+					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["z"].Value));
 
-				double angle = Convert.ToDouble(xmlList [i][this.rotationStatusAttribute].Attributes["angle"].Value);
+				double angle = Convert.ToDouble(xmlList [i][rotationStatusAttribute].Attributes["angle"].Value);
 
 				objects [i].SetRotationStatus (new Quaternion (versor, angle));
 
 				//Object type
-				objects [i].SetObjectType ((ObjectType)Convert.ToInt32 (xmlList [i] [this.objectType].InnerText));
+				objects [i].SetObjectType ((ObjectType)Convert.ToInt32 (xmlList [i] [objectType].InnerText));
 
 				//Mass
-				objects [i].SetMass (Convert.ToDouble (xmlList [i] [this.massAttribute].InnerText));
+				objects [i].SetMass (Convert.ToDouble (xmlList [i] [massAttribute].InnerText));
 
 				//Restitution Coefficient
-				objects [i].SetRestitutionCoeff (Convert.ToDouble (xmlList [i] [this.restitutionCoeffAttribute].InnerText));
+				objects [i].SetRestitutionCoeff (Convert.ToDouble (xmlList [i] [restitutionCoeffAttribute].InnerText));
 
 				//Dynamic friction
-				objects[i].SetDynamicFrictionCoeff (Convert.ToDouble(xmlList [i][this.dynamicFrictionAttribute].InnerText));
+				objects[i].SetDynamicFrictionCoeff (Convert.ToDouble(xmlList [i][dynamicFrictionAttribute].InnerText));
 
 				//Static friction
-				objects [i].SetStaticFrictionCoeff (Convert.ToDouble (xmlList [i] [this.staticFrictionAttribute].InnerText));
+				objects [i].SetStaticFrictionCoeff (Convert.ToDouble (xmlList [i] [staticFrictionAttribute].InnerText));
 
 				//Collision detection
-				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [this.excludeFromCollisionDetection].InnerText));
+				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [excludeFromCollisionDetection].InnerText));
 
 				//Scale
-				float scale = Convert.ToSingle (xmlList [i] [this.scaleAttribute].InnerText);
+				float scale = Convert.ToSingle (xmlList [i] [scaleAttribute].InnerText);
 
 				//Object geometry file name
-				String geometryFileName = xmlList [i] [this.objectGeometryAttribute].InnerText;
+				string geometryFileName = xmlList [i] [objectGeometryAttribute].InnerText;
 
-				objects [i].ObjectGeometry = this.GetObjectGeometry (
+				objects [i].ObjectGeometry = GetObjectGeometry (
 					geometryFileName, 
 					scale);
 
 				//Inertia Tensor and Geometry
 
-				InertiaTensor inertiaTensor = new InertiaTensor (
-					objects [i].ObjectGeometry.VertexInitialPosition,
+				var inertiaTensor = new InertiaTensor (
+					objects [i].ObjectGeometry.VertexPosition,
 					objects [i].ObjectGeometry.Triangle,
 					objects [i].Mass);
 
 				//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-				for (int j = 0; j < objects [i].ObjectGeometry.VertexInitialPosition.Length; j++) 
+				for (int j = 0; j < objects [i].ObjectGeometry.VertexPosition.Length; j++) 
 				{
-					objects [i].ObjectGeometry.SetVertexInitialPosition (
-						objects [i].ObjectGeometry.VertexInitialPosition [j] - inertiaTensor.GetMassCenter (),
+					objects [i].ObjectGeometry.SetVertexPosition (
+						objects [i].ObjectGeometry.VertexPosition [j] - inertiaTensor.GetMassCenter (),
 						j);
 				}
 
-				InertiaTensor inertiaTensor1 = new InertiaTensor (
-					objects [i].ObjectGeometry.VertexInitialPosition,
+				var inertiaTensor1 = new InertiaTensor (
+					objects [i].ObjectGeometry.VertexPosition,
 					objects [i].ObjectGeometry.Triangle,
 					objects [i].Mass);
 
@@ -187,7 +185,7 @@ namespace TestPhysics
 					objects [i].ObjectGeometry.SetVertexPosition (objects [i].Position + relPositionRotate, j);
 				}
 
-				AABB box = new AABB (objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
+				var box = new AABB (objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
 					objects [i].ObjectGeometry.VertexPosition.Max (point => point.x),
 					objects [i].ObjectGeometry.VertexPosition.Min (point => point.y),
 					objects [i].ObjectGeometry.VertexPosition.Max (point => point.y),
@@ -205,8 +203,8 @@ namespace TestPhysics
 		public IConstraint[] LoadSimulationJoints(
 			SimulationObject[] objects)
 		{
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.Load(this.FileNameObjectProperties);
+			var xmlDoc = new XmlDocument();
+			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathJoints);
 
@@ -215,12 +213,12 @@ namespace TestPhysics
 			for (int i = 0; i < xmlList.Count; i++)
 			{
 				//Object index A
-				int indexA = Convert.ToInt32(xmlList[i][this.objectIndexAAttribute].InnerText);
+				int indexA = Convert.ToInt32(xmlList[i][objectIndexAAttribute].InnerText);
 
 				//Object index B
-				int indexB = Convert.ToInt32(xmlList[i][this.objectIndexBAttribute].InnerText);
+				int indexB = Convert.ToInt32(xmlList[i][objectIndexBAttribute].InnerText);
 
-				XmlNodeList jointPropertiesList = xmlList[i].SelectNodes(this.jointProperties);
+				XmlNodeList jointPropertiesList = xmlList[i].SelectNodes(jointProperties);
 
 				IConstraint[] joint = new IConstraint[jointPropertiesList.Count];
 
@@ -228,22 +226,22 @@ namespace TestPhysics
 				{
 
 					//Joint type
-					JointType jointType = (JointType)Convert.ToInt32(jointPropertiesList[j][this.jointType].InnerText);
+					var jointType = (JointType)Convert.ToInt32(jointPropertiesList[j][this.jointType].InnerText);
 
 					//Restore coefficient
-					double K = Convert.ToDouble(jointPropertiesList[j][this.restoreCoeffAttribute].InnerText);
+					double K = Convert.ToDouble(jointPropertiesList[j][restoreCoeffAttribute].InnerText);
 
 					//Stretch coefficient
-					double C = Convert.ToDouble(jointPropertiesList[j][this.stretchCoeffAttribute].InnerText);
+					double C = Convert.ToDouble(jointPropertiesList[j][stretchCoeffAttribute].InnerText);
 
 					//Position
-					Vector3 startAnchorPosition = new Vector3(
-						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["x"].Value),
-						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["y"].Value),
-						Convert.ToDouble(jointPropertiesList[j][this.positionJointAttribute].Attributes["z"].Value));
+					var startAnchorPosition = new Vector3(
+						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["x"].Value),
+						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["y"].Value),
+						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["z"].Value));
 
 					//Action Axis
-					Vector3 actionAxis = new Vector3(
+					var actionAxis = new Vector3(
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["x"].Value),
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["y"].Value),
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["z"].Value));
@@ -278,7 +276,7 @@ namespace TestPhysics
 								K,
 								C);
 
-							joint[j].SetLinearLimit(Convert.ToDouble(jointPropertiesList[j][this.linearLimitMin].InnerText), Convert.ToDouble(jointPropertiesList[j][this.linearLimitMax].InnerText));
+							joint[j].SetLinearLimit(Convert.ToDouble(jointPropertiesList[j][linearLimitMin].InnerText), Convert.ToDouble(jointPropertiesList[j][linearLimitMax].InnerText));
 
 							break;
 
@@ -293,12 +291,12 @@ namespace TestPhysics
 								C);
 
 							joint[j].SetAxis1AngularLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
 							joint[j].SetLinearLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.linearLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.linearLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][linearLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][linearLimitMax].InnerText));
 							
 							break;
 
@@ -313,8 +311,8 @@ namespace TestPhysics
 								C);
 
 							joint[j].SetAxis1AngularLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
 							joint[j].SetAxis1Motor(3.0, 0.15);
 							break;
@@ -331,11 +329,11 @@ namespace TestPhysics
 								C);
 
 							joint[j].SetAxis1AngularLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 							joint[j].SetAxis2AngularLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 							break;
 
 						case JointType.Hinge2:
@@ -351,16 +349,13 @@ namespace TestPhysics
 								C);
 
 							joint[j].SetAxis1AngularLimit(
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMin].InnerText),
-								Convert.ToDouble(jointPropertiesList[j][this.angularLimitMax].InnerText));
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
+								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
 							//joint[j].SetAxis2Motor(4.0, 3.0);
 
-
 							break;
 
-						default:
-							break;
 					}
 					joints[i] = joint[j];
 				}
@@ -373,8 +368,8 @@ namespace TestPhysics
 
 		public int[] GetOpenGLObjectList()
 		{
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.Load(this.FileNameObjectProperties);
+			var xmlDoc = new XmlDocument();
+			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
@@ -383,17 +378,17 @@ namespace TestPhysics
 			for (int i = 0; i < xmlList.Count; i++) 
 			{
 				//Object geometry file name
-				String geometryFileName = xmlList [i] [this.objectGeometryAttribute].InnerText;
+				string geometryFileName = xmlList [i] [objectGeometryAttribute].InnerText;
 
 				//Scale
-				float scale = Convert.ToSingle (xmlList [i] [this.scaleAttribute].InnerText);
+				float scale = Convert.ToSingle (xmlList [i] [scaleAttribute].InnerText);
 
-				loadObjects[i]  = this.LoadObjSolid (geometryFileName, scale);
+				loadObjects[i]  = LoadObjSolid (geometryFileName, scale);
 			}
 
 			return OpenGLUtilities.LoadGLObjects (
 				loadObjects,
-				this.translate,
+				translate,
 				xmlList.Count,
 				true,
 				false,
@@ -402,8 +397,8 @@ namespace TestPhysics
 
 		public int[] LoadTexture()
 		{
-			XmlDocument xmlDoc = new XmlDocument();
-			xmlDoc.Load(this.FileNameObjectProperties);
+			var xmlDoc = new XmlDocument();
+			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
@@ -412,7 +407,7 @@ namespace TestPhysics
 			for (int i = 0; i < xmlList.Count; i++) 
 			{
 				//Object geometry file name
-				String textureFileName = xmlList [i] [this.textureAttribute].InnerText;
+				string textureFileName = xmlList [i] [textureAttribute].InnerText;
 
 				textureID[i] = OpenGLUtilities.LoadTexture(textureFileName);
 			}
@@ -426,10 +421,10 @@ namespace TestPhysics
 		#region Private Methods
 
 		private LoadResult LoadObjSolid(
-			String fileName,
+			string fileName,
 			float scale)
 		{
-			ObjLoaderFactory objLoaderFactory = new ObjLoaderFactory ();
+			var objLoaderFactory = new ObjLoaderFactory ();
 			var objLoader = objLoaderFactory.Create ();
 			var fileStream = new FileStream (fileName, FileMode.OpenOrCreate);
 			LoadResult solid = objLoader.Load (fileStream);
@@ -442,10 +437,10 @@ namespace TestPhysics
 		}
 
 		private ObjectGeometry GetObjectGeometry(
-			String fileName,
+			string fileName,
 			float scale)
 		{
-			LoadResult objectGeometry = this.LoadObjSolid (fileName, scale);
+			LoadResult objectGeometry = LoadObjSolid (fileName, scale);
 
 			Vector3[] vertexStartPoint = new Vector3[objectGeometry.Vertices.Count];
 
@@ -468,7 +463,6 @@ namespace TestPhysics
 			}
 
 			return new ObjectGeometry (
-				vertexStartPoint,
 				vertexStartPoint,
 				triangleIndex);
 		}

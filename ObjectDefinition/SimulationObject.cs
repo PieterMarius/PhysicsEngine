@@ -126,7 +126,7 @@ namespace SimulationObjectDefinition
 		#region Simulation Properties
 
 		/// <summary>
-		/// Gets a value indicating whether this <see cref="ObjectDefinition.SimulationObject"/> exclude from collision detection.
+		/// Gets a value indicating whether this SimulationObject exclude from collision detection.
 		/// </summary>
 		/// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
 		public bool ExcludeFromCollisionDetection{ get; private set; } 
@@ -206,16 +206,16 @@ namespace SimulationObjectDefinition
 
 		public void SetExcludeFromCollisionDetection(bool excludeFromCollisionDetection)
 		{
-			this.ExcludeFromCollisionDetection = excludeFromCollisionDetection;
+			ExcludeFromCollisionDetection = excludeFromCollisionDetection;
 		}
 
 		public void SetRelativePosition()
 		{
-			if (ObjectGeometry.VertexInitialPosition.Length > 0) 
+			if (ObjectGeometry.VertexPosition.Length > 0) 
 			{
-				RelativePositions = new Vector3[ObjectGeometry.VertexInitialPosition.Length];
-				for (int i = 0; i < ObjectGeometry.VertexInitialPosition.Length; i++) 
-					RelativePositions [i] = ObjectGeometry.VertexInitialPosition [i] - StartPosition;
+				RelativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
+				for (int i = 0; i < ObjectGeometry.VertexPosition.Length; i++) 
+					RelativePositions [i] = ObjectGeometry.VertexPosition [i] - StartPosition;
 			}
 		}
 

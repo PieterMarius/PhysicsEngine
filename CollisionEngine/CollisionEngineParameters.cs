@@ -17,16 +17,28 @@ namespace CollisionEngine
 		/// <value>The max EPA iteration.</value>
 		public int MaxEPAIteration { get; private set; }
 
-		//parametro di stabilizzazione del motore delle collisioni
+		/// <summary>
+		/// Gets the stabilization parameter for collision engine.
+		/// </summary>
+		/// <value>The precision.</value>
 		public double Precision { get; private set; }
 
-		//Parametro tolleranza scelta dei punti di collisione
+		/// <summary>
+		/// Gets the GJK Manifold tolerance.
+		/// </summary>
+		/// <value>The GJKM anifold tolerance.</value>
 		public double GJKManifoldTolerance { get; private set;}
 
-		//Parametro tolleranza scelta dei punti di collisione
+		/// <summary>
+		/// Gets the EPA Manifold tolerance parameter.
+		/// </summary>
+		/// <value>The EPAM anifold tolerance.</value>
 		public double EPAManifoldTolerance { get; private set;}
 
-		//Parametro per stabilire il numero di punti utili per determinare la collisione
+		/// <summary>
+		/// Gets the manifold points number.
+		/// </summary>
+		/// <value>The manifold point number.</value>
 		public int ManifoldPointNumber { get; private set;}
 
 		/// <summary>
@@ -48,17 +60,16 @@ namespace CollisionEngine
 		public CollisionEngineParameters ()
 		{
 			MaxGJKIteration = 7;
-			MaxEPAIteration = 5;
+			MaxEPAIteration = 10;
 			Precision = 0.0000001;
 			GJKManifoldTolerance = 0.006;
-			EPAManifoldTolerance = 0.006;
+			EPAManifoldTolerance = 0.005;
 			ManifoldPointNumber = 4;
 			MaxThreadNumber = 4;
 			ActivateSweepAndPrune = true;
 		}
 
 		public CollisionEngineParameters (
-			double collisionDelta,
 			int maxGJKIteration,
 			int maxEPAIteration,
 			double precision,
