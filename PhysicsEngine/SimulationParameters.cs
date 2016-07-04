@@ -55,6 +55,12 @@ namespace MonoPhysicsEngine
 		public double CollisionDistance { get; private set; }
 
 		/// <summary>
+		/// Gets the compenetration tolerance.
+		/// </summary>
+		/// <value>The compenetration tolerance.</value>
+		public double CompenetrationTolerance { get; private set; }
+
+		/// <summary>
 		/// Gets the external force.
 		/// </summary>
 		/// <value>The external force.</value>
@@ -80,12 +86,13 @@ namespace MonoPhysicsEngine
 		{
 			TimeStep = 0.015;
 			CFM = 0.001;
-			BaumStabilization = 27;
+			BaumStabilization = 15;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.000001;
 			DiscreteCCD = false;
 			CollisionDistance = 0.0001;
+			CompenetrationTolerance = 0.001;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;
 			MaxThreadNumber = 4;
@@ -100,6 +107,7 @@ namespace MonoPhysicsEngine
 			double shiftToStaticFrictionTolerance,
 			bool discreteCCD,
 			double collisionDistance,
+			double compenetrationTolerance,
 			Vector3 externalForce,
 			int maxThreadNumber)
 		{
@@ -111,6 +119,7 @@ namespace MonoPhysicsEngine
 			ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
 			DiscreteCCD = discreteCCD;
 			CollisionDistance = collisionDistance;
+			CompenetrationTolerance = compenetrationTolerance;
 			ExternalForce = externalForce;
 			MaxThreadNumber = maxThreadNumber;
 		}

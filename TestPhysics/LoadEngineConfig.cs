@@ -62,6 +62,8 @@ namespace TestPhysics
                                 Convert.ToDouble (xmlList [0] [this.shiftToStaticFrictionTolerance].InnerText),
                                 Convert.ToBoolean (xmlList [0] [this.discreteCCD].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.collisionDistance].InnerText),
+								//TODO
+								Convert.ToDouble(xmlList[0][this.collisionDistance].InnerText),
                                 new Vector3 (Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["x"].Value),
                                     Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["y"].Value),
                                     Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["z"].Value)),

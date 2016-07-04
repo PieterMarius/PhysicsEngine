@@ -1,6 +1,4 @@
-﻿using System;
-using SimulationObjectDefinition;
-
+﻿
 namespace CollisionEngine
 {
 	public class EPAOutput
@@ -18,8 +16,8 @@ namespace CollisionEngine
 			double compenetrationDistance,
 			CollisionPoint collisionPoint)
 		{
-			this.CompenetrationDistance = compenetrationDistance;
-			this.CollisionPoint = collisionPoint;
+			CompenetrationDistance = compenetrationDistance;
+			CollisionPoint = collisionPoint;
 		}
 
 		#endregion

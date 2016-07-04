@@ -524,7 +524,8 @@ namespace MonoPhysicsEngine
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.RunTestCollision (
 				objectsGeometry,
-				SimulationEngineParameters.CollisionDistance);
+				SimulationEngineParameters.CollisionDistance,
+				SimulationEngineParameters.CompenetrationTolerance);
 			
 			stopwatch.Stop ();
 

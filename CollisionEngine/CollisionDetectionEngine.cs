@@ -52,19 +52,22 @@ namespace CollisionEngine
 		/// <param name="minDistance">Minimum distance.</param>
 		public List<CollisionPointStructure> RunTestCollision(
 			ObjectGeometry[] objects,
-			double minDistance)
+			double minDistance,
+			double compenetrationTolerance)
 		{
 			if (collisionEngineParameters.ActivateSweepAndPrune) 
 			{
-				return SweepAndPruneBroadPhase (
+				return SweepAndPruneBroadPhase(
 					objects,
-					minDistance);
+					minDistance,
+					compenetrationTolerance);
 			} 
 			else 
 			{
-				return BruteForceBroadPhase (
+				return BruteForceBroadPhase(
 					objects,
-					minDistance);
+					minDistance,
+					compenetrationTolerance);
 			}
 		}
 
@@ -88,7 +91,8 @@ namespace CollisionEngine
 			ObjectGeometry B,
 			int indexA,
 			int indexB,
-			double minDistance)
+			double minDistance,
+			double compenetrationTolerance)
 		{
 			
 			GJKOutput gjkOutput = collisionEngine.ExecuteGJKAlgorithm (A, B);
@@ -119,35 +123,40 @@ namespace CollisionEngine
 
 			if (gjkOutput.Intersection)
 			{
-				Support[] startTriangle = new Support[4];
-				startTriangle [0] = gjkOutput.MinSimplex.Support [0];
-				startTriangle [1] = gjkOutput.MinSimplex.Support [1];
-				startTriangle [2] = gjkOutput.MinSimplex.Support [2];
-				startTriangle [3] = gjkOutput.MinSimplex.Support [3];
+				Support[] startTriangle = new Support[4]; 
+				Array.Copy(gjkOutput.MinSimplex.Support, startTriangle, startTriangle.Length);
 
 				EPAOutput epaOutput = compenetrationCollisionEngine.GetCompenetrationDistance (
 					                      A,
 					                      B,
 					                      startTriangle);
 
-				var mpg = new ManifoldPointsGenerator (
-					                              collisionEngineParameters.ManifoldPointNumber,
-					                              collisionEngineParameters.EPAManifoldTolerance,
-					                              0.00001);
+				if (epaOutput.CompenetrationDistance <= compenetrationTolerance)
+				{
+					epaOutput = new EPAOutput(
+						0.0,
+						epaOutput.CollisionPoint);
+				}
 
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
-					                                           A,
-					                                           B,
-					                                           epaOutput.CollisionPoint,
-					                                           epaOutput.CollisionPoint.collisionNormal);
+				var mpg = new ManifoldPointsGenerator(
+												  collisionEngineParameters.ManifoldPointNumber,
+												  collisionEngineParameters.EPAManifoldTolerance,
+												  0.00001);
 
-				return new CollisionPointStructure (
+				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+															   A,
+															   B,
+															   epaOutput.CollisionPoint,
+															   epaOutput.CollisionPoint.collisionNormal);
+
+				return new CollisionPointStructure(
 					indexA,
 					indexB,
 					gjkOutput.Intersection,
 					epaOutput.CompenetrationDistance,
 					epaOutput.CollisionPoint,
-					collisionPointsList.ToArray ());
+					collisionPointsList.ToArray());
+				
 			} 
 
 			return null;
@@ -155,7 +164,8 @@ namespace CollisionEngine
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
 			ObjectGeometry[] objects,
-			double minDistance)
+			double minDistance,
+			double compenetrationTolerance)
 		{
 			
 			var result = new List<CollisionPointStructure> ();
@@ -174,7 +184,8 @@ namespace CollisionEngine
 									                                              objects [j],
 									                                              i,
 									                                              j,
-									                                              minDistance);
+									                                              minDistance,
+																				  compenetrationTolerance);
 
 								lock (lockMe) {    
 									if (collisionPointStruct != null)
@@ -190,7 +201,8 @@ namespace CollisionEngine
 
 		private List<CollisionPointStructure> SweepAndPruneBroadPhase(
 			ObjectGeometry[] objects,
-			double minDistance)
+			double minDistance,
+			double compenetrationTolerance)
 		{
 			var result = new List<CollisionPointStructure> ();
 
@@ -204,12 +216,13 @@ namespace CollisionEngine
 				collisionPair, 
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				pair => {
-					CollisionPointStructure collisionPointStruct = NarrowPhase (
-						objects [pair.objectIndexA], 
-						objects [pair.objectIndexB],
+					CollisionPointStructure collisionPointStruct = NarrowPhase(
+						objects[pair.objectIndexA],
+						objects[pair.objectIndexB],
 						pair.objectIndexA,
 						pair.objectIndexB,
-						minDistance);
+						minDistance,
+						compenetrationTolerance);
 
 					lock (lockMe) {
 						if (collisionPointStruct != null)
