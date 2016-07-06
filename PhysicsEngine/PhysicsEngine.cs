@@ -158,7 +158,7 @@ namespace MonoPhysicsEngine
 						if (simulationJoints[i].GetObjectIndexA() == objectIndex ||
 							simulationJoints[i].GetObjectIndexB() == objectIndex)
 						{
-							Removejoint(i);
+							RemoveJoint(i);
 						}
 					}
 
@@ -214,7 +214,7 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-		public void Removejoint(int jointIndex)
+		public void RemoveJoint(int jointIndex)
 		{
 			if (simulationJoints != null &&
 			   simulationJoints.Count > jointIndex)
@@ -306,10 +306,6 @@ namespace MonoPhysicsEngine
 			physicsExecutionFlow ();
 
 			#endregion
-
-			//simulationObjectsCCD = new SimulationObject[SimulationObjects.Length];
-			//Array.Copy (SimulationObjects, simulationObjectsCCD, SimulationObjects.Length);
-
 		}
 
 		public void SimulateCCD()
