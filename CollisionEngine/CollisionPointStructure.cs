@@ -5,22 +5,34 @@ namespace CollisionEngine
 	{
 		#region Public Properties
 
-		//Indice relativo alla lista di SimulationObject
+		/// <summary>
+		/// The object a.
+		/// </summary>
 		public readonly int ObjectA;
 
-		//Indice relativo alla lista di SimulationObject
+		/// <summary>
+		/// The object b.
+		/// </summary>
 		public readonly int ObjectB;
 
-		//Distanza tra gli oggetti che stanno collidendo
+		/// <summary>
+		/// The object distance.
+		/// </summary>
 		public readonly double ObjectDistance;
 
-		//indica se c'è o meno intersezione tra gli oggetti
+		/// <summary>
+		/// Check intersection.
+		/// </summary>
 		public readonly bool Intersection;
 
-		//punto di collisione
+		/// <summary>
+		/// The collision point.
+		/// </summary>
 		public readonly CollisionPoint CollisionPoint;
 
-		//Lista dei punti di collisione
+		/// <summary>
+		/// The collision points.
+		/// </summary>
 		public readonly CollisionPoint[] CollisionPoints;
 
 		#endregion

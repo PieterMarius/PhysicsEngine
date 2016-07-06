@@ -7,11 +7,6 @@ namespace LCPSolver
     {
 		#region Fields
 
-		/// <summary>
-		/// Successive over relaxation term.
-		/// </summary>
-		double SOR;
-
 		double MSE;
 
 		public readonly SolverParameters SolverParameters;
@@ -24,7 +19,6 @@ namespace LCPSolver
 			SolverParameters solverParameters)
         {
 			SolverParameters = solverParameters;
-			SOR = SolverParameters.SOR;
         }
 
         #endregion
@@ -43,7 +37,7 @@ namespace LCPSolver
 				oldX [i] = X [i];
 			}
 
-			double internalSOR = SOR;
+			double internalSOR = SolverParameters.SOR;
 
 			for (int k = 0; k < SolverParameters.MaxIteration; k++) 
 			{
@@ -91,7 +85,7 @@ namespace LCPSolver
 
         public void SetSuccessiveOverRelaxation(double SOR)
         {
-            this.SOR = SOR;
+			SolverParameters.SetSOR(SOR);
         }
 
 		/// <summary>

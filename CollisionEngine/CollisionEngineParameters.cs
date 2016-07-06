@@ -107,6 +107,16 @@ namespace CollisionEngine
 		{
 			Precision = precision;
 		}
+
+		public void SetSweepAndPrune(bool activate)
+		{
+			ActivateSweepAndPrune = activate;
+		}
+
+		public void SetManifoldPoints(int manifoldPointNumber)
+		{
+			ManifoldPointNumber = manifoldPointNumber;
+		}
 			
 		#endregion
 	}

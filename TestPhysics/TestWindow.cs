@@ -60,8 +60,8 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				LoadObject loadObject = new LoadObject ("startConfig.xml");
-				//LoadObject loadObject = new LoadObject ("carConfig.xml");
+				//LoadObject loadObject = new LoadObject ("startConfig.xml");
+				LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -80,14 +80,13 @@ namespace TestPhysics
 				
 				//Set Physics engine
 				simulationParameters = new SimulationParameters();
-				//simulationParameters.SetExternalForce (new PhysicsEngineMathUtility.Vector3 (0.0, -4.9, 0.0));
 				
 				physicsEngine = new PhysicsEngine(
 					simulationParameters,
 					collisionEngineParameters,
 					solverParameters);
 
-				//physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
+				physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
 				for (int i = 0; i < simulationObjects.Count (); i++) 
 				{
@@ -98,6 +97,10 @@ namespace TestPhysics
 				{
 					physicsEngine.AddJoint (simulationJoints [i]);
 				}
+
+				var obj = physicsEngine.GetJointsList();
+
+				obj.Add(null);
 
 				#region Object Removing
 
@@ -166,7 +169,7 @@ namespace TestPhysics
 			//displayVertex (1);
 			//displayVertex (2);
 
-			for (int i = 0; i < physicsEngine.SimulationObjects.Length; i++) 
+			for (int i = 0; i < physicsEngine.ObjectCount(); i++) 
 				SetOpenGLObjectMatrix (i);
 				
 			GL.Flush ();
@@ -208,9 +211,9 @@ namespace TestPhysics
 					collPoint.Clear();
 
 					physicsEngine.Simulate(null);
-					for (int i = 0; i < physicsEngine.SimulationJoints.Count; i++)
+					for (int i = 0; i < physicsEngine.JointsCount(); i++)
 					{
-						physicsEngine.SimulationJoints[i].AddTorque(physicsEngine.SimulationObjects, 0.0, 0.4);
+						physicsEngine.GetJoint(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
 					}
 
 					stopwatch.Stop();
@@ -495,16 +498,18 @@ namespace TestPhysics
 
 		private void displayJoint()
 		{
-			List<IConstraint> jointList = physicsEngine.SimulationJoints;
+			
 
-			for (int i = 0; i < jointList.Count; i++) 
+			for (int i = 0; i < physicsEngine.JointsCount(); i++) 
 			{
 					GL.PushMatrix ();
 
+				IConstraint joint = physicsEngine.GetJoint(i);
+
 					Matrix4 mView = Matrix4.CreateTranslation (
-						                Convert.ToSingle (jointList [i].GetAnchorPosition ().x), 
-						                Convert.ToSingle (jointList [i].GetAnchorPosition ().y), 
-						                Convert.ToSingle (jointList [i].GetAnchorPosition ().z));
+						                Convert.ToSingle (joint.GetAnchorPosition ().x), 
+						                Convert.ToSingle (joint.GetAnchorPosition ().y), 
+						                Convert.ToSingle (joint.GetAnchorPosition ().z));
 
 					var dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,

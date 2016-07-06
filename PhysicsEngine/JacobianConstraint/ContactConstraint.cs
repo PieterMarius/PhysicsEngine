@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CollisionEngine;
 using SimulationObjectDefinition;
 using PhysicsEngineMathUtility;
@@ -60,10 +61,16 @@ namespace MonoPhysicsEngine
 					#region Normal direction contact
 
 					double correctionParameter = (collisionPointStr.Intersection) ? 
-						collisionPointStr.ObjectDistance * simulationParameters.BaumStabilization :
+						Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) * 
+					        simulationParameters.BaumStabilization 
+					        :
 						0.0;
 
-					double correctedBounce = linearComponentA.Dot (relativeVelocity) * restitutionCoefficient + correctionParameter;
+					double linearComponent = linearComponentA.Dot(relativeVelocity);
+
+					double correctedBounce = linearComponent *
+											 restitutionCoefficient +
+											 correctionParameter;
 
 					JacobianContact normalContact = JacobianCommon.GetDOF (
 						indexA,

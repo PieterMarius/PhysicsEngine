@@ -7,8 +7,7 @@ namespace CollisionEngine
 	{
 		List<CollisionPointStructure> RunTestCollision (
 			ObjectGeometry[] objects,
-			double minDistance,
-			double compenetrationTolerance);
+			double minDistance);
 
 	}
 }
