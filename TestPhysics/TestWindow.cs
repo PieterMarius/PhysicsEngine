@@ -426,9 +426,9 @@ namespace TestPhysics
 					GL.PushMatrix ();
 
 					Matrix4 mView = Matrix4.CreateTranslation (
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointA.x), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointA.y), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointA.z));
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.x), 
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.y), 
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.z));
 
 					var dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,
@@ -447,9 +447,9 @@ namespace TestPhysics
 					GL.PushMatrix ();
 
 					Matrix4 mView1 = Matrix4.CreateTranslation (
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointB.x), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointB.y), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].collisionPointB.z));
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.x), 
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.y), 
+						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.z));
 
 					var dmviewData1 = new float[] {
 						mView1.M11, mView1.M12, mView1.M13, mView1.M14,

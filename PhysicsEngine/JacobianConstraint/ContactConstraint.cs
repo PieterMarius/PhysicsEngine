@@ -33,15 +33,15 @@ namespace MonoPhysicsEngine
 					Vector3 collisionPoint;
 
 					if (collisionPointStr.Intersection)
-						collisionPoint = collisionPointStr.CollisionPoints [k].collisionPointA;
+						collisionPoint = collisionPointStr.CollisionPoints [k].CollisionPointA;
 					else
-						collisionPoint = (collisionPointStr.CollisionPoints [k].collisionPointA +
-							collisionPointStr.CollisionPoints [k].collisionPointB) * 0.5;
+						collisionPoint = (collisionPointStr.CollisionPoints [k].CollisionPointA +
+							collisionPointStr.CollisionPoints [k].CollisionPointB) * 0.5;
 
 					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
 					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
 
-					Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPoints [k].collisionNormal).Normalize ();
+					Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPoints [k].CollisionNormal).Normalize ();
 					Vector3 linearComponentB = -1.0 * linearComponentA;
 
 					Vector3 angularComponentA = ra.Cross (linearComponentA);

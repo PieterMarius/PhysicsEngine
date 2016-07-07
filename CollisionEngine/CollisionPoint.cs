@@ -4,9 +4,10 @@ namespace CollisionEngine
 {
 	public class CollisionPoint
 	{
-		public readonly Vector3 collisionPointA;
-		public readonly Vector3 collisionPointB;
-		public readonly Vector3 collisionNormal;
+		public readonly Vector3 CollisionPointA;
+		public readonly Vector3 CollisionPointB;
+		public readonly Vector3 CollisionNormal;
+		public double StartImpulseValue;
 
 		#region "Constructors"
 
@@ -17,11 +18,21 @@ namespace CollisionEngine
 		public CollisionPoint (
 			Vector3 collisionPointA,
 			Vector3 collisionPointB,
-			Vector3 collisionNormal)
+			Vector3 collisionNormal,
+			double startImpulseValue)
 		{
-			this.collisionPointA = collisionPointA;
-			this.collisionPointB = collisionPointB;
-			this.collisionNormal = collisionNormal;
+			this.CollisionPointA = collisionPointA;
+			this.CollisionPointB = collisionPointB;
+			this.CollisionNormal = collisionNormal;
+			StartImpulseValue = startImpulseValue;
+		}
+
+		public CollisionPoint (
+			Vector3 collisionPointA,
+			Vector3 collisionPointB,
+			Vector3 collisionNormal)
+			:this(collisionPointA, collisionPointB, collisionNormal, 0.0)
+		{
 		}
 
 		#endregion

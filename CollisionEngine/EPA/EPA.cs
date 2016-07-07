@@ -476,7 +476,6 @@ namespace CollisionEngine
 			ObjectGeometry objectB,
 			Support[] startTriangles)
 		{
-
 			EpaCollisionPoint epaCollisionPoint = this.executeEPAEngine (
 				                                      objectA,
 				                                      objectB,

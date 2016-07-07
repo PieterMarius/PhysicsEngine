@@ -136,7 +136,7 @@ namespace CollisionEngine
 															   A,
 															   B,
 															   epaOutput.CollisionPoint,
-															   epaOutput.CollisionPoint.collisionNormal);
+															   epaOutput.CollisionPoint.CollisionNormal);
 
 				return new CollisionPointStructure(
 					indexA,

@@ -446,8 +446,8 @@ namespace MonoPhysicsEngine
 						//Update Objects velocity
 						updateVelocity(
 							contactArray,
-							X,
-							simulationObjects);
+							simulationObjects,
+							X);
 					}
 				}
 			}
@@ -538,8 +538,8 @@ namespace MonoPhysicsEngine
 						else
 						{
 							IConstraint smJoint = simulationJoints.Find(item =>
-																	 item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
-																	 item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
+												  item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
+												  item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
 							partJoint.Add(smJoint);
 
 						}
@@ -576,8 +576,7 @@ namespace MonoPhysicsEngine
 
 			foreach (IConstraintBuilder constraintItem in simulationJointList)
 			{
-				constraint.AddRange(
-					constraintItem.BuildJacobian(simulationObjs));
+				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
 			}
 
 			#endregion
@@ -730,7 +729,8 @@ namespace MonoPhysicsEngine
 					simulationObjects [contactA.ObjectB].InertiaTensor * contactB.AngularComponentB);
 			}
 
-			return (linearA + angularA) + (linearB + angularB);
+			return (linearA + angularA) +
+				   (linearB + angularB);
 		}
 
 		#endregion
@@ -742,24 +742,26 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private void updateVelocity(
 			JacobianContact[] contact,
-			double[] X,
-			SimulationObject[] simulationObj)
+			SimulationObject[] simulationObj,
+			double[] X)
 		{
 			int index = 0;
 			foreach (JacobianContact ct in contact) 
 			{
+				double impulse = X [index];
+
 				updateObjectVelocity(
 					simulationObj,
 					ct.LinearComponentA,
 					ct.AngularComponentA,
-					X[index],
+					impulse,
 					ct.ObjectA);
 
 				updateObjectVelocity(
 					simulationObj,
 					ct.LinearComponentB,
 					ct.AngularComponentB,
-					X[index],
+					impulse,
 					ct.ObjectB);
 				
 				index++;
@@ -880,8 +882,7 @@ namespace MonoPhysicsEngine
 					#region Update Object Vertex Position
 
 					if (simObj.ObjectGeometry != null &&
-						(linearVelocity > 0.0 ||
-						angularVelocity > 0.0)) 
+						(linearVelocity > 0.0 || angularVelocity > 0.0)) 
 					{
 						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++) 
 						{

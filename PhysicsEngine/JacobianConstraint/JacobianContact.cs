@@ -18,6 +18,16 @@ namespace MonoPhysicsEngine
 		public readonly int ObjectB;
 
 		/// <summary>
+		/// The index of the collision struct.
+		/// </summary>
+		public readonly int? CollisionStructIndex;
+
+		/// <summary>
+		/// The index of the collision point.
+		/// </summary>
+		public readonly int? CollisionPointIndex; 
+
+		/// <summary>
 		/// The contact reference.
 		/// </summary>
 		public readonly int? ContactReference;
@@ -58,14 +68,14 @@ namespace MonoPhysicsEngine
 		public readonly double ConstraintLimit;
 
 		/// <summary>
-		/// The suggested start value for solver solution find.
-		/// </summary>
-		public readonly double StartImpulseValue;
-
-		/// <summary>
 		/// The CFM (Constraint Force Mixing).
 		/// </summary>
 		public readonly double CFM;
+
+		/// <summary>
+		/// The suggested start value for solver solution find.
+		/// </summary>
+		public readonly double StartImpulseValue;
 
 		#endregion
 
@@ -83,7 +93,9 @@ namespace MonoPhysicsEngine
 			double b,
 			double cfm,
 			double constraintLimit,
-			double startImpulseValue)
+			double startImpulseValue,
+			int? collisionStructIndex,
+			int? collisionPointIndex)
 		{
 			ObjectA = objectA;
 			ObjectB = objectB;
@@ -97,7 +109,29 @@ namespace MonoPhysicsEngine
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
 			StartImpulseValue = startImpulseValue;
+			CollisionStructIndex = collisionStructIndex;
+			CollisionPointIndex = collisionPointIndex;
 		}
+
+		public JacobianContact (
+			int objectA,
+			int objectB,
+			int? contactReference,
+			Vector3 linearComponentA,
+			Vector3 linearComponentB,
+			Vector3 angularComponentA,
+			Vector3 angularComponentB,
+			ConstraintType type,
+			double b,
+			double cfm,
+			double constraintLimit,
+			double startImpulseValue)
+			:this(objectA, objectB, contactReference, linearComponentA, linearComponentB,
+				angularComponentA, angularComponentB, type, b, cfm, constraintLimit, startImpulseValue,
+				null, null)
+		{
+		}
+
 
 		#endregion
 	}

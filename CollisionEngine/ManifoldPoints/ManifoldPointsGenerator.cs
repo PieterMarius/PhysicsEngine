@@ -39,13 +39,13 @@ namespace CollisionEngine
 		{
 			List<Vector3> collisionA = getNearestPoint (
 				objectA,
-				collisionPoint.collisionPointA,
+				collisionPoint.CollisionPointA,
 				collisionNormal,
 				ManifoldPlaneTolerance);
 
 			List<Vector3> collisionB = getNearestPoint (
 				objectB,
-				collisionPoint.collisionPointB,
+				collisionPoint.CollisionPointB,
 				collisionNormal,
 				ManifoldPlaneTolerance);
 
@@ -113,13 +113,13 @@ namespace CollisionEngine
 				{
 					Vector3 project = ca [i] -
 						(na * (Vector3.Dot (na, ca [i]) +
-							Vector3.Dot (na * -1.0, initPoint.collisionPointB)));
+							Vector3.Dot (na * -1.0, initPoint.CollisionPointB)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon (
 						cb,
 						project,
 						na,
-						initPoint.collisionPointB);
+						initPoint.CollisionPointB);
 
 					//Inserito il minore per gestire problemi di approssimazione
 					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
@@ -139,13 +139,13 @@ namespace CollisionEngine
 				{
 					Vector3 project = cb [i] -
 						(na * (Vector3.Dot (na, cb[i]) +
-							Vector3.Dot (na * -1.0, initPoint.collisionPointA)));
+							Vector3.Dot (na * -1.0, initPoint.CollisionPointA)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon (
 						ca,
 						project,
 						na,
-						initPoint.collisionPointA);
+						initPoint.CollisionPointA);
 
 					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
 					{
@@ -175,7 +175,7 @@ namespace CollisionEngine
 					ca [1],
 					cb [0],
 					cb [1],
-					cp.collisionNormal);
+					cp.CollisionNormal);
 
 				if (collisionP != null)
 					result.Add (collisionP);
@@ -202,7 +202,7 @@ namespace CollisionEngine
 							ca [(i + 1) % ca.Length],
 							cb [0],
 							cb [1],
-							cp.collisionNormal);
+							cp.CollisionNormal);
 
 						if (collisionP != null)
 							result.Add (collisionP);
@@ -231,7 +231,7 @@ namespace CollisionEngine
 							ca [1],
 							cb [i],
 							cb [(i + 1) % cb.Length],
-							cp.collisionNormal);
+							cp.CollisionNormal);
 
 						if (collisionP != null)
 							result.Add (collisionP);
@@ -263,7 +263,7 @@ namespace CollisionEngine
 							ca [(i + 1) % ca.Length],
 							cb [j],
 							cb [(j + 1) % cb.Length],
-							cp.collisionNormal);
+							cp.CollisionNormal);
 						
 						if (collisionP != null)
 							result.Add (collisionP);
@@ -289,18 +289,19 @@ namespace CollisionEngine
 			{
 				var center = new Vector3();
 				for (int i = 0; i < cpList.Count; i++)
-					center = center + cpList [i].collisionPointA;
+					center = center + cpList [i].CollisionPointA;
 
 				center = center / Convert.ToDouble(cpList.Count);
 
 				while (cpList.Count > ManifoldPointNumber) 
 				{
 					int index = 0;
-					double min = Vector3.Length (cpList [0].collisionPointA - center);
+					double min = Vector3.Length (cpList [0].CollisionPointA - center);
 					for (int i = 1; i < cpList.Count; i++) 
 					{
-						double minx = Vector3.Length (cpList [i].collisionPointA - center);
-						if (minx < min) {
+						double minx = Vector3.Length (cpList [i].CollisionPointA - center);
+						if (minx < min) 
+						{
 							min = minx;
 							index = i;
 						}
