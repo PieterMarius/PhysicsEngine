@@ -99,7 +99,7 @@ namespace MonoPhysicsEngine
 		{
 			SolverParam = solverParameters;
 
-			SetSolver(SolverType.ProjectedGaussSeidel);
+			SetSolver(SolverType.NonLinearConjugateGradient);
 
 			CollisionEngineParam = collisionEngineParameters;
 

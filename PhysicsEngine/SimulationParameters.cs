@@ -102,7 +102,7 @@ namespace MonoPhysicsEngine
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;
-			MaxThreadNumber = 4;
+			MaxThreadNumber = 2;
 		}
 
 		public SimulationParameters (

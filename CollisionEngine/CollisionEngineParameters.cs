@@ -65,7 +65,7 @@ namespace CollisionEngine
 			GJKManifoldTolerance = 0.006;
 			EPAManifoldTolerance = 0.005;
 			ManifoldPointNumber = 4;
-			MaxThreadNumber = 4;
+			MaxThreadNumber = 2;
 			ActivateSweepAndPrune = true;
 		}
 
