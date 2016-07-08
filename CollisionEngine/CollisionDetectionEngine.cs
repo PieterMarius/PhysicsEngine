@@ -50,7 +50,7 @@ namespace CollisionEngine
 		/// <returns>The test collision.</returns>
 		/// <param name="objects">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
-		public List<CollisionPointStructure> RunTestCollision(
+		public List<CollisionPointStructure> RunCollisionDetection(
 			ObjectGeometry[] objects,
 			double minDistance)
 		{

@@ -90,7 +90,9 @@ namespace MonoPhysicsEngine
 			double cfm,
 			double constraintLimit,
 			ConstraintType type,
-			int? contactReference = null)
+			int? contactReference = null,
+			int? collisionPointStructIndex = null,
+			int? collisionPointIndex = null)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
@@ -111,7 +113,9 @@ namespace MonoPhysicsEngine
 				jacobianVelocityValue,
 				cfm,
 				constraintLimit,
-				0.0);
+				0.0,
+				collisionPointStructIndex,
+				collisionPointIndex);
 		}
 
 		public static JacobianContact GetLinearLimit (

@@ -84,7 +84,9 @@ namespace MonoPhysicsEngine
 						correctedBounce,
 						simulationParameters.CFM,
 						0.0,
-						ConstraintType.CollisionAndJointLimit);
+						ConstraintType.CollisionAndJointLimit,
+						i,
+						k);
 
 					#endregion
 
@@ -99,7 +101,9 @@ namespace MonoPhysicsEngine
 							linearComponentA,
 							tangentialVelocity,
 							ra,
-							rb);
+							rb,
+							i,
+							k);
 
 					#endregion
 
@@ -123,7 +127,9 @@ namespace MonoPhysicsEngine
 			Vector3 normal,
 			Vector3 tangentialVelocity,
 			Vector3 ra,
-			Vector3 rb)
+			Vector3 rb,
+			int collisionPointStructureIndex,
+			int collisionPointIndex)
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
@@ -175,7 +181,9 @@ namespace MonoPhysicsEngine
 				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
-				-1);
+				-1,
+				collisionPointStructureIndex,
+				collisionPointIndex);
 
 			#endregion
 
@@ -200,7 +208,9 @@ namespace MonoPhysicsEngine
 				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
-				-2);
+				-2,
+				collisionPointStructureIndex,
+				collisionPointIndex);
 
 			#endregion
 

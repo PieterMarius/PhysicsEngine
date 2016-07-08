@@ -475,7 +475,8 @@ namespace MonoPhysicsEngine
 		{
 			//WarmStarting
 			List<CollisionPointStructure> collisionPointsBuffer = null;
-			if (collisionPoints != null)
+			if (collisionPoints != null &&
+			    collisionPoints.Count > 0)
 			{
 				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
 			}
@@ -490,7 +491,7 @@ namespace MonoPhysicsEngine
 			stopwatch.Start ();
 
 			//Eseguo il motore che gestisce le collisioni
-			collisionPoints = collisionEngine.RunTestCollision(
+			collisionPoints = collisionEngine.RunCollisionDetection(
 				objectsGeometry,
 				SimulationEngineParameters.CollisionDistance);
 			
@@ -586,7 +587,7 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-		#region Solver Matrix Computation
+		#region Solver Matrix Builder
 
 		/// <summary>
 		/// Builds the LCP matrix for solver.
@@ -763,7 +764,14 @@ namespace MonoPhysicsEngine
 					ct.AngularComponentB,
 					impulse,
 					ct.ObjectB);
-				
+
+				if (ct.CollisionStructIndex.HasValue &&
+					ct.CollisionPointIndex.HasValue)
+				{
+					collisionPoints[ct.CollisionStructIndex.Value].CollisionPoints[ct.CollisionPointIndex.Value].StartImpulseValue = impulse;
+					Console.WriteLine("Index " + ct.CollisionStructIndex.Value + " index " + ct.CollisionPointIndex.Value);
+				}
+
 				index++;
 			}
 		}
