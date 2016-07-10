@@ -299,7 +299,7 @@ namespace MonoPhysicsEngine
 			
 			#region Simulation Workflow
 
-			collisionDetection ();
+			CollisionDetectionStep ();
 
 			partitionEngineExecute ();
 
@@ -471,15 +471,23 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Collisions detection.
 		/// </summary>
-		private void collisionDetection()
+		private void CollisionDetectionStep()
 		{
-			//WarmStarting
+
+			#region Init WarmStarting
+
 			List<CollisionPointStructure> collisionPointsBuffer = null;
+
 			if (collisionPoints != null &&
-			    collisionPoints.Count > 0)
+				collisionPoints.Count > 0)
 			{
+
 				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
 			}
+
+			#endregion
+
+			#region Find New Collision Points
 
 			//Creo l'array contenente la geometria degli oggetti
 			objectsGeometry = Array.ConvertAll (simulationObjects, 
@@ -494,15 +502,38 @@ namespace MonoPhysicsEngine
 			collisionPoints = collisionEngine.RunCollisionDetection(
 				objectsGeometry,
 				SimulationEngineParameters.CollisionDistance);
+
+			if (collisionPointsBuffer != null)
+				WarmStarting (collisionPointsBuffer);
+
+			#endregion
 			
 			stopwatch.Stop ();
 
 			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
 
-		private void warmStarting()
+		private void WarmStarting(
+			List<CollisionPointStructure> collisionPointsBuffer)
 		{
-			
+			foreach(CollisionPointStructure cPoint in collisionPointsBuffer)
+			{
+				var pointBuffer = collisionPoints.FirstOrDefault (
+					                  x => (x.ObjectA == cPoint.ObjectA &&
+					                  x.ObjectB == cPoint.ObjectB) ||
+					                  (x.ObjectA == cPoint.ObjectB &&
+					                  x.ObjectB == cPoint.ObjectA));
+
+				if (pointBuffer != null &&
+				    Vector3.Length (pointBuffer.CollisionPoint.CollisionPointA - 
+									cPoint.CollisionPoint.CollisionPointA) < 0.0001 &&
+					Vector3.Length (pointBuffer.CollisionPoint.CollisionPointB - 
+									cPoint.CollisionPoint.CollisionPointB) < 0.0001 &&
+					pointBuffer.Intersection == cPoint.Intersection) 
+				{
+					pointBuffer = cPoint;	
+				}
+			}
 		}
 
 		#endregion
@@ -765,11 +796,9 @@ namespace MonoPhysicsEngine
 					impulse,
 					ct.ObjectB);
 
-				if (ct.CollisionStructIndex.HasValue &&
-					ct.CollisionPointIndex.HasValue)
+				if (ct.CollisionPointStr != null) 
 				{
-					collisionPoints[ct.CollisionStructIndex.Value].CollisionPoints[ct.CollisionPointIndex.Value].StartImpulseValue = impulse;
-					Console.WriteLine("Index " + ct.CollisionStructIndex.Value + " index " + ct.CollisionPointIndex.Value);
+					ct.CollisionPointStr.SetStartImpulseValue (impulse * SimulationEngineParameters.WarmStartingValue);
 				}
 
 				index++;

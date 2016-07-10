@@ -1,5 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
+using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {
@@ -20,12 +21,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The index of the collision struct.
 		/// </summary>
-		public readonly int? CollisionStructIndex;
-
-		/// <summary>
-		/// The index of the collision point.
-		/// </summary>
-		public readonly int? CollisionPointIndex; 
+		public readonly CollisionPoint CollisionPointStr;
 
 		/// <summary>
 		/// The contact reference.
@@ -94,8 +90,7 @@ namespace MonoPhysicsEngine
 			double cfm,
 			double constraintLimit,
 			double startImpulseValue,
-			int? collisionStructIndex,
-			int? collisionPointIndex)
+			CollisionPoint collisionPoint)
 		{
 			ObjectA = objectA;
 			ObjectB = objectB;
@@ -109,8 +104,7 @@ namespace MonoPhysicsEngine
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
 			StartImpulseValue = startImpulseValue;
-			CollisionStructIndex = collisionStructIndex;
-			CollisionPointIndex = collisionPointIndex;
+			CollisionPointStr = collisionPoint;
 		}
 
 		public JacobianContact (
@@ -128,7 +122,7 @@ namespace MonoPhysicsEngine
 			double startImpulseValue)
 			:this(objectA, objectB, contactReference, linearComponentA, linearComponentB,
 				angularComponentA, angularComponentB, type, b, cfm, constraintLimit, startImpulseValue,
-				null, null)
+				null)
 		{
 		}
 

@@ -222,9 +222,9 @@ namespace TestPhysics
 					Console.WriteLine();
 				}
 			} 
-			catch (Exception) 
+			catch (Exception ex) 
 			{
-				throw new Exception ("Physics engine error.");
+				throw new Exception ("Physics engine error. " + ex.StackTrace);
 			}
 			collPoint = physicsEngine.GetCollisionPointStrucureList ();
 

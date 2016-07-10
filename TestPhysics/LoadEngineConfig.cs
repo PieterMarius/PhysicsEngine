@@ -64,6 +64,7 @@ namespace TestPhysics
                                 Convert.ToDouble (xmlList [0] [this.collisionDistance].InnerText),
 								//TODO
 								Convert.ToDouble(xmlList[0][this.collisionDistance].InnerText),
+								0.5,
                                 new Vector3 (Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["x"].Value),
                                     Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["y"].Value),
                                     Convert.ToDouble (xmlList [0] [this.externalForce].Attributes ["z"].Value)),

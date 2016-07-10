@@ -84,6 +84,8 @@ namespace MonoPhysicsEngine
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
 
+		public double WarmStartingValue { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -102,6 +104,7 @@ namespace MonoPhysicsEngine
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;
+			WarmStartingValue = 0.5;
 			MaxThreadNumber = 2;
 		}
 
@@ -115,6 +118,7 @@ namespace MonoPhysicsEngine
 			bool discreteCCD,
 			double collisionDistance,
 			double compenetrationTolerance,
+			double warmStartiongValue,
 			Vector3 externalForce,
 			int maxThreadNumber)
 		{
@@ -128,6 +132,7 @@ namespace MonoPhysicsEngine
 			CollisionDistance = collisionDistance;
 			CompenetrationTolerance = compenetrationTolerance;
 			ExternalForce = externalForce;
+			WarmStartingValue = warmStartiongValue;
 			MaxThreadNumber = maxThreadNumber;
 		}
 			

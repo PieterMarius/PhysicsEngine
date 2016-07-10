@@ -1,6 +1,7 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
+using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {
@@ -91,8 +92,7 @@ namespace MonoPhysicsEngine
 			double constraintLimit,
 			ConstraintType type,
 			int? contactReference = null,
-			int? collisionPointStructIndex = null,
-			int? collisionPointIndex = null)
+			CollisionPoint collisionPointStr = null)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
@@ -113,9 +113,8 @@ namespace MonoPhysicsEngine
 				jacobianVelocityValue,
 				cfm,
 				constraintLimit,
-				0.0,
-				collisionPointStructIndex,
-				collisionPointIndex);
+				(collisionPointStr != null) ? collisionPointStr.StartImpulseValue : 0.0,
+				collisionPointStr);
 		}
 
 		public static JacobianContact GetLinearLimit (

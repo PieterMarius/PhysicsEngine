@@ -486,7 +486,7 @@ namespace CollisionEngine
 				epaCollisionPoint.b,
 				epaCollisionPoint.normal);
 
-			return  new EPAOutput (
+			return new EPAOutput (
 				Vector3.Length (epaCollisionPoint.dist),
 				collisionPoint);
 		}
