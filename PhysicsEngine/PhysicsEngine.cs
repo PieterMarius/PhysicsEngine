@@ -518,6 +518,7 @@ namespace MonoPhysicsEngine
 		{
 			foreach(CollisionPointStructure cPoint in collisionPointsBuffer)
 			{
+				//TODO Work in progress
 				var pointBuffer = collisionPoints.FirstOrDefault (
 					                  x => (x.ObjectA == cPoint.ObjectA &&
 					                  x.ObjectB == cPoint.ObjectB) ||
