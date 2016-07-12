@@ -86,7 +86,7 @@ namespace MonoPhysicsEngine
 						0.0,
 						ConstraintType.CollisionAndJointLimit,
 						null,
-						collisionPointStr.CollisionPoints[k]);
+						collisionPointStr.CollisionPoints[k].StartImpulseValue[0]);
 
 					#endregion
 
@@ -101,7 +101,8 @@ namespace MonoPhysicsEngine
 							linearComponentA,
 							tangentialVelocity,
 							ra,
-							rb);
+							rb,
+							collisionPointStr.CollisionPoints[k].StartImpulseValue);
 
 					#endregion
 
@@ -125,7 +126,8 @@ namespace MonoPhysicsEngine
 			Vector3 normal,
 			Vector3 tangentialVelocity,
 			Vector3 ra,
-			Vector3 rb)
+			Vector3 rb,
+			List<StartImpulseProperties> startImpulseProperties)
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
@@ -177,7 +179,8 @@ namespace MonoPhysicsEngine
 				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
-				-1);
+				-1,
+				startImpulseProperties[1]);
 
 			#endregion
 
@@ -202,7 +205,8 @@ namespace MonoPhysicsEngine
 				simulationParameters.CFM,
 				constraintLimit,
 				ConstraintType.Friction,
-				-2);
+				-2,
+				startImpulseProperties[2]);
 
 			#endregion
 

@@ -1,4 +1,6 @@
-﻿using PhysicsEngineMathUtility;
+﻿using System.Collections.Generic;
+using PhysicsEngineMathUtility;
+using SimulationObjectDefinition;
 
 namespace CollisionEngine
 {
@@ -7,7 +9,7 @@ namespace CollisionEngine
 		public readonly Vector3 CollisionPointA;
 		public readonly Vector3 CollisionPointB;
 		public readonly Vector3 CollisionNormal;
-		public double StartImpulseValue { get; private set; }
+		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
 		#region "Constructors"
 
@@ -18,30 +20,19 @@ namespace CollisionEngine
 		public CollisionPoint (
 			Vector3 collisionPointA,
 			Vector3 collisionPointB,
-			Vector3 collisionNormal,
-			double startImpulseValue)
+			Vector3 collisionNormal)
 		{
 			CollisionPointA = collisionPointA;
 			CollisionPointB = collisionPointB;
 			CollisionNormal = collisionNormal;
-			StartImpulseValue = startImpulseValue;
-		}
 
-		public CollisionPoint (
-			Vector3 collisionPointA,
-			Vector3 collisionPointB,
-			Vector3 collisionNormal)
-			:this(collisionPointA, collisionPointB, collisionNormal, 0.0)
-		{
-		}
-
-		#endregion
-
-		#region Public Methods
-
-		public void SetStartImpulseValue(double startImpulse)
-		{
-			StartImpulseValue = startImpulse;
+			//Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
+			StartImpulseValue = new List<StartImpulseProperties>()
+			{
+				new StartImpulseProperties(0.0),
+				new StartImpulseProperties(0.0),
+				new StartImpulseProperties(0.0),
+			};
 		}
 
 		#endregion

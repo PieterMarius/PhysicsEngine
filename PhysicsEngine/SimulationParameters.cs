@@ -84,6 +84,10 @@ namespace MonoPhysicsEngine
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
 
+		/// <summary>
+		/// Gets the warm-starting value.
+		/// </summary>
+		/// <value>The warm starting value.</value>
 		public double WarmStartingValue { get; private set; }
 
 		#endregion
@@ -104,7 +108,7 @@ namespace MonoPhysicsEngine
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;
-			WarmStartingValue = 0.5;
+			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
 		}
 
