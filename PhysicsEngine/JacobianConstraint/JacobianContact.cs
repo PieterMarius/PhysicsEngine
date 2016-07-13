@@ -19,11 +19,6 @@ namespace MonoPhysicsEngine
 		public readonly int ObjectB;
 
 		/// <summary>
-		/// The index of the collision struct.
-		/// </summary>
-		public readonly StartImpulseProperties StartImpulse;
-
-		/// <summary>
 		/// The contact reference.
 		/// </summary>
 		public readonly int? ContactReference;
@@ -68,6 +63,12 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		public readonly double CFM;
 
+		/// <summary>
+		/// The index of the collision struct.
+		/// </summary>
+		public readonly StartImpulseProperties StartImpulse;
+
+
 		#endregion
 
 		#region Constructor
@@ -99,26 +100,7 @@ namespace MonoPhysicsEngine
 			ConstraintLimit = constraintLimit;
 			StartImpulse = startImpulse;
 		}
-
-		public JacobianContact (
-			int objectA,
-			int objectB,
-			int? contactReference,
-			Vector3 linearComponentA,
-			Vector3 linearComponentB,
-			Vector3 angularComponentA,
-			Vector3 angularComponentB,
-			ConstraintType type,
-			double b,
-			double cfm,
-			double constraintLimit,
-			double startImpulseValue)
-			:this(objectA, objectB, contactReference, linearComponentA, linearComponentB,
-				angularComponentA, angularComponentB, type, b, cfm, constraintLimit, null)
-		{
-		}
-
-
+	
 		#endregion
 	}
 }

@@ -97,6 +97,11 @@ namespace LCPSolver
 			return MSE;
 		}
 
+		public SolverParameters GetSolverParameters()
+		{
+			return this.SolverParameters;
+		}
+
         #endregion
 
         #region Private Methods

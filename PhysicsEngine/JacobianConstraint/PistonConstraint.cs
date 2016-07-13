@@ -371,8 +371,8 @@ namespace MonoPhysicsEngine
 					RelativeOrientation,
 					PistonAxis);
 
-				angularConstraints.Add(
-					JacobianCommon.GetAngularLimit(
+				JacobianContact? jContact = 
+					JacobianCommon.GetAngularLimit (
 						IndexA,
 						IndexB,
 						angle,
@@ -382,7 +382,10 @@ namespace MonoPhysicsEngine
 						simulationObjectB,
 						sliderAxis,
 						AngularLimitMin.Value,
-						AngularLimitMax.Value));
+						AngularLimitMax.Value);
+
+				if (jContact != null)
+					angularConstraints.Add (jContact.Value);
 			}
 
 			return angularConstraints;

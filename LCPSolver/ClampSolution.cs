@@ -17,6 +17,9 @@ namespace LCPSolver
 				case ConstraintType.CollisionAndJointLimit:
 					return Math.Max (0.0, X [i]);
 
+				case ConstraintType.Collision:
+					return Math.Max (0.0, X [i]);
+
 				case ConstraintType.Friction:
 
 					double frictionLimit = X [i + input.Constraints[i].Value] * input.ConstraintLimit[i];

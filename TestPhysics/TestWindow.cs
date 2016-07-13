@@ -60,8 +60,8 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				LoadObject loadObject = new LoadObject ("startConfig.xml");
-				//LoadObject loadObject = new LoadObject ("carConfig.xml");
+				//LoadObject loadObject = new LoadObject ("startConfig.xml");
+				LoadObject loadObject = new LoadObject ("carConfig.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -98,9 +98,9 @@ namespace TestPhysics
 					physicsEngine.AddJoint (simulationJoints [i]);
 				}
 
-				var obj = physicsEngine.GetJointsList();
-
-				obj.Add(null);
+				//var obj = physicsEngine.GetJointsList();
+//
+//				obj.Add(null);
 
 				#region Object Removing
 

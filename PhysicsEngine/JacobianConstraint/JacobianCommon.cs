@@ -178,7 +178,7 @@ namespace MonoPhysicsEngine
 			return new JacobianContact ();
 		}
 
-		public static JacobianContact GetAngularLimit (
+		public static JacobianContact? GetAngularLimit (
 			int indexA, 
 			int indexB, 
 			double angle,
@@ -234,7 +234,7 @@ namespace MonoPhysicsEngine
 					ConstraintType.CollisionAndJointLimit);
 			}
 
-			return new JacobianContact ();
+			return null;
 		}
 
 

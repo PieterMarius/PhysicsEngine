@@ -84,7 +84,7 @@ namespace MonoPhysicsEngine
 						correctedBounce,
 						simulationParameters.CFM,
 						0.0,
-						ConstraintType.CollisionAndJointLimit,
+						ConstraintType.Collision,
 						null,
 						collisionPointStr.CollisionPoints[k].StartImpulseValue[0]);
 

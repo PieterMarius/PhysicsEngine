@@ -6,6 +6,7 @@ namespace LCPSolver
 	{
 		double[] Solve(LinearProblemProperties linearProblemProperties);
 		double GetDifferentialMSE();
+		SolverParameters GetSolverParameters();
 	}
 }
 

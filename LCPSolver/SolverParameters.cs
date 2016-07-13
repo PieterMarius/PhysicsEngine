@@ -41,7 +41,7 @@ namespace LCPSolver
 
 		public SolverParameters ()
 		{
-			MaxIteration = 20;
+			MaxIteration = 10;
 			ErrorTolerance = 1E-15;
 			SOR = 1.0;
 			SORStep = 0.007;

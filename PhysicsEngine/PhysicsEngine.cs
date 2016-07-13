@@ -423,32 +423,76 @@ namespace MonoPhysicsEngine
 
 			if (collisionPartitionedPoints != null) {
 
-				for (int i = 0; i<  collisionPartitionedPoints.Count;i++)
+				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
 					List<JacobianContact> contactConstraints = GetJacobianConstraint (
 						                                           collisionPartitionedPoints [i],
 						                                           partitionedJoint [i],
 						                                           simulationObjects,
-						                                           SimulationEngineParameters);
+																   SimulationEngineParameters);
 
-					JacobianContact[] contactArray = contactConstraints.ToArray ();
+					#region Solve Normal Constraints
 
-					//Build solver data
-					LinearProblemProperties linearProblemProperties = buildLCPMatrix (contactArray);
+					JacobianContact[] collisionJointContact = contactConstraints.FindAll (x => x.Type == ConstraintType.Collision).ToArray ();
 
-					if (contactConstraints.Count > 0 &&
-					    linearProblemProperties != null) 
+					LinearProblemProperties collisionLCP = BuildLCPMatrix (collisionJointContact);
+
+					if (collisionLCP != null)
 					{
-						double[] X = solver.Solve (linearProblemProperties);
+						solver.GetSolverParameters ().SetSolverMaxIteration (20);
+
+						double[] normalSolution = solver.Solve (collisionLCP);
+
+						for(int j = 0; j < collisionJointContact.Length; j++)
+						{
+							collisionJointContact[j].StartImpulse.SetStartValue (normalSolution[j]);
+						}
+					}
+
+					#endregion
+
+					#region Solve Normal And Friction Constraints
+
+					JacobianContact[] frictionContact = contactConstraints.FindAll (x => x.Type == ConstraintType.Friction || 
+																						 x.Type == ConstraintType.Collision).ToArray ();
+					LinearProblemProperties frictionLCP = BuildLCPMatrix (frictionContact);
+
+					if (frictionLCP != null)
+					{
+						solver.GetSolverParameters ().SetSolverMaxIteration (10);
+
+						double[] frictionSolution = solver.Solve (frictionLCP);
+
+						for(int j = 0; j < frictionContact.Length; j++)
+						{
+							frictionContact[j].StartImpulse.SetStartValue (frictionSolution[j]);
+						}
+					}
+
+					#endregion
+
+					#region Solver Overall Constraints
+
+					JacobianContact[] contactConstraintArray = contactConstraints.ToArray ();
+
+					LinearProblemProperties overallLCP = BuildLCPMatrix (contactConstraintArray);
+
+					if (overallLCP != null) 
+					{
+						solver.GetSolverParameters ().SetSolverMaxIteration (5);
+
+						double[] overallSolution = solver.Solve (overallLCP);
 
 						solverError += solver.GetDifferentialMSE();
 
 						//Update Objects velocity
 						UpdateVelocity(
-							contactArray,
+							contactConstraintArray,
 							simulationObjects,
-							X);
+							overallSolution);
 					}
+
+					#endregion
 				}
 			}
 
@@ -653,7 +697,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// Builds the LCP matrix for solver.
 		/// </summary>
-		private LinearProblemProperties buildLCPMatrix(
+		private LinearProblemProperties BuildLCPMatrix(
 			JacobianContact[] contact)
 		{
 			if (contact.Length > 0) 
@@ -687,7 +731,7 @@ namespace MonoPhysicsEngine
 
 						B [i] = - contactA.B;
 
-						X[i] = contactA.StartImpulse.StartImpulseValue;
+						X[i] = contactA.StartImpulse.StartImpulseValue ;
 						constraints [i] = contactA.ContactReference;
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;

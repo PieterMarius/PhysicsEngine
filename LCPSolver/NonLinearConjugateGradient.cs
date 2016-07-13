@@ -8,7 +8,7 @@ namespace LCPSolver
 
 		ProjectedGaussSeidel gaussSeidelSolver;
 
-		readonly SolverParameters solverParam;
+		public readonly SolverParameters solverParam;
 
 		double deltaErrorCheck = -1.0;
 
@@ -81,6 +81,11 @@ namespace LCPSolver
 		public double GetDifferentialMSE()
 		{
 			return deltaErrorCheck;
+		}
+
+		public SolverParameters GetSolverParameters()
+		{
+			return this.solverParam;
 		}
 
         #endregion

@@ -235,17 +235,21 @@ namespace MonoPhysicsEngine
 					RelativeOrientation,
 					HingeAxis);
 
-				hingeConstraints.Add(JacobianCommon.GetAngularLimit (
-					IndexA, 
-					IndexB, 
-					angle,
-					RestoreCoefficient,
-					SpringCoefficient,
-					simulationObjectA, 
-					simulationObjectB, 
-					axisRotated,
-					AngularLimitMin.Value,
-					AngularLimitMax.Value));
+				JacobianContact? jContact = 
+					JacobianCommon.GetAngularLimit (
+						IndexA, 
+						IndexB, 
+						angle,
+						RestoreCoefficient,
+						SpringCoefficient,
+						simulationObjectA, 
+						simulationObjectB, 
+						axisRotated,
+						AngularLimitMin.Value,
+						AngularLimitMax.Value);
+
+				if (jContact != null)
+					hingeConstraints.Add (jContact.Value);
 			}
 
 			#endregion

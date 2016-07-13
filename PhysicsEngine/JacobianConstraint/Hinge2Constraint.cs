@@ -392,17 +392,21 @@ namespace MonoPhysicsEngine
 					simulationObjectA.RotationStatus,
 					RelativeOrientation1);
 
-				angularConstraint.Add(JacobianCommon.GetAngularLimit(
-					IndexA,
-					IndexB,
-					angle1,
-					RestoreCoefficient,
-					SpringCoefficient,
-					simulationObjectA,
-					simulationObjectB,
-					hingeAxis,
-					AngularLimitMin1.Value,
-					AngularLimitMax1.Value));
+				JacobianContact? jContact = 
+					JacobianCommon.GetAngularLimit (
+						IndexA,
+						IndexB,
+						angle1,
+						RestoreCoefficient,
+						SpringCoefficient,
+						simulationObjectA,
+						simulationObjectB,
+						hingeAxis,
+						AngularLimitMin1.Value,
+						AngularLimitMax1.Value);
+				
+				if (jContact != null)
+					angularConstraint.Add (jContact.Value);
 			}
 
 			if (AngularLimitMin2.HasValue &&
@@ -416,17 +420,21 @@ namespace MonoPhysicsEngine
 					simulationObjectB.RotationStatus,
 					RelativeOrientation2);
 
-				angularConstraint.Add(JacobianCommon.GetAngularLimit(
-					IndexA,
-					IndexB,
-					angle2,
-					RestoreCoefficient,
-					SpringCoefficient,
-					simulationObjectA,
-					simulationObjectB,
-					rotationAxis,
-					AngularLimitMin2.Value,
-					AngularLimitMax2.Value));
+				JacobianContact? jContact = 
+					JacobianCommon.GetAngularLimit (
+						IndexA,
+						IndexB,
+						angle2,
+						RestoreCoefficient,
+						SpringCoefficient,
+						simulationObjectA,
+						simulationObjectB,
+						rotationAxis,
+						AngularLimitMin2.Value,
+						AngularLimitMax2.Value);
+
+				if (jContact != null)
+					angularConstraint.Add (jContact.Value);
 
 			}
 
