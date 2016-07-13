@@ -33,7 +33,7 @@ namespace CollisionEngine
 		/// <summary>
 		/// The collision points.
 		/// </summary>
-		public readonly CollisionPoint[] CollisionPoints;
+		public CollisionPoint[] CollisionPoints;
 
 		#endregion
 

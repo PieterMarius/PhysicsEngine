@@ -50,7 +50,7 @@ namespace CollisionEngine
 		/// <returns>The test collision.</returns>
 		/// <param name="objects">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
-		public List<CollisionPointStructure> RunCollisionDetection(
+		public List<CollisionPointStructure> Execute(
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
@@ -155,7 +155,6 @@ namespace CollisionEngine
 			ObjectGeometry[] objects,
 			double minDistance)
 		{
-			
 			var result = new List<CollisionPointStructure> ();
 
 			var lockMe = new object();

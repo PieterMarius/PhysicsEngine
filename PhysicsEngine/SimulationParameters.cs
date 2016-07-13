@@ -98,13 +98,13 @@ namespace MonoPhysicsEngine
 		{
 			TimeStep = 0.015;
 			CFM = 0.001;
-			BaumStabilization = 10;
+			BaumStabilization = 20;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.0001;
 			DiscreteCCD = false;
 			CollisionDistance = 0.0001;
-			CompenetrationTolerance = 0.001;
+			CompenetrationTolerance = 0.0001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;

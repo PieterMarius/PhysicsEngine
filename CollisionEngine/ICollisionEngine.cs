@@ -5,7 +5,7 @@ namespace CollisionEngine
 {
 	public interface ICollisionEngine
 	{
-		List<CollisionPointStructure> RunCollisionDetection (
+		List<CollisionPointStructure> Execute (
 			ObjectGeometry[] objects,
 			double minDistance);
 	}

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
 
 namespace LCPSolver
@@ -33,8 +34,7 @@ namespace LCPSolver
 
 			for (int i = 0; i < input.Count; i++) 
 			{
-				X [i] = input.StartX [i];
-				oldX [i] = X [i];
+				oldX[i] = X [i] = input.StartX [i];
 			}
 
 			double internalSOR = SolverParameters.SOR;

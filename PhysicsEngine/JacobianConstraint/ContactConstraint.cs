@@ -60,11 +60,11 @@ namespace MonoPhysicsEngine
 
 					#region Normal direction contact
 
-					double correctionParameter = (collisionPointStr.Intersection) ? 
-						Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) * 
-					        simulationParameters.BaumStabilization 
-					        :
-						0.0;
+					double correctionParameter = (collisionPointStr.Intersection) ?
+							Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+								simulationParameters.BaumStabilization
+							:
+							0.0;
 
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
