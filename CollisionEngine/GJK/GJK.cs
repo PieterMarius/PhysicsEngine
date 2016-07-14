@@ -14,7 +14,7 @@ namespace CollisionEngine
 		public double GJKManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		Vector3 origin = new Vector3 (0.0, 0.0, 0.0);
+		static readonly Vector3 origin = new Vector3();
 
 		#endregion
 
@@ -404,7 +404,7 @@ namespace CollisionEngine
 					#region patological case
 
 					//Calcolo la normale del triangolo
-					Vector3 triNormal = GeometryUtilities.CalculateNormal (
+					Vector3 triangleNormal = GeometryUtilities.CalculateNormal (
 						                    simplex.Support [0].s,
 						                    simplex.Support [1].s,
 						                    simplex.Support [2].s);
@@ -413,7 +413,7 @@ namespace CollisionEngine
 						shape1,
 						shape2,
 						simplex,
-						triNormal,
+						triangleNormal,
 						ref isIntersection);
 
 					if (isIntersection)
@@ -426,7 +426,7 @@ namespace CollisionEngine
 						shape1,
 						shape2,
 						simplex,
-						triNormal * -1.0,
+						triangleNormal * -1.0,
 						ref isIntersection);
 
 					if (isIntersection)
@@ -474,6 +474,7 @@ namespace CollisionEngine
 					break;
 
 				// Prendo il punto più vicino
+				// TODO possibile bug
 				if (mod < minDistance) 
 				{
 					collisionNormal = p.Value * - 1.0;
@@ -481,6 +482,10 @@ namespace CollisionEngine
 					minSimplex = (Simplex) simplex.Clone ();
 				}
 			}
+
+			bool test = true;
+			if (collisionNormal.Length() < 0.000000001)
+				test = false;
 
 			cp = GetCoordinatesFromMinkowsky (
 				minSimplex, 
@@ -501,7 +506,7 @@ namespace CollisionEngine
 		/// <returns>The collision.</returns>
 		/// <param name="objectA">Object a.</param>
 		/// <param name="objectB">Object b.</param>
-		public GJKOutput ExecuteGJKAlgorithm(
+		public GJKOutput Execute(
 			ObjectGeometry objectA, 
 			ObjectGeometry objectB)
 		{

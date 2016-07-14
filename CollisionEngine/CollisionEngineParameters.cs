@@ -36,6 +36,12 @@ namespace CollisionEngine
 		public double EPAManifoldTolerance { get; private set;}
 
 		/// <summary>
+		/// Gets the manifold projection tolerance.
+		/// </summary>
+		/// <value>The manifold projection tolerance.</value>
+		public double ManifoldProjectionTolerance { get; private set; }
+
+		/// <summary>
 		/// Gets the manifold points number.
 		/// </summary>
 		/// <value>The manifold point number.</value>
@@ -62,8 +68,9 @@ namespace CollisionEngine
 			MaxGJKIteration = 10;
 			MaxEPAIteration = 10;
 			Precision = 0.0000001;
-			GJKManifoldTolerance = 0.008;
-			EPAManifoldTolerance = 0.006;
+			GJKManifoldTolerance = 0.007;
+			EPAManifoldTolerance = 0.007;
+			ManifoldProjectionTolerance = 0.001;
 			ManifoldPointNumber = 4;
 			MaxThreadNumber = 2;
 			ActivateSweepAndPrune = true;
@@ -75,6 +82,7 @@ namespace CollisionEngine
 			double precision,
 			double gjkTolerance,
 			double epaTolerance,
+			double manifoldProjectionTolerance,
 			int manifoldPointNumber,
 			int maxThreadNumber,
 			bool activateSweepAndPrune)
@@ -84,6 +92,7 @@ namespace CollisionEngine
 			Precision = precision;
 			GJKManifoldTolerance = gjkTolerance;
 			EPAManifoldTolerance = epaTolerance;
+			ManifoldProjectionTolerance = manifoldProjectionTolerance;
 			ManifoldPointNumber = manifoldPointNumber;
 			MaxThreadNumber = maxThreadNumber;
 			ActivateSweepAndPrune = activateSweepAndPrune;

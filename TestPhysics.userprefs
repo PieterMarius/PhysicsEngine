@@ -1,40 +1,6 @@
-﻿<Properties StartupItem="TestPhysics/TestPhysics.csproj" RefactoringSettings.EnableRefactorings="True">
+﻿<Properties RefactoringSettings.EnableRefactorings="True" StartupItem="TestPhysics\TestPhysics.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine/JacobianConstraint/JacobianContact.cs">
-    <Files>
-      <File FileName="PhysicsEngine/JacobianConstraint/UniversalConstraint.cs" Line="1" Column="1" />
-      <File FileName="MathUtility/Matrix3x3.cs" Line="1" Column="1" />
-      <File FileName="MathUtility/Quaternion.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/PhysicsEngine.cs" Line="297" Column="26" />
-      <File FileName="ObjectDefinition/JointType.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/IConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/IConstraintBuilder.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/Hinge2Constraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/FixedJointConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/PistonConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/BallAndSocketConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/HingeConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/JacobianCommon.cs" Line="110" Column="7" />
-      <File FileName="TestPhysics/TestWindow.cs" Line="227" Column="1" />
-      <File FileName="LCPSolver/ClampSolution.cs" Line="1" Column="1" />
-      <File FileName="LCPSolver/SolverParameters.cs" Line="44" Column="20" />
-      <File FileName="PhysicsEngine/JacobianConstraint/JacobianContact.cs" Line="93" Column="23" />
-      <File FileName="PhysicsEngine/JacobianConstraint/SliderConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine/JacobianConstraint/ContactConstraint.cs" Line="89" Column="55" />
-      <File FileName="TestPhysics/Program.cs" Line="1" Column="1" />
-      <File FileName="ObjectDefinition/SimulationObject.cs" Line="1" Column="1" />
-      <File FileName="LCPSolver/ProjectedGaussSeidel.cs" Line="83" Column="18" />
-      <File FileName="PhysicsEngine/SimulationParameters.cs" Line="137" Column="14" />
-      <File FileName="CollisionEngine/CollisionEngineParameters.cs" Line="1" Column="1" />
-      <File FileName="CollisionEngine/CollisionDetectionEngine.cs" Line="1" Column="1" />
-      <File FileName="CollisionEngine/CollisionPointStructure.cs" Line="36" Column="25" />
-      <File FileName="CollisionEngine/ManifoldPoints/ManifoldPointsGenerator.cs" Line="29" Column="3" />
-      <File FileName="CollisionEngine/CollisionPoint.cs" Line="1" Column="1" />
-      <File FileName="CollisionEngine/GJK/GJK.cs" Line="491" Column="5" />
-      <File FileName="CollisionEngine/EPA/EPA.cs" Line="477" Column="23" />
-      <File FileName="TestPhysics/LoadEngineConfig.cs" Line="58" Column="8" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/Utility/LoadBMP.cs" line="44" column="1" />
@@ -47,8 +13,50 @@
       <Breakpoint file="/Users/pietervanduin/Projects/TestPhysics/CollisionEngine/GJKCollisionDetectionEngine.cs" line="141" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs">
+    <Files>
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="1" Column="1" />
+      <File FileName="MathUtility\Matrix3x3.cs" Line="1" Column="1" />
+      <File FileName="MathUtility\Quaternion.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="440" Column="31" />
+      <File FileName="ObjectDefinition\JointType.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="110" Column="7" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="87" Column="24" />
+      <File FileName="LCPSolver\ClampSolution.cs" Line="1" Column="1" />
+      <File FileName="LCPSolver\SolverParameters.cs" Line="44" Column="20" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="93" Column="23" />
+      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="66" Column="10" />
+      <File FileName="TestPhysics\Program.cs" Line="1" Column="1" />
+      <File FileName="ObjectDefinition\SimulationObject.cs" Line="1" Column="1" />
+      <File FileName="LCPSolver\ProjectedGaussSeidel.cs" Line="83" Column="18" />
+      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="107" Column="33" />
+      <File FileName="CollisionEngine\CollisionEngineParameters.cs" Line="63" Column="24" />
+      <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="130" Column="35" />
+      <File FileName="CollisionEngine\CollisionPointStructure.cs" Line="36" Column="9" />
+      <File FileName="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" Line="96" Column="35" />
+      <File FileName="CollisionEngine\CollisionPoint.cs" Line="1" Column="1" />
+      <File FileName="CollisionEngine\GJK\GJK.cs" Line="326" Column="4" />
+      <File FileName="CollisionEngine\EPA\EPA.cs" Line="444" Column="23" />
+      <File FileName="TestPhysics\LoadEngineConfig.cs" Line="58" Column="8" />
+      <File FileName="TestPhysics\LoadObject.cs" Line="1" Column="1" />
+      <File FileName="LCPSolver\NonLinearConjugateGradient.cs" Line="1" Column="1" />
+      <File FileName="TestPhysics\BuildEnvironment.cs" Line="1" Column="1" />
+      <File FileName="CollisionEngine\Common\Support.cs" Line="1" Column="1" />
+      <File FileName="MathUtility\GeometryUtilities.cs" Line="159" Column="5" />
+      <File FileName="MathUtility\ConstValues.cs" Line="9" Column="43" />
+      <File FileName="CollisionEngine\EPA\Edge.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <DisabledProjects>
     <String>../OpenTKTutorialContent-master/OpenTKTutorial7/OpenTKTutorial7/OpenTKTutorial7.csproj</String>
   </DisabledProjects>
+  <MonoDevelop.Ide.ItemProperties.TestPhysics PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

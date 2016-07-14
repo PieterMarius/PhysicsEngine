@@ -15,7 +15,7 @@ namespace CollisionEngine
 		public double EPAManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		private Vector3 origin;
+		static readonly Vector3 origin = new Vector3();
 
 		#endregion
 
@@ -31,8 +31,6 @@ namespace CollisionEngine
 			Precision = precision;
 			EPAManifoldTolerance = epaTolerance;
 			ManifoldPointNumber = manifoldPointNumber;
-
-			origin = new Vector3 (0.0, 0.0, 0.0);
 		}
 
 		#endregion
@@ -159,7 +157,7 @@ namespace CollisionEngine
 			ref List<EpaTriangle> triangles,
 			Support[] startPoint)
 		{
-			List<Support> triangleSupport = new List<Support> ();
+			var triangleSupport = new List<Support> ();
 			triangleSupport.Add (startPoint [0]);
 			triangleSupport.Add (startPoint [1]);
 			triangleSupport.Add (startPoint [2]);
@@ -214,7 +212,7 @@ namespace CollisionEngine
 			Support b,
 			Support c)
 		{
-			EpaTriangle epaTriangle = new EpaTriangle(
+			var epaTriangle = new EpaTriangle(
 				a,
 				b,
 				c,
@@ -404,7 +402,6 @@ namespace CollisionEngine
 							
 							epaBuffer.SetValueS (s);
 							epaBuffer.SetValueT (t);
-
 						} 
 						else 
 						{
@@ -459,7 +456,14 @@ namespace CollisionEngine
 
 		#region Public Methods
 
-		public EPAOutput GetCompenetrationDistance(
+
+		/// <summary>
+		/// Execute Expanding Polytope Algorithm (EPA).
+		/// </summary>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		/// <param name="startTriangles">Start triangles.</param>
+		public EPAOutput Execute(
 			ObjectGeometry objectA,
 			ObjectGeometry objectB,
 			Support[] startTriangles)

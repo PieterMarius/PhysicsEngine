@@ -253,6 +253,9 @@ namespace MonoPhysicsEngine
 
 		public List<CollisionPointStructure> GetCollisionPointStrucureList()
 		{
+			if (collisionPoints == null)
+				return new List<CollisionPointStructure>();
+			
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
 

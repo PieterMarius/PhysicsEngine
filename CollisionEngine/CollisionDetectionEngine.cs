@@ -91,7 +91,7 @@ namespace CollisionEngine
 			double minDistance)
 		{
 			
-			GJKOutput gjkOutput = collisionEngine.ExecuteGJKAlgorithm (A, B);
+			GJKOutput gjkOutput = collisionEngine.Execute (A, B);
 
 			if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= minDistance)
@@ -100,7 +100,7 @@ namespace CollisionEngine
   				var mpg = new ManifoldPointsGenerator (
 					                              collisionEngineParameters.ManifoldPointNumber,
 					                              collisionEngineParameters.GJKManifoldTolerance,
-					                              0.000001);
+					                              collisionEngineParameters.ManifoldProjectionTolerance);
 
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
 					                                           A,
@@ -122,7 +122,7 @@ namespace CollisionEngine
 				Support[] startTriangle = new Support[4]; 
 				Array.Copy(gjkOutput.MinSimplex.Support, startTriangle, startTriangle.Length);
 
-				EPAOutput epaOutput = compenetrationCollisionEngine.GetCompenetrationDistance (
+				EPAOutput epaOutput = compenetrationCollisionEngine.Execute (
 					                      A,
 					                      B,
 					                      startTriangle);
@@ -130,7 +130,7 @@ namespace CollisionEngine
 				var mpg = new ManifoldPointsGenerator(
 												  collisionEngineParameters.ManifoldPointNumber,
 												  collisionEngineParameters.EPAManifoldTolerance,
-												  0.00001);
+												  collisionEngineParameters.ManifoldProjectionTolerance);
 
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
 															   A,

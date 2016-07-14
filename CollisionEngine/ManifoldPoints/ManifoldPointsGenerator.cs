@@ -145,7 +145,6 @@ namespace CollisionEngine
 
 					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
 					{
-
 						var cp = new CollisionPoint (
 							project,
 							cb [i],
