@@ -104,7 +104,7 @@ namespace MonoPhysicsEngine
 			ShiftToStaticFrictionTolerance = 0.0001;
 			DiscreteCCD = false;
 			CollisionDistance = 0.0001;
-			CompenetrationTolerance = 0.0001;
+			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.00009;

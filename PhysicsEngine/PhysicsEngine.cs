@@ -439,7 +439,7 @@ namespace MonoPhysicsEngine
 
 					if (collisionLCP != null)
 					{
-						solver.GetSolverParameters ().SetSolverMaxIteration (20);
+						solver.GetSolverParameters ().SetSolverMaxIteration (25);
 
 						double[] normalSolution = solver.Solve (collisionLCP);
 
@@ -459,7 +459,7 @@ namespace MonoPhysicsEngine
 
 					if (frictionLCP != null)
 					{
-						solver.GetSolverParameters ().SetSolverMaxIteration (10);
+						solver.GetSolverParameters ().SetSolverMaxIteration (8);
 
 						double[] frictionSolution = solver.Solve (frictionLCP);
 
@@ -479,7 +479,7 @@ namespace MonoPhysicsEngine
 
 					if (overallLCP != null) 
 					{
-						solver.GetSolverParameters ().SetSolverMaxIteration (5);
+						solver.GetSolverParameters ().SetSolverMaxIteration (4);
 
 						double[] overallSolution = solver.Solve (overallLCP);
 
@@ -517,19 +517,6 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private void CollisionDetectionStep()
 		{
-
-			#region Init WarmStarting
-
-			List<CollisionPointStructure> collisionPointsBuffer = null;
-
-			if (collisionPoints != null &&
-				collisionPoints.Count > 0)
-			{
-				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
-			}
-
-			#endregion
-
 			#region Find New Collision Points
 
 			//Creo l'array contenente la geometria degli oggetti
@@ -543,12 +530,8 @@ namespace MonoPhysicsEngine
 
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.Execute(
-											objectsGeometry,
-											SimulationEngineParameters.CollisionDistance);
-
-			//if (collisionPointsBuffer != null &&
-			//    collisionPointsBuffer.Count > 0)
-			//	WarmStarting (collisionPointsBuffer);
+									objectsGeometry,
+									SimulationEngineParameters.CollisionDistance);
 
 			#endregion
 			
@@ -557,58 +540,7 @@ namespace MonoPhysicsEngine
 			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
 
-		private void WarmStarting(
-			List<CollisionPointStructure> collisionPointsBuffer)
-		{
-			foreach(CollisionPointStructure cPoint in collisionPointsBuffer)
-			{
-				//TODO Work in progress
-				int pointBufferIndex = collisionPoints.FindIndex (
-					                  x => (x.ObjectA == cPoint.ObjectA &&
-						                    x.ObjectB == cPoint.ObjectB) ||
-						                   (x.ObjectA == cPoint.ObjectB &&
-						                    x.ObjectB == cPoint.ObjectA));
 
-				if (pointBufferIndex > -1)
-				{
-					CollisionPointStructure pointBuffer = collisionPoints[pointBufferIndex];
-
-					//if ((Vector3.Length(cPoint.CollisionPoint.CollisionPointA -
-					//			pointBuffer.CollisionPoint.CollisionPointA) < 0.0001 &&
-					//	Vector3.Length(cPoint.CollisionPoint.CollisionPointB -
-					//			pointBuffer.CollisionPoint.CollisionPointB) < 0.0001) ||
-					//	(Vector3.Length(cPoint.CollisionPoint.CollisionPointA -
-					//			pointBuffer.CollisionPoint.CollisionPointB) < 0.0001 &&
-					//	Vector3.Length(cPoint.CollisionPoint.CollisionPointB -
-					//				   pointBuffer.CollisionPoint.CollisionPointA) < 0.0001))
-					//{
-					//	collisionPoints[pointBufferIndex].CollisionPoint = cPoint.CollisionPoint;
-					//	collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
-					//}
-
-					for (int i = 0; i < pointBuffer.CollisionPoints.Count(); i++)
-					{
-						int ppBuffer = cPoint.CollisionPoints.ToList().FindIndex(x => Math.Acos(x.CollisionNormal.Dot(pointBuffer.CollisionPoints[i].CollisionNormal))< 0.0001 &&
-																						(Vector3.Length(x.CollisionPointA -
-																								pointBuffer.CollisionPoints[i].CollisionPointA) < 0.0001 &&
-																						Vector3.Length(x.CollisionPointB -
-																								pointBuffer.CollisionPoints[i].CollisionPointB) < 0.0001) ||
-																						(Vector3.Length(x.CollisionPointA -
-																								pointBuffer.CollisionPoints[i].CollisionPointB) < 0.0001 &&
-																						Vector3.Length(x.CollisionPointB -
-				                                                                                pointBuffer.CollisionPoints[i].CollisionPointA) < 0.0001));
-
-						if (ppBuffer > -1)
-						{
-							//collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[0].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[0].StartImpulseValue);
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[1].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[1].StartImpulseValue);
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[2].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[2].StartImpulseValue);
-						}
-					}
-				}
-			}
-		}
 
 		#endregion
 
@@ -731,7 +663,7 @@ namespace MonoPhysicsEngine
 
 						B [i] = - contactA.B;
 
-						X[i] = contactA.StartImpulse.StartImpulseValue ;
+						X[i] = contactA.StartImpulse.StartImpulseValue;
 						constraints [i] = contactA.ContactReference;
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;

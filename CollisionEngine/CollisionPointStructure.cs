@@ -28,7 +28,7 @@ namespace CollisionEngine
 		/// <summary>
 		/// The collision point.
 		/// </summary>
-		public readonly CollisionPoint CollisionPoint;
+		public CollisionPoint CollisionPoint;
 
 		/// <summary>
 		/// The collision points.

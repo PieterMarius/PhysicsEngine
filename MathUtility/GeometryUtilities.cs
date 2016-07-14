@@ -172,6 +172,18 @@ namespace PhysicsEngineMathUtility
 			}
 		}
 
+		public static Vector3 GetRandomDirection()
+		{
+			double angle = GetRandom(0.0, ConstValues.PI2);
+			double z = GetRandom(-1.0, 1.0);
+			double sqrt = Math.Sqrt(1.0 - z * z);
+
+			return new Vector3(
+				sqrt * Math.Cos(angle),
+				sqrt * Math.Sin(angle),
+				z);
+		}
+
 		/// <summary>
 		/// Clamp the specified v, max and min.
 		/// </summary>

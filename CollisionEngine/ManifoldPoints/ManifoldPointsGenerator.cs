@@ -40,14 +40,12 @@ namespace CollisionEngine
 			List<Vector3> collisionA = getNearestPoint (
 				objectA,
 				collisionPoint.CollisionPointA,
-				collisionNormal,
-				ManifoldPlaneTolerance);
+				collisionNormal);
 
 			List<Vector3> collisionB = getNearestPoint (
 				objectB,
 				collisionPoint.CollisionPointB,
-				collisionNormal,
-				ManifoldPlaneTolerance);
+				collisionNormal);
 
 			List<CollisionPoint> collisionPointsList = findCollisionPoints (
 				collisionA.ToArray (),
@@ -71,12 +69,10 @@ namespace CollisionEngine
 		/// <returns>The nearest point.</returns>
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>
-		/// <param name="tolerance">Tolerance.</param>
 		private List<Vector3> getNearestPoint(
 			ObjectGeometry shape,
 			Vector3 collisionPoint,
-			Vector3 planeNormal,
-			double tolerance)
+			Vector3 planeNormal)
 		{
 			var collisionPoints = new List<Vector3> ();
 
@@ -84,7 +80,7 @@ namespace CollisionEngine
 			for (int i = 0; i < shape.VertexPosition.Length; i++) 
 			{
 				Vector3 nt = Vector3.Normalize (shape.VertexPosition [i] - collisionPoint);
-				if (Math.Abs (Vector3.Dot (nt, normal)) < tolerance)
+				if (Math.Abs (Vector3.Dot (nt, normal)) < ManifoldPlaneTolerance)
 					collisionPoints.Add (shape.VertexPosition [i]);
 			}
 
@@ -99,14 +95,14 @@ namespace CollisionEngine
 		/// <param name="cb">Cb.</param>
 		/// <param name="initPoint">Init point.</param>
 		/// <param name="na">Na.</param>
-		/// <param name="result">Result.</param>
-		private void TestPointIsOnPlane(
+		private List<CollisionPoint> TestPointIsOnPlane(
 			Vector3[] ca,
 			Vector3[] cb,
 			CollisionPoint initPoint,
-			Vector3 na,
-			ref List<CollisionPoint> result)
+			Vector3 na)
 		{
+			var result = new List<CollisionPoint>();
+
 			if (cb.Length > 2) 
 			{
 				for (int i = 0; i < ca.Length; i++) 
@@ -158,6 +154,8 @@ namespace CollisionEngine
 					}
 				}
 			}
+
+			return result;
 		}
 
 		private List<CollisionPoint> findCollisionPoints(
@@ -187,12 +185,11 @@ namespace CollisionEngine
 					ca,
 					vectorDistance);
 
-				TestPointIsOnPlane (
+				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance,
-					ref result);
+					vectorDistance));
 
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
@@ -216,12 +213,11 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				TestPointIsOnPlane (
+				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance,
-					ref result);
+					vectorDistance));
 
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
@@ -248,12 +244,11 @@ namespace CollisionEngine
 					cb,
 					vectorDistance);
 
-				TestPointIsOnPlane (
+				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance,
-					ref result);
+					vectorDistance));
 
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {

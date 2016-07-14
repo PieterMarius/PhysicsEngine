@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
 
@@ -40,7 +39,7 @@ namespace CollisionEngine
 
 		#region Private Methods
 
-		private Vector3 findPolygonCentroid(List<Support> vertex) {
+		private Vector3 FindPolygonCentroid(List<Support> vertex) {
 			var sum = new Vector3 ();
 
 			for (int i = 0; i < vertex.Count; i++) {
@@ -198,12 +197,12 @@ namespace CollisionEngine
 				triangleSupport [2],
 				triangleSupport [3]));
 
-			Vector3 centroid = this.findPolygonCentroid (triangleSupport);
+			Vector3 centroid = FindPolygonCentroid (triangleSupport);
 
-			triangles [0] = this.turnClockWiseNormal (triangles [0], centroid);
-			triangles [1] = this.turnClockWiseNormal (triangles [1], centroid);
-			triangles [2] = this.turnClockWiseNormal (triangles [2], centroid);
-			triangles [3] = this.turnClockWiseNormal (triangles [3], centroid);
+			triangles [0] = turnClockWiseNormal (triangles [0], centroid);
+			triangles [1] = turnClockWiseNormal (triangles [1], centroid);
+			triangles [2] = turnClockWiseNormal (triangles [2], centroid);
+			triangles [3] = turnClockWiseNormal (triangles [3], centroid);
 
 			triangleSupport.Clear ();
 
@@ -327,11 +326,11 @@ namespace CollisionEngine
 				}
 			}
 
-			this.addTriangle (edges, ref triangles, vt, centroid);
+			addTriangle (edges, ref triangles, vt, centroid);
 			edges.Clear ();
 		}
 
-		private void getEpaVertexFromMinkowsky(
+		private void GetEpaVertexFromMinkowsky(
 			EpaTriangle triangle,
 			ObjectGeometry shape1,
 			ObjectGeometry shape2,
@@ -348,24 +347,13 @@ namespace CollisionEngine
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}
 
-		private Vector3 getRandomDirection()
-		{
-			return Vector3.Normalize (new Vector3 (
-				GeometryUtilities.GetRandom (-1.0, 1.0), 
-				GeometryUtilities.GetRandom (-1.0, 1.0), 
-				GeometryUtilities.GetRandom (-1.0, 1.0)));
-		}
-	
 		/// <summary>
 		/// Executes the EPA engine.
 		/// </summary>
 		/// <param name="shape1">Shape1.</param>
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
-		/// <param name="tri">Tri.</param>
-		/// <param name="epaCollisionPoint">Epa collision point.</param>
-		/// <param name="supportList">Support list.</param>
-		private EpaCollisionPoint executeEPAEngine(
+		private EpaCollisionPoint ExecuteEngine(
 			ObjectGeometry shape1,
 			ObjectGeometry shape2,
 			Support[] startPoint)
@@ -381,9 +369,9 @@ namespace CollisionEngine
 			double t = 0.0;
 
 			var triangles = new List<EpaTriangle> ();
-			Vector3 centroid = this.startTriangle (
-				                   ref triangles,
-				                   startPoint);
+			Vector3 centroid = startTriangle(
+								   ref triangles,
+								   startPoint);
 
 			var direction = new Vector3 ();
 			var oldDirection = new Vector3 ();
@@ -404,13 +392,13 @@ namespace CollisionEngine
 						if (!GeometryUtilities.TestCollinearity (
 							    epaBuffer.a.s,
 							    epaBuffer.b.s,
-							    epaBuffer.c.s)) {
-
+							    epaBuffer.c.s)) 
+						{
 							vDistance = GeometryUtilities.GetPointTriangleIntersection (
 								epaBuffer.a.s,
 								epaBuffer.b.s,
 								epaBuffer.c.s,
-								this.origin,
+								origin,
 								ref s,
 								ref t).Value;
 							
@@ -435,8 +423,8 @@ namespace CollisionEngine
 							epaCollisionPoint.SetDist (vDistance);
 							epaCollisionPoint.SetNormal (Vector3.Normalize (vDistance));
 
-							this.getEpaVertexFromMinkowsky (
-								triangles [i],
+							GetEpaVertexFromMinkowsky(
+								triangles[i],
 								shape1,
 								shape2,
 								ref epaCollisionPoint);
@@ -445,7 +433,7 @@ namespace CollisionEngine
 
 					if (Vector3.Length (direction) < ConstValues.precision) 
 					{
-						direction = this.getRandomDirection ();	
+						direction = GeometryUtilities.GetRandomDirection ();	
 					}
 						
 					addPointToConvexPolygon (
@@ -476,7 +464,7 @@ namespace CollisionEngine
 			ObjectGeometry objectB,
 			Support[] startTriangles)
 		{
-			EpaCollisionPoint epaCollisionPoint = this.executeEPAEngine (
+			EpaCollisionPoint epaCollisionPoint = ExecuteEngine (
 				                                      objectA,
 				                                      objectB,
 				                                      startTriangles);

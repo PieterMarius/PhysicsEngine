@@ -303,14 +303,6 @@ namespace CollisionEngine
 			return simplex;
 		}
 
-		private Vector3 GetRandomDirection()
-		{
-			return Vector3.Normalize (new Vector3 (
-				GeometryUtilities.GetRandom (-1.0, 1.0), 
-				GeometryUtilities.GetRandom (-1.0, 1.0), 
-				GeometryUtilities.GetRandom (-1.0, 1.0)));
-		}
-							
 		/// <summary>
 		/// Ritorna la distanza se distanza 0.0f allora vi è intersezione o compenetrazione tra gli oggetti, 
 		/// se distanza 0.0 allora i due oggetti non collidono
@@ -334,7 +326,7 @@ namespace CollisionEngine
 
 			var simplex = new Simplex ();
 
-			Vector3? direction = GetRandomDirection ();
+			Vector3? direction = GeometryUtilities.GetRandomDirection ();
 
 			//Primo punto del simplex
 
@@ -377,7 +369,7 @@ namespace CollisionEngine
 							simplex.Support [1].s,
 							simplex.Support [2].s)) 
 						{
-							direction = GetRandomDirection ();
+							direction = GeometryUtilities.GetRandomDirection ();
 
 							//Modifico il simplex
 							simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
@@ -401,7 +393,7 @@ namespace CollisionEngine
 
 				if (!direction.HasValue) 
 				{
-					direction = GetRandomDirection ();
+					direction = GeometryUtilities.GetRandomDirection ();
 				}
 
 				direction = -1.0 * direction;
@@ -467,7 +459,7 @@ namespace CollisionEngine
 
 				if (!p.HasValue) 
 				{
-					direction = GetRandomDirection ();
+					direction = GeometryUtilities.GetRandomDirection ();
 					simplex.Support[3] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 					continue;
 				}
