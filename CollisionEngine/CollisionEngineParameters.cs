@@ -68,7 +68,7 @@ namespace CollisionEngine
 			MaxGJKIteration = 10;
 			MaxEPAIteration = 10;
 			Precision = 0.0000001;
-			GJKManifoldTolerance = 0.007;
+			GJKManifoldTolerance = 0.008;
 			EPAManifoldTolerance = 0.007;
 			ManifoldProjectionTolerance = 0.001;
 			ManifoldPointNumber = 4;

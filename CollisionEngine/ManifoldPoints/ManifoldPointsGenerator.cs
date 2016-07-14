@@ -34,23 +34,22 @@ namespace CollisionEngine
 		public List<CollisionPoint> GetManifoldPoints(
 			ObjectGeometry objectA, 
 			ObjectGeometry objectB,
-			CollisionPoint collisionPoint,
-			Vector3 collisionNormal)
+			CollisionPoint collisionPoint)
 		{
 			List<Vector3> collisionA = getNearestPoint (
 				objectA,
 				collisionPoint.CollisionPointA,
-				collisionNormal);
+				collisionPoint.CollisionNormal);
 
 			List<Vector3> collisionB = getNearestPoint (
 				objectB,
 				collisionPoint.CollisionPointB,
-				collisionNormal);
+				collisionPoint.CollisionNormal);
 
 			List<CollisionPoint> collisionPointsList = findCollisionPoints (
 				collisionA.ToArray (),
 				collisionB.ToArray (),
-				collisionNormal,
+				collisionPoint.CollisionNormal,
 				collisionPoint);
 
 			collisionA.Clear ();
@@ -329,8 +328,8 @@ namespace CollisionEngine
 				ref mua,
 				ref mub)) 
 			{
-				if(!(mua < 0.0 || mua > 1.0 || mub < 0.0 || mub > 1.0))
-					return new CollisionPoint( a, b, normal);
+				if (!(mua < 0.0 || mua > 1.0 || mub < 0.0 || mub > 1.0))
+					return new CollisionPoint (a, b, normal);
 			}
 
 			return null;

@@ -105,8 +105,7 @@ namespace CollisionEngine
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
 					                                           A,
 					                                           B,
-					                                           gjkOutput.CollisionPoint,
-					                                           gjkOutput.CollisionNormal);
+					                                           gjkOutput.CollisionPoint);
 
 				return new CollisionPointStructure (
 					indexA,
@@ -135,8 +134,7 @@ namespace CollisionEngine
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
 															   A,
 															   B,
-															   epaOutput.CollisionPoint,
-															   epaOutput.CollisionPoint.CollisionNormal);
+															   epaOutput.CollisionPoint);
 				
 				return new CollisionPointStructure(
 					indexA,

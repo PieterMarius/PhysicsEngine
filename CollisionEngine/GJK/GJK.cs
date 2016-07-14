@@ -474,7 +474,6 @@ namespace CollisionEngine
 					break;
 
 				// Prendo il punto più vicino
-				// TODO possibile bug
 				if (mod < minDistance) 
 				{
 					collisionNormal = p.Value * - 1.0;
@@ -483,15 +482,13 @@ namespace CollisionEngine
 				}
 			}
 
-			bool test = true;
-			if (collisionNormal.Length() < 0.000000001)
-				test = false;
+			collisionNormal = collisionNormal.Normalize ();
 
 			cp = GetCoordinatesFromMinkowsky (
 				minSimplex, 
 				shape1, 
 				shape2, 
-				Vector3.Normalize (collisionNormal));
+				collisionNormal);
 			
 			return minDistance;
 		}
