@@ -13,6 +13,8 @@ namespace CollisionEngine
 		public double ManifoldPlaneTolerance { get; private set; }
 		public double ManifoldStabilizeValue { get; private set; }
 
+		static readonly double constTolerance = 0.0000001;
+
 		#endregion
 
 		#region Constructor
@@ -86,80 +88,10 @@ namespace CollisionEngine
 			return collisionPoints;
 		}
 
-		/// <summary>
-		/// Tests the point is on plane.
-		/// </summary>
-		/// <returns>The point is on plane.</returns>
-		/// <param name="ca">Ca.</param>
-		/// <param name="cb">Cb.</param>
-		/// <param name="initPoint">Init point.</param>
-		/// <param name="na">Na.</param>
-		private List<CollisionPoint> TestPointIsOnPlane(
-			Vector3[] ca,
-			Vector3[] cb,
-			CollisionPoint initPoint,
-			Vector3 na)
-		{
-			var result = new List<CollisionPoint>();
-
-			if (cb.Length > 2) 
-			{
-				for (int i = 0; i < ca.Length; i++) 
-				{
-					Vector3 project = ca [i] -
-						(na * (Vector3.Dot (na, ca [i]) +
-							Vector3.Dot (na * -1.0, initPoint.CollisionPointB)));
-
-					double angle = GeometryUtilities.TestPointInsidePolygon (
-						cb,
-						project,
-						na,
-						initPoint.CollisionPointB);
-
-					//Inserito il minore per gestire problemi di approssimazione
-					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
-					{
-						var cp = new CollisionPoint (
-							ca [i],
-							project,
-							na);
-						result.Add (cp);
-					}
-				}
-			}
-
-			if (ca.Length > 2) 
-			{
-				for (int i = 0; i < cb.Length; i++) 
-				{
-					Vector3 project = cb [i] -
-						(na * (Vector3.Dot (na, cb[i]) +
-							Vector3.Dot (na * -1.0, initPoint.CollisionPointA)));
-
-					double angle = GeometryUtilities.TestPointInsidePolygon (
-						ca,
-						project,
-						na,
-						initPoint.CollisionPointA);
-
-					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI) 
-					{
-						var cp = new CollisionPoint (
-							project,
-							cb [i],
-							na);
-						result.Add (cp);
-					}
-				}
-			}
-
-			return result;
-		}
-
 		private List<CollisionPoint> findCollisionPoints(
 			Vector3[] ca,
 			Vector3[] cb,
-			Vector3 vectorDistance,
+			Vector3 normal,
 			CollisionPoint cp)
 		{
 			var result = new List<CollisionPoint> ();
@@ -181,13 +113,13 @@ namespace CollisionEngine
 			{
 				ca = GeometryUtilities.TurnVectorClockWise (
 					ca,
-					vectorDistance);
+					normal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance));
+					normal));
 
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
@@ -203,19 +135,18 @@ namespace CollisionEngine
 							result.Add (collisionP);
 					}
 				}
-
 			} 
 			else if (ca.Length == 2 && cb.Length > 2) 
 			{
 				cb = GeometryUtilities.TurnVectorClockWise (
 					cb,
-					vectorDistance);
+					normal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance));
+					normal));
 
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
@@ -236,17 +167,17 @@ namespace CollisionEngine
 			{
 				ca = GeometryUtilities.TurnVectorClockWise (
 					ca,
-					vectorDistance);
+					normal);
 
 				cb = GeometryUtilities.TurnVectorClockWise (
 					cb,
-					vectorDistance);
+					normal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					vectorDistance));
+					normal));
 
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
@@ -262,13 +193,82 @@ namespace CollisionEngine
 							result.Add (collisionP);
 					}
 				}
-
 			}
 
-			if (result.Count < 1)
-				result.Add (cp);
-
 			result = PruneCollisionPoints (result);
+
+			if (result.Count < ManifoldPointNumber)
+				result.Add(cp);
+
+			return result;
+		}
+
+		/// <summary>
+		/// Tests the point is on plane.
+		/// </summary>
+		/// <returns>The point is on plane.</returns>
+		/// <param name="ca">Ca.</param>
+		/// <param name="cb">Cb.</param>
+		/// <param name="initPoint">Init point.</param>
+		/// <param name="na">Na.</param>
+		private List<CollisionPoint> TestPointIsOnPlane(
+			Vector3[] ca,
+			Vector3[] cb,
+			CollisionPoint initPoint,
+			Vector3 na)
+		{
+			var result = new List<CollisionPoint>();
+
+			if (cb.Length > 2)
+			{
+				for (int i = 0; i < ca.Length; i++)
+				{
+					Vector3 project = ca[i] -
+						(na * (Vector3.Dot(na, ca[i]) +
+							Vector3.Dot(na * -1.0, initPoint.CollisionPointB)));
+
+					double angle = GeometryUtilities.TestPointInsidePolygon(
+						cb,
+						project,
+						na,
+						initPoint.CollisionPointB);
+
+					//Inserito il minore per gestire problemi di approssimazione
+					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
+					{
+						var cp = new CollisionPoint(
+							ca[i],
+							project,
+							na);
+						result.Add(cp);
+					}
+				}
+			}
+
+			if (ca.Length > 2)
+			{
+				for (int i = 0; i < cb.Length; i++)
+				{
+					Vector3 project = cb[i] -
+						(na * (Vector3.Dot(na, cb[i]) +
+							Vector3.Dot(na * -1.0, initPoint.CollisionPointA)));
+
+					double angle = GeometryUtilities.TestPointInsidePolygon(
+						ca,
+						project,
+						na,
+						initPoint.CollisionPointA);
+
+					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
+					{
+						var cp = new CollisionPoint(
+							project,
+							cb[i],
+							na);
+						result.Add(cp);
+					}
+				}
+			}
 
 			return result;
 		}

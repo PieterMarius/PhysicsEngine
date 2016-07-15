@@ -2,7 +2,7 @@
 
 namespace PhysicsEngineMathUtility
 {
-	public static class ConstValues
+	internal static class ConstValues
 	{
 		public const double precision = 0.0000001;
 		public const double PI = 3.14159265359;

@@ -15,6 +15,7 @@ namespace CollisionEngine
 		public int ManifoldPointNumber { get; private set;}
 
 		static readonly Vector3 origin = new Vector3();
+		static readonly double constTolerance = 0.0000001;
 
 		#endregion
 
@@ -168,7 +169,7 @@ namespace CollisionEngine
 				t[18] - t[19] - t[20] + t[21] + t[22] - t[23];
 
 			//Test if points are aligned or not
-			if (Math.Abs (d0) < ConstValues.precision) 
+			if (Math.Abs (d0) < constTolerance) 
 			{
 				return false;
 			}
@@ -399,7 +400,7 @@ namespace CollisionEngine
 				direction = -1.0 * direction;
 
 				//Check validity of direction
-				if (Vector3.Length (direction.Value) < ConstValues.precision)
+				if (Vector3.Length (direction.Value) < constTolerance)
 				{
 					#region patological case
 

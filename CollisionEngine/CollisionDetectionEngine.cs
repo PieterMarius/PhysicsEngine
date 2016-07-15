@@ -90,7 +90,6 @@ namespace CollisionEngine
 			int indexB,
 			double minDistance)
 		{
-			
 			GJKOutput gjkOutput = collisionEngine.Execute (A, B);
 
 			if (!gjkOutput.Intersection &&
@@ -135,15 +134,14 @@ namespace CollisionEngine
 															   A,
 															   B,
 															   epaOutput.CollisionPoint);
-				
+
 				return new CollisionPointStructure(
 					indexA,
 					indexB,
 					gjkOutput.Intersection,
 					epaOutput.CompenetrationDistance,
 					epaOutput.CollisionPoint,
-					collisionPointsList.ToArray());
-				
+					collisionPointsList.ToArray());		
 			} 
 
 			return null;
