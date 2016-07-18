@@ -68,6 +68,7 @@
     <Compile Include="JacobianConstraint\UniversalConstraint.cs" />
     <Compile Include="JacobianConstraint\IConstraintBuilder.cs" />
     <Compile Include="JacobianConstraint\Hinge2Constraint.cs" />
+    <Compile Include="Helper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

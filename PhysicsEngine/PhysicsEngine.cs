@@ -428,16 +428,18 @@ namespace MonoPhysicsEngine
 
 				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
-					List<JacobianContact> contactConstraints = GetJacobianConstraint (
-						                                           collisionPartitionedPoints [i],
-						                                           partitionedJoint [i],
-						                                           simulationObjects,
-																   SimulationEngineParameters);
+					JacobianContact[] contactConstraints = GetJacobianConstraint(
+																   collisionPartitionedPoints[i],
+																   partitionedJoint[i],
+																   simulationObjects,
+																   SimulationEngineParameters).ToArray();
 
 					#region Solve Normal Constraints
 
-					JacobianContact[] collisionJointContact = contactConstraints.FindAll (x => x.Type == ConstraintType.Collision).ToArray ();
-
+					JacobianContact[] collisionJointContact = Helper.FindConstraints(contactConstraints,
+										   											 ConstraintType.Collision,
+					                                                                 ConstraintType.Collision);
+					
 					LinearProblemProperties collisionLCP = BuildLCPMatrix (collisionJointContact);
 
 					if (collisionLCP != null)
@@ -456,8 +458,10 @@ namespace MonoPhysicsEngine
 
 					#region Solve Normal And Friction Constraints
 
-					JacobianContact[] frictionContact = contactConstraints.FindAll (x => x.Type == ConstraintType.Friction || 
-																						 x.Type == ConstraintType.Collision).ToArray ();
+					JacobianContact[] frictionContact = Helper.FindConstraints(contactConstraints,
+																				ConstraintType.Friction,
+																				ConstraintType.Collision);
+
 					LinearProblemProperties frictionLCP = BuildLCPMatrix (frictionContact);
 
 					if (frictionLCP != null)
@@ -476,9 +480,7 @@ namespace MonoPhysicsEngine
 
 					#region Solver Overall Constraints
 
-					JacobianContact[] contactConstraintArray = contactConstraints.ToArray ();
-
-					LinearProblemProperties overallLCP = BuildLCPMatrix (contactConstraintArray);
+					LinearProblemProperties overallLCP = BuildLCPMatrix (contactConstraints);
 
 					if (overallLCP != null) 
 					{
@@ -490,7 +492,7 @@ namespace MonoPhysicsEngine
 
 						//Update Objects velocity
 						UpdateVelocity(
-							contactConstraintArray,
+							contactConstraints,
 							simulationObjects,
 							overallSolution);
 					}

@@ -85,16 +85,19 @@ namespace MonoPhysicsEngine
 			List<ContactIndex> partition,
 			SimulationObject[] simulationObjects)
 		{
-			for (int i = 0; i < readList.Count; i++) {
+			for (int i = 0; i < readList.Count; i++) 
+			{
 				ContactIndex collisionValue = readList [i];
 
 				if (collisionPoint.IndexA == collisionValue.IndexA &&
-				    collisionPoint.IndexB == collisionValue.IndexB) {
+					collisionPoint.IndexB == collisionValue.IndexB)
 					continue;
-				} else if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
-						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody) {
+
+				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
 					break;
-				} else if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+
+				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
 				           (collisionPoint.IndexB == collisionValue.IndexA ||
 				           collisionPoint.IndexB == collisionValue.IndexB)) {
 

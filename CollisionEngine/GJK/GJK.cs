@@ -43,16 +43,17 @@ namespace CollisionEngine
 		/// <returns>The farthest point.</returns>
 		/// <param name="obj">Object.</param>
 		/// <param name="direction">Direction.</param>
-		private int getFarthestPoint(
+		private int GetFarthestPoint(
 			ObjectGeometry obj, 
 			Vector3 direction)
 		{
 			int index = 0;
 			double maxDot = Vector3.Dot (obj.VertexPosition [index], direction);
+			double dot = 0.0;
 
 			for (int i = 1; i < obj.VertexPosition.Length; i++) 
 			{
-				double dot = Vector3.Dot (obj.VertexPosition [i], direction);
+				dot = Vector3.Dot (obj.VertexPosition [i], direction);
 
 				if (dot > maxDot) 
 				{
@@ -76,8 +77,8 @@ namespace CollisionEngine
 			Vector3? direction)
 		{
 			
-			int a = getFarthestPoint (obj1, direction.Value);
-			int b = getFarthestPoint (obj2, direction.Value * -1.0);
+			int a = GetFarthestPoint (obj1, direction.Value);
+			int b = GetFarthestPoint (obj2, direction.Value * -1.0);
 
 			var sp = new Support (
 				             obj1.VertexPosition [a] - obj2.VertexPosition [b],
@@ -245,6 +246,7 @@ namespace CollisionEngine
 			Vector3? distanceVector = new Vector3 ();
 			Vector3? mDistance = null;
 			double minDistance = startDistance;
+			double distance = 0.0;
 
 			double st = 0.0;
 			double tt = 0.0;
@@ -276,7 +278,7 @@ namespace CollisionEngine
 					t [i].w = st;
 					t [i].t = tt;
 
-					double distance = Vector3.Length (distanceVector.Value);
+					distance = Vector3.Length (distanceVector.Value);
 
 					if (distance <= minDistance) {
 						mDistance = distanceVector.Value;

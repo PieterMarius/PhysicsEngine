@@ -429,9 +429,9 @@ namespace PhysicsEngineMathUtility
 			Vector3 e = c - a;
 
 			Vector3 f = Vector3.Cross (d, e);
-			if (Math.Abs (f.x) < 0.000001 &&
-			    Math.Abs (f.y) < 0.000001 &&
-			    Math.Abs (f.z) < 0.000001)
+			if (Math.Abs (f.x) < ConstValues.collinearityTolerance &&
+			    Math.Abs (f.y) < ConstValues.collinearityTolerance &&
+			    Math.Abs (f.z) < ConstValues.collinearityTolerance)
 				return true;
 
 			return false;

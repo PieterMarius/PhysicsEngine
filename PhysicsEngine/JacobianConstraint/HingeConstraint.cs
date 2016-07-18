@@ -357,12 +357,12 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion

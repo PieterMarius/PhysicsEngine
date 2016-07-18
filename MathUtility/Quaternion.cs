@@ -333,7 +333,7 @@ namespace PhysicsEngineMathUtility
 
 		#region Const
 
-		private const string COMPONENT_EXCEPTION = "Quaternion must contain four components (a,b,c,d) ";
+		const string COMPONENT_EXCEPTION = "Quaternion must contain four components (a,b,c,d) ";
 
 		//TODO aggiungere eventuali altre eccezioni
 

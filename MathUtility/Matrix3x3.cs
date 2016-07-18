@@ -286,9 +286,9 @@ namespace PhysicsEngineMathUtility
 					a.y, b.y, c.y,
 					a.z, b.z, c.z);
 
-			} else {
-				return new Matrix3x3 ();
-			}
+			} 
+				
+			return new Matrix3x3 ();
 		}
 
 		#endregion
