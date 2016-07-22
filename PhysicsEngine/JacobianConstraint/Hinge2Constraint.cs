@@ -355,7 +355,7 @@ namespace MonoPhysicsEngine
 			Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
 			Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
 
-			Vector3 quaternionVectorPart = new Vector3(
+			var quaternionVectorPart = new Vector3(
 				mult2.b,
 				mult2.c,
 				mult2.d);

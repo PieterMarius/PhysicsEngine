@@ -68,8 +68,12 @@ namespace MonoPhysicsEngine
 
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-					double correctedBounce = linearComponent *
-											 restitutionCoefficient +
+					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
+
+					//Limit the Baum stabilization jitter effect
+					correctionParameter = Math.Min(Math.Max(correctionParameter - uCollision, 0.0), 2.0);
+
+					double correctedBounce = uCollision +
 											 correctionParameter;
 
 					JacobianContact normalContact = JacobianCommon.GetDOF (

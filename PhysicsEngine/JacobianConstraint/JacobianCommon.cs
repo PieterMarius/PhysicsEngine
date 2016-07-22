@@ -1,7 +1,6 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
-using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {
@@ -153,7 +152,7 @@ namespace MonoPhysicsEngine
 					linearLimit,
 					C,
 					0.0,
-					ConstraintType.CollisionAndJointLimit);
+					ConstraintType.JointLimit);
 			}
 			else if (sliderDistance > linearLimitMax) 
 			{
@@ -172,7 +171,7 @@ namespace MonoPhysicsEngine
 					linearLimit,
 					C,
 					0.0,
-					ConstraintType.CollisionAndJointLimit);
+					ConstraintType.JointLimit);
 			}
 
 			return new JacobianContact ();
@@ -208,7 +207,7 @@ namespace MonoPhysicsEngine
 					angularLimit, 
 					C,
 					0.0,
-					ConstraintType.CollisionAndJointLimit);
+					ConstraintType.JointLimit);
 
 			} 
 
@@ -231,7 +230,7 @@ namespace MonoPhysicsEngine
 					angularLimit,
 					C,
 					0.0,
-					ConstraintType.CollisionAndJointLimit);
+					ConstraintType.JointLimit);
 			}
 
 			return null;

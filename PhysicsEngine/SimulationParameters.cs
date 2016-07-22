@@ -25,6 +25,48 @@ namespace MonoPhysicsEngine
 		public double BaumStabilization { get; private set; }
 
 		/// <summary>
+		/// Gets the shift parmeters to static friction tolerance.
+		/// </summary>
+		/// <value>The shift to static friction tolerance.</value>
+		public double ShiftToStaticFrictionTolerance { get; private set; }
+
+		/// <summary>
+		/// Gets the collision distance.
+		/// </summary>
+		/// <value>The collision distance.</value>
+		public double CollisionDistance { get; private set; }
+
+		/// <summary>
+		/// Gets the external force.
+		/// </summary>
+		/// <value>The external force.</value>
+		public Vector3 ExternalForce { get; private set; }
+
+		/// <summary>
+		/// Gets the normal collision iterations.
+		/// </summary>
+		/// <value>The normal collision iterations.</value>
+		public int NormalCollisionIterations { get; private set; }
+
+		/// <summary>
+		/// Gets the friction and normal iterations.
+		/// </summary>
+		/// <value>The friction and normal iterations.</value>
+		public int FrictionAndNormalIterations { get; private set; }
+
+		/// <summary>
+		/// Gets the joints iterations.
+		/// </summary>
+		/// <value>The joints iterations.</value>
+		public int JointsIterations { get; private set; }
+
+		/// <summary>
+		/// Gets the overall constraints iterations.
+		/// </summary>
+		/// <value>The overall constraints iterations.</value>
+		public int OverallConstraintsIterations { get; private set; }
+
+		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
 		/// </summary>
 		/// <value>The linear vel disable.</value>
@@ -37,22 +79,10 @@ namespace MonoPhysicsEngine
 		public double AngularVelDisable { get; private set; }
 
 		/// <summary>
-		/// Gets the shift parmeters to static friction tolerance.
-		/// </summary>
-		/// <value>The shift to static friction tolerance.</value>
-		public double ShiftToStaticFrictionTolerance { get; private set; }
-
-		/// <summary>
 		/// Discrete Continuos Collision Detection.
 		/// </summary>
 		/// <value><c>true</c> if discrete CC; otherwise, <c>false</c>.</value>
 		public bool DiscreteCCD { get; private set; }
-
-		/// <summary>
-		/// Gets the collision distance.
-		/// </summary>
-		/// <value>The collision distance.</value>
-		public double CollisionDistance { get; private set; }
 
 		/// <summary>
 		/// Gets the compenetration tolerance.
@@ -65,12 +95,6 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <value>The velocity tolerance.</value>
 		public double VelocityTolerance { get; private set; }
-
-		/// <summary>
-		/// Gets the external force.
-		/// </summary>
-		/// <value>The external force.</value>
-		public Vector3 ExternalForce { get; private set; }
 
 		/// <summary>
 		/// Gets the inertia parameter.
@@ -99,11 +123,15 @@ namespace MonoPhysicsEngine
 			TimeStep = 0.015;
 			CFM = 0.001;
 			BaumStabilization = 20;
+			NormalCollisionIterations = 20;
+			FrictionAndNormalIterations = 15;
+			JointsIterations = 20;
+			OverallConstraintsIterations = 20;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.0001;
 			DiscreteCCD = false;
-			CollisionDistance = 0.0001;
+			CollisionDistance = 0.009;
 			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);

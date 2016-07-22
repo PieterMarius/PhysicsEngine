@@ -14,7 +14,7 @@ namespace LCPSolver
 
 			switch (input.ConstraintType[i]) 
 			{
-				case ConstraintType.CollisionAndJointLimit:
+				case ConstraintType.JointLimit:
 					return Math.Max (0.0, X [i]);
 
 				case ConstraintType.Collision:
