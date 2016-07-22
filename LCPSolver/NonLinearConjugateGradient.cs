@@ -23,7 +23,7 @@ namespace LCPSolver
 
 			var gaussSeidelSolverParam = new SolverParameters (
 				                                          1,
-				                                          1E-50,
+				                                          solverParam.ErrorTolerance,
 				                                          solverParam.SOR,
 				                                          solverParam.MaxThreadNumber,
 				                                          solverParam.SORStep);
@@ -85,7 +85,7 @@ namespace LCPSolver
 
 		public SolverParameters GetSolverParameters()
 		{
-			return this.solverParam;
+			return solverParam;
 		}
 
         #endregion
