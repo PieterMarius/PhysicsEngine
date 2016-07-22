@@ -25,15 +25,15 @@ namespace MonoPhysicsEngine
 
 		double RestoreCoefficient;
 
-		double? AngularLimitMin1 = null;
-		double? AngularLimitMax1 = null;
-		double? AngularLimitMin2 = null;
-		double? AngularLimitMax2 = null;
+		double? AngularLimitMin1;
+		double? AngularLimitMax1;
+		double? AngularLimitMin2;
+		double? AngularLimitMax2;
 
-		double? SpeedHingeAxisLimit = null;
-		double? ForceHingeAxisLimit = null;
-		double? SpeedRotationAxisLimit = null;
-		double? ForceRotationAxisLimit = null;
+		double? SpeedHingeAxisLimit;
+		double? ForceHingeAxisLimit;
+		double? SpeedRotationAxisLimit;
+		double? ForceRotationAxisLimit;
 		Vector3 AnchorPoint;
 
 		#endregion
@@ -99,12 +99,10 @@ namespace MonoPhysicsEngine
 		/// Builds the Universal joint.
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
 		{
-			List<JacobianContact> hinge2Constraints = new List<JacobianContact> ();
+			var hinge2Constraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -321,7 +319,7 @@ namespace MonoPhysicsEngine
 
 		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		#endregion

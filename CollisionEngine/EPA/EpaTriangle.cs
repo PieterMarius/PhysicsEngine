@@ -1,5 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
+﻿using PhysicsEngineMathUtility;
 	
 namespace CollisionEngine
 {

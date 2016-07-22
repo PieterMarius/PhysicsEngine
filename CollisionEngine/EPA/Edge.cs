@@ -1,6 +1,4 @@
-﻿using System;
-using PhysicsEngineMathUtility;
-
+﻿
 namespace CollisionEngine
 {
 	public class Edge

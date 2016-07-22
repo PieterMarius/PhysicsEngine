@@ -123,19 +123,19 @@ namespace MonoPhysicsEngine
 			TimeStep = 0.015;
 			CFM = 0.001;
 			BaumStabilization = 20;
-			NormalCollisionIterations = 20;
+			NormalCollisionIterations = 25;
 			FrictionAndNormalIterations = 15;
 			JointsIterations = 20;
-			OverallConstraintsIterations = 20;
+			OverallConstraintsIterations = 8;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
-			ShiftToStaticFrictionTolerance = 0.0001;
+			ShiftToStaticFrictionTolerance = 0.001;
 			DiscreteCCD = false;
 			CollisionDistance = 0.009;
 			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			InertiaParameter = -0.00009;
+			InertiaParameter = -0.0009;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
 		}

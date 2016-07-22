@@ -2,11 +2,7 @@
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
-using PhysicsEngineMathUtility;
-using OpenTK;
-using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using ObjLoader;
 using ObjLoader.Loader.Loaders;
 
 namespace Utility
@@ -24,11 +20,9 @@ namespace Utility
 			return solid;
 		}
 
-
-
 		public static int LoadTexture(string filename)
 		{
-			Bitmap bitmap = new Bitmap (filename);
+			var bitmap = new Bitmap (filename);
 
 			int id = GL.GenTexture ();
 
@@ -80,7 +74,7 @@ namespace Utility
 
 				GL.NewList (displayList [i], ListMode.CompileAndExecute);
 
-				OpenGLUtilities.GLDrawSolid (objects[i], translate[i], GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+				GLDrawSolid (objects[i], translate[i], GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
 
 				GL.EndList ();
 			}
@@ -134,7 +128,7 @@ namespace Utility
 			/* translate around center then scale */
 			for (int i = 0; i < obj.Vertices.Count; i++) 
 			{
-				ObjLoader.Loader.Data.VertexData.Vertex vertex = new ObjLoader.Loader.Data.VertexData.Vertex (
+				var vertex = new ObjLoader.Loader.Data.VertexData.Vertex (
 					(obj.Vertices [i].X - cx) * scale,
 					(obj.Vertices [i].Y - cy) * scale,
 					(obj.Vertices [i].Z - cz) * scale);
@@ -151,7 +145,7 @@ namespace Utility
 		{
 			for (int i = 0; i < obj.Vertices.Count; i++) 
 			{
-				ObjLoader.Loader.Data.VertexData.Vertex vertex = new ObjLoader.Loader.Data.VertexData.Vertex (
+				var vertex = new ObjLoader.Loader.Data.VertexData.Vertex (
 					(obj.Vertices [i].X) * scale,
 					(obj.Vertices [i].Y) * scale,
 					(obj.Vertices [i].Z) * scale);
@@ -244,31 +238,31 @@ namespace Utility
 		public static void drawSolidCube(float size)
 		{
 			float[][] n = new float[6] [];
-			n [0] = new float[3] { -1.0f, 0.0f, 0.0f };
-			n [1] = new float[3] { 0.0f, 1.0f, 0.0f};
-			n [2] = new float[3] { 1.0f, 0.0f, 0.0f};
-			n [3] = new float[3] { 0.0f, -1.0f, 0.0f};
-			n [4] = new float[3] { 0.0f, 0.0f, 1.0f};
-			n [5] = new float[3] { 0.0f, 0.0f, -1.0f};
+			n [0] = new float[] { -1.0f, 0.0f, 0.0f };
+			n [1] = new float[] { 0.0f, 1.0f, 0.0f};
+			n [2] = new float[] { 1.0f, 0.0f, 0.0f};
+			n [3] = new float[] { 0.0f, -1.0f, 0.0f};
+			n [4] = new float[] { 0.0f, 0.0f, 1.0f};
+			n [5] = new float[] { 0.0f, 0.0f, -1.0f};
 
 			int[][] faces = new int[6] [];
-			faces [0] = new int[4] { 0, 1, 2, 3 };
-			faces [1] = new int[4] { 3, 2, 6, 7 };
-			faces [2] = new int[4] { 7, 6, 5, 4 };
-			faces [3] = new int[4] { 4, 5, 1, 0 };
-			faces [4] = new int[4] { 5, 6, 2, 1 };
-			faces [5] = new int[4] { 7, 4, 0, 3 };
+			faces [0] = new int[] { 0, 1, 2, 3 };
+			faces [1] = new int[] { 3, 2, 6, 7 };
+			faces [2] = new int[] { 7, 6, 5, 4 };
+			faces [3] = new int[] { 4, 5, 1, 0 };
+			faces [4] = new int[] { 5, 6, 2, 1 };
+			faces [5] = new int[] { 7, 4, 0, 3 };
 
 			float bSize = size / 2.0f;
 			float[][] v = new float[8] [];
-			v [0] = new float[3] { -bSize, -bSize, -bSize };
-			v [1] = new float[3] { -bSize, -bSize, bSize };
-			v [2] = new float[3] { -bSize, bSize, bSize };
-			v [3] = new float[3] { -bSize, bSize, -bSize };
-			v [4] = new float[3] { bSize, -bSize, -bSize };
-			v [5] = new float[3] { bSize, -bSize, bSize };
-			v [6] = new float[3] { bSize, bSize, bSize };
-			v [7] = new float[3] { bSize, bSize, -bSize };
+			v [0] = new float[] { -bSize, -bSize, -bSize };
+			v [1] = new float[] { -bSize, -bSize, bSize };
+			v [2] = new float[] { -bSize, bSize, bSize };
+			v [3] = new float[] { -bSize, bSize, -bSize };
+			v [4] = new float[] { bSize, -bSize, -bSize };
+			v [5] = new float[] { bSize, -bSize, bSize };
+			v [6] = new float[] { bSize, bSize, bSize };
+			v [7] = new float[] { bSize, bSize, -bSize };
 
 			GL.Begin (PrimitiveType.Quads);
 			for (int i = 5; i >= 0; i--) 
@@ -292,15 +286,15 @@ namespace Utility
 
 			forward = PhysicsEngineMathUtility.Vector3.Normalize(forward);
 
-			PhysicsEngineMathUtility.Vector3 upBuf = new PhysicsEngineMathUtility.Vector3(up.x, up.y, up.z);
+			var upBuf = new PhysicsEngineMathUtility.Vector3(up.x, up.y, up.z);
 
-			PhysicsEngineMathUtility.Vector3 side = PhysicsEngineMathUtility.Vector3.Cross(forward, upBuf);
+			var side = PhysicsEngineMathUtility.Vector3.Cross(forward, upBuf);
 
 			side = PhysicsEngineMathUtility.Vector3.Normalize(side);
 
 			upBuf = PhysicsEngineMathUtility.Vector3.Cross(side, forward);
 
-			float[] matrix = new float[] {
+			var matrix = new float[] {
 				Convert.ToSingle (side.x), Convert.ToSingle (up.x), Convert.ToSingle (-forward.x),
 				Convert.ToSingle (side.y), Convert.ToSingle (up.y), Convert.ToSingle (-forward.y),
 				Convert.ToSingle (side.z), Convert.ToSingle (up.z), Convert.ToSingle (-forward.z)
@@ -348,17 +342,17 @@ namespace Utility
 
 				if (GLM_FLAT) 
 				{
-					PhysicsEngineMathUtility.Vector3 a = new PhysicsEngineMathUtility.Vector3 (
+					var a = new PhysicsEngineMathUtility.Vector3 (
 						solid.Vertices [indicedata [index]].X, 
 						solid.Vertices [indicedata [index]].Y, 
 						solid.Vertices [indicedata [index]].Z);
 					
-					PhysicsEngineMathUtility.Vector3 b = new PhysicsEngineMathUtility.Vector3 (
+					var b = new PhysicsEngineMathUtility.Vector3 (
 						solid.Vertices [indicedata [index + 1]].X, 
 						solid.Vertices [indicedata [index + 1]].Y, 
 						solid.Vertices [indicedata [index + 1]].Z);
 
-					PhysicsEngineMathUtility.Vector3 c = new PhysicsEngineMathUtility.Vector3 (
+					var c = new PhysicsEngineMathUtility.Vector3 (
 						solid.Vertices [indicedata [index + 2]].X, 
 						solid.Vertices [indicedata [index + 2]].Y, 
 						solid.Vertices [indicedata [index + 2]].Z);

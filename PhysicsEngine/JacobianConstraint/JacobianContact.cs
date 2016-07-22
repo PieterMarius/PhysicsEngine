@@ -1,6 +1,5 @@
 ﻿using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
-using CollisionEngine;
 
 namespace MonoPhysicsEngine
 {

@@ -304,7 +304,7 @@ namespace MonoPhysicsEngine
 
 			CollisionDetectionStep ();
 
-			partitionEngineExecute ();
+			PartitionEngineExecute ();
 
 			physicsExecutionFlow ();
 
@@ -443,17 +443,9 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties collisionLCP = BuildLCPMatrix(collisionJointContact);
 
-						if (collisionLCP != null)
-						{
-							solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.NormalCollisionIterations);
-
-							double[] normalSolution = solver.Solve(collisionLCP);
-
-							for (int j = 0; j < collisionJointContact.Length; j++)
-							{
-								collisionJointContact[j].StartImpulse.SetStartValue(normalSolution[j]);
-							}
-						}
+						BuildMatrixAndExecuteSolver(collisionJointContact,
+						                            collisionLCP,
+						                            SimulationEngineParameters.NormalCollisionIterations);
 					}
 
 					#endregion
@@ -462,23 +454,15 @@ namespace MonoPhysicsEngine
 
 					if (SimulationEngineParameters.FrictionAndNormalIterations > 0)
 					{
-						JacobianContact[] frictionContact = Helper.FindConstraints(contactConstraints,
+						JacobianContact[] frictionConstraint = Helper.FindConstraints(contactConstraints,
 																				   ConstraintType.Friction,
 																				   ConstraintType.Collision);
 
-						LinearProblemProperties frictionLCP = BuildLCPMatrix(frictionContact);
+						LinearProblemProperties frictionLCP = BuildLCPMatrix(frictionConstraint);
 
-						if (frictionLCP != null)
-						{
-							solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.FrictionAndNormalIterations);
-
-							double[] frictionSolution = solver.Solve(frictionLCP);
-
-							for (int j = 0; j < frictionContact.Length; j++)
-							{
-								frictionContact[j].StartImpulse.SetStartValue(frictionSolution[j]);
-							}
-						}
+						BuildMatrixAndExecuteSolver(frictionConstraint,
+													frictionLCP,
+													SimulationEngineParameters.FrictionAndNormalIterations);
 					}
 
 					#endregion
@@ -486,7 +470,7 @@ namespace MonoPhysicsEngine
 					#region Solve Joint Constraint
 
 					if (simulationJoints.Count > 0 &&
-					    SimulationEngineParameters.JointsIterations > 0)
+						SimulationEngineParameters.JointsIterations > 0)
 					{
 						JacobianContact[] jointConstraints = Helper.FindConstraints(contactConstraints,
 																					ConstraintType.Joint,
@@ -495,30 +479,22 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties jointLCP = BuildLCPMatrix(jointConstraints);
 
-						if (jointLCP != null)
-						{
-							solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.JointsIterations);
-
-							double[] jointSolution = solver.Solve(jointLCP);
-
-							for (int j = 0; j < jointConstraints.Length; j++)
-							{
-								jointConstraints[j].StartImpulse.SetStartValue(jointSolution[j]);
-							}
-						}
+						BuildMatrixAndExecuteSolver(jointConstraints,
+													jointLCP,
+													SimulationEngineParameters.JointsIterations);
 					}
 
 					#endregion
 
 					#region Solver Overall Constraints
 
-					LinearProblemProperties overallLCP = BuildLCPMatrix (contactConstraints);
+					LinearProblemProperties overallLCP = BuildLCPMatrix(contactConstraints);
 
-					if (overallLCP != null) 
+					if (overallLCP != null)
 					{
-						solver.GetSolverParameters ().SetSolverMaxIteration (SimulationEngineParameters.OverallConstraintsIterations);
+						solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
 
-						double[] overallSolution = solver.Solve (overallLCP);
+						double[] overallSolution = solver.Solve(overallLCP);
 
 						solverError += solver.GetDifferentialMSE();
 
@@ -546,6 +522,8 @@ namespace MonoPhysicsEngine
 			Console.WriteLine ("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
 		}
+
+
 
 		#region Collision Detection
 
@@ -583,7 +561,7 @@ namespace MonoPhysicsEngine
 
 		#region Contact Partitioning
 
-		private void partitionEngineExecute()
+		private void PartitionEngineExecute()
 		{
 			List<SpatialPartition> partitions = contactPartitioningEngine.calculateSpatialPartitioning(
 													collisionPoints,
@@ -650,9 +628,7 @@ namespace MonoPhysicsEngine
 			#region Joint
 
 			foreach (IConstraintBuilder constraintItem in simulationJointList)
-			{
 				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
-			}
 
 			#endregion
 
@@ -662,6 +638,24 @@ namespace MonoPhysicsEngine
 		#endregion
 
 		#region Solver Matrix Builder
+
+		private void BuildMatrixAndExecuteSolver(
+			JacobianContact[] contactConstraints,
+			LinearProblemProperties linearProblemProperties,
+			int nIterations)
+		{
+			if (linearProblemProperties != null)
+			{
+				solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
+
+				double[] solutionValues = solver.Solve(linearProblemProperties);
+
+				for (int j = 0; j < contactConstraints.Length; j++)
+				{
+					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j]);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Builds the LCP matrix for solver.
@@ -767,9 +761,6 @@ namespace MonoPhysicsEngine
 			double linearA = 0.0;
 			double angularA = 0.0;
 
-			double linearB = 0.0;
-			double angularB = 0.0;
-
 			if (contactA.ObjectA == contactB.ObjectA) {
 
 				linearA = contactA.LinearComponentA.Dot (
@@ -786,6 +777,9 @@ namespace MonoPhysicsEngine
 				angularA = contactA.AngularComponentA.Dot (
 					simulationObjects [contactA.ObjectA].InertiaTensor * contactB.AngularComponentB);
 			}
+
+			double linearB = 0.0;
+			double angularB = 0.0;
 
 			if (contactB.ObjectA == contactA.ObjectB) {
 				
@@ -839,7 +833,7 @@ namespace MonoPhysicsEngine
 					impulse,
 					ct.ObjectB);
 
-				ct.StartImpulse.SetStartValue (impulse * SimulationEngineParameters.WarmStartingValue);
+				//ct.StartImpulse.SetStartValue (impulse * SimulationEngineParameters.WarmStartingValue);
 
 				index++;
 			}
@@ -935,11 +929,11 @@ namespace MonoPhysicsEngine
 
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
-					//Inertia parameter
-					//					angularVelocity = Math.Max (0.0, 
-					//						angularVelocity + 
-					//						angularVelocity * 
-					//						this.simulationParameters.InertiaParameter);
+					//Rotation inertia
+					angularVelocity = Math.Max (0.0, 
+						angularVelocity + 
+						angularVelocity * 
+						SimulationEngineParameters.InertiaParameter);
 
 					double rotationAngle = angularVelocity * TimeStep;
 

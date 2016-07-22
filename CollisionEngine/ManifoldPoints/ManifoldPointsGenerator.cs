@@ -13,8 +13,6 @@ namespace CollisionEngine
 		public double ManifoldPlaneTolerance { get; private set; }
 		public double ManifoldStabilizeValue { get; private set; }
 
-		static readonly double constTolerance = 0.0000001;
-
 		#endregion
 
 		#region Constructor
