@@ -19,6 +19,18 @@ namespace MonoPhysicsEngine
 		public double CFM { get; private set; }
 
 		/// <summary>
+		/// Gets the normal CFM.
+		/// </summary>
+		/// <value>The normal CF.</value>
+		public double NormalCFM { get; private set; }
+
+		/// <summary>
+		/// Gets the friction CFM.
+		/// </summary>
+		/// <value>The friction CF.</value>
+		public double FrictionCFM { get; private set; }
+
+		/// <summary>
 		/// Gets the baumgarte stabilization parameter.
 		/// </summary>
 		/// <value>The baum stabilization.</value>
@@ -41,6 +53,8 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <value>The external force.</value>
 		public Vector3 ExternalForce { get; private set; }
+
+		#region Iterations values
 
 		/// <summary>
 		/// Gets the normal collision iterations.
@@ -65,6 +79,8 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <value>The overall constraints iterations.</value>
 		public int OverallConstraintsIterations { get; private set; }
+
+		#endregion
 
 		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
@@ -121,21 +137,23 @@ namespace MonoPhysicsEngine
 		public SimulationParameters ()
 		{
 			TimeStep = 0.015;
-			CFM = 0.001;
+			CFM = 0.0;
+			NormalCFM = 0.001;
+			FrictionCFM = 0.0001;
 			BaumStabilization = 20;
 			NormalCollisionIterations = 25;
-			FrictionAndNormalIterations = 15;
+			FrictionAndNormalIterations = 10;
 			JointsIterations = 20;
-			OverallConstraintsIterations = 8;
+			OverallConstraintsIterations = 10;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.001;
 			DiscreteCCD = false;
-			CollisionDistance = 0.009;
+			CollisionDistance = 0.1;
 			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			InertiaParameter = -0.0009;
+			InertiaParameter = -0.002;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
 		}

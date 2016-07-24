@@ -701,21 +701,24 @@ namespace MonoPhysicsEngine
 
 						double mValue;
 
-						for (int j = i; j < contact.Length; j++) {
-
+						for (int j = i; j < contact.Length; j++) 
+						{
 							JacobianContact contactB = contact [j];
 
 							if (contactA.ObjectA == contactB.ObjectA ||
 							    contactA.ObjectB == contactB.ObjectB ||
 							    contactA.ObjectA == contactB.ObjectB ||
-							    contactA.ObjectB == contactB.ObjectA) {
+							    contactA.ObjectB == contactB.ObjectA) 
+							{
 
 								mValue = addLCPValue (
 									contactA,
 									contactB);
 
 								if (i == j) {
-									mValue += contactA.CFM + 1E-30;
+									mValue += contactA.CFM + 
+											  SimulationEngineParameters.CFM
+											  + 1E-30;
 									D [i] = 1.0 / mValue;
 									continue;
 								}
