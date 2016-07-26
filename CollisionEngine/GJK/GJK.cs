@@ -63,7 +63,7 @@ namespace CollisionEngine
 			}
 			return index;
 		}
-			
+
 		/// <summary>
 		/// Gets the minkowski farthest point.
 		/// </summary>
@@ -76,7 +76,6 @@ namespace CollisionEngine
 			ObjectGeometry obj2,
 			Vector3? direction)
 		{
-			
 			int a = GetFarthestPoint (obj1, direction.Value);
 			int b = GetFarthestPoint (obj2, direction.Value * -1.0);
 
@@ -251,8 +250,8 @@ namespace CollisionEngine
 			double st = 0.0;
 			double tt = 0.0;
 		
-			for (int i = 0; i < 4; i++) {
-
+			for (int i = 0; i < 4; i++) 
+			{
 				if (t [i].Support [0].s == t [i].Support [1].s ||
 					t [i].Support [0].s == t [i].Support [2].s ||
 					t [i].Support [1].s == t [i].Support [2].s)

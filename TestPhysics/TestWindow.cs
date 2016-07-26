@@ -25,6 +25,9 @@ namespace TestPhysics
 
 		int[] displayList;
 
+		double elapsedTime = 0.0;
+		long performaceValue = 0;
+
 		List<CollisionPointStructure> collPoint;
 
 		SimulationObject[] simulationObjects;
@@ -218,8 +221,15 @@ namespace TestPhysics
 
 					stopwatch.Stop();
 
+					elapsedTime += 0.015;
+					performaceValue += stopwatch.ElapsedMilliseconds;
+
 					Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+					Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
 					Console.WriteLine();
+
+					if (elapsedTime > 5.0)
+						Exit();
 				}
 			} 
 			catch (Exception ex) 

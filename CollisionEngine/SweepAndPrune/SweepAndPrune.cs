@@ -23,7 +23,7 @@ namespace CollisionEngine
 
 		#region Public Methods
 
-		public List<CollisionPair> SweepAndPruneTest(
+		public List<CollisionPair> Execute(
 			AABB[] boxs,
 			double distanceTolerance)
 		{
@@ -45,7 +45,8 @@ namespace CollisionEngine
 							testAABBAABB (box1, box2, 1, distanceTolerance) &&
 							testAABBAABB (box1, box2, 2, distanceTolerance)) 
 						{
-							lock (lockMe) { 
+							lock (lockMe) 
+							{ 
 								collisionPairs.Add (new CollisionPair (i, j));
 							}
 						}

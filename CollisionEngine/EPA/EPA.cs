@@ -226,8 +226,6 @@ namespace CollisionEngine
 
 			return epaTriangle;
 		}
-			
-
 
 		//Add triangles to convex hull
 		private void addTriangle(

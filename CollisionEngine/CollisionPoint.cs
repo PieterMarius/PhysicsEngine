@@ -4,7 +4,7 @@ using SimulationObjectDefinition;
 
 namespace CollisionEngine
 {
-	public class CollisionPoint
+	public struct CollisionPoint
 	{
 		public readonly Vector3 CollisionPointA;
 		public readonly Vector3 CollisionPointB;
@@ -12,10 +12,6 @@ namespace CollisionEngine
 		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
 		#region "Constructors"
-
-		public CollisionPoint()
-		{
-		}
 
 		public CollisionPoint (
 			Vector3 collisionPointA,

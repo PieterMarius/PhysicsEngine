@@ -96,7 +96,7 @@ namespace CollisionEngine
 
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
-				CollisionPoint collisionP = TestLineIntersection (
+				CollisionPoint? collisionP = TestLineIntersection (
 					ca [0],
 					ca [1],
 					cb [0],
@@ -104,7 +104,7 @@ namespace CollisionEngine
 					cp.CollisionNormal);
 
 				if (collisionP != null)
-					result.Add (collisionP);
+					result.Add (collisionP.Value);
 
 			} 
 			else if (ca.Length > 2 && cb.Length == 2) 
@@ -122,7 +122,7 @@ namespace CollisionEngine
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint? collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [0],
@@ -130,7 +130,7 @@ namespace CollisionEngine
 							cp.CollisionNormal);
 
 						if (collisionP != null)
-							result.Add (collisionP);
+							result.Add (collisionP.Value);
 					}
 				}
 			} 
@@ -149,7 +149,7 @@ namespace CollisionEngine
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint? collisionP = TestLineIntersection (
 							ca [0],
 							ca [1],
 							cb [i],
@@ -157,7 +157,7 @@ namespace CollisionEngine
 							cp.CollisionNormal);
 
 						if (collisionP != null)
-							result.Add (collisionP);
+							result.Add (collisionP.Value);
 					}
 				}
 			} 
@@ -180,7 +180,7 @@ namespace CollisionEngine
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint? collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [j],
@@ -188,7 +188,7 @@ namespace CollisionEngine
 							cp.CollisionNormal);
 						
 						if (collisionP != null)
-							result.Add (collisionP);
+							result.Add (collisionP.Value);
 					}
 				}
 			}
@@ -304,7 +304,7 @@ namespace CollisionEngine
 			return cpList;
 		}
 
-		private CollisionPoint TestLineIntersection(
+		private CollisionPoint? TestLineIntersection(
 			Vector3 p1,
 			Vector3 p2,
 			Vector3 p3,

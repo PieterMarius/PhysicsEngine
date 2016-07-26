@@ -1,7 +1,7 @@
 ﻿
 namespace CollisionEngine
 {
-	public class CollisionPointStructure
+	public struct CollisionPointStructure
 	{
 		#region Public Properties
 

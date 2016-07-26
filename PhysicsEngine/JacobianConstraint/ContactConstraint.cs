@@ -71,7 +71,7 @@ namespace MonoPhysicsEngine
 					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
 					//Limit the Baum stabilization jitter effect
-					correctionParameter = Math.Min(Math.Max(correctionParameter - uCollision, 0.0), 2.0);
+					correctionParameter = Math.Min(Math.Max(correctionParameter - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
 
 					double correctedBounce = uCollision +
 											 correctionParameter;

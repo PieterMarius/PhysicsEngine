@@ -11,31 +11,31 @@ namespace MonoPhysicsEngine
 
 		public List<SpatialPartition> calculateSpatialPartitioning(
 			List<CollisionPointStructure> collisionPoints,
-			List<IConstraint> simulationJoint,
+			List<IConstraint> simulationJoints,
 			SimulationObject[] simulationObjects)
 		{
 			if (collisionPoints.Count > 0 ||
-				simulationJoint.Count > 0) 
+				simulationJoints.Count > 0) 
 			{
 				var partitions = new List<SpatialPartition> ();
 
-				var contactIndex = new List<ContactIndex>();
+				var contactIndex = new List<ContactIndex> ();
 
 				// Add contacts
-				for (int i = 0; i < collisionPoints.Count; i++) 
+				foreach (CollisionPointStructure cps in collisionPoints)
 				{
 					contactIndex.Add (new ContactIndex (
-						collisionPoints [i].ObjectA,
-						collisionPoints [i].ObjectB,
+						cps.ObjectA,
+						cps.ObjectB,
 						ContactGroupType.Collision));
 				}
 
 				// Add joints
-				for (int i = 0; i < simulationJoint.Count; i++) 
+				foreach (IConstraint smj in simulationJoints)
 				{
 					contactIndex.Add (new ContactIndex (
-						simulationJoint [i].GetObjectIndexA(),
-						simulationJoint [i].GetObjectIndexB(),
+						smj.GetObjectIndexA(),
+						smj.GetObjectIndexB(),
 						ContactGroupType.Joint));
 				}
 
@@ -49,18 +49,23 @@ namespace MonoPhysicsEngine
 						partition,
 						simulationObjects);
 
-					for (int i = 0; i < partition.Count; i++) 
+					foreach(ContactIndex cIndex in partition)
 					{
 						var index = new List<int> ();
-						for (int j = 0; j < contactIndex.Count; j++) 
+						int indexVealue = 0;
+
+						foreach(ContactIndex cntIndex in contactIndex)
 						{
-							if (contactIndex [j].IndexA == partition [i].IndexA &&
-								contactIndex [j].IndexB == partition [i].IndexB &&
-								contactIndex [j].Type == partition [i].Type) 
+							
+							if (cntIndex.IndexA == cIndex.IndexA &&
+								cntIndex.IndexB == cIndex.IndexB &&
+								cntIndex.Type == cIndex.Type) 
 							{
-								index.Add (j);
+								index.Add (indexVealue);
 							}
+							indexVealue++;
 						}
+
 						for (int j = 0; j < index.Count; j++) 
 						{
 							contactIndex.RemoveAt (index [j]);
@@ -94,7 +99,7 @@ namespace MonoPhysicsEngine
 					continue;
 
 				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
-						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
+				    simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
 					break;
 
 				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&

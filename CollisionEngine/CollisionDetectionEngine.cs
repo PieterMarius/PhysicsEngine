@@ -83,7 +83,7 @@ namespace CollisionEngine
 
 		#region Private Methods
 
-		private CollisionPointStructure NarrowPhase(
+		private CollisionPointStructure? NarrowPhase(
 			ObjectGeometry A,
 			ObjectGeometry B,
 			int indexA,
@@ -162,7 +162,7 @@ namespace CollisionEngine
 					if (objects [i] != null) {
 						for (int j = i + 1; j < objects.Length; j++) {
 							if (objects [j] != null) {
-								CollisionPointStructure collisionPointStruct = NarrowPhase (
+								CollisionPointStructure? collisionPointStruct = NarrowPhase (
 									                                              objects [i], 
 									                                              objects [j],
 									                                              i,
@@ -171,7 +171,7 @@ namespace CollisionEngine
 
 								lock (lockMe) {    
 									if (collisionPointStruct != null)
-										result.Add (collisionPointStruct);
+										result.Add (collisionPointStruct.Value);
 								}
 							}
 						}
@@ -189,7 +189,7 @@ namespace CollisionEngine
 
 			AABB[] boxs = Array.ConvertAll (objects, item => (item == null) ? null : item.AABBox);
 
-			List<CollisionPair> collisionPair = sweepAndPruneEngine.SweepAndPruneTest (boxs, minDistance);
+			List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
 
 			var lockMe = new object();
 
@@ -197,7 +197,7 @@ namespace CollisionEngine
 				collisionPair, 
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				pair => {
-					CollisionPointStructure collisionPointStruct = NarrowPhase(
+					CollisionPointStructure? collisionPointStruct = NarrowPhase(
 						objects[pair.objectIndexA],
 						objects[pair.objectIndexB],
 						pair.objectIndexA,
@@ -206,7 +206,7 @@ namespace CollisionEngine
 
 					lock (lockMe) {
 						if (collisionPointStruct != null)
-							result.Add (collisionPointStruct);
+							result.Add (collisionPointStruct.Value);
 					}
 				});
 

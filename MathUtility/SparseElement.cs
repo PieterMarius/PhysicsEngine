@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace PhysicsEngineMathUtility
 {
 	public struct SparseElement
@@ -18,9 +17,9 @@ namespace PhysicsEngineMathUtility
 			double[] value,
 			int[] index)
 		{
-			this.Value = value;
-			this.Index = index;
-			this.Count = value.Length;
+			Value = value;
+			Index = index;
+			Count = value.Length;
 		}
 
 		#endregion

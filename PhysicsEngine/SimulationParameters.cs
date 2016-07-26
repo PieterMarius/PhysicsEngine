@@ -130,6 +130,12 @@ namespace MonoPhysicsEngine
 		/// <value>The warm starting value.</value>
 		public double WarmStartingValue { get; private set; }
 
+		/// <summary>
+		/// Gets the max correction value.
+		/// </summary>
+		/// <value>The max correction value.</value>
+		public double MaxCorrectionValue { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -147,15 +153,16 @@ namespace MonoPhysicsEngine
 			OverallConstraintsIterations = 10;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
-			ShiftToStaticFrictionTolerance = 0.001;
+			ShiftToStaticFrictionTolerance = 0.005;
 			DiscreteCCD = false;
-			CollisionDistance = 0.1;
+			CollisionDistance = 0.001;
 			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.002;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
+			MaxCorrectionValue = 2.0;
 		}
 
 		public SimulationParameters (
