@@ -77,8 +77,7 @@ namespace MonoPhysicsEngine
 					//Limit the Baum stabilization jitter effect
 					correctionParameter = Math.Min(Math.Max(correctionParameter - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
 
-					double correctedBounce = uCollision +
-											 correctionParameter;
+					double correctedBounce = uCollision;
 
 					JacobianContact normalContact = JacobianCommon.GetDOF (
 						indexA,
@@ -90,6 +89,7 @@ namespace MonoPhysicsEngine
 						objectA,
 						objectB,
 						correctedBounce,
+						correctionParameter,
 						simulationParameters.NormalCFM,
 						0.0,
 						ConstraintType.Collision,
@@ -186,6 +186,7 @@ namespace MonoPhysicsEngine
 				objectA,
 				objectB,
 				0.0,
+				0.0,
 				simulationParameters.FrictionCFM,
 				constraintLimit,
 				ConstraintType.Friction,
@@ -211,6 +212,7 @@ namespace MonoPhysicsEngine
 				angularComponentB,
 				objectA,
 				objectB,
+				0.0,
 				0.0,
 				simulationParameters.FrictionCFM,
 				constraintLimit,

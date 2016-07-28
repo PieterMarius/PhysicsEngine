@@ -87,6 +87,7 @@ namespace MonoPhysicsEngine
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			double constraintValue,
+			double correctionValue,
 			double cfm,
 			double constraintLimit,
 			ConstraintType type,
@@ -98,7 +99,7 @@ namespace MonoPhysicsEngine
 			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
 			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
-			jacobianVelocityValue -= constraintValue;
+			jacobianVelocityValue -= (constraintValue + correctionValue);
 
 			if (startImpulseProperties == null)
 				startImpulseProperties = new StartImpulseProperties(0.0);
@@ -113,6 +114,7 @@ namespace MonoPhysicsEngine
 				angularComponentB,
 				type,
 				jacobianVelocityValue,
+				correctionValue,
 				cfm,
 				constraintLimit,
 				startImpulseProperties);
@@ -148,7 +150,8 @@ namespace MonoPhysicsEngine
 					-1.0 * Vector3.Cross (r1, sliderAxis), 
 					Vector3.Cross (r2, sliderAxis), 
 					simulationObjectA, 
-					simulationObjectB, 
+					simulationObjectB,
+					0.0,
 					linearLimit,
 					C,
 					0.0,
@@ -167,7 +170,8 @@ namespace MonoPhysicsEngine
 					Vector3.Cross (r1, sliderAxis), 
 					-1.0 * Vector3.Cross (r2, sliderAxis), 
 					simulationObjectA, 
-					simulationObjectB, 
+					simulationObjectB,
+					0.0,
 					linearLimit,
 					C,
 					0.0,
@@ -204,6 +208,7 @@ namespace MonoPhysicsEngine
 					-1.0 * rotationAxis, 
 					simulationObjectA, 
 					simulationObjectB, 
+					0.0,
 					angularLimit, 
 					C,
 					0.0,
@@ -226,7 +231,8 @@ namespace MonoPhysicsEngine
 					-1.0 * rotationAxis, 
 					rotationAxis, 
 					simulationObjectA, 
-					simulationObjectB, 
+					simulationObjectB,
+					0.0,
 					angularLimit,
 					C,
 					0.0,

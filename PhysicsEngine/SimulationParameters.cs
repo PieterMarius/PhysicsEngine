@@ -165,6 +165,7 @@ namespace MonoPhysicsEngine
 			MaxCorrectionValue = 2.0;
 		}
 
+		//TODO Update input parameters
 		public SimulationParameters (
 			double timeStep,
 			double cfm,

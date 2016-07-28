@@ -228,8 +228,8 @@ namespace TestPhysics
 					Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
 					Console.WriteLine();
 
-					if (elapsedTime > 6.0)
-						Exit();
+					//if (elapsedTime > 6.0)
+					//	Exit();
 				}
 			} 
 			catch (Exception ex) 

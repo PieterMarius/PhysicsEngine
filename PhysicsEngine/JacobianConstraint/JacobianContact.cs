@@ -53,6 +53,11 @@ namespace MonoPhysicsEngine
 		public readonly double B;
 
 		/// <summary>
+		/// The correction value.
+		/// </summary>
+		public readonly double CorrectionValue;
+
+		/// <summary>
 		/// The constraint limit.
 		/// </summary>
 		public readonly double ConstraintLimit;
@@ -66,7 +71,6 @@ namespace MonoPhysicsEngine
 		/// The index of the collision struct.
 		/// </summary>
 		public readonly StartImpulseProperties StartImpulse;
-
 
 		#endregion
 
@@ -82,6 +86,7 @@ namespace MonoPhysicsEngine
 			Vector3 angularComponentB,
 			ConstraintType type,
 			double b,
+			double correctionValue,
 			double cfm,
 			double constraintLimit,
 			StartImpulseProperties startImpulse)
@@ -95,6 +100,7 @@ namespace MonoPhysicsEngine
 			AngularComponentB = angularComponentB;
 			Type = type;
 			B = b;
+			CorrectionValue = correctionValue;
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
 			StartImpulse = startImpulse;

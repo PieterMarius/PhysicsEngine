@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CollisionEngine;
 using SimulationObjectDefinition;
 
@@ -51,6 +52,24 @@ namespace MonoPhysicsEngine
 				if (jc.Type == typeA ||
 					jc.Type == typeB ||
 				    jc.Type == typeC)
+					result.Add(jc);
+			}
+
+			return result.ToArray();
+		}
+
+		public static JacobianContact[] FindConstraintsWithError(
+			JacobianContact[] list,
+			ConstraintType typeA,
+			ConstraintType typeB)
+		{
+			var result = new List<JacobianContact>();
+
+			foreach (JacobianContact jc in list)
+			{
+				if ((jc.Type == typeA ||
+				    jc.Type == typeB) &&
+				    Math.Abs(jc.CorrectionValue) > 1E-100)
 					result.Add(jc);
 			}
 
