@@ -10,11 +10,11 @@ namespace MonoPhysicsEngine
 		#region Public Methods
 
 		public List<SpatialPartition> calculateSpatialPartitioning(
-			List<CollisionPointStructure> collisionPoints,
+			CollisionPointStructure[] collisionPoints,
 			List<IConstraint> simulationJoints,
 			SimulationObject[] simulationObjects)
 		{
-			if (collisionPoints.Count > 0 ||
+			if (collisionPoints.Length > 0 ||
 				simulationJoints.Count > 0) 
 			{
 				var partitions = new List<SpatialPartition> ();

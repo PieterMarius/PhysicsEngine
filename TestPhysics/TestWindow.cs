@@ -213,7 +213,7 @@ namespace TestPhysics
 
 					collPoint.Clear();
 
-					physicsEngine.Simulate(null);
+					physicsEngine.Simulate();
 					for (int i = 0; i < physicsEngine.JointsCount(); i++)
 					{
 						physicsEngine.GetJoint(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
@@ -228,7 +228,7 @@ namespace TestPhysics
 					Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
 					Console.WriteLine();
 
-					if (elapsedTime > 5.0)
+					if (elapsedTime > 6.0)
 						Exit();
 				}
 			} 

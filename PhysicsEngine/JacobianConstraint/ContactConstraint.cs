@@ -11,18 +11,21 @@ namespace MonoPhysicsEngine
 		#region Public Methods
 
 		public static List<JacobianContact> BuildJoints(
-			List<CollisionPointStructure> collisionPointsStruct,
+			CollisionPointStructure[] collisionPointsStruct,
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
 			var contactConstraints = new List<JacobianContact> ();
 
-			for (int i = 0; i < collisionPointsStruct.Count; i++) 
+			for (int i = 0; i < collisionPointsStruct.Length; i++) 
 			{
 				CollisionPointStructure collisionPointStr = collisionPointsStruct [i];
 
 				int indexA = collisionPointStr.ObjectA;
 				int indexB = collisionPointStr.ObjectB;
+
+				SimulationObject objectA = simulationObjs[indexA];
+				SimulationObject objectB = simulationObjs[indexB];
 
 				double restitutionCoefficient =
 					(simulationObjs[indexA].RestitutionCoeff +
@@ -36,10 +39,10 @@ namespace MonoPhysicsEngine
 						collisionPoint = collisionPointStr.CollisionPoints [k].CollisionPointA;
 					else
 						collisionPoint = (collisionPointStr.CollisionPoints [k].CollisionPointA +
-							collisionPointStr.CollisionPoints [k].CollisionPointB) * 0.5;
+										  collisionPointStr.CollisionPoints [k].CollisionPointB) * 0.5;
 
-					Vector3 ra = collisionPoint - simulationObjs [indexA].Position;
-					Vector3 rb = collisionPoint - simulationObjs [indexB].Position;
+					Vector3 ra = collisionPoint - objectA.Position;
+					Vector3 rb = collisionPoint - objectB.Position;
 
 					Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPoints [k].CollisionNormal).Normalize ();
 					Vector3 linearComponentB = -1.0 * linearComponentA;
@@ -47,16 +50,17 @@ namespace MonoPhysicsEngine
 					Vector3 angularComponentA = ra.Cross (linearComponentA);
 					Vector3 angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
-					Vector3 velocityA = simulationObjs [indexA].LinearVelocity +
-						simulationObjs [indexA].AngularVelocity.Cross (ra);
+					Vector3 velocityA = objectA.LinearVelocity +
+										objectA.AngularVelocity.Cross (ra);
 
-					Vector3 velocityB = simulationObjs [indexB].LinearVelocity +
-						simulationObjs [indexB].AngularVelocity.Cross (rb);
+					Vector3 velocityB = objectB.LinearVelocity +
+										objectB.AngularVelocity.Cross (rb);
 
 					Vector3 relativeVelocity = velocityB - velocityA;
 
 					Vector3 tangentialVelocity = relativeVelocity -
-						(linearComponentA.Dot (relativeVelocity)) * linearComponentA;
+												 (linearComponentA.Dot (relativeVelocity)) * 
+												 linearComponentA;
 
 					#region Normal direction contact
 
@@ -83,8 +87,8 @@ namespace MonoPhysicsEngine
 						linearComponentB,
 						angularComponentA,
 						angularComponentB,
-						simulationObjs [indexA],
-						simulationObjs [indexB],
+						objectA,
+						objectB,
 						correctedBounce,
 						simulationParameters.NormalCFM,
 						0.0,
@@ -98,7 +102,8 @@ namespace MonoPhysicsEngine
 
 					JacobianContact[] frictionContact = 
 						addFriction (
-							simulationObjs,
+							objectA,
+							objectB,
 							simulationParameters,
 							indexA,
 							indexB,
@@ -123,7 +128,8 @@ namespace MonoPhysicsEngine
 		#region Private Methods
 
 		private static JacobianContact[] addFriction(
-			SimulationObject[] simulationObjects,
+			SimulationObject objectA,
+			SimulationObject objectB,
 			SimulationParameters simulationParameters,
 			int indexA,
 			int indexB,
@@ -149,13 +155,13 @@ namespace MonoPhysicsEngine
 			if (Vector3.Length (tangentialVelocity) >
 				simulationParameters.ShiftToStaticFrictionTolerance) 
 			{
-				constraintLimit = 0.5 * (simulationObjects [indexA].DynamicFrictionCoeff + simulationObjects [indexB].DynamicFrictionCoeff);
+				constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
 
 				t = tangentialVelocity.Normalize ();
 			} 
 			else 
 			{
-				constraintLimit = 0.5 * (simulationObjects[indexA].StaticFrictionCoeff + simulationObjects[indexB].StaticFrictionCoeff);
+				constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
 
 				t = GeometryUtilities.ProjectVectorOnPlane (normal);
 			}
@@ -177,8 +183,8 @@ namespace MonoPhysicsEngine
 				linearComponentB,
 				angularComponentA,
 				angularComponentB,
-				simulationObjects [indexA],
-				simulationObjects [indexB],
+				objectA,
+				objectB,
 				0.0,
 				simulationParameters.FrictionCFM,
 				constraintLimit,
@@ -203,8 +209,8 @@ namespace MonoPhysicsEngine
 				linearComponentB,
 				angularComponentA,
 				angularComponentB,
-				simulationObjects [indexA],
-				simulationObjects [indexB],
+				objectA,
+				objectB,
 				0.0,
 				simulationParameters.FrictionCFM,
 				constraintLimit,

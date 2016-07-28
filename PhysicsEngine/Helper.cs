@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CollisionEngine;
 using SimulationObjectDefinition;
 
 namespace MonoPhysicsEngine
@@ -54,6 +55,21 @@ namespace MonoPhysicsEngine
 			}
 
 			return result.ToArray();
+		}
+
+		public static CollisionPointStructure? Find(
+			CollisionPointStructure[] collisionPoints,
+			ContactIndex contactIndex)
+		{
+			foreach (CollisionPointStructure cps in collisionPoints)
+			{
+				if (cps.ObjectA == contactIndex.IndexA &&
+				    cps.ObjectB == contactIndex.IndexB)
+				{
+					return cps;
+				}
+			}
+			return null;
 		}
 	}
 }

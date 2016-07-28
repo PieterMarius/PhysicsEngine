@@ -7,7 +7,7 @@ namespace MonoPhysicsEngine
 	public interface IContactPartitioningEngine
 	{
 		List<SpatialPartition> calculateSpatialPartitioning (
-			List<CollisionPointStructure> collisionPoints,
+			CollisionPointStructure[] collisionPoints,
 			List<IConstraint> simulationJoint,
 			SimulationObject[] simulationObjects);
 

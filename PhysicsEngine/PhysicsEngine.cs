@@ -64,7 +64,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The collision points.
 		/// </summary>
-		List<CollisionPointStructure> collisionPoints;
+		CollisionPointStructure[] collisionPoints;
 
 		/// <summary>
 		/// The collision partitioned points.
@@ -239,7 +239,7 @@ namespace MonoPhysicsEngine
 
 		public int JointsCount()
 		{
-			return simulationJoints.Count();
+			return simulationJoints.Count;
 		}
 
 		public List<IConstraint> GetJointsList()
@@ -416,9 +416,7 @@ namespace MonoPhysicsEngine
 		{
 			var stopwatch = new Stopwatch();
 
-			stopwatch.Reset ();
 
-			stopwatch.Start ();
 
 			#region Contact and Joint elaboration
 
@@ -429,7 +427,7 @@ namespace MonoPhysicsEngine
 				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
 					JacobianContact[] contactConstraints = GetJacobianConstraint(
-																   collisionPartitionedPoints[i],
+																   collisionPartitionedPoints[i].ToArray(),
 																   partitionedJoint[i],
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
@@ -488,7 +486,15 @@ namespace MonoPhysicsEngine
 
 					#region Solver Overall Constraints
 
+					stopwatch.Reset();
+
+					stopwatch.Start();
+
 					LinearProblemProperties overallLCP = BuildLCPMatrix(contactConstraints);
+
+					stopwatch.Stop();
+
+					Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.Elapsed);
 
 					if (overallLCP != null)
 					{
@@ -517,9 +523,7 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
-			stopwatch.Stop ();
 
-			Console.WriteLine ("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
 		}
 
@@ -546,7 +550,8 @@ namespace MonoPhysicsEngine
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.Execute(
 									objectsGeometry,
-									SimulationEngineParameters.CollisionDistance);
+									SimulationEngineParameters.CollisionDistance)
+                                 	.ToArray();
 
 			#endregion
 			
@@ -582,11 +587,12 @@ namespace MonoPhysicsEngine
 					{
 						if (partitions[i].ObjectList[j].Type == ContactGroupType.Collision)
 						{
-							CollisionPointStructure cpStruct = collisionPoints.Find(item =>
-															   item.ObjectA == partitions[i].ObjectList[j].IndexA &&
-															   item.ObjectB == partitions[i].ObjectList[j].IndexB);
-							partitionedCollision.Add(cpStruct);
+							CollisionPointStructure? cpStruct = Helper.Find(
+								collisionPoints,
+								partitions[i].ObjectList[j]);
 
+							if (cpStruct.HasValue)
+								partitionedCollision.Add(cpStruct.Value);
 						}
 						else
 						{
@@ -608,7 +614,7 @@ namespace MonoPhysicsEngine
 		#region Jacobian Constraint
 
 		public List<JacobianContact> GetJacobianConstraint(
-			List<CollisionPointStructure> collisionPointsStruct,
+			CollisionPointStructure[] collisionPointsStruct,
 			List<IConstraint> simulationJointList,
 			SimulationObject[] simulationObjs,
 			SimulationParameters simulationParameters)
@@ -699,36 +705,38 @@ namespace MonoPhysicsEngine
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;
 
-						double mValue;
+						double mValue = addLCPValue(
+													contactA,
+													contactA);
 
-						for (int j = i; j < contact.Length; j++) 
+						//Diagonal value
+						mValue += contactA.CFM +
+								  SimulationEngineParameters.CFM +
+								  1E-30;
+						
+						D[i] = 1.0 / mValue;
+						
+						for (int j = i + 1; j < contact.Length; j++) 
 						{
-							JacobianContact contactB = contact [j];
-
+							JacobianContact contactB = contact[j];
+							
 							if (contactA.ObjectA == contactB.ObjectA ||
-							    contactA.ObjectB == contactB.ObjectB ||
-							    contactA.ObjectA == contactB.ObjectB ||
-							    contactA.ObjectB == contactB.ObjectA) 
+								contactA.ObjectB == contactB.ObjectB ||
+								contactA.ObjectA == contactB.ObjectB ||
+								contactA.ObjectB == contactB.ObjectA)
 							{
-
-								mValue = addLCPValue (
+								mValue = addLCPValue(
 									contactA,
 									contactB);
 
-								if (i == j) {
-									mValue += contactA.CFM + 
-											  SimulationEngineParameters.CFM
-											  + 1E-30;
-									D [i] = 1.0 / mValue;
-									continue;
-								}
-
-								if (Math.Abs(mValue) > 1E-100) {
-									lock (sync) {
-										index [i].Add (j);
-										value [i].Add (mValue);
-										index [j].Add (i);
-										value [j].Add (mValue);
+								if (Math.Abs(mValue) > 1E-100)
+								{
+									lock (sync)
+									{
+										index[i].Add(j);
+										value[i].Add(mValue);
+										index[j].Add(i);
+										value[j].Add(mValue);
 									}
 								}
 							}
