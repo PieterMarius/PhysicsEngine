@@ -62,3 +62,4 @@ TestPhysics/obj/*
 ObjectDefinition/obj/*
 PhysicsEngine/obj/*
 MathUtility/obj/*
+TestPhysics/bin/Debug/testJointBridge.txt

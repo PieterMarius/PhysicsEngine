@@ -99,7 +99,7 @@ namespace MonoPhysicsEngine
 			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
 			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
 
-			jacobianVelocityValue -= (constraintValue + correctionValue);
+			jacobianVelocityValue -= constraintValue;
 
 			if (startImpulseProperties == null)
 				startImpulseProperties = new StartImpulseProperties(0.0);

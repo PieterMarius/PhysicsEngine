@@ -306,13 +306,16 @@ namespace MonoPhysicsEngine
 
 			PartitionEngineExecute ();
 
-			bool positionUpdated = PhysicsPositionCorrection();
-
-			if (positionUpdated)
+			if (SimulationEngineParameters.PositionStabilization)
 			{
-				CollisionDetectionStep();
+				bool positionUpdated = PhysicsPositionCorrection();
 
-				PartitionEngineExecute();
+				if (positionUpdated)
+				{
+					CollisionDetectionStep();
+
+					PartitionEngineExecute();
+				}
 			}
 
 			physicsExecutionFlow ();
@@ -435,15 +438,20 @@ namespace MonoPhysicsEngine
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
 
-					int positionBasedIterations = 15;
+					//TODO inserire tra i parametri
+					int positionBasedIterations = 25;
 
 					if (positionBasedIterations > 0)
 					{
-						JacobianContact[] collisionJointIntersection = Helper.FindConstraintsWithError(contactConstraints,
-																									   ConstraintType.Collision,
-						                                                                              ConstraintType.Collision);
+						JacobianContact[] collisionJointIntersection = Helper.FindConstraints(contactConstraints,
+																					ConstraintType.Joint,
+																					ConstraintType.JointLimit,
+																					ConstraintType.JointMotor);
 
-						LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(collisionJointIntersection, true);
+						LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
+							collisionJointIntersection,
+							SimulationEngineParameters.PositionStabilization,
+							true);
 
 						if (collisionErrorLCP != null)
 						{
@@ -451,9 +459,9 @@ namespace MonoPhysicsEngine
 
 							double[] correctionValues = solver.Solve(collisionErrorLCP);
 
-							UpdateIntersectionPosition(collisionJointIntersection,
-														  simulationObjects,
-														  correctionValues);
+							UpdatePosition(collisionJointIntersection,
+										   simulationObjects,
+										   correctionValues);
 
 							positionUpdated = true;
 						}
@@ -493,7 +501,10 @@ namespace MonoPhysicsEngine
 						JacobianContact[] collisionJointContact = Helper.FindConstraints(contactConstraints,
 																						 ConstraintType.Collision);
 
-						LinearProblemProperties collisionLCP = BuildLCPMatrix(collisionJointContact);
+						LinearProblemProperties collisionLCP = BuildLCPMatrix(
+																	collisionJointContact,
+																	false,
+																	false);
 
 						BuildMatrixAndExecuteSolver(collisionJointContact,
 						                            collisionLCP,
@@ -510,7 +521,10 @@ namespace MonoPhysicsEngine
 																				   ConstraintType.Friction,
 																				   ConstraintType.Collision);
 
-						LinearProblemProperties frictionLCP = BuildLCPMatrix(frictionConstraint);
+						LinearProblemProperties frictionLCP = BuildLCPMatrix(
+																frictionConstraint,
+																false,
+																false);
 
 						BuildMatrixAndExecuteSolver(frictionConstraint,
 													frictionLCP,
@@ -529,7 +543,10 @@ namespace MonoPhysicsEngine
 																					ConstraintType.JointLimit,
 																					ConstraintType.JointMotor);
 
-						LinearProblemProperties jointLCP = BuildLCPMatrix(jointConstraints);
+						LinearProblemProperties jointLCP = BuildLCPMatrix(
+																jointConstraints,
+																SimulationEngineParameters.PositionStabilization,
+																false);
 
 						BuildMatrixAndExecuteSolver(jointConstraints,
 													jointLCP,
@@ -540,7 +557,10 @@ namespace MonoPhysicsEngine
 
 					#region Solver Overall Constraints
 
-					LinearProblemProperties overallLCP = BuildLCPMatrix(contactConstraints);
+					LinearProblemProperties overallLCP = BuildLCPMatrix(
+															contactConstraints,
+															false,
+															false);
 
 					if (overallLCP != null)
 					{
@@ -566,6 +586,12 @@ namespace MonoPhysicsEngine
 			#region Position and Velocity integration
 
 			IntegrateObjectsPosition (simulationObjects);
+
+			#endregion
+
+			#region Clear Array
+
+			collisionPartitionedPoints = null;
 
 			#endregion
 
@@ -716,7 +742,8 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private LinearProblemProperties BuildLCPMatrix(
 			JacobianContact[] contact,
-			bool execCorrection = false)
+			bool positionStabilization,
+			bool execCorrection)
 		{
 			if (contact.Length > 0) 
 			{
@@ -747,19 +774,31 @@ namespace MonoPhysicsEngine
 
 						JacobianContact contactA = contact [i];
 
-						B[i] = -contactA.B;
+						double cfm = contactA.CFM;
+						
+						if (positionStabilization)
+						{
+							if (execCorrection)
+							{
+								B[i] = contactA.CorrectionValue;
+								cfm = 0.0;
+							}
+							else
+								B[i] = -contactA.B;
+						}
+						else
+							B[i] = -(contactA.B - contactA.CorrectionValue);
 						
 						X[i] = contactA.StartImpulse.StartImpulseValue;
 						constraints [i] = contactA.ContactReference;
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;
 
-						double mValue = addLCPValue(
-													contactA,
+						double mValue = addLCPValue(contactA,
 													contactA);
 
 						//Diagonal value
-						mValue += contactA.CFM +
+						mValue += cfm +
 								  SimulationEngineParameters.CFM +
 								  1E-30;
 						
@@ -1047,9 +1086,9 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-		#region Intersection Position Based Integration
+		#region Position Based Integration
 
-		private void UpdateIntersectionPosition(
+		private void UpdatePosition(
 			JacobianContact[] contact,
 			SimulationObject[] simulationObj,
 			double[] X)
@@ -1060,14 +1099,14 @@ namespace MonoPhysicsEngine
 
 				JacobianContact ct = contact[i];
 
-				UpdateIntersetionObjectPosition(
+				UpdateObjectPosition(
 					simulationObj,
 					ct.LinearComponentA,
 					ct.AngularComponentA,
 					impulse,
 					ct.ObjectA);
 
-				UpdateIntersetionObjectPosition(
+				UpdateObjectPosition(
 					simulationObj,
 					ct.LinearComponentB,
 					ct.AngularComponentB,
@@ -1076,7 +1115,7 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-		private void UpdateIntersetionObjectPosition(
+		private void UpdateObjectPosition(
 			SimulationObject[] simulationObj,
 			Vector3 linearComponent,
 			Vector3 angularComponent,

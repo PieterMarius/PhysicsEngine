@@ -195,7 +195,7 @@ namespace CollisionEngine
 
 			result = PruneCollisionPoints (result);
 
-			if (result.Count < ManifoldPointNumber)
+			if (result.Count < 1)
 				result.Add(cp);
 
 			return result;

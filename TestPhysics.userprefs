@@ -20,14 +20,14 @@
       <File FileName="CollisionEngine\EPA\EpaCollisionPoint.cs" Line="35" Column="4" />
       <File FileName="CollisionEngine\EPA\EPAOutput.cs" Line="1" Column="1" />
       <File FileName="CollisionEngine\EPA\EpaTriangle.cs" Line="1" Column="1" />
-      <File FileName="CollisionEngine\GJK\GJK.cs" Line="46" Column="21" />
+      <File FileName="CollisionEngine\GJK\GJK.cs" Line="436" Column="1" />
       <File FileName="CollisionEngine\GJK\GJKOutput.cs" Line="1" Column="1" />
       <File FileName="CollisionEngine\GJK\Simplex.cs" Line="7" Column="12" />
-      <File FileName="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" Line="307" Column="26" />
-      <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="158" Column="21" />
+      <File FileName="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" Line="199" Column="1" />
+      <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="122" Column="5" />
       <File FileName="CollisionEngine\SweepAndPrune\CollisionPair.cs" Line="1" Column="1" />
       <File FileName="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" Line="22" Column="13" />
-      <File FileName="CollisionEngine\CollisionEngineParameters.cs" Line="73" Column="39" />
+      <File FileName="CollisionEngine\CollisionEngineParameters.cs" Line="75" Column="23" />
       <File FileName="CollisionEngine\CollisionPoint.cs" Line="12" Column="18" />
       <File FileName="CollisionEngine\CollisionPointStructure.cs" Line="4" Column="16" />
       <File FileName="CollisionEngine\ICollisionEngine.cs" Line="1" Column="1" />
@@ -43,22 +43,22 @@
       <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="12" Column="43" />
       <File FileName="PhysicsEngine\ContactPartitioning\SpatialPartition.cs" Line="1" Column="1" />
       <File FileName="PhysicsEngine\ContactPartitioning\IContactPartitioningEngine.cs" Line="10" Column="29" />
-      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="14" Column="29" />
-      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="301" Column="4" />
-      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="318" Column="10" />
-      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="26" Column="21" />
+      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="150" Column="9" />
+      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="88" Column="25" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="219" Column="34" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="426" Column="28" />
+      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="275" Column="11" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="1" Column="1" />
       <File FileName="PhysicsEngine\JacobianConstraint\IConstraintBuilder.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="110" Column="7" />
-      <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="2" Column="34" />
-      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="10" Column="24" />
-      <File FileName="PhysicsEngine\Helper.cs" Line="52" Column="17" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="184" Column="34" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="103" Column="38" />
+      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="437" Column="10" />
+      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="260" Column="10" />
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="214" Column="10" />
+      <File FileName="PhysicsEngine\Helper.cs" Line="25" Column="35" />
       <File FileName="PhysicsEngine\InertiaTensor.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="15" Column="28" />
-      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="162" Column="30" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="572" Column="7" />
+      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="163" Column="24" />
       <File FileName="MathUtility\ConstValues.cs" Line="11" Column="55" />
       <File FileName="MathUtility\GeometryUtilities.cs" Line="434" Column="25" />
       <File FileName="MathUtility\Matrix3x3.cs" Line="291" Column="28" />
@@ -70,13 +70,13 @@
       <File FileName="ObjectDefinition\ConstraintType.cs" Line="1" Column="1" />
       <File FileName="ObjectDefinition\ObjectGeometry.cs" Line="1" Column="1" />
       <File FileName="ObjectDefinition\ObjectType.cs" Line="1" Column="1" />
-      <File FileName="ObjectDefinition\SimulationObject.cs" Line="1" Column="1" />
+      <File FileName="ObjectDefinition\SimulationObject.cs" Line="6" Column="16" />
       <File FileName="ObjectDefinition\StartImpulseProperties.cs" Line="4" Column="15" />
       <File FileName="TestPhysics\BuildEnvironment.cs" Line="1" Column="1" />
       <File FileName="TestPhysics\LoadEngineConfig.cs" Line="58" Column="8" />
       <File FileName="TestPhysics\LoadObject.cs" Line="1" Column="1" />
-      <File FileName="TestPhysics\Program.cs" Line="1" Column="1" />
-      <File FileName="TestPhysics\TestWindow.cs" Line="251" Column="23" />
+      <File FileName="TestPhysics\Program.cs" Line="29" Column="1" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="67" Column="5" />
       <File FileName="Utility\ArrayUtility.cs" Line="1" Column="1" />
       <File FileName="Utility\OpenGLUtilities.cs" Line="22" Column="3" />
     </Files>

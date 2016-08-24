@@ -136,6 +136,12 @@ namespace MonoPhysicsEngine
 		/// <value>The max correction value.</value>
 		public double MaxCorrectionValue { get; private set; }
 
+		/// <summary>
+		/// Sets the position stabilization.
+		/// </summary>
+		/// <value>The position stabilization.</value>
+		public bool PositionStabilization { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -146,23 +152,24 @@ namespace MonoPhysicsEngine
 			CFM = 0.0;
 			NormalCFM = 0.001;
 			FrictionCFM = 0.0001;
-			BaumStabilization = 20;
+			BaumStabilization = 40;
 			NormalCollisionIterations = 25;
 			FrictionAndNormalIterations = 10;
 			JointsIterations = 20;
 			OverallConstraintsIterations = 10;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
-			ShiftToStaticFrictionTolerance = 0.005;
+			ShiftToStaticFrictionTolerance = 0.01;
 			DiscreteCCD = false;
-			CollisionDistance = 0.001;
-			CompenetrationTolerance = 0.001;
+			CollisionDistance = 0.005;
+			CompenetrationTolerance = 0.0;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.002;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
-			MaxCorrectionValue = 2.0;
+			MaxCorrectionValue = 20.0;
+			PositionStabilization = true;
 		}
 
 		//TODO Update input parameters
