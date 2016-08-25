@@ -64,8 +64,8 @@ namespace TestPhysics
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
 				//var loadObject = new LoadObject ("startConfig.xml");
-				var loadObject = new LoadObject ("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
+				//var loadObject = new LoadObject ("carConfig.xml");
+				var loadObject = new LoadObject("testJointBridge.xml");
 
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
@@ -216,10 +216,10 @@ namespace TestPhysics
 					collPoint.Clear();
 
 					physicsEngine.Simulate();
-					for (int i = 0; i < physicsEngine.JointsCount(); i++)
-					{
-						physicsEngine.GetJoint(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
-					}
+					//for (int i = 0; i < physicsEngine.JointsCount(); i++)
+					//{
+					//	physicsEngine.GetJoint(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
+					//}
 
 					stopwatch.Stop();
 

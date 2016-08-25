@@ -22,12 +22,16 @@ namespace MonoPhysicsEngine
 				var contactIndex = new List<ContactIndex> ();
 
 				// Add contacts
+				int keyIndex = 0;
 				foreach (CollisionPointStructure cps in collisionPoints)
 				{
 					contactIndex.Add (new ContactIndex (
 						cps.ObjectA,
 						cps.ObjectB,
-						ContactGroupType.Collision));
+						ContactGroupType.Collision,
+						keyIndex));
+
+					keyIndex++;
 				}
 
 				// Add joints
@@ -36,7 +40,10 @@ namespace MonoPhysicsEngine
 					contactIndex.Add (new ContactIndex (
 						smj.GetObjectIndexA(),
 						smj.GetObjectIndexB(),
-						ContactGroupType.Joint));
+						ContactGroupType.Joint,
+						keyIndex));
+
+					keyIndex++;
 				}
 
 				while (contactIndex.Count != 0) {
@@ -66,11 +73,11 @@ namespace MonoPhysicsEngine
 							indexVealue++;
 						}
 
+						index.Sort((a, b) => -1 * a.CompareTo(b));
 						for (int j = 0; j < index.Count; j++) 
 						{
 							contactIndex.RemoveAt (index [j]);
 						}
-
 					}
 						
 					partitions.Add (new SpatialPartition (partition));
@@ -85,7 +92,7 @@ namespace MonoPhysicsEngine
 		#region Private mehtods
 
 		private void recursiveSearch(
-			ContactIndex collisionPoint,
+			ContactIndex searchPoint,
 			List<ContactIndex> readList,
 			List<ContactIndex> partition,
 			SimulationObject[] simulationObjects)
@@ -94,51 +101,58 @@ namespace MonoPhysicsEngine
 			{
 				ContactIndex collisionValue = readList [i];
 
-				if (collisionPoint.IndexA == collisionValue.IndexA &&
-					collisionPoint.IndexB == collisionValue.IndexB)
+				if (searchPoint.IndexA == collisionValue.IndexA &&
+					searchPoint.IndexB == collisionValue.IndexB &&
+				    searchPoint.KeyIndex == collisionValue.KeyIndex)
 					continue;
 
-				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
-				    simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
+				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+				    simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
 					break;
 
-				if (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
-				           (collisionPoint.IndexB == collisionValue.IndexA ||
-				           collisionPoint.IndexB == collisionValue.IndexB)) {
+				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+				           (searchPoint.IndexB == collisionValue.IndexA ||
+				           searchPoint.IndexB == collisionValue.IndexB)) {
 
-					if (!partition.Contains (collisionValue)) {
+					if (!partition.Contains (collisionValue)) 
+					{
 						partition.Add (collisionValue);
+
 						recursiveSearch (
-							collisionValue, 
+							collisionValue,
 							readList, 
 							partition,
 							simulationObjects);
 					}
 
-				} else if (simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.StaticRigidBody &&
-				           (collisionPoint.IndexA == collisionValue.IndexA ||
-				           collisionPoint.IndexA == collisionValue.IndexB)) {
+				} else if (simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticRigidBody &&
+				           (searchPoint.IndexA == collisionValue.IndexA ||
+				           searchPoint.IndexA == collisionValue.IndexB)) {
 
-					if (!partition.Contains (collisionValue)) {
+					if (!partition.Contains (collisionValue)) 
+					{
 						partition.Add (collisionValue);
+
 						recursiveSearch (
-							collisionValue, 
+							collisionValue,
 							readList, 
 							partition,
 							simulationObjects);
 					}
 
-				} else if (collisionPoint.IndexA == collisionValue.IndexB ||
-				           collisionPoint.IndexB == collisionValue.IndexA ||
-				           collisionPoint.IndexA == collisionValue.IndexA ||
-				           collisionPoint.IndexB == collisionValue.IndexB &&
-						   (simulationObjects [collisionPoint.IndexA].ObjectType == ObjectType.RigidBody &&
-						   simulationObjects [collisionPoint.IndexB].ObjectType == ObjectType.RigidBody)) {
+				} else if (searchPoint.IndexA == collisionValue.IndexB ||
+				           searchPoint.IndexB == collisionValue.IndexA ||
+				           searchPoint.IndexA == collisionValue.IndexA ||
+				           searchPoint.IndexB == collisionValue.IndexB &&
+						   (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.RigidBody &&
+						   simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.RigidBody)) {
 
-					if (!partition.Contains (collisionValue)) {
+					if (!partition.Contains (collisionValue)) 
+					{
 						partition.Add (collisionValue);
+
 						recursiveSearch (
-							collisionValue, 
+							collisionValue,
 							readList, 
 							partition,
 							simulationObjects);

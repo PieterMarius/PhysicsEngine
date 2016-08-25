@@ -152,7 +152,7 @@ namespace MonoPhysicsEngine
 			CFM = 0.0;
 			NormalCFM = 0.001;
 			FrictionCFM = 0.0001;
-			BaumStabilization = 40;
+			BaumStabilization = 20;
 			NormalCollisionIterations = 25;
 			FrictionAndNormalIterations = 10;
 			JointsIterations = 20;

@@ -601,8 +601,6 @@ namespace MonoPhysicsEngine
 
 		}
 
-
-
 		#region Collision Detection
 
 		/// <summary>
