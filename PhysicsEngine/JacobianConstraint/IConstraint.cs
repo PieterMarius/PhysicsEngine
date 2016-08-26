@@ -11,6 +11,7 @@ namespace MonoPhysicsEngine
 		JointType GetJointType();
 		int GetObjectIndexA();
 		int GetObjectIndexB();
+		int GetKeyIndex();
 
 		#endregion
 

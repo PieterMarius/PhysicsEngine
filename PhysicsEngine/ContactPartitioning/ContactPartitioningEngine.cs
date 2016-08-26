@@ -41,9 +41,7 @@ namespace MonoPhysicsEngine
 						smj.GetObjectIndexA(),
 						smj.GetObjectIndexB(),
 						ContactGroupType.Joint,
-						keyIndex));
-
-					keyIndex++;
+						smj.GetKeyIndex()));
 				}
 
 				while (contactIndex.Count != 0) {

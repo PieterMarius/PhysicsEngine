@@ -13,6 +13,7 @@ namespace MonoPhysicsEngine
 
 		int IndexA;
 		int IndexB;
+		int KeyIndex;
 		readonly double SpringCoefficient;
 		readonly double SpringCoefficientHingeAxis; 
 		readonly Vector3 StartAnchorPoint;
@@ -53,6 +54,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
+			KeyIndex = this.GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficientHingeAxis = springCoefficientHingeAxis;
 			SpringCoefficient = springCoefficient;
@@ -272,6 +274,11 @@ namespace MonoPhysicsEngine
 		public void SetObjectIndexB(int index)
 		{
 			IndexB = index;
+		}
+
+		public int GetKeyIndex()
+		{
+			return KeyIndex;
 		}
 
 		public Vector3 GetAnchorPosition()

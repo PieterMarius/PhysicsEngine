@@ -14,6 +14,7 @@ namespace MonoPhysicsEngine
 
 		int IndexA;
 		int IndexB;
+		int KeyIndex;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 SliderAxis;
@@ -43,6 +44,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
+			KeyIndex = this.GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
@@ -292,6 +294,11 @@ namespace MonoPhysicsEngine
 		public void SetObjectIndexB(int index)
 		{
 			IndexB = index;
+		}
+
+		public int GetKeyIndex()
+		{
+			return KeyIndex;
 		}
 
 		public JointType GetJointType()

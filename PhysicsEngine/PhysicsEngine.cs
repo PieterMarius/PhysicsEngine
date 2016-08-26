@@ -670,7 +670,8 @@ namespace MonoPhysicsEngine
 						{
 							IConstraint smJoint = simulationJoints.Find(item =>
 												  item.GetObjectIndexA() == partitions[i].ObjectList[j].IndexA &&
-												  item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB);
+												  item.GetObjectIndexB() == partitions[i].ObjectList[j].IndexB &&
+	                                              item.GetKeyIndex() == partitions[i].ObjectList[j].KeyIndex);
 							partJoint.Add(smJoint);
 
 						}
