@@ -23,7 +23,7 @@
    <ObjectsSettings>
 		<Object>
             <Position x="0,0" y="1,8" z="12,5" />
-            <LinearVelocity x="0,0" y="0,0" z="3,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -173,7 +173,7 @@
         </Object>
         <Object>
             <Position x="0,0" y="1,8" z="-13,5" />
-            <LinearVelocity x="0,0" y="0,0" z="-3,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,3" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
@@ -239,7 +239,6 @@
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
-	
 	<Joint>
         <ObjectIndexA>1</ObjectIndexA>
         <ObjectIndexB>2</ObjectIndexB>
@@ -271,7 +270,6 @@
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
-	
 	<Joint>
         <ObjectIndexA>2</ObjectIndexA>
         <ObjectIndexB>3</ObjectIndexB>
@@ -303,7 +301,6 @@
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
-	
 	<Joint>
         <ObjectIndexA>3</ObjectIndexA>
         <ObjectIndexB>4</ObjectIndexB>
@@ -490,7 +487,6 @@
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
-	
 	<Joint>
         <ObjectIndexA>10</ObjectIndexA>
         <ObjectIndexB>9</ObjectIndexB>
@@ -522,6 +518,5 @@
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
 	</Joint>
-	
     </JointsSettings>
 </RigidBodyEngine>

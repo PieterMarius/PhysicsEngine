@@ -10,7 +10,7 @@ using LCPSolver;
 
 namespace MonoPhysicsEngine
 {
-	public class PhysicsEngine
+	public class PhysicsEngine: IDisposable
 	{
 		#region Public Properties
 
@@ -312,9 +312,10 @@ namespace MonoPhysicsEngine
 
 				if (positionUpdated)
 				{
-					CollisionDetectionStep();
+					//TODO valutare l'implementazione
+					//CollisionDetectionStep();
 
-					PartitionEngineExecute();
+					//PartitionEngineExecute();
 				}
 			}
 
@@ -428,6 +429,7 @@ namespace MonoPhysicsEngine
 		{
 			bool positionUpdated = false;
 
+			//TODO correggere errore, utilizzare collissionPartitionedJoint
 			if (collisionPartitionedPoints != null)
 			{
 				for (int i = 0; i < collisionPartitionedPoints.Count; i++)
@@ -443,7 +445,8 @@ namespace MonoPhysicsEngine
 
 					if (positionBasedIterations > 0)
 					{
-						JacobianContact[] collisionJointIntersection = Helper.FindConstraints(contactConstraints,
+						JacobianContact[] collisionJointIntersection = Helper.FindConstraints(
+																					contactConstraints,
 																					ConstraintType.Joint,
 																					ConstraintType.JointLimit,
 																					ConstraintType.JointMotor);
@@ -459,7 +462,7 @@ namespace MonoPhysicsEngine
 
 							double[] correctionValues = solver.Solve(collisionErrorLCP);
 
-							UpdatePosition(collisionJointIntersection,
+							UpdatePositionBasedVelocity(collisionJointIntersection,
 										   simulationObjects,
 										   correctionValues);
 
@@ -467,8 +470,14 @@ namespace MonoPhysicsEngine
 						}
 					}
 				}
-			}
+				#region Position and Velocity integration
 
+				if (positionUpdated)
+					UpdateObjectPosition(simulationObjects);
+
+				#endregion
+			}
+			Console.WriteLine();
 			return positionUpdated;
 		}
 
@@ -484,8 +493,8 @@ namespace MonoPhysicsEngine
 
 			solverError = 0.0;
 
-			if (collisionPartitionedPoints != null) {
-
+			if (collisionPartitionedPoints != null) 
+			{
 				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
 					JacobianContact[] contactConstraints = GetJacobianConstraint(
@@ -545,7 +554,7 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties jointLCP = BuildLCPMatrix(
 																jointConstraints,
-																SimulationEngineParameters.PositionStabilization,
+																false,
 																false);
 
 						BuildMatrixAndExecuteSolver(jointConstraints,
@@ -741,8 +750,8 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private LinearProblemProperties BuildLCPMatrix(
 			JacobianContact[] contact,
-			bool positionStabilization,
-			bool execCorrection)
+			bool positionStabilization = false,
+			bool execCorrection = false)
 		{
 			if (contact.Length > 0) 
 			{
@@ -959,7 +968,8 @@ namespace MonoPhysicsEngine
 				Vector3 angularImpuse = X * angularComponent;
 
 				Vector3 linearVelocity = simObj.LinearVelocity +
-				                         linearImpulse * simObj.InverseMass;
+				                         linearImpulse * 
+		                                 simObj.InverseMass;
 
 				Vector3 angularVelocity = simObj.AngularVelocity +
 				                          (simObj.InertiaTensor *
@@ -1087,7 +1097,7 @@ namespace MonoPhysicsEngine
 
 		#region Position Based Integration
 
-		private void UpdatePosition(
+		private void UpdatePositionBasedVelocity(
 			JacobianContact[] contact,
 			SimulationObject[] simulationObj,
 			double[] X)
@@ -1098,14 +1108,14 @@ namespace MonoPhysicsEngine
 
 				JacobianContact ct = contact[i];
 
-				UpdateObjectPosition(
+				SetPositionBasedVelocity(
 					simulationObj,
 					ct.LinearComponentA,
 					ct.AngularComponentA,
 					impulse,
 					ct.ObjectA);
 
-				UpdateObjectPosition(
+				SetPositionBasedVelocity(
 					simulationObj,
 					ct.LinearComponentB,
 					ct.AngularComponentB,
@@ -1114,7 +1124,7 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-		private void UpdateObjectPosition(
+		private void SetPositionBasedVelocity(
 			SimulationObject[] simulationObj,
 			Vector3 linearComponent,
 			Vector3 angularComponent,
@@ -1128,78 +1138,132 @@ namespace MonoPhysicsEngine
 				Vector3 linearImpulse = X * linearComponent;
 				Vector3 angularImpuse = X * angularComponent;
 
-				Vector3 baseLinearVelocity = linearImpulse *  
-			                                 simObj.InverseMass;
+				Vector3 linearVelocity = simObj.TempLinearVelocity +
+			                             linearImpulse *
+										 simObj.InverseMass;
 
-				Vector3 baseAngularVelocity = simObj.InertiaTensor *
-										  	  angularImpuse;
+				Vector3 angularVelocity = simObj.TempAngularVelocity + 
+		                                  simObj.InertiaTensor *
+										  angularImpuse;
 
-				#region Linear Velocity
-
-				double linearVelocity = baseLinearVelocity.Length();
-
-				simObj.SetPosition(
-					simObj.Position +
-					TimeStep *
-					baseLinearVelocity);
-
-				#endregion
-
-				#region Angular Velocity
-
-				double angularVelocity = baseAngularVelocity.Length();
-
-				Vector3 versor = baseAngularVelocity.Normalize();
-
-				double rotationAngle = angularVelocity * TimeStep;
-
-				var rotationQuaternion = new Quaternion(versor, rotationAngle);
-
-				//TODO da correggere
-				simObj.SetRotationStatus(
-					(rotationQuaternion * simObj.RotationStatus).Normalize());
-
-				simObj.SetRotationMatrix(simObj.RotationStatus.ConvertToMatrix());
-
-				simObj.SetInertiaTensor(
-					(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
-					simObj.RotationMatrix.Transpose());
-
-				#endregion
-
-				#region Update Object Vertex Position
-
-				if (simObj.ObjectGeometry != null &&
-					(linearVelocity > 0.0 || angularVelocity > 0.0))
-				{
-					for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++)
-					{
-						Vector3 relativePosition = simObj.Position +
-							(simObj.RotationMatrix * simObj.RelativePositions[j]);
-
-						simObj.ObjectGeometry.SetVertexPosition(
-							relativePosition,
-							j);
-					}
-
-					//TODO refactoring and testing
-					var box = new AABB(
-						simObj.ObjectGeometry.VertexPosition.Min(point => point.x),
-						simObj.ObjectGeometry.VertexPosition.Max(point => point.x),
-						simObj.ObjectGeometry.VertexPosition.Min(point => point.y),
-						simObj.ObjectGeometry.VertexPosition.Max(point => point.y),
-						simObj.ObjectGeometry.VertexPosition.Min(point => point.z),
-						simObj.ObjectGeometry.VertexPosition.Max(point => point.z),
-						false);
-
-					simObj.ObjectGeometry.SetAABB(box);
-				}
-
-				#endregion
-
-				simulationObjects[index] = simObj;
+				simulationObj[index].SetTempLinearVelocity(linearVelocity);
+				simulationObj[index].SetTempAngularVelocity(angularVelocity);
 			}
 		}
+
+		private void UpdateObjectPosition(
+			SimulationObject[] simulationObj)
+		{
+			int index = 0;
+			foreach (SimulationObject simObj in simulationObj)
+			{
+				if (simObj.ObjectType != ObjectType.StaticRigidBody)
+				{
+					#region Linear Velocity
+
+					double linearVelocity = simObj.TempLinearVelocity.Length();
+
+					simObj.SetPosition(
+						simObj.Position +
+						TimeStep *
+						simObj.TempLinearVelocity);
+
+					#endregion
+
+					#region Angular Velocity
+
+					double angularVelocity = simObj.TempAngularVelocity.Length();
+
+					Vector3 versor = simObj.TempAngularVelocity.Normalize();
+
+					double rotationAngle = angularVelocity * TimeStep;
+
+					var rotationQuaternion = new Quaternion(versor, rotationAngle);
+
+					//TODO da correggere
+					simObj.SetRotationStatus(
+						(rotationQuaternion * simObj.RotationStatus).Normalize());
+
+					simObj.SetRotationMatrix(simObj.RotationStatus.ConvertToMatrix());
+
+					simObj.SetInertiaTensor(
+						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
+						simObj.RotationMatrix.Transpose());
+
+					#endregion
+
+					#region Update Object Vertex Position
+
+					if (simObj.ObjectGeometry != null &&
+						(linearVelocity > 0.0 || angularVelocity > 0.0))
+					{
+						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++)
+						{
+							Vector3 relativePosition = simObj.Position +
+								(simObj.RotationMatrix * simObj.RelativePositions[j]);
+
+							simObj.ObjectGeometry.SetVertexPosition(
+								relativePosition,
+								j);
+						}
+
+						//TODO refactoring and testing
+						var box = new AABB(
+							simObj.ObjectGeometry.VertexPosition.Min(point => point.x),
+							simObj.ObjectGeometry.VertexPosition.Max(point => point.x),
+							simObj.ObjectGeometry.VertexPosition.Min(point => point.y),
+							simObj.ObjectGeometry.VertexPosition.Max(point => point.y),
+							simObj.ObjectGeometry.VertexPosition.Min(point => point.z),
+							simObj.ObjectGeometry.VertexPosition.Max(point => point.z),
+							false);
+
+						simObj.ObjectGeometry.SetAABB(box);
+
+						simObj.SetTempLinearVelocity(new Vector3());
+						simObj.SetTempAngularVelocity(new Vector3());
+					}
+
+					#endregion
+				}
+				simulationObjects[index] = simObj;
+				index++;
+			}
+		}
+
+		#region IDisposable
+
+		bool disposed = false;
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposed)
+				return;
+
+			if (disposing)
+			{
+				simulationObjects = null;
+				simulationJoints = null;
+				objectsGeometry = null;
+				collisionPoints = null;
+				collisionPartitionedPoints = null;
+				partitionedJoint = null;
+				collisionEngine = null;
+				contactPartitioningEngine = null;
+				solver = null;
+			}
+
+			// Free any unmanaged objects here.
+			//
+			disposed = true;
+		}
+
+		#endregion
 
 		#endregion
 

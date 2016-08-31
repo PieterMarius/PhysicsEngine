@@ -135,8 +135,6 @@ namespace CollisionEngine
 															   B,
 															   epaOutput.CollisionPoint);
 
-				Console.WriteLine("Intersection " + epaOutput.CompenetrationDistance);
-
 				return new CollisionPointStructure(
 					indexA,
 					indexB,

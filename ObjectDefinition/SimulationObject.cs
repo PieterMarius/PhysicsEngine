@@ -92,10 +92,22 @@ namespace SimulationObjectDefinition
 		public Vector3 LinearVelocity{ get; private set; }
 
 		/// <summary>
+		/// Gets the temp linear velocity.
+		/// </summary>
+		/// <value>The temp linear velocity.</value>
+		public Vector3 TempLinearVelocity{ get; private set; }
+
+		/// <summary>
 		/// Gets the actual angular velocity.
 		/// </summary>
 		/// <value>The angular velocity.</value>
 		public Vector3 AngularVelocity{ get; private set; }
+
+		/// <summary>
+		/// Gets the temp angular velocity.
+		/// </summary>
+		/// <value>The temp angular velocity.</value>
+		public Vector3 TempAngularVelocity{ get; private set; }
 
 		/// <summary>
 		/// Gets the actual rotation status quaternion.
@@ -189,9 +201,19 @@ namespace SimulationObjectDefinition
 			LinearVelocity = inputLinearVelocity;
 		}
 
+		public void SetTempLinearVelocity(Vector3 inputLinearVelocity)
+		{
+			TempLinearVelocity = inputLinearVelocity;
+		}
+
 		public void SetAngularVelocity(Vector3 inputAngularVelocity)
 		{
 			AngularVelocity = inputAngularVelocity;
+		}
+
+		public void SetTempAngularVelocity(Vector3 inputAngularVelocity)
+		{
+			TempAngularVelocity = inputAngularVelocity;
 		}
 
 		public void SetRotationStatus(Quaternion inputRotationStatus)

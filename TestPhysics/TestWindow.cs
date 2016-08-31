@@ -336,6 +336,7 @@ namespace TestPhysics
 
 			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.R]) 
 			{
+				physicsEngine.Dispose();
 				initProgram ();
 			}
 

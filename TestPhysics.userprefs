@@ -2,14 +2,34 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint file="C:\Users\vanduinp\Documents\GitHub\PhysicsEngine\PhysicsEngine\PhysicsEngine.cs" line="1170" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\PhysicsEngine.cs">
     <Files>
-      <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="84" Column="6" />
-      <File FileName="TestPhysics\TestWindow.cs" Line="517" Column="23" />
-      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="1" Column="1" />
-      <File FileName="PhysicsEngine\ContactPartitioning\ContactIndex.cs" Line="26" Column="24" />
+      <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="14" Column="3" />
+      <File FileName="TestPhysics\TestWindow.cs" Line="98" Column="19" />
+      <File FileName="PhysicsEngine\PhysicsEngine.cs" Line="1063" Column="2" />
+      <File FileName="PhysicsEngine\ContactPartitioning\ContactIndex.cs" Line="11" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\IConstraint.cs" Line="14" Column="18" />
+      <File FileName="PhysicsEngine\JacobianConstraint\BallAndSocketConstraint.cs" Line="124" Column="48" />
+      <File FileName="PhysicsEngine\JacobianConstraint\PistonConstraint.cs" Line="16" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\FixedJointConstraint.cs" Line="16" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\SliderConstraint.cs" Line="17" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="16" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="16" Column="3" />
+      <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="16" Column="3" />
+      <File FileName="TestPhysics\LoadObject.cs" Line="366" Column="1" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="114" Column="23" />
+      <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="6" Column="16" />
+      <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="78" Column="32" />
+      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="143" Column="15" />
+      <File FileName="TestPhysics\Program.cs" Line="1" Column="1" />
+      <File FileName="PhysicsEngine\InertiaTensor.cs" Line="1" Column="1" />
+      <File FileName="MathUtility\Quaternion.cs" Line="274" Column="1" />
+      <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="137" Column="5" />
+      <File FileName="ObjectDefinition\SimulationObject.cs" Line="216" Column="8" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.ItemProperties.TestPhysics PreferredExecutionTarget="MonoDevelop.Default" />

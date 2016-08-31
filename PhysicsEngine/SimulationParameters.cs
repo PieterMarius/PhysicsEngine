@@ -149,14 +149,14 @@ namespace MonoPhysicsEngine
 		public SimulationParameters ()
 		{
 			TimeStep = 0.015;
-			CFM = 0.0;
+			CFM = 0.00001;
 			NormalCFM = 0.001;
 			FrictionCFM = 0.0001;
 			BaumStabilization = 20;
-			NormalCollisionIterations = 25;
-			FrictionAndNormalIterations = 10;
-			JointsIterations = 20;
-			OverallConstraintsIterations = 10;
+			NormalCollisionIterations = 0;
+			FrictionAndNormalIterations = 0;
+			JointsIterations = 0;
+			OverallConstraintsIterations = 15;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
