@@ -50,18 +50,19 @@ namespace TestPhysics
 
 			#region Terrain Base
 
-			objects[0] = new SimulationObject();
-			objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
+			objects[0] = new SimulationObject(
+				ObjectType.StaticRigidBody,
+				geometry: GetObjectGeometry("cube.obj", 25),
+				mass: 1000.0,
+				position: new Vector3(0.0, -4.0, 0.0),
+				rotationStatus: new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+			
 			objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
 			objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0,0.0,0.0), 0.0));
-			objects[0].SetObjectType(ObjectType.StaticRigidBody);
-			objects[0].SetMass(1000.0);
 			objects[0].SetRestitutionCoeff(0.1);
 			objects[0].SetDynamicFrictionCoeff(1.0);
 			objects[0].SetStaticFrictionCoeff(1.0);
 			objects[0].SetExcludeFromCollisionDetection(false);
-			objects[0].ObjectGeometry = GetObjectGeometry("cube.obj", 25);
 
 			var inertiaTensor = new InertiaTensor(
 				objects[0].ObjectGeometry.VertexPosition,
@@ -83,7 +84,6 @@ namespace TestPhysics
 
 			objects[0].SetStartPosition(inertiaTensor1.GetMassCenter());
 			objects[0].SetBaseInertiaTensor(inertiaTensor1.GetInertiaTensor());
-			objects[0].SetRelativePosition();
 			objects[0].SetRotationMatrix(Quaternion.ConvertToMatrix(Quaternion.Normalize(objects[0].RotationStatus)));
 			objects[0].SetInertiaTensor((objects[0].RotationMatrix * objects[0].BaseInertiaTensor) *
 				Matrix3x3.Transpose(objects[0].RotationMatrix));

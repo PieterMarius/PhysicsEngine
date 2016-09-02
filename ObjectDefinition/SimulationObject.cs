@@ -3,7 +3,7 @@ using PhysicsEngineMathUtility;
 
 namespace SimulationObjectDefinition
 {
-	public struct SimulationObject
+	public class SimulationObject
 	{
 
 		#region Object status properties
@@ -39,6 +39,12 @@ namespace SimulationObjectDefinition
 		public double DynamicFrictionCoeff{ get; private set; }
 
 		/// <summary>
+		/// Gets the baumgarte stabilization coeff.
+		/// </summary>
+		/// <value>The baumgarte stabilization coeff.</value>
+		public double BaumgarteStabilizationCoeff{ get; private set; } 
+
+		/// <summary>
 		/// Gets the relative positions of each point of the object from initial mass center.
 		/// </summary>
 		/// <value>The relative positions.</value>
@@ -60,14 +66,13 @@ namespace SimulationObjectDefinition
 		/// Gets or sets the object geometry.
 		/// </summary>
 		/// <value>The object geometry.</value>
-		public ObjectGeometry ObjectGeometry{ get; set; }
+		public ObjectGeometry ObjectGeometry{ get; private set; }
 
 		/// <summary>
 		/// Gets the type of the object.
 		/// </summary>
 		/// <value>The type of the object.</value>
 		public ObjectType ObjectType { get; private set; }
-
 
 		#endregion
 
@@ -141,17 +146,38 @@ namespace SimulationObjectDefinition
 		/// Gets a value indicating whether this SimulationObject exclude from collision detection.
 		/// </summary>
 		/// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
-		public bool ExcludeFromCollisionDetection{ get; private set; } 
+		public bool ExcludeFromCollisionDetection{ get; private set; }
+
+		#endregion
+
+		#region Constructor
+
+		public SimulationObject(
+			ObjectType type,
+			ObjectGeometry geometry,
+			double mass,
+			Vector3 position,
+			Quaternion rotationStatus)
+		{
+			ObjectType = type;
+			this.ObjectGeometry = geometry;
+			Mass = mass;
+			InverseMass = 1.0 / Mass;
+			Position = position;
+			RotationStatus = rotationStatus;
+
+			SetObjectProperties();
+
+			for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++) 
+			{
+				Vector3 relPositionRotate = RotationMatrix * RelativePositions [j];
+				ObjectGeometry.SetVertexPosition (Position + relPositionRotate, j);
+			}
+		}
 
 		#endregion
 
 		#region Public methods
-
-		public void SetMass(double mass)
-		{
-			Mass = mass;
-			InverseMass = 1.0 / Mass;
-		}
 
 		public void SetRestitutionCoeff(double restitutionCoeff)
 		{
@@ -231,21 +257,6 @@ namespace SimulationObjectDefinition
 			ExcludeFromCollisionDetection = excludeFromCollisionDetection;
 		}
 
-		public void SetRelativePosition()
-		{
-			if (ObjectGeometry.VertexPosition.Length > 0) 
-			{
-				RelativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
-				for (int i = 0; i < ObjectGeometry.VertexPosition.Length; i++) 
-					RelativePositions [i] = ObjectGeometry.VertexPosition [i] - StartPosition;
-			}
-		}
-
-		public void SetObjectType(ObjectType type)
-		{
-			ObjectType = type;
-		}
-
 		public void SetTorque(Vector3 torque)
 		{
 			TorqueValue = torque;
@@ -256,9 +267,56 @@ namespace SimulationObjectDefinition
 			ForceValue = force;
 		}
 
+		public void SetBaumgarteStabilizationCoeff(double value)
+		{
+			BaumgarteStabilizationCoeff = value;
+		}
+
 		#endregion
 
+		#region Private Methods
 
+		private void SetObjectProperties()
+		{
+			var inertiaTensor = new InertiaTensor(
+					ObjectGeometry.VertexPosition,
+					ObjectGeometry.Triangle,
+					Mass);
+
+			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
+			for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+			{
+				ObjectGeometry.SetVertexPosition(
+					ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
+					j);
+			}
+
+			var normalizedInertiaTensor = new InertiaTensor(
+				ObjectGeometry.VertexPosition,
+				ObjectGeometry.Triangle,
+				Mass);
+
+			StartPosition = normalizedInertiaTensor.GetMassCenter();
+			BaseInertiaTensor = Matrix3x3.Invert(normalizedInertiaTensor.GetInertiaTensor());
+
+			SetRelativePosition();
+
+			RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
+
+			InertiaTensor = (RotationMatrix * BaseInertiaTensor) * Matrix3x3.Transpose(RotationMatrix);
+		}
+
+		private void SetRelativePosition()
+		{
+			if (ObjectGeometry.VertexPosition.Length > 0)
+			{
+				RelativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
+				for (int i = 0; i < ObjectGeometry.VertexPosition.Length; i++)
+					RelativePositions[i] = ObjectGeometry.VertexPosition[i] - StartPosition;
+			}
+		}
+
+		#endregion 
 	}
 }
 

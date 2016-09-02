@@ -31,6 +31,10 @@ namespace MonoPhysicsEngine
 					(simulationObjs[indexA].RestitutionCoeff +
 					 simulationObjs[indexB].RestitutionCoeff) * 0.5;
 
+				double baumgarteStabilizationValue = 
+					(simulationObjs[indexA].BaumgarteStabilizationCoeff +
+					 simulationObjs[indexB].BaumgarteStabilizationCoeff) * 0.5;
+
 				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
 					Vector3 collisionPoint;
@@ -64,19 +68,28 @@ namespace MonoPhysicsEngine
 
 					#region Normal direction contact
 
-					double correctionParameter = (collisionPointStr.Intersection) ?
-								Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-									simulationParameters.BaumStabilization
-								:
-								0.0;
-
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
 					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
 					//Limit the Baum stabilization jitter effect
-					//if (!simulationParameters.PositionStabilization)
-					correctionParameter = Math.Min(Math.Max(correctionParameter - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
+					double correctionParameter = 0.0;
+					if (!simulationParameters.PositionStabilization)
+					{
+						correctionParameter = (collisionPointStr.Intersection) ?
+											   correctionParameter = Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+											   baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue)
+											   :
+											   0.0;
+					}
+					else
+					{
+						correctionParameter = (collisionPointStr.Intersection) ?
+												Math.Min(Math.Max(collisionPointStr.ObjectDistance * simulationParameters.BaumPositionStabilization - uCollision, 0.0), 
+							                             simulationParameters.MaxCorrectionValue) 
+					                            :
+											 	0.0;
+					}
 
 					double correctedBounce = uCollision;
 

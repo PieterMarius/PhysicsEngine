@@ -88,13 +88,32 @@ namespace TestPhysics
 
 			for (int i = 0; i < xmlList.Count; i++)
 			{
-				objects[i] = new SimulationObject();
+				//Scale
+				float scale = Convert.ToSingle(xmlList[i][scaleAttribute].InnerText);
+
+				//Object geometry file name
+				string geometryFileName = xmlList[i][objectGeometryAttribute].InnerText;
+
+				//Rotation Status
+				var versor = new Vector3(
+					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["x"].Value),
+					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["y"].Value),
+					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["z"].Value));
+
+				double angle = Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["angle"].Value);
 
 				//Position
-				objects [i].SetPosition (new Vector3 (
-					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [positionAttribute].Attributes ["z"].Value)));
+				var position = new Vector3(
+					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["x"].Value),
+					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["y"].Value),
+					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["z"].Value));
+
+				objects[i] = new SimulationObject(
+					(ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
+					GetObjectGeometry(geometryFileName, scale),
+					Convert.ToDouble(xmlList[i][massAttribute].InnerText),
+					position,
+					new Quaternion(versor, angle));
 
 				//Linear Velocity
 				objects [i].SetLinearVelocity (new Vector3 (
@@ -108,22 +127,6 @@ namespace TestPhysics
 					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["y"].Value),
 					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["z"].Value)));
 
-				//Rotation Status
-				var versor = new Vector3 (
-					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["x"].Value),
-					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["y"].Value),
-					Convert.ToDouble (xmlList [i] [rotationStatusAttribute].Attributes ["z"].Value));
-
-				double angle = Convert.ToDouble(xmlList [i][rotationStatusAttribute].Attributes["angle"].Value);
-
-				objects [i].SetRotationStatus (new Quaternion (versor, angle));
-
-				//Object type
-				objects [i].SetObjectType ((ObjectType)Convert.ToInt32 (xmlList [i] [objectType].InnerText));
-
-				//Mass
-				objects [i].SetMass (Convert.ToDouble (xmlList [i] [massAttribute].InnerText));
-
 				//Restitution Coefficient
 				objects [i].SetRestitutionCoeff (Convert.ToDouble (xmlList [i] [restitutionCoeffAttribute].InnerText));
 
@@ -136,54 +139,8 @@ namespace TestPhysics
 				//Collision detection
 				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [excludeFromCollisionDetection].InnerText));
 
-				//Scale
-				float scale = Convert.ToSingle (xmlList [i] [scaleAttribute].InnerText);
-
-				//Object geometry file name
-				string geometryFileName = xmlList [i] [objectGeometryAttribute].InnerText;
-
-				objects [i].ObjectGeometry = GetObjectGeometry (
-					geometryFileName, 
-					scale);
-
-				//Inertia Tensor and Geometry
-
-				var inertiaTensor = new InertiaTensor (
-					objects [i].ObjectGeometry.VertexPosition,
-					objects [i].ObjectGeometry.Triangle,
-					objects [i].Mass);
-
-				//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-				for (int j = 0; j < objects [i].ObjectGeometry.VertexPosition.Length; j++) 
-				{
-					objects [i].ObjectGeometry.SetVertexPosition (
-						objects [i].ObjectGeometry.VertexPosition [j] - inertiaTensor.GetMassCenter (),
-						j);
-				}
-
-				var inertiaTensor1 = new InertiaTensor (
-					objects [i].ObjectGeometry.VertexPosition,
-					objects [i].ObjectGeometry.Triangle,
-					objects [i].Mass);
-
-				objects [i].SetStartPosition (inertiaTensor1.GetMassCenter ());
-				objects [i].SetBaseInertiaTensor (inertiaTensor1.GetInertiaTensor ());
-
-				objects [i].SetRelativePosition ();
-
-				objects [i].SetRotationMatrix (
-					Quaternion.ConvertToMatrix (
-						Quaternion.Normalize (objects [i].RotationStatus)));
-
-				objects [i].SetInertiaTensor (
-					(objects [i].RotationMatrix * objects [i].BaseInertiaTensor) *
-					Matrix3x3.Transpose (objects [i].RotationMatrix));
-
-				for (int j = 0; j < objects [i].ObjectGeometry.VertexPosition.Length; j++) 
-				{
-					Vector3 relPositionRotate = objects [i].RotationMatrix * objects [i].RelativePositions [j];
-					objects [i].ObjectGeometry.SetVertexPosition (objects [i].Position + relPositionRotate, j);
-				}
+				//Baumgarte Stabilization value
+				objects[i].SetBaumgarteStabilizationCoeff(20.0);
 
 				var box = new AABB (objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
 					objects [i].ObjectGeometry.VertexPosition.Max (point => point.x),

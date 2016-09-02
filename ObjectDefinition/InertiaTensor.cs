@@ -1,6 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 
-namespace MonoPhysicsEngine
+namespace SimulationObjectDefinition
 {
 	public class InertiaTensor
 	{

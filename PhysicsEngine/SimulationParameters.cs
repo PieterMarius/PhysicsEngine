@@ -142,6 +142,12 @@ namespace MonoPhysicsEngine
 		/// <value>The position stabilization.</value>
 		public bool PositionStabilization { get; private set; }
 
+		/// <summary>
+		/// Gets the baum position stabilization.
+		/// </summary>
+		/// <value>The baum position stabilization.</value>
+		public double BaumPositionStabilization { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -152,11 +158,11 @@ namespace MonoPhysicsEngine
 			CFM = 0.00001;
 			NormalCFM = 0.001;
 			FrictionCFM = 0.0001;
-			BaumStabilization = 20;
-			NormalCollisionIterations = 0;
-			FrictionAndNormalIterations = 0;
-			JointsIterations = 0;
-			OverallConstraintsIterations = 15;
+			BaumStabilization = 60;
+			NormalCollisionIterations = 15;
+			FrictionAndNormalIterations = 15;
+			JointsIterations = 14;
+			OverallConstraintsIterations = 25;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -238,6 +244,16 @@ namespace MonoPhysicsEngine
 		public void SetExternalForce(Vector3 externalForce)
 		{
 			ExternalForce = externalForce;
+		}
+
+		public void SetBaumPositionStabilization(double baumStabilizationValue)
+		{
+			BaumPositionStabilization = baumStabilizationValue;
+		}
+
+		public void SetPositionStabilization(bool activate)
+		{
+			PositionStabilization = activate;
 		}
 
 		#endregion

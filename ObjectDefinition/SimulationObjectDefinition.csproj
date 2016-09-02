@@ -44,5 +44,6 @@
     <Compile Include="JointType.cs" />
     <Compile Include="ObjectType.cs" />
     <Compile Include="StartImpulseProperties.cs" />
+    <Compile Include="InertiaTensor.cs" />
   </ItemGroup>
 </Project>

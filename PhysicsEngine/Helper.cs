@@ -76,6 +76,20 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
+		public static JacobianContact[] PruneConstraintsWithError(
+			JacobianContact[] list)
+		{
+			var result = new List<JacobianContact>();
+
+			foreach (JacobianContact jc in list)
+			{
+				if (jc.CorrectionValue > 1E-100)
+					result.Add(jc);
+			}
+
+			return result.ToArray();
+		}
+
 		public static CollisionPointStructure? Find(
 			CollisionPointStructure[] collisionPoints,
 			ContactIndex contactIndex)

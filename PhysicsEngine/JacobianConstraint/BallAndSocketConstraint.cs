@@ -94,9 +94,6 @@ namespace MonoPhysicsEngine
 
 			Vector3 linearError = p2 - p1;
 
-			//TODO test
-			Console.WriteLine("Linear error: " + linearError.x + " " + linearError.y + " " + linearError.z + " " + linearError.Length());
-
 			#endregion
 
 			#region Jacobian Constraint

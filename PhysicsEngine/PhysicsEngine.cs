@@ -306,20 +306,9 @@ namespace MonoPhysicsEngine
 
 			PartitionEngineExecute ();
 
-			if (SimulationEngineParameters.PositionStabilization)
-			{
-				bool positionUpdated = PhysicsPositionCorrection();
 
-				if (positionUpdated)
-				{
-					//TODO valutare l'implementazione
-					//CollisionDetectionStep();
 
-					//PartitionEngineExecute();
-				}
-			}
-
-			physicsExecutionFlow ();
+			PhysicsExecutionFlow ();
 
 			#endregion
 		}
@@ -429,9 +418,10 @@ namespace MonoPhysicsEngine
 		{
 			bool positionUpdated = false;
 
-			//TODO correggere errore, utilizzare collissionPartitionedJoint
 			if (collisionPartitionedPoints != null)
 			{
+				SimulationEngineParameters.SetBaumPositionStabilization(1.0 / TimeStep);
+
 				for (int i = 0; i < collisionPartitionedPoints.Count; i++)
 				{
 					JacobianContact[] contactConstraints = GetJacobianConstraint(
@@ -441,20 +431,15 @@ namespace MonoPhysicsEngine
 																   SimulationEngineParameters).ToArray();
 
 					//TODO inserire tra i parametri
-					int positionBasedIterations = 25;
+					int positionBasedIterations = 40;
 
 					if (positionBasedIterations > 0)
 					{
-						JacobianContact[] collisionJointIntersection = Helper.FindConstraints(
-																					contactConstraints,
-																					ConstraintType.Joint,
-																					ConstraintType.JointLimit,
-																					ConstraintType.JointMotor);
+						//JacobianContact[] errorConstraints = Helper.PruneConstraintsWithError(contactConstraints); 
 
 						LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
-							collisionJointIntersection,
-							SimulationEngineParameters.PositionStabilization,
-							true);
+							contactConstraints,
+							SimulationEngineParameters.PositionStabilization);
 
 						if (collisionErrorLCP != null)
 						{
@@ -462,7 +447,8 @@ namespace MonoPhysicsEngine
 
 							double[] correctionValues = solver.Solve(collisionErrorLCP);
 
-							UpdatePositionBasedVelocity(collisionJointIntersection,
+							UpdatePositionBasedVelocity(
+										   contactConstraints,
 										   simulationObjects,
 										   correctionValues);
 
@@ -477,11 +463,11 @@ namespace MonoPhysicsEngine
 
 				#endregion
 			}
-			Console.WriteLine();
+
 			return positionUpdated;
 		}
 
-		private void physicsExecutionFlow()
+		private void PhysicsExecutionFlow()
 		{
 			var stopwatch = new Stopwatch();
 
@@ -493,8 +479,28 @@ namespace MonoPhysicsEngine
 
 			solverError = 0.0;
 
+			if (SimulationEngineParameters.PositionStabilization)
+			{
+				bool positionUpdated = PhysicsPositionCorrection();
+
+				if (positionUpdated)
+				{
+					//TODO valutare l'implementazione
+					CollisionDetectionStep();
+
+					PartitionEngineExecute();
+				}
+			}
+
 			if (collisionPartitionedPoints != null) 
 			{
+				bool convertSetting = false;
+				if (SimulationEngineParameters.PositionStabilization)
+				{
+					SimulationEngineParameters.SetPositionStabilization(false);
+					convertSetting = true;
+				}
+
 				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
 					JacobianContact[] contactConstraints = GetJacobianConstraint(
@@ -502,6 +508,12 @@ namespace MonoPhysicsEngine
 																   partitionedJoint[i],
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
+
+					#region Solve for Position Correction
+
+
+
+					#endregion
 
 					#region Solve Normal Constraints
 
@@ -512,8 +524,7 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties collisionLCP = BuildLCPMatrix(
 																	collisionJointContact,
-																	false,
-																	false);
+																	SimulationEngineParameters.PositionStabilization);
 
 						BuildMatrixAndExecuteSolver(collisionJointContact,
 						                            collisionLCP,
@@ -532,8 +543,7 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties frictionLCP = BuildLCPMatrix(
 																frictionConstraint,
-																false,
-																false);
+																SimulationEngineParameters.PositionStabilization);
 
 						BuildMatrixAndExecuteSolver(frictionConstraint,
 													frictionLCP,
@@ -554,8 +564,7 @@ namespace MonoPhysicsEngine
 
 						LinearProblemProperties jointLCP = BuildLCPMatrix(
 																jointConstraints,
-																false,
-																false);
+																SimulationEngineParameters.PositionStabilization);
 
 						BuildMatrixAndExecuteSolver(jointConstraints,
 													jointLCP,
@@ -568,8 +577,7 @@ namespace MonoPhysicsEngine
 
 					LinearProblemProperties overallLCP = BuildLCPMatrix(
 															contactConstraints,
-															false,
-															false);
+															SimulationEngineParameters.PositionStabilization);
 
 					if (overallLCP != null)
 					{
@@ -587,6 +595,11 @@ namespace MonoPhysicsEngine
 					}
 
 					#endregion
+				}
+
+				if (convertSetting)
+				{
+					SimulationEngineParameters.SetPositionStabilization(true);
 				}
 			}
 
@@ -750,8 +763,7 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		private LinearProblemProperties BuildLCPMatrix(
 			JacobianContact[] contact,
-			bool positionStabilization = false,
-			bool execCorrection = false)
+			bool positionStabilization = false)
 		{
 			if (contact.Length > 0) 
 			{
@@ -786,13 +798,8 @@ namespace MonoPhysicsEngine
 						
 						if (positionStabilization)
 						{
-							if (execCorrection)
-							{
-								B[i] = contactA.CorrectionValue;
-								cfm = 0.0;
-							}
-							else
-								B[i] = -contactA.B;
+							B[i] = contactA.CorrectionValue;
+							cfm = 0.0;
 						}
 						else
 							B[i] = -(contactA.B - contactA.CorrectionValue);

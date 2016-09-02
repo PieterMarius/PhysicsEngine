@@ -55,10 +55,12 @@ namespace LCPSolver
 					//Avoid first row elaboration
 					if (i != 0) 
 					{
+						int bufIndexValue = 0;
 						for (int j = 0; j < m.Count; j++) 
 						{
-							if (bufIndex [j] < i) 
-								sumBuffer += bufValue [j] * X [bufIndex [j]];
+							bufIndexValue = bufIndex[j];
+							if (bufIndexValue < i) 
+								sumBuffer += bufValue [j] * X [bufIndexValue];
 						}
 					}
 
