@@ -162,7 +162,16 @@ namespace SimulationObjectDefinition
 			ObjectType = type;
 			this.ObjectGeometry = geometry;
 			Mass = mass;
-			InverseMass = 1.0 / Mass;
+
+			if (ObjectType == ObjectType.StaticRigidBody)
+			{
+				Mass = 0.0;
+				InverseMass = 0.0;
+			}
+
+			if (Mass > 0.0)
+				InverseMass = 1.0 / Mass;
+
 			Position = position;
 			RotationStatus = rotationStatus;
 
@@ -297,12 +306,12 @@ namespace SimulationObjectDefinition
 				Mass);
 
 			StartPosition = normalizedInertiaTensor.GetMassCenter();
-			BaseInertiaTensor = Matrix3x3.Invert(normalizedInertiaTensor.GetInertiaTensor());
 
 			SetRelativePosition();
 
 			RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
 
+			BaseInertiaTensor = Matrix3x3.Invert(normalizedInertiaTensor.GetInertiaTensor());
 			InertiaTensor = (RotationMatrix * BaseInertiaTensor) * Matrix3x3.Transpose(RotationMatrix);
 		}
 

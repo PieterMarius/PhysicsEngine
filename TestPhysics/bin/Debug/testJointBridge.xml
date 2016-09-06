@@ -23,11 +23,11 @@
    <ObjectsSettings>
 		<Object>
             <Position x="0,0" y="1,8" z="12,5" />
-            <LinearVelocity x="0,0" y="0,0" z="15,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>3,0</Mass>
+            <Mass>60,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
@@ -173,11 +173,11 @@
         </Object>
         <Object>
             <Position x="0,0" y="1,8" z="-13,5" />
-            <LinearVelocity x="0,0" y="0,0" z="-15,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>3,0</Mass>
+            <Mass>60,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
@@ -492,11 +492,11 @@
 	</Joint>
 	
 	<Joint>
-        <ObjectIndexA>10</ObjectIndexA>
-        <ObjectIndexB>9</ObjectIndexB>
+        <ObjectIndexA>9</ObjectIndexA>
+        <ObjectIndexB>10</ObjectIndexB>
         <JointProperties>
             <JointType>1</JointType>
-            <Position x="0,5" y="1,2" z="1,8" />
+            <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>60,0</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>
@@ -508,11 +508,11 @@
 		
 	</Joint>
 	<Joint>
-        <ObjectIndexA>10</ObjectIndexA>
-        <ObjectIndexB>9</ObjectIndexB>
+        <ObjectIndexA>9</ObjectIndexA>
+        <ObjectIndexB>10</ObjectIndexB>
 		<JointProperties>
             <JointType>1</JointType>
-            <Position x="-0,5" y="1,2" z="1,8" />
+            <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>60,0</RestoreCoefficient>
             <StretchCoefficient>0,0</StretchCoefficient>

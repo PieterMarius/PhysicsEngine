@@ -1,7 +1,7 @@
 ﻿
 namespace CollisionEngine
 {
-	public struct CollisionPointStructure
+	public class CollisionPointStructure
 	{
 		#region Public Properties
 
@@ -18,12 +18,12 @@ namespace CollisionEngine
 		/// <summary>
 		/// The object distance.
 		/// </summary>
-		public readonly double ObjectDistance;
+		public double ObjectDistance { get; private set; }
 
 		/// <summary>
 		/// Check intersection.
 		/// </summary>
-		public readonly bool Intersection;
+		public bool Intersection { get; private set; }
 
 		/// <summary>
 		/// The collision point.
@@ -53,6 +53,20 @@ namespace CollisionEngine
 			Intersection = intersection;
 			CollisionPoint = collisionPoint;
 			CollisionPoints = collisionPoints;
+		}
+
+		#endregion
+
+		#region Public Methods
+
+		public void SetIntersection(bool value)
+		{
+			Intersection = value;
+		}
+
+		public void SetObjectDistance(double value)
+		{
+			ObjectDistance = value;
 		}
 
 		#endregion

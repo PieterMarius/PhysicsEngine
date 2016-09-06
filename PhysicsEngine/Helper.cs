@@ -90,7 +90,7 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static CollisionPointStructure? Find(
+		public static CollisionPointStructure Find(
 			CollisionPointStructure[] collisionPoints,
 			ContactIndex contactIndex)
 		{

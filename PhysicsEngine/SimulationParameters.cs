@@ -161,14 +161,14 @@ namespace MonoPhysicsEngine
 			BaumStabilization = 60;
 			NormalCollisionIterations = 15;
 			FrictionAndNormalIterations = 15;
-			JointsIterations = 14;
-			OverallConstraintsIterations = 25;
+			JointsIterations = 20;
+			OverallConstraintsIterations = 35;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
 			DiscreteCCD = false;
 			CollisionDistance = 0.005;
-			CompenetrationTolerance = 0.0;
+			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = -0.002;

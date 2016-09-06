@@ -306,8 +306,6 @@ namespace MonoPhysicsEngine
 
 			PartitionEngineExecute ();
 
-
-
 			PhysicsExecutionFlow ();
 
 			#endregion
@@ -431,12 +429,10 @@ namespace MonoPhysicsEngine
 																   SimulationEngineParameters).ToArray();
 
 					//TODO inserire tra i parametri
-					int positionBasedIterations = 40;
+					int positionBasedIterations = 30;
 
 					if (positionBasedIterations > 0)
 					{
-						//JacobianContact[] errorConstraints = Helper.PruneConstraintsWithError(contactConstraints); 
-
 						LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
 							contactConstraints,
 							SimulationEngineParameters.PositionStabilization);
@@ -486,9 +482,18 @@ namespace MonoPhysicsEngine
 				if (positionUpdated)
 				{
 					//TODO valutare l'implementazione
-					CollisionDetectionStep();
+					foreach (CollisionPointStructure cp in collisionPoints)
+					{
+						CollisionPointStructure result = collisionEngine.GetIntersectionDistance(
+							objectsGeometry[cp.ObjectA],
+							objectsGeometry[cp.ObjectB]);
 
-					PartitionEngineExecute();
+						cp.SetIntersection(result.Intersection);
+						cp.SetObjectDistance(result.ObjectDistance);
+					}
+					Console.WriteLine();
+					//CollisionDetectionStep();
+					//PartitionEngineExecute();
 				}
 			}
 
@@ -633,8 +638,9 @@ namespace MonoPhysicsEngine
 			#region Find New Collision Points
 
 			//Creo l'array contenente la geometria degli oggetti
-			objectsGeometry = Array.ConvertAll (simulationObjects, 
-				item => (item.ExcludeFromCollisionDetection) ? null : item.ObjectGeometry);
+			objectsGeometry = Array.ConvertAll (
+							simulationObjects, 
+							item => (item.ExcludeFromCollisionDetection) ? null : item.ObjectGeometry);
 
 			var stopwatch = new Stopwatch();
 
@@ -681,12 +687,12 @@ namespace MonoPhysicsEngine
 					{
 						if (partitions[i].ObjectList[j].Type == ContactGroupType.Collision)
 						{
-							CollisionPointStructure? cpStruct = Helper.Find(
+							CollisionPointStructure cpStruct = Helper.Find(
 								collisionPoints,
 								partitions[i].ObjectList[j]);
 
-							if (cpStruct.HasValue)
-								partitionedCollision.Add(cpStruct.Value);
+							if (cpStruct != null)
+								partitionedCollision.Add(cpStruct);
 						}
 						else
 						{

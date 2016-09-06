@@ -85,11 +85,16 @@ namespace MonoPhysicsEngine
 					else
 					{
 						correctionParameter = (collisionPointStr.Intersection) ?
-												Math.Min(Math.Max(collisionPointStr.ObjectDistance * simulationParameters.BaumPositionStabilization - uCollision, 0.0), 
-							                             simulationParameters.MaxCorrectionValue) 
+												Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) * 
+		                                        simulationParameters.BaumPositionStabilization - uCollision, 0.0), simulationParameters.MaxCorrectionValue) 
 					                            :
 											 	0.0;
 					}
+
+					//if (collisionPointStr.Intersection)
+					//{
+					//	Console.WriteLine("intersection distance " + indexA + " " + indexB + " " + collisionPointStr.ObjectDistance + " " + correctionParameter);
+					//}
 
 					double correctedBounce = uCollision;
 
