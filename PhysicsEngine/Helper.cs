@@ -76,14 +76,14 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] PruneConstraintsWithError(
+		public static JacobianContact[] PruneConstraintsFromFriction(
 			JacobianContact[] list)
 		{
 			var result = new List<JacobianContact>();
 
 			foreach (JacobianContact jc in list)
 			{
-				if (jc.CorrectionValue > 1E-100)
+				if (jc.Type != ConstraintType.Friction)
 					result.Add(jc);
 			}
 

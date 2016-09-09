@@ -35,6 +35,12 @@ namespace LCPSolver
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
 
+		/// <summary>
+		/// Gets a value indicating whether this LCPSolver early exit.
+		/// </summary>
+		/// <value><c>true</c> if early exit; otherwise, <c>false</c>.</value>
+		public bool EarlyExit { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -46,6 +52,7 @@ namespace LCPSolver
 			SOR = 1.0;
 			SORStep = 0.007;
 			MaxThreadNumber = 2;
+			EarlyExit = false;
 		}
 
 		public SolverParameters (
@@ -53,13 +60,15 @@ namespace LCPSolver
 			double errorTolerance,
 			double sor,
 			int maxThreadNumber,
-			double sorStep )
+			double sorStep,
+			bool earlyExit)
 		{
 			MaxIteration = maxIteration;
 			ErrorTolerance = errorTolerance;
 			SOR = sor;
 			MaxThreadNumber = maxThreadNumber;
 			SORStep = sorStep;
+			EarlyExit = earlyExit;
 		}
 			
 		#endregion

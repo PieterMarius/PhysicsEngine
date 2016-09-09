@@ -27,7 +27,7 @@
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>60,0</Mass>
+            <Mass>30,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
@@ -177,7 +177,7 @@
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>60,0</Mass>
+            <Mass>30,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
@@ -207,7 +207,7 @@
     </ObjectsSettings>
     
     <JointsSettings>
-       
+    
 	<Joint>
         <ObjectIndexA>0</ObjectIndexA>
         <ObjectIndexB>1</ObjectIndexB>
@@ -215,8 +215,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="1,2" z="-1,8" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -231,8 +231,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="1,2" z="-1,8" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -247,8 +247,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -263,8 +263,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -279,8 +279,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -295,8 +295,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -311,8 +311,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -327,8 +327,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -342,8 +342,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -358,8 +358,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -373,8 +373,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -389,8 +389,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -404,8 +404,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -420,8 +420,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -435,8 +435,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -451,8 +451,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -466,8 +466,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -482,8 +482,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -498,8 +498,8 @@
             <JointType>1</JointType>
             <Position x="0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -514,8 +514,8 @@
             <JointType>1</JointType>
             <Position x="-0,5" y="0,0" z="-1,25" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
-            <RestoreCoefficient>60,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <RestoreCoefficient>20,0</RestoreCoefficient>
+            <StretchCoefficient>0,8</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>

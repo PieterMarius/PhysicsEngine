@@ -102,7 +102,9 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(
+			SimulationObject[] simulationObjs,
+			double? baumStabilization = null)
 		{
 			var hinge2Constraints = new List<JacobianContact> ();
 

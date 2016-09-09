@@ -80,6 +80,12 @@ namespace MonoPhysicsEngine
 		/// <value>The overall constraints iterations.</value>
 		public int OverallConstraintsIterations { get; private set; }
 
+		/// <summary>
+		/// Gets the position based joint iterations.
+		/// </summary>
+		/// <value>The position based joint iterations.</value>
+		public int PositionBasedJointIterations { get; private set; }
+
 		#endregion
 
 		/// <summary>
@@ -154,24 +160,25 @@ namespace MonoPhysicsEngine
 
 		public SimulationParameters ()
 		{
-			TimeStep = 0.015;
+			TimeStep = 0.0166;
 			CFM = 0.00001;
 			NormalCFM = 0.001;
 			FrictionCFM = 0.0001;
 			BaumStabilization = 60;
-			NormalCollisionIterations = 15;
-			FrictionAndNormalIterations = 15;
-			JointsIterations = 20;
-			OverallConstraintsIterations = 35;
+			PositionBasedJointIterations = 40;
+			NormalCollisionIterations = 20;
+			FrictionAndNormalIterations = 20;
+			JointsIterations = 10;
+			OverallConstraintsIterations = 20;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
 			DiscreteCCD = false;
 			CollisionDistance = 0.005;
-			CompenetrationTolerance = 0.001;
+			CompenetrationTolerance = 0.0;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			InertiaParameter = -0.002;
+			InertiaParameter = -0.000;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
 			MaxCorrectionValue = 20.0;

@@ -36,7 +36,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+			KeyIndex = GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
@@ -67,7 +67,9 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <returns>The ball socket joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(
+			SimulationObject[] simulationObjs,
+			double? baumStabilization = null)
 		{
 			var ballSocketConstraints = new List<JacobianContact>();
 
@@ -98,7 +100,9 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
-			double constraintLimit = RestoreCoefficient * linearError.x;
+			double restoreCoeff = (baumStabilization.HasValue) ? baumStabilization.Value : RestoreCoefficient;
+
+			double constraintLimit = restoreCoeff * linearError.x;
 
 			//DOF 1
 
@@ -119,7 +123,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 2
 
-			constraintLimit = RestoreCoefficient * linearError.y;
+			constraintLimit = restoreCoeff * linearError.y;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
 				IndexA,
@@ -138,7 +142,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 3
 
-			constraintLimit = RestoreCoefficient * linearError.z;
+			constraintLimit = restoreCoeff * linearError.z;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
 				IndexA,

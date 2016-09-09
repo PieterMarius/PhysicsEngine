@@ -73,24 +73,12 @@ namespace MonoPhysicsEngine
 					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
 					//Limit the Baum stabilization jitter effect
-					double correctionParameter = 0.0;
-					if (!simulationParameters.PositionStabilization)
-					{
-						correctionParameter = (collisionPointStr.Intersection) ?
-											   correctionParameter = Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-											   baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue)
-											   :
-											   0.0;
-					}
-					else
-					{
-						correctionParameter = (collisionPointStr.Intersection) ?
-												Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) * 
-		                                        simulationParameters.BaumPositionStabilization - uCollision, 0.0), simulationParameters.MaxCorrectionValue) 
-					                            :
-											 	0.0;
-					}
-
+					double correctionParameter = (collisionPointStr.Intersection) ?
+										   correctionParameter = Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+										   baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue)
+										   :
+										   0.0;
+					
 					//if (collisionPointStr.Intersection)
 					//{
 					//	Console.WriteLine("intersection distance " + indexA + " " + indexB + " " + collisionPointStr.ObjectDistance + " " + correctionParameter);

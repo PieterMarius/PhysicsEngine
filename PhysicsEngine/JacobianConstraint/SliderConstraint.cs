@@ -79,7 +79,9 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <returns>The slider joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(
+			SimulationObject[] simulationObjs,
+			double? baumStabilization = null)
 		{
 			var sliderConstraints = new List<JacobianContact> ();
 

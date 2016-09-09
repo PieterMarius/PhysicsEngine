@@ -36,7 +36,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+			KeyIndex = GetHashCode();
 			SpringCoefficient = springCoefficient;
 			RestoreCoefficient = restoreCoefficient;
 
@@ -70,13 +70,12 @@ namespace MonoPhysicsEngine
 		/// Builds the fixed joint.
 		/// </summary>
 		/// <returns>The fixed joint.</returns>
-		/// <param name="indexA">Index a.</param>
-		/// <param name="indexB">Index b.</param>
-		/// <param name="simulationJoint">Simulation joint.</param>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(
+			SimulationObject[] simulationObjs,
+			double? baumStabilization = null)
 		{
-			List<JacobianContact> fixedConstraints = new List<JacobianContact> ();
+			var fixedConstraints = new List<JacobianContact> ();
 
 			SimulationObject simulationObjectA = simulationObjs [IndexA];
 			SimulationObject simulationObjectB = simulationObjs [IndexB];
@@ -88,10 +87,10 @@ namespace MonoPhysicsEngine
 			#region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
-				this.StartErrorAxis1;
+						 StartErrorAxis1;
 
 			Vector3 r2 = simulationObjectB.RotationMatrix *
-				this.StartErrorAxis2;
+						 StartErrorAxis2;
 
 			Vector3 p1 = simulationObjectA.Position + r1;
 			Vector3 p2 = simulationObjectB.Position + r2;
@@ -114,7 +113,9 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
-			double constraintLimit = RestoreCoefficient * linearError.x;
+			double restoreCoeff = (baumStabilization.HasValue) ? baumStabilization.Value : RestoreCoefficient;
+
+			double constraintLimit = restoreCoeff * linearError.x;
 
 			//DOF 1
 
@@ -154,7 +155,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 3
 
-			constraintLimit = RestoreCoefficient * linearError.z;
+			constraintLimit = restoreCoeff * linearError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -173,7 +174,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = RestoreCoefficient * 2.0 * angularError.x;
+			constraintLimit = restoreCoeff * 2.0 * angularError.x;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -192,7 +193,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 5
 
-			constraintLimit = RestoreCoefficient * 2.0 * angularError.y;
+			constraintLimit = restoreCoeff * 2.0 * angularError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -211,7 +212,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 6
 
-			constraintLimit = RestoreCoefficient * 2.0 * angularError.z;
+			constraintLimit = restoreCoeff * 2.0 * angularError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,

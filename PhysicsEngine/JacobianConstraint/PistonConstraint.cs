@@ -50,7 +50,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+			KeyIndex = GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
@@ -86,7 +86,9 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		/// <returns>The piston joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianContact> BuildJacobian(SimulationObject[] simulationObjs)
+		public List<JacobianContact> BuildJacobian(
+			SimulationObject[] simulationObjs,
+			double? baumStabilization = null)
 		{
 			var pistonConstraints = new List<JacobianContact> ();
 

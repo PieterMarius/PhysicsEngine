@@ -412,52 +412,52 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-		private bool PhysicsPositionCorrection()
+		private bool PhysicsJointPositionCorrection()
 		{
 			bool positionUpdated = false;
 
-			if (collisionPartitionedPoints != null)
+			if (simulationJoints.Count > 0)
 			{
-				SimulationEngineParameters.SetBaumPositionStabilization(1.0 / TimeStep);
-
-				for (int i = 0; i < collisionPartitionedPoints.Count; i++)
+				if (collisionPartitionedPoints != null)
 				{
-					JacobianContact[] contactConstraints = GetJacobianConstraint(
-																   collisionPartitionedPoints[i].ToArray(),
-																   partitionedJoint[i],
-																   simulationObjects,
-																   SimulationEngineParameters).ToArray();
+					double baumgarteStabilizationValue = 1.0 / TimeStep;
 
-					//TODO inserire tra i parametri
-					int positionBasedIterations = 30;
-
-					if (positionBasedIterations > 0)
+					for (int i = 0; i < collisionPartitionedPoints.Count; i++)
 					{
-						LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
-							contactConstraints,
-							SimulationEngineParameters.PositionStabilization);
+						JacobianContact[] jointConstraints = GetJacobianJointConstraint(
+																	   partitionedJoint[i],
+																	   simulationObjects,
+																	   SimulationEngineParameters,
+																	   baumgarteStabilizationValue).ToArray();
 
-						if (collisionErrorLCP != null)
+						if (SimulationEngineParameters.PositionBasedJointIterations > 0)
 						{
-							solver.GetSolverParameters().SetSolverMaxIteration(positionBasedIterations);
+							LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
+								jointConstraints,
+								SimulationEngineParameters.PositionStabilization);
 
-							double[] correctionValues = solver.Solve(collisionErrorLCP);
+							if (collisionErrorLCP != null)
+							{
+								solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.PositionBasedJointIterations);
 
-							UpdatePositionBasedVelocity(
-										   contactConstraints,
-										   simulationObjects,
-										   correctionValues);
+								double[] correctionValues = solver.Solve(collisionErrorLCP);
 
-							positionUpdated = true;
+								UpdatePositionBasedVelocity(
+											   jointConstraints,
+											   simulationObjects,
+											   correctionValues);
+
+								positionUpdated = true;
+							}
 						}
 					}
-				}
-				#region Position and Velocity integration
+					#region Position and Velocity integration
 
-				if (positionUpdated)
-					UpdateObjectPosition(simulationObjects);
+					if (positionUpdated)
+						UpdateObjectPosition(simulationObjects);
 
 				#endregion
+				}
 			}
 
 			return positionUpdated;
@@ -477,23 +477,12 @@ namespace MonoPhysicsEngine
 
 			if (SimulationEngineParameters.PositionStabilization)
 			{
-				bool positionUpdated = PhysicsPositionCorrection();
+				bool positionUpdated = PhysicsJointPositionCorrection();
 
 				if (positionUpdated)
 				{
-					//TODO valutare l'implementazione
-					foreach (CollisionPointStructure cp in collisionPoints)
-					{
-						CollisionPointStructure result = collisionEngine.GetIntersectionDistance(
-							objectsGeometry[cp.ObjectA],
-							objectsGeometry[cp.ObjectB]);
-
-						cp.SetIntersection(result.Intersection);
-						cp.SetObjectDistance(result.ObjectDistance);
-					}
-					Console.WriteLine();
-					//CollisionDetectionStep();
-					//PartitionEngineExecute();
+					CollisionDetectionStep();
+					PartitionEngineExecute();
 				}
 			}
 
@@ -513,12 +502,6 @@ namespace MonoPhysicsEngine
 																   partitionedJoint[i],
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
-
-					#region Solve for Position Correction
-
-
-
-					#endregion
 
 					#region Solve Normal Constraints
 
@@ -550,7 +533,8 @@ namespace MonoPhysicsEngine
 																frictionConstraint,
 																SimulationEngineParameters.PositionStabilization);
 
-						BuildMatrixAndExecuteSolver(frictionConstraint,
+						double[] contactSolution = BuildMatrixAndExecuteSolver(
+													frictionConstraint,
 													frictionLCP,
 													SimulationEngineParameters.FrictionAndNormalIterations);
 					}
@@ -571,7 +555,8 @@ namespace MonoPhysicsEngine
 																jointConstraints,
 																SimulationEngineParameters.PositionStabilization);
 
-						BuildMatrixAndExecuteSolver(jointConstraints,
+						double[] jointSolution = BuildMatrixAndExecuteSolver(
+													jointConstraints,
 													jointLCP,
 													SimulationEngineParameters.JointsIterations);
 					}
@@ -584,7 +569,8 @@ namespace MonoPhysicsEngine
 															contactConstraints,
 															SimulationEngineParameters.PositionStabilization);
 
-					if (overallLCP != null)
+					if (overallLCP != null &&
+					   SimulationEngineParameters.OverallConstraintsIterations > 0)
 					{
 						solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
 
@@ -722,6 +708,14 @@ namespace MonoPhysicsEngine
 		{
 			var constraint = new List<JacobianContact>();
 
+			#region Joint
+
+			simulationJointList.Shuffle();
+			foreach (IConstraintBuilder constraintItem in simulationJointList)
+				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
+
+			#endregion
+
 			#region Collision Contact
 
 			constraint.AddRange(
@@ -732,12 +726,25 @@ namespace MonoPhysicsEngine
 
 			#endregion
 
-			#region Joint
+			return constraint;
+		}
 
+		public List<JacobianContact> GetJacobianJointConstraint(
+			List<IConstraint> simulationJointList,
+			SimulationObject[] simulationObjs,
+			SimulationParameters simulationParameters,
+			double? stabilizationCoeff = null)
+		{
+			var constraint = new List<JacobianContact>();
+
+			simulationJointList.Shuffle();
 			foreach (IConstraintBuilder constraintItem in simulationJointList)
-				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
-
-			#endregion
+			{
+				if (stabilizationCoeff.HasValue)
+					constraint.AddRange(constraintItem.BuildJacobian(simulationObjs, stabilizationCoeff));
+				else
+					constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
+			}
 
 			return constraint;
 		}
@@ -746,7 +753,7 @@ namespace MonoPhysicsEngine
 
 		#region Solver Matrix Builder
 
-		private void BuildMatrixAndExecuteSolver(
+		private double[] BuildMatrixAndExecuteSolver(
 			JacobianContact[] contactConstraints,
 			LinearProblemProperties linearProblemProperties,
 			int nIterations)
@@ -761,7 +768,11 @@ namespace MonoPhysicsEngine
 				{
 					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j]);
 				}
+
+				return solutionValues;
 			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -800,13 +811,8 @@ namespace MonoPhysicsEngine
 
 						JacobianContact contactA = contact [i];
 
-						double cfm = contactA.CFM;
-						
 						if (positionStabilization)
-						{
 							B[i] = contactA.CorrectionValue;
-							cfm = 0.0;
-						}
 						else
 							B[i] = -(contactA.B - contactA.CorrectionValue);
 						
@@ -819,7 +825,7 @@ namespace MonoPhysicsEngine
 													contactA);
 
 						//Diagonal value
-						mValue += cfm +
+						mValue += contactA.CFM +
 								  SimulationEngineParameters.CFM +
 								  1E-30;
 						

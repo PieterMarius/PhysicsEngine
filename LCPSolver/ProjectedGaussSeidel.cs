@@ -75,11 +75,14 @@ namespace LCPSolver
 					diffX [i] = X [i] - oldX [i];
 					oldX [i] = X [i];
 				}
-					
-				MSE = getMediumSquareError (diffX);
 
-				if (MSE < SolverParameters.ErrorTolerance)
-					return X;
+				if (SolverParameters.EarlyExit)
+				{
+					MSE = getMediumSquareError(diffX);
+
+					if (MSE < SolverParameters.ErrorTolerance)
+						return X;
+				}
 			}
 
             return X;
