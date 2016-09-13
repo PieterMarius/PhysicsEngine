@@ -57,15 +57,14 @@ namespace TestPhysics
 		{
 			try
 			{
-
 				//var env = new BuildEnvironment();
 				//env.GetPhysicsEnvironment();
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				var loadObject = new LoadObject ("startConfig.xml");
+				//var loadObject = new LoadObject ("startConfig.xml");
 				//var loadObject = new LoadObject ("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
+				var loadObject = new LoadObject("testJointBridge.xml");
 
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
@@ -91,7 +90,7 @@ namespace TestPhysics
 					collisionEngineParameters,
 					solverParameters);
 
-				physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
+				physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
 
 				for (int i = 0; i < simulationObjects.Count (); i++) 
 				{
@@ -338,7 +337,7 @@ namespace TestPhysics
 			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.R]) 
 			{
 				physicsEngine.Dispose();
-				initProgram ();
+				OnLoad(null);
 			}
 
 			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.F]) 

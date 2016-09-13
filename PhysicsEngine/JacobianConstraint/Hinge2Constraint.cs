@@ -54,7 +54,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+			KeyIndex = GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficientHingeAxis = springCoefficientHingeAxis;
 			SpringCoefficient = springCoefficient;
@@ -145,6 +145,11 @@ namespace MonoPhysicsEngine
 
 			#region Base Constraint
 
+			ConstraintType constraintType = ConstraintType.Joint;
+
+			if (SpringCoefficient > 0)
+				constraintType = ConstraintType.SoftJoint;
+
 			//DOF 1
 
 			double constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
@@ -162,7 +167,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 2
 
@@ -181,9 +186,13 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 3
+
+			ConstraintType hingeAxisConstraintType = ConstraintType.Joint;
+			if (SpringCoefficientHingeAxis > 0)
+				hingeAxisConstraintType = ConstraintType.SoftJoint;
 
 			constraintLimit = RestoreCoefficient * Vector3.Dot (hingeAxis,linearError);
 
@@ -200,7 +209,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficientHingeAxis,
 				0.0,
-				ConstraintType.Joint));
+				hingeAxisConstraintType));
 			
 			//DOF 4
 
@@ -220,7 +229,7 @@ namespace MonoPhysicsEngine
 					angularLimit,
 					SpringCoefficient,
 					0.0,
-					ConstraintType.Joint));
+					constraintType));
 
 			#endregion
 
@@ -409,7 +418,7 @@ namespace MonoPhysicsEngine
 						IndexB,
 						angle1,
 						RestoreCoefficient,
-						SpringCoefficient,
+						0.0,
 						simulationObjectA,
 						simulationObjectB,
 						hingeAxis,
@@ -423,7 +432,6 @@ namespace MonoPhysicsEngine
 			if (AngularLimitMin2.HasValue &&
 				AngularLimitMax2.HasValue)
 			{
-
 				double angle2 = getAngle2(
 					hingeAxis,
 					rotationAxis,
@@ -437,7 +445,7 @@ namespace MonoPhysicsEngine
 						IndexB,
 						angle2,
 						RestoreCoefficient,
-						SpringCoefficient,
+						0.0,
 						simulationObjectA,
 						simulationObjectB,
 						rotationAxis,
@@ -475,7 +483,7 @@ namespace MonoPhysicsEngine
 						simulationObjectB,
 						SpeedHingeAxisLimit.Value,
 						0.0,
-						SpringCoefficient,
+						0.0,
 						ForceHingeAxisLimit.Value,
 						ConstraintType.JointMotor));
 			}
@@ -495,7 +503,7 @@ namespace MonoPhysicsEngine
 						simulationObjectB,
 						SpeedRotationAxisLimit.Value,
 						0.0,
-						SpringCoefficient,
+						0.0,
 						ForceRotationAxisLimit.Value,
 						ConstraintType.JointMotor));
 			}

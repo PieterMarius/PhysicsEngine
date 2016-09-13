@@ -168,8 +168,8 @@ namespace MonoPhysicsEngine
 			PositionBasedJointIterations = 40;
 			NormalCollisionIterations = 20;
 			FrictionAndNormalIterations = 20;
-			JointsIterations = 10;
-			OverallConstraintsIterations = 20;
+			JointsIterations = 0;
+			OverallConstraintsIterations = 400;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -178,11 +178,11 @@ namespace MonoPhysicsEngine
 			CompenetrationTolerance = 0.0;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			InertiaParameter = -0.000;
+			InertiaParameter = -0.0008;
 			WarmStartingValue = 0.85;
 			MaxThreadNumber = 2;
 			MaxCorrectionValue = 20.0;
-			PositionStabilization = true;
+			PositionStabilization = false;
 		}
 
 		//TODO Update input parameters

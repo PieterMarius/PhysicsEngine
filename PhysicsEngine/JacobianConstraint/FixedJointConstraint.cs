@@ -113,6 +113,11 @@ namespace MonoPhysicsEngine
 
 			#region Jacobian Constraint
 
+			ConstraintType constraintType = ConstraintType.Joint;
+
+			if (SpringCoefficient > 0)
+				constraintType = ConstraintType.SoftJoint;
+
 			double restoreCoeff = (baumStabilization.HasValue) ? baumStabilization.Value : RestoreCoefficient;
 
 			double constraintLimit = restoreCoeff * linearError.x;
@@ -132,7 +137,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 2
 
@@ -151,7 +156,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 3
 
@@ -170,7 +175,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 4
 
@@ -189,7 +194,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 5
 
@@ -208,7 +213,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 6
 
@@ -227,7 +232,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			#endregion
 

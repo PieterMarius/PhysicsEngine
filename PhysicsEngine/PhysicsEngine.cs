@@ -432,6 +432,8 @@ namespace MonoPhysicsEngine
 
 						if (SimulationEngineParameters.PositionBasedJointIterations > 0)
 						{
+							jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
+
 							LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
 								jointConstraints,
 								SimulationEngineParameters.PositionStabilization);
@@ -546,10 +548,7 @@ namespace MonoPhysicsEngine
 					if (simulationJoints.Count > 0 &&
 						SimulationEngineParameters.JointsIterations > 0)
 					{
-						JacobianContact[] jointConstraints = Helper.FindConstraints(contactConstraints,
-																					ConstraintType.Joint,
-																					ConstraintType.JointLimit,
-																					ConstraintType.JointMotor);
+						JacobianContact[] jointConstraints = Helper.FindJointConstraints(contactConstraints);
 
 						LinearProblemProperties jointLCP = BuildLCPMatrix(
 																jointConstraints,
@@ -738,11 +737,16 @@ namespace MonoPhysicsEngine
 			var constraint = new List<JacobianContact>();
 
 			simulationJointList.Shuffle();
-			foreach (IConstraintBuilder constraintItem in simulationJointList)
+			if (stabilizationCoeff.HasValue)
 			{
-				if (stabilizationCoeff.HasValue)
+				foreach (IConstraintBuilder constraintItem in simulationJointList)
+				{
 					constraint.AddRange(constraintItem.BuildJacobian(simulationObjs, stabilizationCoeff));
-				else
+				}
+			}
+			else
+			{
+				foreach (IConstraintBuilder constraintItem in simulationJointList)
 					constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
 			}
 
@@ -1199,7 +1203,6 @@ namespace MonoPhysicsEngine
 
 					var rotationQuaternion = new Quaternion(versor, rotationAngle);
 
-					//TODO da correggere
 					simObj.SetRotationStatus(
 						(rotationQuaternion * simObj.RotationStatus).Normalize());
 

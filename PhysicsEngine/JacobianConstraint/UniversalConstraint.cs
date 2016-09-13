@@ -144,6 +144,11 @@ namespace MonoPhysicsEngine
 
 			#region Base Constraint
 
+			ConstraintType constraintType = ConstraintType.Joint;
+
+			if (SpringCoefficient > 0)
+				constraintType = ConstraintType.SoftJoint;
+
 			//DOF 1
 
 			double constraintLimit = RestoreCoefficient * linearError.x;
@@ -161,7 +166,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 2
 
@@ -180,7 +185,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 3
 
@@ -199,7 +204,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 4
 
@@ -219,7 +224,7 @@ namespace MonoPhysicsEngine
 					angularLimit,
 					SpringCoefficient,
 					0.0,
-					ConstraintType.Joint));
+					constraintType));
 
 			#endregion
 
@@ -359,7 +364,7 @@ namespace MonoPhysicsEngine
 						IndexB,
 						angle1,
 						RestoreCoefficient,
-						SpringCoefficient,
+						0.0,
 						simulationObjectA,
 						simulationObjectB,
 						hingeAxis,
@@ -387,7 +392,7 @@ namespace MonoPhysicsEngine
 						IndexB,
 						angle2,
 						RestoreCoefficient,
-						SpringCoefficient,
+						0.0,
 						simulationObjectA,
 						simulationObjectB,
 						rotationAxis,
@@ -396,7 +401,6 @@ namespace MonoPhysicsEngine
 				
 				if (jContact != null)
 					angularConstraint.Add (jContact.Value);
-
 			}
 
 			return angularConstraint;

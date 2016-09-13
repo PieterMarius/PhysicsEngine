@@ -6,6 +6,7 @@ namespace SimulationObjectDefinition
 		Collision,
 		Friction,
 		Joint,
+		SoftJoint,
 		JointLimit,
 		JointMotor,
 	}

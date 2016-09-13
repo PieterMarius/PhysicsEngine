@@ -44,7 +44,7 @@ namespace MonoPhysicsEngine
 		{
 			IndexA = indexA;
 			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+			KeyIndex = GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
@@ -129,6 +129,11 @@ namespace MonoPhysicsEngine
 
 			#region Base Constraint
 
+			ConstraintType constraintType = ConstraintType.Joint;
+
+			if (SpringCoefficient > 0)
+				constraintType = ConstraintType.SoftJoint;
+
 			//DOF 1
 
 			double constraintLimit = RestoreCoefficient * linearError.x;
@@ -146,7 +151,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 2
 
@@ -165,7 +170,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 3
 
@@ -184,7 +189,7 @@ namespace MonoPhysicsEngine
 				constraintLimit,
 				SpringCoefficient,
 				0.0,
-				ConstraintType.Joint));
+				constraintType));
 
 			//DOF 4
 
@@ -205,7 +210,7 @@ namespace MonoPhysicsEngine
 					angularLimit, 
 					SpringCoefficient,
 					0.0,
-					ConstraintType.Joint));
+					constraintType));
 
 			//DOF 5
 
@@ -226,7 +231,7 @@ namespace MonoPhysicsEngine
 					angularLimit,
 					SpringCoefficient,
 					0.0,
-					ConstraintType.Joint));
+					constraintType));
 
 			#endregion
 
@@ -247,7 +252,7 @@ namespace MonoPhysicsEngine
 						IndexB, 
 						angle,
 						RestoreCoefficient,
-						SpringCoefficient,
+						0.0,
 						simulationObjectA, 
 						simulationObjectB, 
 						axisRotated,
@@ -277,7 +282,7 @@ namespace MonoPhysicsEngine
 						simulationObjectB, 
 						SpeedValue.Value,
 						0.0,
-						SpringCoefficient,
+						0.0,
 						ForceLimit.Value,
 						ConstraintType.JointMotor));
 			}

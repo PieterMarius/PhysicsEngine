@@ -4,7 +4,7 @@
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\PhysicsEngine.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="PhysicsEngine\SimulationParameters.cs">
     <Files>
       <File FileName="PhysicsEngine\ContactPartitioning\ContactPartitioningEngine.cs" Line="19" Column="5" />
       <File FileName="TestPhysics\TestWindow.cs" Line="66" Column="5" />
@@ -18,11 +18,11 @@
       <File FileName="PhysicsEngine\JacobianConstraint\HingeConstraint.cs" Line="85" Column="36" />
       <File FileName="PhysicsEngine\JacobianConstraint\UniversalConstraint.cs" Line="103" Column="36" />
       <File FileName="PhysicsEngine\JacobianConstraint\Hinge2Constraint.cs" Line="107" Column="36" />
-      <File FileName="TestPhysics\LoadObject.cs" Line="130" Column="30" />
+      <File FileName="TestPhysics\LoadObject.cs" Line="132" Column="5" />
       <File FileName="PhysicsEngine\JacobianConstraint\JacobianCommon.cs" Line="114" Column="23" />
       <File FileName="PhysicsEngine\JacobianConstraint\JacobianContact.cs" Line="48" Column="30" />
       <File FileName="PhysicsEngine\JacobianConstraint\ContactConstraint.cs" Line="81" Column="6" />
-      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="164" Column="18" />
+      <File FileName="PhysicsEngine\SimulationParameters.cs" Line="167" Column="27" />
       <File FileName="TestPhysics\Program.cs" Line="1" Column="1" />
       <File FileName="MathUtility\Quaternion.cs" Line="274" Column="1" />
       <File FileName="CollisionEngine\CollisionDetectionEngine.cs" Line="140" Column="64" />

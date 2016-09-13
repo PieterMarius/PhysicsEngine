@@ -39,19 +39,14 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] FindConstraints(
-			JacobianContact[] list,
-			ConstraintType typeA,
-			ConstraintType typeB,
-			ConstraintType typeC)
+		public static JacobianContact[] FindJointConstraints(JacobianContact[] list)
 		{
 			var result = new List<JacobianContact>();
 
 			foreach (JacobianContact jc in list)
 			{
-				if (jc.Type == typeA ||
-					jc.Type == typeB ||
-				    jc.Type == typeC)
+				if (jc.Type != ConstraintType.Friction &&
+					jc.Type != ConstraintType.Collision)
 					result.Add(jc);
 			}
 
@@ -76,14 +71,14 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] PruneConstraintsFromFriction(
+		public static JacobianContact[] PruneConstraintsFromSoftJoint(
 			JacobianContact[] list)
 		{
 			var result = new List<JacobianContact>();
 
 			foreach (JacobianContact jc in list)
 			{
-				if (jc.Type != ConstraintType.Friction)
+				if (jc.Type != ConstraintType.SoftJoint)
 					result.Add(jc);
 			}
 
