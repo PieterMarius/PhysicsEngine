@@ -146,6 +146,20 @@ namespace PhysicsEngineMathUtility
 
 			return Vector3.Normalize(new Vector3 (1.0, 1.0, z));
 		}
+
+		public static void ComputeBasis(
+			Vector3 normal,
+			ref Vector3 a,
+			ref Vector3 b)
+		{
+			if (Math.Abs(normal.x) >= 0.577350269189)
+				a = new Vector3(normal.y, -normal.x, 0.0);
+			else
+				a = new Vector3(0.0, normal.z, -normal.y);
+
+			a = a.Normalize();
+			b = normal.Cross(a);
+		}
 			
 		/// <summary>
 		/// Gets random double.

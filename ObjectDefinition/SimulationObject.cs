@@ -160,7 +160,7 @@ namespace SimulationObjectDefinition
 			Quaternion rotationStatus)
 		{
 			ObjectType = type;
-			this.ObjectGeometry = geometry;
+			ObjectGeometry = geometry;
 			Mass = mass;
 
 			if (ObjectType == ObjectType.StaticRigidBody)
@@ -168,8 +168,7 @@ namespace SimulationObjectDefinition
 				Mass = 0.0;
 				InverseMass = 0.0;
 			}
-
-			if (Mass > 0.0)
+			else if (Mass > 0.0)
 				InverseMass = 1.0 / Mass;
 
 			Position = position;
@@ -292,18 +291,23 @@ namespace SimulationObjectDefinition
 					ObjectGeometry.Triangle,
 					Mass);
 
-			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-			for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
-			{
-				ObjectGeometry.SetVertexPosition(
-					ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
-					j);
-			}
+			var normalizedInertiaTensor = inertiaTensor;
 
-			var normalizedInertiaTensor = new InertiaTensor(
-				ObjectGeometry.VertexPosition,
-				ObjectGeometry.Triangle,
-				Mass);
+			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
+			if (inertiaTensor.GetMassCenter() != new Vector3())
+			{
+				for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+				{
+					ObjectGeometry.SetVertexPosition(
+						ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
+						j);
+				}
+
+				normalizedInertiaTensor = new InertiaTensor(
+					ObjectGeometry.VertexPosition,
+					ObjectGeometry.Triangle,
+					Mass);
+			}
 
 			StartPosition = normalizedInertiaTensor.GetMassCenter();
 

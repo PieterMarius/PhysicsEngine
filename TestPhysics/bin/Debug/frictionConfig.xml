@@ -27,7 +27,7 @@
     </Parameters>
     
    <ObjectsSettings>
-       <!--
+       
        <Object>
             <Position x="-1,0" y="4,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
@@ -212,7 +212,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         
-        
+        <!-- Avanti -->
             
         <Object>
             <Position x="-1,0" y="4,7" z="-1,0" />
@@ -399,7 +399,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         
-        
+        <!-- Dietro -->
             
         <Object>
             <Position x="-1,0" y="4,7" z="-5,0" />
@@ -524,9 +524,9 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-        -->
+        
         <Object>
-            <Position x="0,0" y="3,6" z="0,0" />
+            <Position x="3,0" y="4,7" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
@@ -541,7 +541,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
-            <Position x="0,0" y="2,5" z="0,0" />
+            <Position x="3,0" y="3,5" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
@@ -556,7 +556,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
-            <Position x="0,0" y="1,4" z="0,0" />
+            <Position x="3,0" y="2,0" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
@@ -571,7 +571,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
-            <Position x="0,0" y="0,3" z="0,0" />
+            <Position x="3,0" y="0,3" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
@@ -587,7 +587,7 @@
         </Object>
         
         <Object>
-            <Position x="0,0" y="-0,7" z="-3,0" />
+            <Position x="1,0" y="-0,7" z="-3,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />

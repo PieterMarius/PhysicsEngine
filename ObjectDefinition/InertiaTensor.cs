@@ -13,7 +13,7 @@ namespace SimulationObjectDefinition
 		readonly Vector3[] vertexStartPosition;
 		readonly int[][] triangleVertexIndex;
 
-		static readonly double[] mult =
+		readonly double[] mult =
 		{
 			1.0 / 6.0,
 			1.0 / 24.0,
@@ -27,7 +27,7 @@ namespace SimulationObjectDefinition
 			1.0 / 120.0
 		};
 
-		static  readonly double[] intg = 
+		readonly double[] intg = 
 		{ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
 
 

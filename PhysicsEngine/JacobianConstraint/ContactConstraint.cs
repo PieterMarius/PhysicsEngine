@@ -148,12 +148,13 @@ namespace MonoPhysicsEngine
 		{
 			JacobianContact[] friction = new JacobianContact[2];
 
-			var linearComponentA = new Vector3 ();
-			var linearComponentB = new Vector3 ();
-			var angularComponentA = new Vector3 ();
-			var angularComponentB = new Vector3 ();
+			var tx = new Vector3 ();
+			var ty = new Vector3 ();
 
-			var t = new Vector3 ();
+			GeometryUtilities.ComputeBasis(
+				normal,
+				ref tx,
+				ref ty);
 
 			double constraintLimit = 0.0;
 
@@ -161,27 +162,19 @@ namespace MonoPhysicsEngine
 
 			if (Vector3.Length (tangentialVelocity) >
 				simulationParameters.ShiftToStaticFrictionTolerance) 
-			{
 				constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
-
-				t = tangentialVelocity.Normalize ();
-			} 
 			else 
-			{
 				constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
-
-				t = GeometryUtilities.ProjectVectorOnPlane (normal);
-			}
-
+			
 			#endregion
 
 			#region Tangential Direction 1
 
-			linearComponentA = t;
-			linearComponentB = -1.0 * linearComponentA;
+			var linearComponentA = tx;
+			var linearComponentB = -1.0 * linearComponentA;
 
-			angularComponentA = ra.Cross (linearComponentA);
-			angularComponentB = -1.0 * rb.Cross (linearComponentA);
+			var angularComponentA = ra.Cross (linearComponentA);
+			var angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
 			friction [0] = JacobianCommon.GetDOF (
 				indexA,
@@ -204,7 +197,7 @@ namespace MonoPhysicsEngine
 
 			#region Tangential Direction 2
 
-			linearComponentA = t.Cross (normal).Normalize ();
+			linearComponentA = ty;
 			linearComponentB = -1.0 * linearComponentA;
 
 			angularComponentA = ra.Cross (linearComponentA);
