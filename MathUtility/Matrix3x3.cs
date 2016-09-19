@@ -114,15 +114,6 @@ namespace PhysicsEngineMathUtility
 			return result;
 		}
 
-		public static Vector3 operator*(Vector3 v, Matrix3x3 a)
-		{
-			var result = new Vector3 (
-				a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
-				a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
-				a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
-			return result;
-		}
-
 		public static Matrix3x3 operator+(Matrix3x3 a, Matrix3x3 b)
 		{
 			double r1x = a.r1c1 + b.r1c1;

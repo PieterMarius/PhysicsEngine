@@ -65,6 +65,35 @@ namespace LCPSolver
 			Array.Copy (X, StartX, X.Length);
 		}
 
+		public double[][] GetOriginalMatrix()
+		{
+			double[][] matrix = new double[Count][];
+
+			for (int i = 0; i < Count; i++)
+			{
+				matrix[i] = GetOriginalRow(i);
+				matrix[i][i] = 1.0 / D[i];
+			}
+
+			return matrix;
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		private double[] GetOriginalRow(int index)
+		{
+			double[] row = new double[Count];
+
+			SparseElement element = M[index];
+
+			for (int i = 0; i < element.Count; i++)
+				row[element.Index[i]] = element.Value[i];
+
+			return row;
+		}
+
 		#endregion
 
 	}
