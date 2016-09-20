@@ -37,16 +37,8 @@ namespace MonoPhysicsEngine
 
 				for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++) 
 				{
-					Vector3 collisionPoint;
-
-					if (collisionPointStr.Intersection)
-						collisionPoint = collisionPointStr.CollisionPoints [k].CollisionPointA;
-					else
-						collisionPoint = (collisionPointStr.CollisionPoints [k].CollisionPointA +
-										  collisionPointStr.CollisionPoints [k].CollisionPointB) * 0.5;
-
-					Vector3 ra = collisionPoint - objectA.Position;
-					Vector3 rb = collisionPoint - objectB.Position;
+					Vector3 ra = collisionPointStr.CollisionPoints[k].CollisionPointA - objectA.Position;
+					Vector3 rb = collisionPointStr.CollisionPoints[k].CollisionPointB - objectB.Position;
 
 					Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPoints [k].CollisionNormal).Normalize ();
 					Vector3 linearComponentB = -1.0 * linearComponentA;
@@ -72,13 +64,24 @@ namespace MonoPhysicsEngine
 
 					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
-					//Limit the Baum stabilization jitter effect
-					double correctionParameter = (collisionPointStr.Intersection) ?
-										   correctionParameter = Math.Min(Math.Max(Math.Max(collisionPointStr.ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-										   baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue)
-										   :
-										   0.0;
-					
+					double correctionParameter = 0.0;
+
+					if (collisionPointStr.Intersection)
+					{
+						Vector3 compenetrationDistanceVector = collisionPointStr.CollisionPoints[k].CollisionPointA -
+															   collisionPointStr.CollisionPoints[k].CollisionPointB;
+
+						double compenetrationDistance = (linearComponentA.Dot(compenetrationDistanceVector)) <= 0.0 ?
+														compenetrationDistanceVector.Length() :
+														0.0;
+
+						compenetrationDistance = Math.Min(compenetrationDistance, collisionPointStr.ObjectDistance);						
+
+						//Limit the Baum stabilization jitter effect 
+						correctionParameter = Math.Min(Math.Max(Math.Max(compenetrationDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+											  baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
+					}
+
 					//if (collisionPointStr.Intersection)
 					//{
 					//	Console.WriteLine("intersection distance " + indexA + " " + indexB + " " + collisionPointStr.ObjectDistance + " " + correctionParameter);

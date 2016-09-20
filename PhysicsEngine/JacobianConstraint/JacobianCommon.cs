@@ -133,12 +133,10 @@ namespace MonoPhysicsEngine
 			double linearLimitMin,
 			double linearLimitMax)
 		{
-
 			double sliderDistance = Math.Abs((simulationObjectB.Position - simulationObjectA.Position).Dot (sliderAxis));
 
 			if (sliderDistance < linearLimitMin) 
 			{
-
 				double linearLimit = K *
 					(linearLimitMin - sliderDistance);
 

@@ -525,66 +525,6 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         -->
-        <Object>
-            <Position x="0,0" y="3,6" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>0</ObjectType>
-            <Mass>0,5</Mass>
-            <RestitutionCoeff>0,6</RestitutionCoeff>
-            <DynamicFriction>0,5</DynamicFriction>
-            <StaticFriction>0,5</StaticFriction>
-            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
-            <Scale>0,5</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
-            <Texture>texture/woodbox.bmp</Texture>
-        </Object>
-        <Object>
-            <Position x="0,0" y="2,5" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>0</ObjectType>
-            <Mass>0,5</Mass>
-            <RestitutionCoeff>0,6</RestitutionCoeff>
-            <DynamicFriction>0,5</DynamicFriction>
-            <StaticFriction>0,5</StaticFriction>
-            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
-            <Scale>0,5</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
-            <Texture>texture/woodbox.bmp</Texture>
-        </Object>
-        <Object>
-            <Position x="0,0" y="1,4" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>0</ObjectType>
-            <Mass>0,5</Mass>
-            <RestitutionCoeff>0,6</RestitutionCoeff>
-            <DynamicFriction>0,5</DynamicFriction>
-            <StaticFriction>0,5</StaticFriction>
-            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
-            <Scale>0,5</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
-            <Texture>texture/woodbox.bmp</Texture>
-        </Object>
-        <Object>
-            <Position x="0,0" y="0,3" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
-            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
-            <ObjectType>0</ObjectType>
-            <Mass>0,5</Mass>
-            <RestitutionCoeff>0,6</RestitutionCoeff>
-            <DynamicFriction>0,5</DynamicFriction>
-            <StaticFriction>0,5</StaticFriction>
-            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
-            <Scale>0,5</Scale>
-            <ObjectGeometry>cube.obj</ObjectGeometry>
-            <Texture>texture/woodbox.bmp</Texture>
-        </Object>
         
         <Object>
             <Position x="0,0" y="-0,7" z="-3,0" />
@@ -599,6 +539,68 @@
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <Scale>7</Scale>
             <ObjectGeometry>cube1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+		
+		 <Object>
+            <Position x="0,0" y="0,2" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,6</RestitutionCoeff>
+            <DynamicFriction>0,5</DynamicFriction>
+            <StaticFriction>0,5</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>0,5</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+		
+		<Object>
+            <Position x="0,0" y="1,25" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,6</RestitutionCoeff>
+            <DynamicFriction>0,5</DynamicFriction>
+            <StaticFriction>0,5</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>0,5</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+		<Object>
+            <Position x="0,0" y="2,3" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,6</RestitutionCoeff>
+            <DynamicFriction>0,5</DynamicFriction>
+            <StaticFriction>0,5</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>0,5</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+		<Object>
+            <Position x="0,0" y="3,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,6</RestitutionCoeff>
+            <DynamicFriction>0,5</DynamicFriction>
+            <StaticFriction>0,5</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>0,5</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
     </ObjectsSettings>

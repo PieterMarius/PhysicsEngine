@@ -427,7 +427,6 @@ namespace MonoPhysicsEngine
 						JacobianContact[] jointConstraints = GetJacobianJointConstraint(
 																	   partitionedJoint[i],
 																	   simulationObjects,
-																	   SimulationEngineParameters,
 																	   baumgarteStabilizationValue).ToArray();
 
 						if (SimulationEngineParameters.PositionBasedJointIterations > 0)
@@ -575,6 +574,9 @@ namespace MonoPhysicsEngine
 
 						double[] overallSolution = solver.Solve(overallLCP);
 
+						double testError = ComputeSolverError(overallLCP, overallSolution);
+						Console.WriteLine("Error " + testError);
+
 						solverError += solver.GetDifferentialMSE();
 
 						//Update Objects velocity
@@ -622,13 +624,17 @@ namespace MonoPhysicsEngine
 		{
 			#region Init WarmStarting
 
-			//List<CollisionPointStructure> collisionPointsBuffer = null;
+			List<CollisionPointStructure> collisionPointsBuffer = null;
+			List<Vector3> linearVelocityBuffer = null;
+			List<Vector3> angularVelocityBuffer = null;
 
-			//if (collisionPoints != null &&
-			//	collisionPoints.Length > 0)
-			//{
-			//	collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
-			//}
+			if (collisionPoints != null &&
+				collisionPoints.Length > 0)
+			{
+				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
+				linearVelocityBuffer = new List<Vector3>(Array.ConvertAll(simulationObjects, item => item.LinearVelocity).ToList());
+				angularVelocityBuffer = new List<Vector3>(Array.ConvertAll(simulationObjects, item => item.AngularVelocity).ToList());
+			}
 
 			#endregion
 
@@ -650,13 +656,15 @@ namespace MonoPhysicsEngine
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
+			collisionPoints.OrderByDescending((CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
+
 			#endregion
 
 			#region WarmStarting
 
 			//if (collisionPointsBuffer != null &&
 			//	collisionPointsBuffer.Count > 0)
-			//	WarmStarting(collisionPointsBuffer);
+			//	WarmStarting(collisionPointsBuffer, linearVelocityBuffer, angularVelocityBuffer);
 
 			#endregion
 			
@@ -666,7 +674,9 @@ namespace MonoPhysicsEngine
 		}
 
 		private void WarmStarting(
-			List<CollisionPointStructure> collisionPointsBuffer)
+			List<CollisionPointStructure> collisionPointsBuffer,
+			List<Vector3> linearVelocityBuffer,
+			List<Vector3> angularVelocityBuffer)
 		{
 			foreach (CollisionPointStructure cPoint in collisionPointsBuffer)
 			{
@@ -681,11 +691,19 @@ namespace MonoPhysicsEngine
 				{
 					CollisionPointStructure pointBuffer = collisionPoints[pointBufferIndex];
 
-					if (simulationObjects[pointBuffer.ObjectA].LinearVelocity.Length() < 0.00001 &&
-					   simulationObjects[pointBuffer.ObjectB].LinearVelocity.Length() < 0.00001 &&
-					   simulationObjects[pointBuffer.ObjectA].AngularVelocity.Length() < 0.00001 &&
-					   simulationObjects[pointBuffer.ObjectB].AngularVelocity.Length() < 0.00001)
+					double limitVel = 0.1;
+					if (linearVelocityBuffer[pointBuffer.ObjectA].Length() < limitVel &&
+					    linearVelocityBuffer[pointBuffer.ObjectB].Length() < limitVel &&
+					    angularVelocityBuffer[pointBuffer.ObjectA].Length() < limitVel &&
+					    angularVelocityBuffer[pointBuffer.ObjectB].Length() < limitVel &&
+					    simulationObjects[pointBuffer.ObjectA].LinearVelocity.Length() < limitVel &&
+					    simulationObjects[pointBuffer.ObjectB].LinearVelocity.Length() < limitVel &&
+					   simulationObjects[pointBuffer.ObjectA].AngularVelocity.Length() < limitVel &&
+					   simulationObjects[pointBuffer.ObjectB].AngularVelocity.Length() < limitVel)
 					{
+						//Console.WriteLine("normal1 " + cPoint.CollisionPoint.CollisionNormal.x + " " + cPoint.CollisionPoint.CollisionNormal.y + " " + cPoint.CollisionPoint.CollisionNormal.z);
+						//Console.WriteLine("normal2 " + pointBuffer.CollisionPoint.CollisionNormal.x + " " + pointBuffer.CollisionPoint.CollisionNormal.y + " " + pointBuffer.CollisionPoint.CollisionNormal.z);
+
 						collisionPoints[pointBufferIndex].CollisionPoint = cPoint.CollisionPoint;
 						collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
 					}
@@ -800,7 +818,6 @@ namespace MonoPhysicsEngine
 		public List<JacobianContact> GetJacobianJointConstraint(
 			List<IConstraint> simulationJointList,
 			SimulationObject[] simulationObjs,
-			SimulationParameters simulationParameters,
 			double? stabilizationCoeff = null)
 		{
 			var constraint = new List<JacobianContact>();
@@ -903,7 +920,7 @@ namespace MonoPhysicsEngine
 								  1E-30;
 						
 						D[i] = 1.0 / mValue;
-						
+
 						for (int j = i + 1; j < contact.Length; j++) 
 						{
 							JacobianContact contactB = contact[j];
@@ -998,6 +1015,31 @@ namespace MonoPhysicsEngine
 
 			return (linearA + angularA) +
 				   (linearB + angularB);
+		}
+
+		#endregion
+
+		#region Compute Solver Error
+
+		private double ComputeSolverError(
+			LinearProblemProperties LCP,
+			double[] X)
+		{
+			double[][] matrix = LCP.GetOriginalMatrix();
+
+			double error = 0.0;
+
+			for (int i = 0; i < LCP.Count; i++)
+			{
+				double bValue = 0.0;
+				for (int j = 0; j < LCP.Count; j++)
+				{
+					bValue += matrix[i][j] * X[j];
+				}
+				error += (bValue - LCP.B[i]) * (bValue - LCP.B[i]);
+			}
+
+			return error;
 		}
 
 		#endregion

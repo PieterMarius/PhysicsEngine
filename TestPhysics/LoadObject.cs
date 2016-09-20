@@ -140,7 +140,7 @@ namespace TestPhysics
 				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [excludeFromCollisionDetection].InnerText));
 
 				//Baumgarte Stabilization value
-				objects[i].SetBaumgarteStabilizationCoeff(30.0);
+				objects[i].SetBaumgarteStabilizationCoeff(25.0);
 
 				var box = new AABB (
 					objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
