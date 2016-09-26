@@ -123,7 +123,7 @@ namespace PhysicsEngineMathUtility
 			double y = -((v2.z * v1.x) - (v2.x * v1.z));
 			double z = (v1.x * v2.y) - (v1.y * v2.x);
 
-			return  Vector3.Normalize(new Vector3(x, y,z));
+			return Vector3.Normalize(new Vector3(x, y, z));
 		}
 			
 		/// <summary>

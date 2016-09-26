@@ -1,4 +1,5 @@
-﻿
+﻿using OpenTK;
+
 namespace TestPhysics
 {
 	class MainClass
@@ -9,22 +10,9 @@ namespace TestPhysics
 			using (TestWindow test = new TestWindow ()) 
 			{
 				
-				//Implemetare o scaricare .dll algoritmo di caricamento dei file obj
 
-
-				//GJKCollisionDetectionEngine collisionEngine = new GJKCollisionDetectionEngine (10, 0.1, 0.00001);
-//				var objLoaderFactory = new ObjLoaderFactory ();
-//				var objLoader = objLoaderFactory.Create ();
-//				var fileStream = new FileStream ("dodeca.obj", FileMode.OpenOrCreate);
-//				var result = objLoader.Load (fileStream);
-//
-//				System.Console.WriteLine("Nvertex " + result.Vertices.Count);
-//
-//				for (int i = 0; i < result.Vertices.Count; i++) {
-//					Console.WriteLine("Vertex " + i + " " + result.Vertices[i].X + " " + result.Vertices[i].Y + " " + result.Vertices[i].Z);
-//				}
-
-				test.Run();
+				//test.VSync = VSyncMode.Adaptive;
+				test.Run(0.0, 0.0);
 				
 			}
 

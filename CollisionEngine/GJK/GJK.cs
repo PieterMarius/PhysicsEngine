@@ -14,8 +14,10 @@ namespace CollisionEngine
 		public double GJKManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		static readonly Vector3 origin = new Vector3();
-		static readonly double constTolerance = 0.0000001;
+		Random random = new Random();
+
+		readonly Vector3 origin = new Vector3();
+		readonly double constTolerance = 0.0000001;
 
 		#endregion
 
@@ -36,6 +38,23 @@ namespace CollisionEngine
 		#endregion
 
 		#region "Private Methods"
+
+		public Vector3 GetRandomDirection()
+		{
+			double angle = GetRandom(0.0, ConstValues.PI2);
+			double z = GetRandom(-1.0, 1.0);
+			double sqrt = Math.Sqrt(1.0 - z * z);
+
+			return new Vector3(
+				sqrt * Math.Cos(angle),
+				sqrt * Math.Sin(angle),
+				z);
+		}
+
+		public double GetRandom(double min, double max)
+		{
+			return random.NextDouble() * (max - min) + min;
+		}
 
 		/// <summary>
 		/// Gets the farthest point into solid, specified by direction
@@ -79,12 +98,20 @@ namespace CollisionEngine
 			int a = GetFarthestPoint (obj1, direction.Value);
 			int b = GetFarthestPoint (obj2, direction.Value * -1.0);
 
-			var sp = new Support (
+			return new Support (
 				             obj1.VertexPosition [a] - obj2.VertexPosition [b],
 				             a,
 				             b);
+		}
 
-			return sp;
+		private Support GetStartPoint(
+			ObjectGeometry obj1,
+			ObjectGeometry obj2)
+		{
+			return new Support(
+							 obj1.VertexPosition[0] - obj2.VertexPosition[0],
+							 0,
+							 0);
 		}
 
 		private Vector3 GetDirectionOnSimplex2(Simplex simplex)
@@ -328,23 +355,21 @@ namespace CollisionEngine
 
 			var simplex = new Simplex ();
 
-			Vector3? direction = GeometryUtilities.GetRandomDirection ();
-
 			//Primo punto del simplex
 
-			simplex.Support [0] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[0] = GetStartPoint(shape1, shape2);
 
 			//Secondo punto del simplex
 
-			direction = direction * -1.0;
+			Vector3? direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
 
-			simplex.Support[1] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[1] = GetMinkowskiFarthestPoint(shape1, shape2, direction);
 
 			//Terzo punto del simplex
 
 			direction = Vector3.Normalize (GetDirectionOnSimplex2 (simplex));
 
-			simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
+			simplex.Support[2] = GetMinkowskiFarthestPoint(shape1, shape2, direction);
 
 			double mod = minDistance;
 
@@ -371,7 +396,7 @@ namespace CollisionEngine
 							simplex.Support [1].s,
 							simplex.Support [2].s)) 
 						{
-							direction = GeometryUtilities.GetRandomDirection ();
+							direction = GetRandomDirection ();
 
 							//Modifico il simplex
 							simplex.Support[2] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
@@ -384,7 +409,7 @@ namespace CollisionEngine
 						continue;
 					}
 				}
-					
+
 				direction = GeometryUtilities.GetPointTriangleIntersection (
 					simplex.Support [0].s,
 					simplex.Support [1].s,
@@ -395,7 +420,7 @@ namespace CollisionEngine
 
 				if (!direction.HasValue) 
 				{
-					direction = GeometryUtilities.GetRandomDirection ();
+					direction = GetRandomDirection ();
 				}
 
 				direction = -1.0 * direction;
@@ -461,7 +486,7 @@ namespace CollisionEngine
 
 				if (!p.HasValue) 
 				{
-					direction = GeometryUtilities.GetRandomDirection ();
+					direction = GetRandomDirection ();
 					simplex.Support[3] = GetMinkowskiFarthestPoint (shape1, shape2, direction);
 					continue;
 				}

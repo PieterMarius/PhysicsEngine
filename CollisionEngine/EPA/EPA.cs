@@ -15,8 +15,8 @@ namespace CollisionEngine
 		public double EPAManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		static readonly Vector3 origin = new Vector3();
-		static readonly double constTolerance = 0.0000001;
+		readonly Vector3 origin = new Vector3();
+		readonly double constTolerance = 0.0000001;
 
 		#endregion
 
@@ -427,21 +427,21 @@ namespace CollisionEngine
 						}
 					}
 
-					if (Vector3.Length (direction) < constTolerance) 
+					//L'origine risiede su uno dei bordi del triangolo
+					if (Vector3.Length(direction) < constTolerance)
 					{
-						direction = GeometryUtilities.GetRandomDirection ();	
+						direction = origin - centroid;
 					}
-						
+
+					if (direction == oldDirection)
+						break;
+
 					addPointToConvexPolygon (
 						shape1,
 						shape2,
 						centroid,
 						ref triangles,
 						Vector3.Normalize (direction));
-
-					//Early exit
-					if (direction == oldDirection)
-						break;
 
 					oldDirection = direction;
 				}

@@ -1,5 +1,5 @@
-﻿using SimulationObjectDefinition;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SimulationObjectDefinition;
 using CollisionEngine;
 
 namespace MonoPhysicsEngine
@@ -9,7 +9,7 @@ namespace MonoPhysicsEngine
 
 		#region Public Methods
 
-		public List<SpatialPartition> calculateSpatialPartitioning(
+		public List<SpatialPartition> CalculateSpatialPartitioning(
 			CollisionPointStructure[] collisionPoints,
 			List<IConstraint> simulationJoints,
 			SimulationObject[] simulationObjects)
@@ -138,13 +138,13 @@ namespace MonoPhysicsEngine
 							simulationObjects);
 					}
 
-				} else if (searchPoint.IndexA == collisionValue.IndexB ||
+				} else if ((simulationObjects[searchPoint.IndexA].ObjectType == ObjectType.RigidBody &&
+						   simulationObjects[searchPoint.IndexB].ObjectType == ObjectType.RigidBody) &&
+						   (searchPoint.IndexA == collisionValue.IndexB ||
 				           searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexA ||
-				           searchPoint.IndexB == collisionValue.IndexB &&
-						   (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.RigidBody &&
-						   simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.RigidBody)) {
-
+				           searchPoint.IndexB == collisionValue.IndexB )) 
+				{
 					if (!partition.Contains (collisionValue)) 
 					{
 						partition.Add (collisionValue);

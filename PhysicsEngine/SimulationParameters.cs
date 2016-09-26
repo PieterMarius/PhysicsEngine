@@ -161,27 +161,27 @@ namespace MonoPhysicsEngine
 		public SimulationParameters ()
 		{
 			TimeStep = 0.0166;
-			CFM = 1E-9;
-			NormalCFM = 1E-5;
+			CFM = 1E-6;
+			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
 			PositionBasedJointIterations = 0;
 			NormalCollisionIterations = 0;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 50;
+			OverallConstraintsIterations = 70;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
 			DiscreteCCD = false;
 			CollisionDistance = 0.001;
-			CompenetrationTolerance = 0.005;
+			CompenetrationTolerance = 0.001;
 			VelocityTolerance = 0.01;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			InertiaParameter = 0.0;
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 2;
-			MaxCorrectionValue = 2.0;
+			MaxCorrectionValue = 20.0;
 			PositionStabilization = false;
 		}
 

@@ -102,6 +102,8 @@ namespace TestPhysics
 					physicsEngine.AddJoint (simulationJoints [i]);
 				}
 
+				//pause = true;
+
 				//var obj = physicsEngine.GetJointsList();
 //
 //				obj.Add(null);
@@ -188,6 +190,8 @@ namespace TestPhysics
 
 			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Escape])
 				Exit ();
+			
+				
 
 			GL.Viewport (0, 0, Width, Height);
 			GL.MatrixMode (MatrixMode.Projection);
@@ -206,7 +210,7 @@ namespace TestPhysics
 			UpdateKeyboard ();
 
 			try {
-
+				
 				if (!pause)
 				{
 					stopwatch.Reset();
@@ -230,6 +234,7 @@ namespace TestPhysics
 					Console.WriteLine("Partial " + stopwatch.ElapsedMilliseconds);
 					Console.WriteLine();
 
+					//pause = true;
 					//if (elapsedTime > 6.0)
 					//	Exit();
 				}

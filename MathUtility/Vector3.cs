@@ -290,7 +290,29 @@ namespace PhysicsEngineMathUtility
 				-y, x, 0.0);
 		}
 
+		public static Vector3 UniformSign(Vector3 input, Vector3 sign)
+		{
+			if (input.Dot(sign) >= 0.0)
+				return input;
 
+			double a = input.x;
+			double b = input.y;
+			double c = input.z;
+
+			if (Math.Sign(input.x) != Math.Sign(sign.x) && 
+			   Math.Sign(sign.x) != 0)
+				a = -input.x;
+			
+			if (Math.Sign(input.y) != Math.Sign(sign.y) &&
+			   Math.Sign(sign.y) != 0)
+				b = -input.y;
+
+			if (Math.Sign(input.z) != Math.Sign(sign.z) &&
+			   Math.Sign(sign.z) != 0)
+				c = -input.z;
+
+			return new Vector3(a, b, c);
+		}
 
 		#region IComparable implementation
 

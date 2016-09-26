@@ -75,7 +75,7 @@ namespace MonoPhysicsEngine
 														compenetrationDistanceVector.Length() :
 														0.0;
 
-						compenetrationDistance = Math.Min(compenetrationDistance, collisionPointStr.ObjectDistance);						
+						compenetrationDistance = collisionPointStr.ObjectDistance;						
 
 						//Limit the Baum stabilization jitter effect 
 						correctionParameter = Math.Min(Math.Max(Math.Max(compenetrationDistance - simulationParameters.CompenetrationTolerance, 0.0) *

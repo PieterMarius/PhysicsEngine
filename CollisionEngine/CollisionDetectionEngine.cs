@@ -128,19 +128,30 @@ namespace CollisionEngine
 		{
 			GJKOutput gjkOutput = collisionEngine.Execute (A, B);
 
+			Console.WriteLine("Distance " + gjkOutput.CollisionDistance);
+
 			if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= minDistance)
 			{
-
   				var mpg = new ManifoldPointsGenerator (
 					                              collisionEngineParameters.ManifoldPointNumber,
 					                              collisionEngineParameters.GJKManifoldTolerance,
 					                              collisionEngineParameters.ManifoldProjectionTolerance);
 
+				Console.WriteLine("check point");
+				Console.WriteLine("normpal " + gjkOutput.CollisionNormal.x + " " + gjkOutput.CollisionNormal.y + " " + gjkOutput.CollisionNormal.z);
+				if (Math.Abs(gjkOutput.CollisionNormal.y) < 0.9999)
+					Console.WriteLine("wrong normal " + gjkOutput.CollisionNormal.x + " " + gjkOutput.CollisionNormal.y + " " + gjkOutput.CollisionNormal.z);
+				
+				if (gjkOutput.CollisionNormal.Length() < 1E-15)
+					return null;
+
 				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
 					                                           A,
 					                                           B,
 					                                           gjkOutput.CollisionPoint);
+
+				Console.WriteLine("n collision poin " + collisionPointsList.Count);
 
 				return new CollisionPointStructure (
 					indexA,
@@ -161,6 +172,16 @@ namespace CollisionEngine
 					                      B,
 					                      startTriangle);
 
+				Console.WriteLine("compenetration " + epaOutput.CompenetrationDistance);
+
+				//Console.WriteLine("normal " + epaOutput.CollisionPoint.CollisionNormal.x + " " + epaOutput.CollisionPoint.CollisionNormal.y + " " + epaOutput.CollisionPoint.CollisionNormal.z);
+				if (Math.Abs(epaOutput.CollisionPoint.CollisionNormal.y) < 0.9999)
+					Console.WriteLine("wrong epa normal " + epaOutput.CollisionPoint.CollisionNormal.x + " " + epaOutput.CollisionPoint.CollisionNormal.y + " " + epaOutput.CollisionPoint.CollisionNormal.z);
+
+
+				if (epaOutput.CollisionPoint.CollisionNormal.Length() < 1E-15)
+					return null;
+
 				var mpg = new ManifoldPointsGenerator(
 												  collisionEngineParameters.ManifoldPointNumber,
 												  collisionEngineParameters.EPAManifoldTolerance,
@@ -170,6 +191,8 @@ namespace CollisionEngine
 															   A,
 															   B,
 															   epaOutput.CollisionPoint);
+
+				Console.WriteLine("n collision point 1 " + collisionPointsList.Count);
 
 				return new CollisionPointStructure(
 					indexA,

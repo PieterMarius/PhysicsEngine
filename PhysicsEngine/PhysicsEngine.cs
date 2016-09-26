@@ -498,6 +498,10 @@ namespace MonoPhysicsEngine
 
 				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
+					//Sort the collision point by external force direction
+					//collisionPartitionedPoints[i] = collisionPartitionedPoints[i].OrderByDescending(
+					//	(CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToList();
+
 					JacobianContact[] contactConstraints = GetJacobianConstraint(
 																   collisionPartitionedPoints[i].ToArray(),
 																   partitionedJoint[i],
@@ -656,8 +660,6 @@ namespace MonoPhysicsEngine
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
-			collisionPoints.OrderByDescending((CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
-
 			#endregion
 
 			#region WarmStarting
@@ -740,7 +742,7 @@ namespace MonoPhysicsEngine
 
 		private void PartitionEngineExecute()
 		{
-			List<SpatialPartition> partitions = contactPartitioningEngine.calculateSpatialPartitioning(
+			List<SpatialPartition> partitions = contactPartitioningEngine.CalculateSpatialPartitioning(
 													collisionPoints,
 													simulationJoints,
 													simulationObjects);
@@ -917,7 +919,7 @@ namespace MonoPhysicsEngine
 						//Diagonal value
 						mValue += contactA.CFM +
 								  SimulationEngineParameters.CFM +
-								  1E-30;
+								  1E-50;
 						
 						D[i] = 1.0 / mValue;
 
