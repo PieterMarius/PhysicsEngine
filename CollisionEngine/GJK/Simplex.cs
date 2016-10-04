@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CollisionEngine
 {
 	public class Simplex : ICloneable, IEquatable<Simplex>
 	{
-		public Support[] Support { get; set; }
+		public List<Support> Support { get; set; }
 		public double w { get; set; }
 		public double t { get; set; }
 
@@ -12,11 +13,11 @@ namespace CollisionEngine
 
 		public Simplex ()
 		{
-			Support = new Support[4];
+			Support = new List<Support>();
 		}
 
 		public Simplex (
-			Support[] support,
+			List<Support> support,
 			double w,
 			double t)
 		{
@@ -29,30 +30,41 @@ namespace CollisionEngine
 
 		#region "Public Methods"
 
+		public bool AddSupport(Support sp)
+		{
+			if (Support.Exists(x => x.a == sp.a && x.b == sp.b))
+				return false;
+
+			Support.Add(sp);
+
+			return true;
+		}
+
 		public object Clone()
 		{
-			Support[] sup = new Support[4];
-			sup [0] = new Support (
-				Support [0].s,
-				Support [0].a,
-				Support [0].b);
+			//Support[] sup = new Support[4];
+			//sup [0] = new Support (
+			//	Support [0].s,
+			//	Support [0].a,
+			//	Support [0].b);
 
-			sup [1] = new Support (
-				Support [1].s,
-				Support [1].a,
-				Support [1].b);
+			//sup [1] = new Support (
+			//	Support [1].s,
+			//	Support [1].a,
+			//	Support [1].b);
 
-			sup [2] = new Support (
-				Support [2].s,
-				Support [2].a,
-				Support [2].b);
+			//sup [2] = new Support (
+			//	Support [2].s,
+			//	Support [2].a,
+			//	Support [2].b);
 
-			sup [3] = new Support (
-				Support [3].s,
-				Support [3].a,
-				Support [3].b);
+			//sup [3] = new Support (
+			//	Support [3].s,
+			//	Support [3].a,
+			//	Support [3].b);
 
-			return new Simplex(sup, w, t);
+			//return new Simplex(sup, w, t);
+			return new Simplex();
 		}
 
 		#endregion

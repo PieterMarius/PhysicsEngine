@@ -7,7 +7,7 @@ namespace MonoPhysicsEngine
 {
 	public static class Helper
 	{
-		public static JacobianContact[] FindConstraints(
+		public static JacobianContact[] FilterConstraints(
 			JacobianContact[] list,
 			ConstraintType typeA)
 		{
@@ -22,7 +22,7 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] FindConstraints(
+		public static JacobianContact[] FilterConstraints(
 			JacobianContact[] list,
 			ConstraintType typeA,
 			ConstraintType typeB)

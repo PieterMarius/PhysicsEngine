@@ -2,7 +2,7 @@
 	
 namespace CollisionEngine
 {
-	public struct EpaTriangle
+	public struct SupportTriangle
 	{
 		#region Public Properties
 
@@ -17,7 +17,7 @@ namespace CollisionEngine
 
 		#region Constructor
 
-		public EpaTriangle (
+		public SupportTriangle (
 			Support a,
 			Support b,
 			Support c,
@@ -49,7 +49,6 @@ namespace CollisionEngine
 		}
 
 		#endregion
-
 
 	}
 }

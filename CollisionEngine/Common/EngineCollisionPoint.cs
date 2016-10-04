@@ -2,7 +2,7 @@
 
 namespace CollisionEngine
 {
-	public class EpaCollisionPoint
+	public class EngineCollisionPoint
 	{
 		#region Public Properties
 
@@ -15,7 +15,7 @@ namespace CollisionEngine
 
 		#region Constructor
 
-		public EpaCollisionPoint (
+		public EngineCollisionPoint (
 			Vector3 dist,
 			Vector3 a,
 			Vector3 b,
@@ -26,6 +26,9 @@ namespace CollisionEngine
 			this.b = b;
 			this.normal = normal;
 		}
+
+		public EngineCollisionPoint()
+		{}
 
 		#endregion
 

@@ -1,4 +1,5 @@
-﻿using PhysicsEngineMathUtility;
+﻿using System.Collections.Generic;
+using PhysicsEngineMathUtility;
 
 namespace CollisionEngine
 {
@@ -9,8 +10,9 @@ namespace CollisionEngine
 		public readonly double CollisionDistance;
 		public readonly CollisionPoint CollisionPoint;
 		public readonly Vector3 CollisionNormal;
+		public readonly Vector3 Centroid;
 		public readonly bool Intersection;
-		public readonly Simplex MinSimplex;
+		public readonly List<SupportTriangle> SupportTriangles;
 
 		#endregion
 
@@ -20,14 +22,16 @@ namespace CollisionEngine
 			double collisionDistance,
 			CollisionPoint collisionPoint,
 			Vector3 collisionNormal,
+			Vector3 centroid,
 			bool intersection,
-			Simplex minSimplex)
+			List<SupportTriangle> supportTriangles)
 		{
 			CollisionDistance = collisionDistance;
 			CollisionPoint = collisionPoint;
 			CollisionNormal = collisionNormal;
+			Centroid = centroid;
 			Intersection = intersection;
-			MinSimplex = minSimplex;
+			SupportTriangles = supportTriangles;
 		}
 
 		#endregion

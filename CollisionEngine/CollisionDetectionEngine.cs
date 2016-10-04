@@ -77,42 +77,6 @@ namespace CollisionEngine
 			return collisionEngineParameters;
 		}
 
-		public CollisionPointStructure GetIntersectionDistance(
-			ObjectGeometry objectA,
-			ObjectGeometry objectB)
-		{
-			GJKOutput gjkOutput = collisionEngine.Execute(objectA, objectB);
-
-			if (!gjkOutput.Intersection)
-			{
-				return new CollisionPointStructure(
-					-1,
-					-1,
-					gjkOutput.Intersection,
-					gjkOutput.CollisionDistance,
-					gjkOutput.CollisionPoint,
-					null);
-			}
-			else
-			{
-				Support[] startTriangle = new Support[4];
-				Array.Copy(gjkOutput.MinSimplex.Support, startTriangle, startTriangle.Length);
-
-				EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
-										  objectA,
-										  objectB,
-										  startTriangle);
-
-				return new CollisionPointStructure(
-					-1,
-					-1,
-					gjkOutput.Intersection,
-					epaOutput.CompenetrationDistance,
-					epaOutput.CollisionPoint,
-					null);
-			}
-		}
-
 		#endregion
 
 		#endregion
@@ -128,8 +92,6 @@ namespace CollisionEngine
 		{
 			GJKOutput gjkOutput = collisionEngine.Execute (A, B);
 
-			Console.WriteLine("Distance " + gjkOutput.CollisionDistance);
-
 			if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= minDistance)
 			{
@@ -138,11 +100,6 @@ namespace CollisionEngine
 					                              collisionEngineParameters.GJKManifoldTolerance,
 					                              collisionEngineParameters.ManifoldProjectionTolerance);
 
-				Console.WriteLine("check point");
-				Console.WriteLine("normpal " + gjkOutput.CollisionNormal.x + " " + gjkOutput.CollisionNormal.y + " " + gjkOutput.CollisionNormal.z);
-				if (Math.Abs(gjkOutput.CollisionNormal.y) < 0.9999)
-					Console.WriteLine("wrong normal " + gjkOutput.CollisionNormal.x + " " + gjkOutput.CollisionNormal.y + " " + gjkOutput.CollisionNormal.z);
-				
 				if (gjkOutput.CollisionNormal.Length() < 1E-15)
 					return null;
 
@@ -150,8 +107,6 @@ namespace CollisionEngine
 					                                           A,
 					                                           B,
 					                                           gjkOutput.CollisionPoint);
-
-				Console.WriteLine("n collision poin " + collisionPointsList.Count);
 
 				return new CollisionPointStructure (
 					indexA,
@@ -164,20 +119,11 @@ namespace CollisionEngine
 
 			if (gjkOutput.Intersection)
 			{
-				Support[] startTriangle = new Support[4]; 
-				Array.Copy(gjkOutput.MinSimplex.Support, startTriangle, startTriangle.Length);
-
 				EPAOutput epaOutput = compenetrationCollisionEngine.Execute (
-					                      A,
-					                      B,
-					                      startTriangle);
-
-				Console.WriteLine("compenetration " + epaOutput.CompenetrationDistance);
-
-				//Console.WriteLine("normal " + epaOutput.CollisionPoint.CollisionNormal.x + " " + epaOutput.CollisionPoint.CollisionNormal.y + " " + epaOutput.CollisionPoint.CollisionNormal.z);
-				if (Math.Abs(epaOutput.CollisionPoint.CollisionNormal.y) < 0.9999)
-					Console.WriteLine("wrong epa normal " + epaOutput.CollisionPoint.CollisionNormal.x + " " + epaOutput.CollisionPoint.CollisionNormal.y + " " + epaOutput.CollisionPoint.CollisionNormal.z);
-
+					                      	A,
+					                     	B,
+											gjkOutput.SupportTriangles,
+											gjkOutput.Centroid);
 
 				if (epaOutput.CollisionPoint.CollisionNormal.Length() < 1E-15)
 					return null;
@@ -192,7 +138,6 @@ namespace CollisionEngine
 															   B,
 															   epaOutput.CollisionPoint);
 
-				Console.WriteLine("n collision point 1 " + collisionPointsList.Count);
 
 				return new CollisionPointStructure(
 					indexA,

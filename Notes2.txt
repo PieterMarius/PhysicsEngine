@@ -1,0 +1,580 @@
+using System;
+using PhysicsEngineMathUtility;
+using SimulationObjectDefinition;
+
+namespace CollisionEngine
+{
+	public class GJK
+	{
+
+		#region Settings Variable
+
+		public int MaxIterations { get; private set; }
+		public double Precision { get; private set; }
+		public double GJKManifoldTolerance { get; private set;}
+		public int ManifoldPointNumber { get; private set;}
+
+		Random random = new Random();
+
+		readonly Vector3 origin = new Vector3();
+		readonly double constTolerance = 0.0000001;
+
+		#endregion
+
+		#region Constructors
+
+		public GJK (
+			int maxIterations,
+			double precision,
+			double gjkTolerance,
+			int manifoldPointNumber)
+		{
+			MaxIterations = maxIterations;
+			Precision = precision;
+			GJKManifoldTolerance = gjkTolerance;
+			ManifoldPointNumber = manifoldPointNumber;
+		}
+
+		#endregion
+
+		#region "Private Methods"
+
+		public Vector3 GetRandomDirection()
+		{
+			double angle = GetRandom(0.0, ConstValues.PI2);
+			double z = GetRandom(-1.0, 1.0);
+			double sqrt = Math.Sqrt(1.0 - z * z);
+
+			return new Vector3(
+				sqrt * Math.Cos(angle),
+				sqrt * Math.Sin(angle),
+				z);
+		}
+
+		public double GetRandom(double min, double max)
+		{
+			return random.NextDouble() * (max - min) + min;
+		}
+
+		/// <summary>
+		/// Gets the farthest point into solid, specified by direction
+		/// </summary>
+		/// <returns>The farthest point.</returns>
+		/// <param name="obj">Object.</param>
+		/// <param name="direction">Direction.</param>
+		private int GetFarthestPoint(
+			ObjectGeometry obj, 
+			Vector3 direction)
+		{
+			int index = 0;
+			double maxDot = Vector3.Dot (obj.VertexPosition [index], direction);
+			double dot = 0.0;
+
+			for (int i = 1; i < obj.VertexPosition.Length; i++) 
+			{
+				dot = Vector3.Dot (obj.VertexPosition [i], direction);
+
+				if (dot > maxDot) 
+				{
+					maxDot = dot;
+					index = i;
+				}
+			}
+			return index;
+		}
+
+
+		/// <summary>
+		/// Gets the farthest vertex point between two input objects.
+		/// </summary>
+		/// <returns>The farthest point.</returns>
+		/// <param name="objA">Object a.</param>
+		/// <param name="objB">Object b.</param>
+		private Support GetFarthestPoint(
+			ObjectGeometry objA,
+			ObjectGeometry objB)
+		{
+			int indexA = 0;
+			int indexB = 0;
+			double distance = 0.0;
+
+			for (int i = 0; i < objA.VertexPosition.Length; i++)
+			{
+				for (int j = 0; j < objB.VertexPosition.Length; j++)
+				{
+					double actualDistance = (objA.VertexPosition[i] - objB.VertexPosition[j]).Length();
+					if (actualDistance >= distance)
+					{
+						indexA = i;
+						indexB = j;
+						distance = actualDistance;
+					}
+				}
+			}
+
+			return new Support(
+				objA.VertexPosition[indexA] - objB.VertexPosition[indexB],
+				indexA,
+				indexB);
+		}
+
+		/// <summary>
+		/// Gets the minkowski farthest point.
+		/// </summary>
+		/// <returns>The minkowski farthest point.</returns>
+		/// <param name="obj1">Obj1.</param>
+		/// <param name="obj2">Obj2.</param>
+		/// <param name="direction">Direction.</param>
+		private Support GetMinkowskiFarthestPoint(
+			ObjectGeometry obj1, 
+			ObjectGeometry obj2,
+			Vector3 direction)
+		{
+			direction = direction.Normalize();
+
+			int a = GetFarthestPoint (obj1, direction);
+			int b = GetFarthestPoint (obj2, direction * -1.0);
+
+			return new Support (
+				             obj1.VertexPosition [a] - obj2.VertexPosition [b],
+				             a,
+				             b);
+		}
+
+		private Support GetStartPoint(
+			ObjectGeometry obj1,
+			ObjectGeometry obj2)
+		{
+			return new Support(
+							 obj1.VertexPosition[0] - obj2.VertexPosition[0],
+							 0,
+							 0);
+		}
+
+		private Vector3 GetDirectionOnSimplex2(Simplex simplex)
+		{
+			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
+			Vector3 simplexAO = simplex.Support [0].s * - 1.0;
+
+			return Vector3.Cross(
+					Vector3.Cross(simplexAB, simplexAO), 
+					simplexAB);
+		}
+
+		private Vector3 GetDirectionOnSimplex3(ref Simplex simplex)
+		{
+			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
+			Vector3 simplexAC = simplex.Support [2].s - simplex.Support [0].s; 
+			Vector3 simplexAO = origin - simplex.Support [0].s;
+			Vector3 ABC = Vector3.Cross (simplexAB, simplexAC);
+
+			if (Vector3.Dot (simplexAO, Vector3.Cross (simplexAB, ABC)) > 0.0) 
+			{
+				simplex.ValidSupportNumber = 2;
+				return Vector3.Cross (
+					Vector3.Cross (simplexAB, simplexAO), 
+					simplexAB);
+			}
+
+			if (Vector3.Dot (simplexAO, Vector3.Cross (ABC, simplexAC)) > 0.0) 
+			{
+				simplex.Support [1] = simplex.Support [2];
+				simplex.ValidSupportNumber = 2;
+				return Vector3.Cross (
+					Vector3.Cross (simplexAC, simplexAO), 
+					simplexAC);
+			}
+
+			if (Vector3.Dot(simplexAO, ABC) > 0.0)
+			{
+				simplex.ValidSupportNumber = 3;
+				return ABC;
+			}
+
+			var buffer = new Support(
+				simplex.Support[1].s,
+				simplex.Support[1].a,
+				simplex.Support[1].b);
+
+			simplex.Support[1] = simplex.Support[2];
+			simplex.Support[2] = buffer;
+
+			simplex.ValidSupportNumber = 3;
+
+			return -1.0 * ABC;
+		}
+			
+		private bool EvaluateOrigionOnSimplex4(Simplex simplex)
+		{
+			Vector3[] vt = new Vector3[4];
+			vt[0] = new Vector3(simplex.Support[0].s);
+			vt[1] = new Vector3(simplex.Support[1].s);
+			vt[2] = new Vector3(simplex.Support[2].s);
+			vt[3] = new Vector3(simplex.Support[3].s);
+
+			double[] t = new double[24];
+
+			t[0] = vt[2].x * vt[1].y * vt[0].z;
+			t[1] = vt[3].x * vt[1].y * vt[0].z;
+			t[2] = vt[1].x * vt[2].y * vt[0].z;
+			t[3] = vt[3].x * vt[2].y * vt[0].z;
+			t[4] = vt[1].x * vt[3].y * vt[0].z;
+			t[5] = vt[2].x * vt[3].y * vt[0].z;
+
+			t[6] = vt[2].x * vt[0].y * vt[1].z;
+			t[7] = vt[3].x * vt[0].y * vt[1].z;
+			t[8] = vt[0].x * vt[2].y * vt[1].z;
+			t[9] = vt[3].x * vt[2].y * vt[1].z;
+			t[10] = vt[0].x * vt[3].y * vt[1].z;
+			t[11] = vt[2].x * vt[3].y * vt[1].z;
+
+			t[12] = vt[1].x * vt[0].y * vt[2].z;
+			t[13] = vt[3].x * vt[0].y * vt[2].z;
+			t[14] = vt[0].x * vt[1].y * vt[2].z;
+			t[15] = vt[3].x * vt[1].y * vt[2].z;
+			t[16] = vt[0].x * vt[3].y * vt[2].z;
+			t[17] = vt[1].x * vt[3].y * vt[2].z;
+
+			t[18] = vt[1].x * vt[0].y * vt[3].z;
+			t[19] = vt[2].x * vt[0].y * vt[3].z;
+			t[20] = vt[0].x * vt[1].y * vt[3].z;
+			t[21] = vt[2].x * vt[1].y * vt[3].z;
+			t[22] = vt[0].x * vt[2].y * vt[3].z;
+			t[23] = vt[1].x * vt[2].y * vt[3].z;
+
+			double d0 = -t[0] + t[1] + t[2] - t[3] - t[4] + t[5] +
+				t[6] - t[7] - t[8] + t[9] + t[10] - t[11] -
+				t[12] + t[13] + t[14] - t[15] - t[16] + t[17]+
+				t[18] - t[19] - t[20] + t[21] + t[22] - t[23];
+
+			//Test if points are aligned or not
+			if (Math.Abs (d0) < constTolerance) 
+			{
+				return false;
+			}
+			
+			double d1 = t[9] - t[11] - t[15] + t[17] + t[21] - t[23];
+
+			double d2 = -t[3] + t[5] + t[13] - t[16] - t[19] + t[22];
+
+			double d3 = t[1] - t[4] - t[7] + t[10] + t[18] - t[20];
+
+			double d4 = -t[0] + t[2] + t[6] - t[8] - t[12] + t[14];
+
+			if (GeometryUtilities.Sign (d0, d1) &&
+			   GeometryUtilities.Sign (d1, d2) &&
+			   GeometryUtilities.Sign (d2, d3) &&
+			   GeometryUtilities.Sign (d3, d4)) 
+				return true;
+			
+			return false;		
+		}
+
+		private CollisionPoint GetCoordinatesFromMinkowsky(
+			Simplex simplex,
+			ObjectGeometry shape1,
+			ObjectGeometry shape2,
+			Vector3 normal)
+		{
+			
+			Vector3 ba1 = shape1.VertexPosition[simplex.Support[1].a] - shape1.VertexPosition[simplex.Support[0].a];
+			Vector3 ca1 = shape1.VertexPosition[simplex.Support[2].a] - shape1.VertexPosition[simplex.Support[0].a];
+
+			Vector3 ba2 = shape2.VertexPosition[simplex.Support[1].b] - shape2.VertexPosition[simplex.Support[0].b];
+			Vector3 ca2 = shape2.VertexPosition[simplex.Support[2].b] - shape2.VertexPosition[simplex.Support[0].b];
+
+			return new CollisionPoint (
+				shape1.VertexPosition [simplex.Support [0].a] + (ba1 * simplex.w) + (ca1 * simplex.t),
+				shape2.VertexPosition [simplex.Support [0].b] + (ba2 * simplex.w) + (ca2 * simplex.t),
+				normal);
+		}
+			
+		/// <summary>
+		/// Gets the distance on simplex4.
+		/// </summary>
+		/// <returns>The distance on simplex4.</returns>
+		/// <param name="startDistance">Start distance.</param>
+		/// <param name="simplex">Simplex.</param>
+		private Vector3? GetDistanceOnSimplex4(
+			double startDistance,
+			ref Simplex simplex)
+		{
+			Simplex[] t = new Simplex[4];
+
+			t [0] = new Simplex ();
+			t [0].Support [0] = simplex.Support [0];
+			t [0].Support [1] = simplex.Support [1];
+			t [0].Support [2] = simplex.Support [3];
+
+			t [1] = new Simplex ();
+			t [1].Support [0] = simplex.Support [0];
+			t [1].Support [1] = simplex.Support [2];
+			t [1].Support [2] = simplex.Support [3];
+
+			t [2] = new Simplex ();
+			t [2].Support [0] = simplex.Support [1];
+			t [2].Support [1] = simplex.Support [2];
+			t [2].Support [2] = simplex.Support [3];
+
+			t [3] = new Simplex ();
+			t [3].Support [0] = simplex.Support [0];
+			t [3].Support [1] = simplex.Support [1];
+			t [3].Support [2] = simplex.Support [2];
+
+			Vector3? distanceVector = new Vector3 ();
+			Vector3? mDistance = null;
+			double minDistance = startDistance;
+			double distance = 0.0;
+
+			double st = 0.0;
+			double tt = 0.0;
+		
+			for (int i = 0; i < 4; i++) 
+			{
+				if (t [i].Support [0].s == t [i].Support [1].s ||
+					t [i].Support [0].s == t [i].Support [2].s ||
+					t [i].Support [1].s == t [i].Support [2].s)
+					continue;
+
+				// Test if points are aligned
+				if (!GeometryUtilities.TestCollinearity (
+					    t [i].Support [0].s,
+					    t [i].Support [1].s,
+					    t [i].Support [2].s)) {
+
+					distanceVector = GeometryUtilities.GetPointTriangleIntersection (
+						t [i].Support [0].s,
+						t [i].Support [1].s,
+						t [i].Support [2].s,
+						origin,
+						ref st,
+						ref tt);
+
+					if (!distanceVector.HasValue)
+						continue;
+
+					t [i].w = st;
+					t [i].t = tt;
+
+					distance = Vector3.Length (distanceVector.Value);
+
+					if (distance <= minDistance) {
+						mDistance = distanceVector.Value;
+						minDistance = distance;
+						simplex = (Simplex)t [i].Clone ();
+					}
+				}
+			}
+
+			return mDistance;
+		}
+
+		private Simplex FindAndTestSimplex4(
+			Simplex simplex,
+			ref Vector3 direction,
+			ref bool isIntersection)
+		{
+			Vector3 ab = simplex.Support[1].s - simplex.Support[0].s;
+			Vector3 ac = simplex.Support[2].s - simplex.Support[0].s;
+			Vector3 simplexAO = origin - simplex.Support[0].s;
+
+			if (Vector3.Dot(simplexAO, Vector3.Cross(ab, ac)) > 0.0)
+			{
+				simplex = SimplexEqualsTriangle(simplex, ref direction);
+				return simplex;
+			}
+
+			Vector3 ad = simplex.Support[3].s - simplex.Support[0].s;
+
+			if (Vector3.Dot(simplexAO, Vector3.Cross(ac, ad)) > 0.0)
+			{
+				simplex.Support[1] = simplex.Support[2];
+				simplex.Support[2] = simplex.Support[3];
+
+				simplex = SimplexEqualsTriangle(simplex, ref direction);
+				return simplex;
+			}
+
+			if (Vector3.Dot(simplexAO, Vector3.Cross(ad, ab)) > 0.0)
+			{
+				simplex.Support[2] = simplex.Support[1];
+				simplex.Support[1] = simplex.Support[3];
+
+				simplex = SimplexEqualsTriangle(simplex, ref direction);
+				return simplex;
+			}
+
+			isIntersection = true;
+
+			return simplex;
+		}
+
+		public Simplex SimplexEqualsTriangle(
+			Simplex simplex,
+			ref Vector3 direction)
+		{
+			Vector3 ab = simplex.Support[1].s - simplex.Support[0].s;
+			Vector3 ac = simplex.Support[2].s - simplex.Support[0].s;
+			Vector3 abc = Vector3.Cross(ab, ac);
+			Vector3 simplexAO = origin - simplex.Support[0].s;
+
+			if (Vector3.Dot(simplexAO, Vector3.Cross(ab, abc)) > 0.0)
+			{
+				simplex.ValidSupportNumber = 2;
+
+				direction = Vector3.Cross(Vector3.Cross(ab, simplexAO), ab);
+				return simplex;
+			}
+
+			if (Vector3.Dot(simplexAO, Vector3.Cross(abc, ac)) > 0.0)
+			{
+				simplex.Support[1] = simplex.Support[2];
+				simplex.ValidSupportNumber = 2;
+
+				direction = Vector3.Cross(Vector3.Cross(ac, simplexAO), ac);
+				return simplex;
+			}
+
+			direction = abc;
+			simplex.ValidSupportNumber = 3;
+
+			return simplex;
+		}
+
+		/// <summary>
+		/// Ritorna la distanza se distanza 0.0f allora vi è intersezione o compenetrazione tra gli oggetti, 
+		/// se distanza 0.0 allora i due oggetti non collidono
+		/// </summary>
+		/// <returns>The GJK algorithm.</returns>
+		/// <param name="shape1">Shape1.</param>
+		/// <param name="shape2">Shape2.</param>
+		/// <param name="cp">Cp.</param>
+		/// <param name="minSimplex">Minimum simplex.</param>
+		/// <param name="isIntersection">If set to <c>true</c> is itersection.</param>
+		private double ExecuteGJKAlgorithm(
+			ObjectGeometry shape1,
+			ObjectGeometry shape2,
+			ref Vector3 collisionNormal,
+			ref CollisionPoint cp,
+			ref Simplex minSimplex,
+			ref bool isIntersection)
+		{
+			double minDistance = double.MaxValue;
+
+			var simplex = new Simplex ();
+
+			//Primo punto del simplex
+
+			simplex.Support[0] = GetFarthestPoint(shape1, shape2);
+			simplex.ValidSupportNumber = 1;
+
+			//Secondo punto del simplex
+
+			Vector3 direction = simplex.Support[0].s * -1.0;
+
+			double mod = minDistance;
+
+			for (int i = 0; i < MaxIterations; i++) 
+			{
+				if (direction.Length() <= 0.00001) 
+					return mod;
+
+				simplex.Support[simplex.ValidSupportNumber] = GetMinkowskiFarthestPoint(shape1, shape2, direction);
+				simplex.ValidSupportNumber = simplex.ValidSupportNumber + 1;
+
+				//if (simplex.Support[simplex.ValidSupportNumber - 1].s.Dot(direction) < 0.0)
+				//	return mod;
+
+				switch (simplex.ValidSupportNumber)
+				{
+					case 2:
+						//Terzo punto del simplex
+						direction = GetDirectionOnSimplex2(simplex);
+						continue;
+
+					case 3:
+						direction = GetDirectionOnSimplex3(ref simplex);
+						continue;
+					
+					case 4:
+					default:
+						simplex = FindAndTestSimplex4(
+							simplex, 
+							ref direction, 
+							ref isIntersection);
+
+						isIntersection = EvaluateOrigionOnSimplex4(simplex);
+
+						if (isIntersection)
+						{
+							//L'origine è contenuta nel poliedro
+							minSimplex = (Simplex)simplex.Clone();
+							return -1.0;
+						}
+						
+						continue;
+				}
+			}
+
+			//collisionNormal = collisionNormal.Normalize ();
+			Vector3? normal = GetDistanceOnSimplex4(mod, ref simplex);
+			if (normal.HasValue)
+			{
+				collisionNormal = (-1.0 * normal.Value).Normalize();
+				mod = normal.Value.Length();
+			}
+			else
+			{
+				collisionNormal = new Vector3();
+			}
+
+			cp = GetCoordinatesFromMinkowsky (
+				simplex, 
+				shape1, 
+				shape2, 
+				collisionNormal);
+			
+			return mod;
+		}
+			
+		#endregion
+
+		#region Public Methods
+
+		/// <summary>
+		/// Detects the collision.
+		/// </summary>
+		/// <returns>The collision.</returns>
+		/// <param name="objectA">Object a.</param>
+		/// <param name="objectB">Object b.</param>
+		public GJKOutput Execute(
+			ObjectGeometry objectA, 
+			ObjectGeometry objectB)
+		{
+			var collisionPoint = new CollisionPoint();
+			var collisionNormal = new Vector3();
+			var minSimplex = new Simplex();
+			bool isIntersection = false;
+
+			double collisionDistance = ExecuteGJKAlgorithm (
+				                          objectA,
+				                          objectB,
+				                          ref collisionNormal,
+				                          ref collisionPoint,
+				                          ref minSimplex,
+				                          ref isIntersection);
+
+			return new GJKOutput (
+				collisionDistance,
+				collisionPoint,
+				collisionNormal,
+				isIntersection,
+				minSimplex);
+		}
+			
+
+		#endregion
+
+	}
+}
+

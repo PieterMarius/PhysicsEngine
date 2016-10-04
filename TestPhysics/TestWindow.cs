@@ -62,9 +62,9 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				var loadObject = new LoadObject ("startConfig.xml");
+				//var loadObject = new LoadObject ("startConfig.xml");
 				//var loadObject = new LoadObject ("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
+				var loadObject = new LoadObject("testJointBridge.xml");
 
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
@@ -168,8 +168,9 @@ namespace TestPhysics
 
 			MoveCamera ();
 
-//			displayOrigin ();
+			//displayOrigin ();
 			displayContact ();
+			//displayBaseContact();
 			displayJoint ();
 			//displayVertex (0);
 			//displayVertex (1);
@@ -485,6 +486,58 @@ namespace TestPhysics
 					GL.PopMatrix ();
 
 				}
+			}
+		}
+
+		private void displayBaseContact()
+		{
+			for (int i = 0; i < collPoint.Count; i++)
+			{
+				
+				GL.PushMatrix();
+
+				Matrix4 mView = Matrix4.CreateTranslation(
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.x),
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.y),
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.z));
+
+				var dmviewData = new float[] {
+					mView.M11, mView.M12, mView.M13, mView.M14,
+					mView.M21, mView.M22, mView.M23, mView.M24,
+					mView.M31, mView.M32, mView.M33, mView.M34,
+					mView.M41, mView.M42, mView.M43, mView.M44
+				};
+
+				GL.MultMatrix(dmviewData);
+
+				//GL.Color3 (1.0f, 0.0, 0.0);
+				OpenGLUtilities.drawSolidCube(0.08f);
+
+				GL.PopMatrix();
+
+				GL.PushMatrix();
+
+				Matrix4 mView1 = Matrix4.CreateTranslation(
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.x),
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.y),
+					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.z));
+
+				var dmviewData1 = new float[] {
+					mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+					mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+					mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+					mView1.M41, mView1.M42, mView1.M43, mView1.M44
+				};
+
+				GL.MultMatrix(dmviewData1);
+
+
+				//GL.Color3 (1.0f, 0.0, 0.0);
+				OpenGLUtilities.drawSolidCube(0.08f);
+
+				GL.PopMatrix();
+
+
 			}
 		}
 

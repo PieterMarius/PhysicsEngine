@@ -8,10 +8,6 @@ namespace CollisionEngine
 		List<CollisionPointStructure> Execute (
 			ObjectGeometry[] objects,
 			double minDistance);
-
-		CollisionPointStructure GetIntersectionDistance(
-			ObjectGeometry objectA,
-			ObjectGeometry objectB);
 	}
 }
 

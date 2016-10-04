@@ -72,7 +72,7 @@ namespace CollisionEngine
 			EPAManifoldTolerance = 0.009;
 			ManifoldProjectionTolerance = 0.005;
 			ManifoldPointNumber = 4;
-			MaxThreadNumber = 1;
+			MaxThreadNumber = 2;
 			ActivateSweepAndPrune = true;
 		}
 
