@@ -62,10 +62,9 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				//var loadObject = new LoadObject ("startConfig.xml");
+				var loadObject = new LoadObject ("startConfig.xml");
 				//var loadObject = new LoadObject ("carConfig.xml");
-				var loadObject = new LoadObject("testJointBridge.xml");
-
+				//var loadObject = new LoadObject("testJointBridge.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -548,9 +547,9 @@ namespace TestPhysics
 				GL.PushMatrix ();
 
 				Matrix4 mView = Matrix4.CreateTranslation (
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].x), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].y), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].z));
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.x), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.y), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.z));
 
 				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,

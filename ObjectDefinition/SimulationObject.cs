@@ -286,8 +286,11 @@ namespace SimulationObjectDefinition
 
 		private void SetObjectProperties()
 		{
-			var inertiaTensor = new InertiaTensor(
-					ObjectGeometry.VertexPosition,
+            Vector3[] vertexPosition = Array.ConvertAll(ObjectGeometry.VertexPosition,
+                                        item => item.Vertex);
+
+            var inertiaTensor = new InertiaTensor(
+					vertexPosition,
 					ObjectGeometry.Triangle,
 					Mass);
 
@@ -299,12 +302,12 @@ namespace SimulationObjectDefinition
 				for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
 				{
 					ObjectGeometry.SetVertexPosition(
-						ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
+						ObjectGeometry.VertexPosition[j].Vertex - inertiaTensor.GetMassCenter(),
 						j);
 				}
 
 				normalizedInertiaTensor = new InertiaTensor(
-					ObjectGeometry.VertexPosition,
+					vertexPosition,
 					ObjectGeometry.Triangle,
 					Mass);
 			}
@@ -325,7 +328,7 @@ namespace SimulationObjectDefinition
 			{
 				RelativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
 				for (int i = 0; i < ObjectGeometry.VertexPosition.Length; i++)
-					RelativePositions[i] = ObjectGeometry.VertexPosition[i] - StartPosition;
+					RelativePositions[i] = ObjectGeometry.VertexPosition[i].Vertex - StartPosition;
 			}
 		}
 

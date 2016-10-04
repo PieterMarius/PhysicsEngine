@@ -16,7 +16,7 @@ namespace CollisionEngine
 
 		readonly Vector3 origin = new Vector3();
 		readonly double constTolerance = 0.0000001;
-
+        
 		#endregion
 
 		#region Constructors
@@ -48,25 +48,10 @@ namespace CollisionEngine
 			ObjectGeometry objB)
 		{
 			int indexA = 0;
-			int indexB = 0;
-			double distance = 0.0;
-
-			for (int i = 0; i < objA.VertexPosition.Length; i++)
-			{
-				for (int j = 0; j < objB.VertexPosition.Length; j++)
-				{
-					double actualDistance = (objA.VertexPosition[i] - objB.VertexPosition[j]).Length();
-					if (actualDistance >= distance)
-					{
-						indexA = i;
-						indexB = j;
-						distance = actualDistance;
-					}
-				}
-			}
-
+			int indexB = objB.VertexPosition.Length / 2;
+			
 			return new Support(
-				objA.VertexPosition[indexA] - objB.VertexPosition[indexB],
+				objA.VertexPosition[indexA].Vertex - objB.VertexPosition[indexB].Vertex,
 				indexA,
 				indexB);
 		}

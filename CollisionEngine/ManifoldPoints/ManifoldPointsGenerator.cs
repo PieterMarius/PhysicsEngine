@@ -78,9 +78,9 @@ namespace CollisionEngine
 			Vector3 normal = Vector3.Normalize(planeNormal);
 			for (int i = 0; i < shape.VertexPosition.Length; i++) 
 			{
-				Vector3 nt = Vector3.Normalize (shape.VertexPosition [i] - collisionPoint);
+				Vector3 nt = Vector3.Normalize (shape.VertexPosition [i].Vertex - collisionPoint);
 				if (Math.Abs (Vector3.Dot (nt, normal)) < ManifoldPlaneTolerance)
-					collisionPoints.Add (shape.VertexPosition [i]);
+					collisionPoints.Add (shape.VertexPosition [i].Vertex);
 			}
 
 			return collisionPoints;

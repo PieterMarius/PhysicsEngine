@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
+using System;
 
 namespace CollisionEngine
 {
@@ -13,11 +14,11 @@ namespace CollisionEngine
 			ObjectGeometry obj2,
 			Vector3 direction)
 		{
-			int a = GetFarthestPoint(obj1, direction);
+            	int a = GetFarthestPoint(obj1, direction);
 			int b = GetFarthestPoint(obj2, direction * -1.0);
 
 			var sp = new Support(
-				obj1.VertexPosition[a] - obj2.VertexPosition[b],
+				obj1.VertexPosition[a].Vertex - obj2.VertexPosition[b].Vertex,
 				a,
 				b);
 
@@ -29,21 +30,31 @@ namespace CollisionEngine
 			Vector3 direction)
 		{
 			int index = 0;
-			double maxDot = Vector3.Dot(obj.VertexPosition[index], direction);
+            bool check = true;
+            	double maxDot = Vector3.Dot(obj.VertexPosition[index].Vertex, direction);
+            
+            while(check)
+            {
+                check = false;
+                int maxIndex = -1;
 
-			for (int i = 1; i < obj.VertexPosition.Length; i++)
-			{
-				Vector3 vertex = obj.VertexPosition[i];
-				double dot = Vector3.Dot(vertex, direction);
+                for (int i = 0; i < obj.VertexPosition[index].Adjacency.Count; i++)
+                {
+                    double dot = Vector3.Dot(obj.VertexPosition[obj.VertexPosition[index].Adjacency[i]].Vertex, direction);
+                    if (dot > maxDot)
+                    {
+                        maxDot = dot;
+                        maxIndex = obj.VertexPosition[index].Adjacency[i];
+                        check = true;
+                    }
+                }
 
-				if (dot > maxDot)
-				{
-					maxDot = dot;
-					index = i;
-				}
-			}
-			return index;
-		}
+                if(maxIndex >= 0)
+                    index = maxIndex;
+            }
+
+            return index;
+        }
 
 		public static List<SupportTriangle> AddPointToConvexPolygon(
 			List<SupportTriangle> triangles,
@@ -220,13 +231,13 @@ namespace CollisionEngine
 			ObjectGeometry shape2,
 			ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = shape1.VertexPosition[triangle.a.a];
-			Vector3 ba1 = shape1.VertexPosition[triangle.b.a] - a1;
-			Vector3 ca1 = shape1.VertexPosition[triangle.c.a] - a1;
+			Vector3 a1 = shape1.VertexPosition[triangle.a.a].Vertex;
+			Vector3 ba1 = shape1.VertexPosition[triangle.b.a].Vertex - a1;
+			Vector3 ca1 = shape1.VertexPosition[triangle.c.a].Vertex - a1;
 
-			Vector3 a2 = shape2.VertexPosition[triangle.a.b];
-			Vector3 ba2 = shape2.VertexPosition[triangle.b.b] - a2;
-			Vector3 ca2 = shape2.VertexPosition[triangle.c.b] - a2;
+			Vector3 a2 = shape2.VertexPosition[triangle.a.b].Vertex;
+			Vector3 ba2 = shape2.VertexPosition[triangle.b.b].Vertex - a2;
+			Vector3 ca2 = shape2.VertexPosition[triangle.c.b].Vertex - a2;
 			collisionPoint.SetA(a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			collisionPoint.SetB(a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}

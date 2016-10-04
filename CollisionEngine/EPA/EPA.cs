@@ -45,13 +45,13 @@ namespace CollisionEngine
 			ObjectGeometry shape2,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = shape1.VertexPosition [triangle.a.a];
-			Vector3 ba1 = shape1.VertexPosition [triangle.b.a] - a1;
-			Vector3 ca1 = shape1.VertexPosition [triangle.c.a] - a1;
+			Vector3 a1 = shape1.VertexPosition [triangle.a.a].Vertex;
+			Vector3 ba1 = shape1.VertexPosition [triangle.b.a].Vertex - a1;
+			Vector3 ca1 = shape1.VertexPosition [triangle.c.a].Vertex - a1;
 
-			Vector3 a2 = shape2.VertexPosition [triangle.a.b];
-			Vector3 ba2 = shape2.VertexPosition [triangle.b.b] - a2;
-			Vector3 ca2 = shape2.VertexPosition [triangle.c.b] - a2;
+			Vector3 a2 = shape2.VertexPosition [triangle.a.b].Vertex;
+			Vector3 ba2 = shape2.VertexPosition [triangle.b.b].Vertex - a2;
+			Vector3 ca2 = shape2.VertexPosition [triangle.c.b].Vertex - a2;
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}

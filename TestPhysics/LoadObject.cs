@@ -143,12 +143,12 @@ namespace TestPhysics
 				objects[i].SetBaumgarteStabilizationCoeff(20.0);
 
 				var box = new AABB (
-					objects [i].ObjectGeometry.VertexPosition.Min (point => point.x),
-					objects [i].ObjectGeometry.VertexPosition.Max (point => point.x),
-					objects [i].ObjectGeometry.VertexPosition.Min (point => point.y),
-					objects [i].ObjectGeometry.VertexPosition.Max (point => point.y),
-					objects [i].ObjectGeometry.VertexPosition.Min (point => point.z),
-					objects [i].ObjectGeometry.VertexPosition.Max (point => point.z),
+					objects [i].ObjectGeometry.VertexPosition.Min (point => point.Vertex.x),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.Vertex.x),
+					objects [i].ObjectGeometry.VertexPosition.Min (point => point.Vertex.y),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.Vertex.y),
+					objects [i].ObjectGeometry.VertexPosition.Min (point => point.Vertex.z),
+					objects [i].ObjectGeometry.VertexPosition.Max (point => point.Vertex.z),
 					false);
 
 				objects [i].ObjectGeometry.SetAABB (box);

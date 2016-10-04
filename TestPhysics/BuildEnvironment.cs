@@ -7,6 +7,7 @@ using ObjLoader.Loader.Loaders;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
 using Utility;
+using System;
 
 namespace TestPhysics
 {
@@ -64,8 +65,11 @@ namespace TestPhysics
 			objects[0].SetStaticFrictionCoeff(1.0);
 			objects[0].SetExcludeFromCollisionDetection(false);
 
-			var inertiaTensor = new InertiaTensor(
-				objects[0].ObjectGeometry.VertexPosition,
+            Vector3[] vertexPosition = Array.ConvertAll(objects[0].ObjectGeometry.VertexPosition,
+                                        item => item.Vertex);
+
+            var inertiaTensor = new InertiaTensor(
+                vertexPosition,
 				objects[0].ObjectGeometry.Triangle,
 				objects[0].Mass);
 
@@ -73,12 +77,12 @@ namespace TestPhysics
 			for (int j = 0; j < objects[0].ObjectGeometry.VertexPosition.Length; j++)
 			{
 				objects[0].ObjectGeometry.SetVertexPosition(
-					objects[0].ObjectGeometry.VertexPosition[j] - inertiaTensor.GetMassCenter(),
+                    vertexPosition[j] - inertiaTensor.GetMassCenter(),
 					j);
 			}
 
 			var inertiaTensor1 = new InertiaTensor(
-				objects[0].ObjectGeometry.VertexPosition,
+                vertexPosition,
 				objects[0].ObjectGeometry.Triangle,
 				objects[0].Mass);
 
@@ -94,12 +98,13 @@ namespace TestPhysics
 				objects[0].ObjectGeometry.SetVertexPosition(objects[0].Position + relPositionRotate, j);
 			}
 
-			var box = new AABB(objects[0].ObjectGeometry.VertexPosition.Min(point => point.x),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.x),
-				objects[0].ObjectGeometry.VertexPosition.Min(point => point.y),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.y),
-				objects[0].ObjectGeometry.VertexPosition.Min(point => point.z),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.z),
+			var box = new AABB(
+                objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.x),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.x),
+				objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.y),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.y),
+				objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.z),
+				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.z),
 				false);
 
 			objects[0].ObjectGeometry.SetAABB(box);

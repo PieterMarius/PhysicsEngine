@@ -457,7 +457,7 @@ namespace MonoPhysicsEngine
 					if (positionUpdated)
 						UpdateObjectPosition(simulationObjects);
 
-				#endregion
+				    #endregion
 				}
 			}
 
@@ -1171,17 +1171,9 @@ namespace MonoPhysicsEngine
 								j);
 						}
 
-						//TODO refactoring and testing
-						var box = new AABB (
-							simObj.ObjectGeometry.VertexPosition.Min (point => point.x),
-							simObj.ObjectGeometry.VertexPosition.Max (point => point.x),
-							simObj.ObjectGeometry.VertexPosition.Min (point => point.y),
-							simObj.ObjectGeometry.VertexPosition.Max (point => point.y),
-							simObj.ObjectGeometry.VertexPosition.Min (point => point.z),
-							simObj.ObjectGeometry.VertexPosition.Max (point => point.z),
-							false);
+                        var box = Helper.UpdateAABB(simObj.ObjectGeometry);
 
-						simObj.ObjectGeometry.SetAABB (box);
+                        simObj.ObjectGeometry.SetAABB (box);
 					}
 
 					#endregion
@@ -1192,7 +1184,7 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-		#region Position Based Integration
+        	#region Position Based Integration
 
 		private void UpdatePositionBasedVelocity(
 			JacobianContact[] contact,
@@ -1303,17 +1295,9 @@ namespace MonoPhysicsEngine
 								j);
 						}
 
-						//TODO refactoring and testing
-						var box = new AABB(
-							simObj.ObjectGeometry.VertexPosition.Min(point => point.x),
-							simObj.ObjectGeometry.VertexPosition.Max(point => point.x),
-							simObj.ObjectGeometry.VertexPosition.Min(point => point.y),
-							simObj.ObjectGeometry.VertexPosition.Max(point => point.y),
-							simObj.ObjectGeometry.VertexPosition.Min(point => point.z),
-							simObj.ObjectGeometry.VertexPosition.Max(point => point.z),
-							false);
+                        var box = Helper.UpdateAABB(simObj.ObjectGeometry);
 
-						simObj.ObjectGeometry.SetAABB(box);
+                        simObj.ObjectGeometry.SetAABB(box);
 
 						simObj.SetTempLinearVelocity(new Vector3());
 						simObj.SetTempAngularVelocity(new Vector3());
