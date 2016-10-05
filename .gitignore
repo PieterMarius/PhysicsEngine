@@ -65,3 +65,4 @@ MathUtility/obj/*
 TestPhysics/bin/Debug/testJointBridge.txt
 *.suo
 *.manifest
+*.suo
