@@ -52,11 +52,6 @@ namespace MonoPhysicsEngine
 		List<IConstraint> simulationJoints;
 
 		/// <summary>
-		/// The objects geometry.
-		/// </summary>
-		ObjectGeometry[] objectsGeometry;
-
-		/// <summary>
 		/// The collision engine.
 		/// </summary>
 		ICollisionEngine collisionEngine;
@@ -424,14 +419,14 @@ namespace MonoPhysicsEngine
 
 					for (int i = 0; i < collisionPartitionedPoints.Count; i++)
 					{
-						JacobianContact[] jointConstraints = GetJacobianJointConstraint(
-																	   partitionedJoint[i],
-																	   simulationObjects,
-																	   baumgarteStabilizationValue).ToArray();
-
 						if (SimulationEngineParameters.PositionBasedJointIterations > 0)
 						{
-							jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
+                            JacobianContact[] jointConstraints = GetJacobianJointConstraint(
+                                                                       partitionedJoint[i],
+                                                                       simulationObjects,
+                                                                       baumgarteStabilizationValue).ToArray();
+
+                            jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
 
 							LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
 								jointConstraints,
@@ -572,9 +567,9 @@ namespace MonoPhysicsEngine
 
 						double[] overallSolution = solver.Solve(overallLCP);
 
-						double testError = ComputeSolverError(overallLCP, overallSolution);
+						//double testError = ComputeSolverError(overallLCP, overallSolution);
 
-						solverError += testError;
+						//solverError += testError;
 
 						//Update Objects velocity
 						UpdateVelocity(
@@ -629,9 +624,9 @@ namespace MonoPhysicsEngine
 			#region Find New Collision Points
 
 			//Creo l'array contenente la geometria degli oggetti
-			objectsGeometry = Array.ConvertAll (
+			SimulationObject[] simObjects = Array.ConvertAll (
 							simulationObjects, 
-							item => (item.ExcludeFromCollisionDetection) ? null : item.ObjectGeometry);
+							item => (item.ExcludeFromCollisionDetection) ? null : item);
 
 			var stopwatch = new Stopwatch();
 
@@ -640,7 +635,7 @@ namespace MonoPhysicsEngine
 
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.Execute(
-									objectsGeometry,
+                                    simObjects,
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
@@ -1156,29 +1151,17 @@ namespace MonoPhysicsEngine
 
 					#endregion
 
-					#region Update Object Vertex Position
+					#region Update AABB
 
 					if (simObj.ObjectGeometry != null &&
-						(linearVelocity > 0.0 || angularVelocity > 0.0)) 
-					{
-						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++) 
-						{
-							Vector3 relativePosition = simObj.Position + 
-								(simObj.RotationMatrix * simObj.RelativePositions [j]);
-							
-							simObj.ObjectGeometry.SetVertexPosition (
-								relativePosition,
-								j);
-						}
+						(linearVelocity > 0.0 || angularVelocity > 0.0))
+                    {
+                       simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));
+                    }
 
-                        var box = Helper.UpdateAABB(simObj.ObjectGeometry);
+                    #endregion
 
-                        simObj.ObjectGeometry.SetAABB (box);
-					}
-
-					#endregion
-
-				}
+                }
 				simulationObjects [index] = simObj;
 				index++;
 			}
@@ -1280,24 +1263,12 @@ namespace MonoPhysicsEngine
 
 					#endregion
 
-					#region Update Object Vertex Position
+					#region Update AABB
 
 					if (simObj.ObjectGeometry != null &&
 						(linearVelocity > 0.0 || angularVelocity > 0.0))
 					{
-						for (int j = 0; j < simObj.ObjectGeometry.VertexPosition.Length; j++)
-						{
-							Vector3 relativePosition = simObj.Position +
-								(simObj.RotationMatrix * simObj.RelativePositions[j]);
-
-							simObj.ObjectGeometry.SetVertexPosition(
-								relativePosition,
-								j);
-						}
-
-                        var box = Helper.UpdateAABB(simObj.ObjectGeometry);
-
-                        simObj.ObjectGeometry.SetAABB(box);
+						simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));
 
 						simObj.SetTempLinearVelocity(new Vector3());
 						simObj.SetTempAngularVelocity(new Vector3());
@@ -1329,7 +1300,6 @@ namespace MonoPhysicsEngine
 			{
 				simulationObjects = null;
 				simulationJoints = null;
-				objectsGeometry = null;
 				collisionPoints = null;
 				collisionPartitionedPoints = null;
 				partitionedJoint = null;

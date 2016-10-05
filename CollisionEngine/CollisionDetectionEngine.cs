@@ -51,7 +51,7 @@ namespace CollisionEngine
 		/// <param name="objects">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
 		public List<CollisionPointStructure> Execute(
-			ObjectGeometry[] objects,
+			SimulationObject[] objects,
 			double minDistance)
 		{
 			if (collisionEngineParameters.ActivateSweepAndPrune) 
@@ -84,8 +84,8 @@ namespace CollisionEngine
 		#region Private Methods
 
 		private CollisionPointStructure NarrowPhase(
-			ObjectGeometry A,
-			ObjectGeometry B,
+			SimulationObject A,
+			SimulationObject B,
 			int indexA,
 			int indexB,
 			double minDistance)
@@ -152,7 +152,7 @@ namespace CollisionEngine
 		}
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
-			ObjectGeometry[] objects,
+			SimulationObject[] objects,
 			double minDistance)
 		{
 			var result = new List<CollisionPointStructure> ();
@@ -186,33 +186,51 @@ namespace CollisionEngine
 		}
 
 		private List<CollisionPointStructure> SweepAndPruneBroadPhase(
-			ObjectGeometry[] objects,
+			SimulationObject[] objects,
 			double minDistance)
 		{
 			var result = new List<CollisionPointStructure> ();
 
-			AABB[] boxs = Array.ConvertAll (objects, item => (item == null) ? null : item.AABBox);
+			AABB[] boxs = Array.ConvertAll (objects, item => (item.ObjectGeometry == null) ? null : item.ObjectGeometry.AABBox);
 
 			List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
 
-			var lockMe = new object();
+            	var lockMe = new object();
 
-			Parallel.ForEach (
-				collisionPair, 
-				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
-				pair => {
-					CollisionPointStructure collisionPointStruct = NarrowPhase(
-						objects[pair.objectIndexA],
-						objects[pair.objectIndexB],
-						pair.objectIndexA,
-						pair.objectIndexB,
-						minDistance);
+            foreach(CollisionPair pair in collisionPair)
+            {
+                CollisionPointStructure collisionPointStruct = NarrowPhase(
+                        objects[pair.objectIndexA],
+                        objects[pair.objectIndexB],
+                        pair.objectIndexA,
+                        pair.objectIndexB,
+                        minDistance);
 
-					lock (lockMe) {
-						if (collisionPointStruct != null)
-							result.Add (collisionPointStruct);
-					}
-				});
+                if (collisionPointStruct != null)
+                {
+                    result.Add(collisionPointStruct);
+                }
+            }
+
+			//Parallel.ForEach (
+			//	collisionPair, 
+			//	new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
+			//	pair => {
+			//		CollisionPointStructure collisionPointStruct = NarrowPhase(
+			//			objects[pair.objectIndexA],
+			//			objects[pair.objectIndexB],
+			//			pair.objectIndexA,
+			//			pair.objectIndexB,
+			//			minDistance);
+
+   //                 if (collisionPointStruct != null)
+   //                 {
+   //                     lock (lockMe)
+   //                     {
+   //                         result.Add(collisionPointStruct);
+   //                     }
+   //                 }
+   //             });
 
 			return result;
 		}

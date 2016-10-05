@@ -68,17 +68,10 @@ namespace MonoPhysicsEngine
 
 					if (collisionPointStr.Intersection)
 					{
-						Vector3 compenetrationDistanceVector = collisionPointStr.CollisionPoints[k].CollisionPointA -
-															   collisionPointStr.CollisionPoints[k].CollisionPointB;
+						double compenetrationDistance = collisionPointStr.ObjectDistance;
 
-						double compenetrationDistance = (linearComponentA.Dot(compenetrationDistanceVector)) <= 0.0 ?
-														compenetrationDistanceVector.Length() :
-														0.0;
-
-						compenetrationDistance = Math.Min(collisionPointStr.ObjectDistance, compenetrationDistance);						
-
-						//Limit the Baum stabilization jitter effect 
-						correctionParameter = Math.Min(Math.Max(Math.Max(compenetrationDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+                        //Limit the Baum stabilization jitter effect 
+                        correctionParameter = Math.Min(Math.Max(Math.Max(compenetrationDistance - simulationParameters.CompenetrationTolerance, 0.0) *
 											  baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
 					}
 

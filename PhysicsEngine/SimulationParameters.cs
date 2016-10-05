@@ -169,7 +169,7 @@ namespace MonoPhysicsEngine
 			NormalCollisionIterations = 0;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 25;
+			OverallConstraintsIterations = 30;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;

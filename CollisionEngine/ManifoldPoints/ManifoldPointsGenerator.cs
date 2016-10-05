@@ -32,8 +32,8 @@ namespace CollisionEngine
 		#region Public Methods
 
 		public List<CollisionPoint> GetManifoldPoints(
-			ObjectGeometry objectA, 
-			ObjectGeometry objectB,
+			SimulationObject objectA, 
+			SimulationObject objectB,
 			CollisionPoint collisionPoint)
 		{
 			List<Vector3> collisionA = getNearestPoint (
@@ -69,18 +69,18 @@ namespace CollisionEngine
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>
 		private List<Vector3> getNearestPoint(
-			ObjectGeometry shape,
+			SimulationObject shape,
 			Vector3 collisionPoint,
 			Vector3 planeNormal)
 		{
 			var collisionPoints = new List<Vector3> ();
 
 			Vector3 normal = Vector3.Normalize(planeNormal);
-			for (int i = 0; i < shape.VertexPosition.Length; i++) 
+			for (int i = 0; i < shape.ObjectGeometry.VertexPosition.Length; i++) 
 			{
-				Vector3 nt = Vector3.Normalize (shape.VertexPosition [i].Vertex - collisionPoint);
+                Vector3 nt = Vector3.Normalize (Helper.GetVertexPosition(shape, i) - collisionPoint);
 				if (Math.Abs (Vector3.Dot (nt, normal)) < ManifoldPlaneTolerance)
-					collisionPoints.Add (shape.VertexPosition [i].Vertex);
+					collisionPoints.Add (Helper.GetVertexPosition(shape, i));
 			}
 
 			return collisionPoints;

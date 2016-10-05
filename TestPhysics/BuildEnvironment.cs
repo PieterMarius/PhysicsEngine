@@ -98,17 +98,6 @@ namespace TestPhysics
 				objects[0].ObjectGeometry.SetVertexPosition(objects[0].Position + relPositionRotate, j);
 			}
 
-			var box = new AABB(
-                objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.x),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.x),
-				objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.y),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.y),
-				objects[0].ObjectGeometry.VertexPosition.Min(point => point.Vertex.z),
-				objects[0].ObjectGeometry.VertexPosition.Max(point => point.Vertex.z),
-				false);
-
-			objects[0].ObjectGeometry.SetAABB(box);
-
 			#endregion
 
 			return objects;

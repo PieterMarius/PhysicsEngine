@@ -62,9 +62,9 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				var loadObject = new LoadObject ("startConfig.xml");
+				//var loadObject = new LoadObject ("startConfig.xml");
 				//var loadObject = new LoadObject ("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
+				var loadObject = new LoadObject("testJointBridge.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -171,14 +171,18 @@ namespace TestPhysics
 			displayContact ();
 			//displayBaseContact();
 			displayJoint ();
-			//displayVertex (0);
-			//displayVertex (1);
-			//displayVertex (2);
+            //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+            //    displayVertex(i);
 
-			for (int i = 0; i < physicsEngine.ObjectCount(); i++) 
-				SetOpenGLObjectMatrix (i);
-				
-			GL.Flush ();
+            //displayAABB();
+            //displayVertex (0);
+            //displayVertex (1);
+            //displayVertex (2);
+
+            for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+                SetOpenGLObjectMatrix(i);
+
+            GL.Flush ();
 			SwapBuffers ();
 
 
@@ -209,7 +213,9 @@ namespace TestPhysics
 			UpdateMouse ();
 			UpdateKeyboard ();
 
-			try {
+            
+
+            try {
 				
 				if (!pause)
 				{
@@ -217,7 +223,7 @@ namespace TestPhysics
 					stopwatch.Start();
 
 					collPoint.Clear();
-
+                    
 					physicsEngine.Simulate();
 					//for (int i = 0; i < physicsEngine.JointsCount(); i++)
 					//{
@@ -233,6 +239,8 @@ namespace TestPhysics
 					Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
 					Console.WriteLine("Partial " + stopwatch.ElapsedMilliseconds);
 					Console.WriteLine();
+
+
 
 					//pause = true;
 					//if (elapsedTime > 6.0)
@@ -560,7 +568,7 @@ namespace TestPhysics
 
 				GL.MultMatrix (dmviewData);
 
-				OpenGLUtilities.drawSolidCube (0.08f);
+				OpenGLUtilities.drawSolidCube (0.04f);
 
 				GL.PopMatrix ();
 			}
@@ -568,8 +576,6 @@ namespace TestPhysics
 
 		private void displayJoint()
 		{
-			
-
 			for (int i = 0; i < physicsEngine.JointsCount(); i++) 
 			{
 					GL.PushMatrix ();
@@ -597,7 +603,59 @@ namespace TestPhysics
 			}
 		}
 
-		private void displayOrigin()
+        private void displayAABB()
+        {
+            SimulationObject[] simObj = physicsEngine.GetSimulationObjectArray();
+            for (int i = 0; i < simObj.Length; i++)
+            {
+                AABB joint = simObj[i].ObjectGeometry.AABBox;
+
+                
+                    GL.PushMatrix();
+
+                    Matrix4 mView = Matrix4.CreateTranslation(
+                                        Convert.ToSingle(joint.Max[0]),
+                                        Convert.ToSingle(joint.Max[1]),
+                                        Convert.ToSingle(joint.Max[2]));
+
+                    var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
+
+                    GL.MultMatrix(dmviewData);
+
+                    OpenGLUtilities.drawSolidCube(0.08f);
+
+                    GL.PopMatrix();
+
+
+                GL.PushMatrix();
+
+                mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(joint.Min[0]),
+                                    Convert.ToSingle(joint.Min[1]),
+                                    Convert.ToSingle(joint.Min[2]));
+
+                dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
+
+                GL.MultMatrix(dmviewData);
+
+                OpenGLUtilities.drawSolidCube(0.08f);
+
+                GL.PopMatrix();
+
+            }
+        }
+
+        private void displayOrigin()
 		{
 			GL.PushMatrix ();
 

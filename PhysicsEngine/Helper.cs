@@ -8,7 +8,9 @@ namespace MonoPhysicsEngine
 {
 	public static class Helper
 	{
-		public static JacobianContact[] FilterConstraints(
+        #region Public Methods
+
+        public static JacobianContact[] FilterConstraints(
 			JacobianContact[] list,
 			ConstraintType typeA)
 		{
@@ -102,40 +104,49 @@ namespace MonoPhysicsEngine
 		}
 
         public static AABB UpdateAABB(
-            ObjectGeometry objectGeometry)
+            SimulationObject simObject)
         {
-            double xMax = objectGeometry.VertexPosition[0].Vertex.x;
-            double xMin = objectGeometry.VertexPosition[0].Vertex.x;
-            double yMax = objectGeometry.VertexPosition[0].Vertex.y;
-            double yMin = objectGeometry.VertexPosition[0].Vertex.y;
-            double zMax = objectGeometry.VertexPosition[0].Vertex.z;
-            double zMin = objectGeometry.VertexPosition[0].Vertex.z;
+            Vector3 vertexPos = GetVertexPosition(simObject, 0);
+            double xMax = vertexPos.x;
+            double xMin = vertexPos.x;
+            double yMax = vertexPos.y;
+            double yMin = vertexPos.y;
+            double zMax = vertexPos.z;
+            double zMin = vertexPos.z;
 
-            for (int i = 1; i < objectGeometry.VertexPosition.Length; i++)
+            for (int i = 1; i < simObject.RelativePositions.Length; i++)
             {
-                Vector3 vertex = objectGeometry.VertexPosition[i].Vertex;
+                Vector3 vertex = GetVertexPosition(simObject, i);
 
                 if (vertex.x < xMin)
                     xMin = vertex.x;
-
-                if (vertex.x > xMax)
+                else if (vertex.x > xMax)
                     xMax = vertex.x;
 
                 if (vertex.y < yMin)
                     yMin = vertex.y;
-
-                if (vertex.y > yMax)
+                else if (vertex.y > yMax)
                     yMax = vertex.y;
 
                 if (vertex.z < zMin)
                     zMin = vertex.z;
-
-                if (vertex.z > zMax)
+                else if (vertex.z > zMax)
                     zMax = vertex.z;
             }
 
             return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
         }
+
+        public static Vector3 GetVertexPosition(
+            SimulationObject obj,
+            int index)
+        {
+            return
+                obj.Position +
+                (obj.RotationMatrix * obj.RelativePositions[index]);
+        }
+
+        #endregion
     }
 }
 

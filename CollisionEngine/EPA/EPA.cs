@@ -41,17 +41,18 @@ namespace CollisionEngine
             		       
 		private void GetEpaVertexFromMinkowsky(
 			SupportTriangle triangle,
-			ObjectGeometry shape1,
-			ObjectGeometry shape2,
+			SimulationObject shape1,
+			SimulationObject shape2,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = shape1.VertexPosition [triangle.a.a].Vertex;
-			Vector3 ba1 = shape1.VertexPosition [triangle.b.a].Vertex - a1;
-			Vector3 ca1 = shape1.VertexPosition [triangle.c.a].Vertex - a1;
+			Vector3 a1 = Helper.GetVertexPosition(shape1, triangle.a.a);
+			Vector3 ba1 = Helper.GetVertexPosition(shape1, triangle.b.a) - a1;
+			Vector3 ca1 = Helper.GetVertexPosition(shape1, triangle.c.a) - a1;
 
-			Vector3 a2 = shape2.VertexPosition [triangle.a.b].Vertex;
-			Vector3 ba2 = shape2.VertexPosition [triangle.b.b].Vertex - a2;
-			Vector3 ca2 = shape2.VertexPosition [triangle.c.b].Vertex - a2;
+			Vector3 a2 = Helper.GetVertexPosition(shape2, triangle.a.b);
+			Vector3 ba2 = Helper.GetVertexPosition(shape2, triangle.b.b) - a2;
+			Vector3 ca2 = Helper.GetVertexPosition(shape2, triangle.c.b) - a2;
+
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}
@@ -63,8 +64,8 @@ namespace CollisionEngine
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
 		private EngineCollisionPoint ExecuteEngine(
-			ObjectGeometry shape1,
-			ObjectGeometry shape2,
+			SimulationObject shape1,
+			SimulationObject shape2,
 			List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
@@ -169,8 +170,8 @@ namespace CollisionEngine
 		/// <param name="objectB">Object b.</param>
 		/// <param name="startTriangles">Start triangles.</param>
 		public EPAOutput Execute(
-			ObjectGeometry objectA,
-			ObjectGeometry objectB,
+			SimulationObject objectA,
+			SimulationObject objectB,
 			List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{

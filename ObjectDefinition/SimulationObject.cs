@@ -74,15 +74,20 @@ namespace SimulationObjectDefinition
 		/// <value>The type of the object.</value>
 		public ObjectType ObjectType { get; private set; }
 
-		#endregion
+        /// <summary>
+        /// Get the geometry property of object
+        /// </summary>
+        public ObjectGeometryType ObjectGeometryType { get; private set; }
 
-		#region Object dynamic properties
+        #endregion
 
-		/// <summary>
-		/// Gets the mass center position.
-		/// </summary>
-		/// <value>The position.</value>
-		public Vector3 Position{ get; private set; }
+        #region Object dynamic properties
+
+        /// <summary>
+        /// Gets the mass center position.
+        /// </summary>
+        /// <value>The position.</value>
+        public Vector3 Position{ get; private set; }
 
 		/// <summary>
 		/// Gets the mass center start position.
@@ -171,17 +176,14 @@ namespace SimulationObjectDefinition
 			else if (Mass > 0.0)
 				InverseMass = 1.0 / Mass;
 
-			Position = position;
 			RotationStatus = rotationStatus;
 
 			SetObjectProperties();
 
-			for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++) 
-			{
-				Vector3 relPositionRotate = RotationMatrix * RelativePositions [j];
-				ObjectGeometry.SetVertexPosition (Position + relPositionRotate, j);
-			}
-		}
+            Position = position;
+
+            ObjectGeometry.SetAABB(UpdateAABB(this));
+        }
 
 		#endregion
 
@@ -280,6 +282,11 @@ namespace SimulationObjectDefinition
 			BaumgarteStabilizationCoeff = value;
 		}
 
+        public void SetGeometryType(ObjectGeometryType geometryType)
+        {
+            ObjectGeometryType = geometryType;
+        }
+
 		#endregion
 
 		#region Private Methods
@@ -294,31 +301,31 @@ namespace SimulationObjectDefinition
 					ObjectGeometry.Triangle,
 					Mass);
 
-			var normalizedInertiaTensor = inertiaTensor;
+            var normalizedInertiaTensor = inertiaTensor;
 
-			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-			if (inertiaTensor.GetMassCenter() != new Vector3())
-			{
-				for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
-				{
-					ObjectGeometry.SetVertexPosition(
-						ObjectGeometry.VertexPosition[j].Vertex - inertiaTensor.GetMassCenter(),
-						j);
-				}
+            //Traslo per normalizzare l'oggetto rispetto al suo centro di massa
+            if (inertiaTensor.GetMassCenter() != new Vector3())
+            {
+                for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+                {
+                    ObjectGeometry.SetVertexPosition(
+                        ObjectGeometry.VertexPosition[j].Vertex + inertiaTensor.GetMassCenter(),
+                        j);
+                }
 
-				normalizedInertiaTensor = new InertiaTensor(
-					vertexPosition,
-					ObjectGeometry.Triangle,
-					Mass);
-			}
+                normalizedInertiaTensor = new InertiaTensor(
+                    vertexPosition,
+                    ObjectGeometry.Triangle,
+                    Mass);
+            }
 
-			StartPosition = normalizedInertiaTensor.GetMassCenter();
+            StartPosition = normalizedInertiaTensor.GetMassCenter();
 
-			SetRelativePosition();
+            SetRelativePosition();
 
 			RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
 
-			BaseInertiaTensor = Matrix3x3.Invert(normalizedInertiaTensor.GetInertiaTensor());
+			BaseInertiaTensor = Matrix3x3.Invert(inertiaTensor.GetInertiaTensor());
 			InertiaTensor = (RotationMatrix * BaseInertiaTensor) * Matrix3x3.Transpose(RotationMatrix);
 		}
 
@@ -332,7 +339,50 @@ namespace SimulationObjectDefinition
 			}
 		}
 
-		#endregion 
-	}
+        private AABB UpdateAABB(
+            SimulationObject simObject)
+        {
+            Vector3 vertexPos = GetVertexPosition(simObject, 0);
+            double xMax = vertexPos.x;
+            double xMin = vertexPos.x;
+            double yMax = vertexPos.y;
+            double yMin = vertexPos.y;
+            double zMax = vertexPos.z;
+            double zMin = vertexPos.z;
+
+            for (int i = 1; i < simObject.RelativePositions.Length; i++)
+            {
+                Vector3 vertex = GetVertexPosition(simObject, i);
+
+                if (vertex.x < xMin)
+                    xMin = vertex.x;
+                else if (vertex.x > xMax)
+                    xMax = vertex.x;
+
+                if (vertex.y < yMin)
+                    yMin = vertex.y;
+                else if (vertex.y > yMax)
+                    yMax = vertex.y;
+
+                if (vertex.z < zMin)
+                    zMin = vertex.z;
+                else if (vertex.z > zMax)
+                    zMax = vertex.z;
+            }
+
+            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+        }
+
+        private Vector3 GetVertexPosition(
+            SimulationObject obj,
+            int index)
+        {
+            return
+                obj.Position +
+                (obj.RotationMatrix * obj.RelativePositions[index]);
+        }
+
+        #endregion
+    }
 }
 

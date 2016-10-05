@@ -44,14 +44,14 @@ namespace CollisionEngine
 		/// <param name="objA">Object a.</param>
 		/// <param name="objB">Object b.</param>
 		private Support GetFarthestPoint(
-			ObjectGeometry objA,
-			ObjectGeometry objB)
+			SimulationObject objA,
+			SimulationObject objB)
 		{
 			int indexA = 0;
-			int indexB = objB.VertexPosition.Length / 2;
+			int indexB = objB.RelativePositions.Length / 2;
 			
 			return new Support(
-				objA.VertexPosition[indexA].Vertex - objB.VertexPosition[indexB].Vertex,
+				Helper.GetVertexPosition(objA,indexA) - Helper.GetVertexPosition(objB, indexB),
 				indexA,
 				indexB);
 		}
@@ -129,8 +129,8 @@ namespace CollisionEngine
 		/// <param name="cp">Cp.</param>
 		/// <param name="isIntersection">If set to <c>true</c> is itersection.</param>
 		private double ExecuteGJKAlgorithm(
-			ObjectGeometry shape1,
-			ObjectGeometry shape2,
+			SimulationObject shape1,
+			SimulationObject shape2,
 			ref Vector3 collisionNormal,
 			ref CollisionPoint cp,
 			ref List<SupportTriangle> triangles,
@@ -148,13 +148,15 @@ namespace CollisionEngine
 
 			//Secondo punto del simplex
 			Vector3 direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
-			simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction));
+			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+                return -1.0;
 
 			//Terzo punto del simplex
 			direction = Vector3.Normalize(GetDirectionOnSimplex2(simplex));
-			simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction));
+			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+                return -1.0;
 
-			//Quarto punto del simplex
+            	//Quarto punto del simplex
 			direction = Vector3.Normalize(GeometryUtilities.CalculateNormal(
 				simplex.Support[0].s,
 				simplex.Support[1].s,
@@ -257,8 +259,8 @@ namespace CollisionEngine
 		/// <param name="objectA">Object a.</param>
 		/// <param name="objectB">Object b.</param>
 		public GJKOutput Execute(
-			ObjectGeometry objectA, 
-			ObjectGeometry objectB)
+			SimulationObject objectA, 
+			SimulationObject objectB)
 		{
 			var collisionPoint = new CollisionPoint();
 			var collisionNormal = new Vector3();

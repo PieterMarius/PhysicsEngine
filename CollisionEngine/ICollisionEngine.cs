@@ -6,7 +6,7 @@ namespace CollisionEngine
 	public interface ICollisionEngine
 	{
 		List<CollisionPointStructure> Execute (
-			ObjectGeometry[] objects,
+			SimulationObject[] objects,
 			double minDistance);
 	}
 }
