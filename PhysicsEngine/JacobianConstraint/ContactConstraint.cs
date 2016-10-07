@@ -62,20 +62,21 @@ namespace MonoPhysicsEngine
 
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
+                    double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
 
 					double correctionParameter = 0.0;
 
-					if (collisionPointStr.Intersection)
-					{
-						double compenetrationDistance = collisionPointStr.ObjectDistance;
+                   // Console.WriteLine("coll " + linearComponent);
+                    if (collisionPointStr.Intersection)
+                    {
+                        double compenetrationDistance = collisionPointStr.ObjectDistance;
 
                         //Limit the Baum stabilization jitter effect 
                         correctionParameter = Math.Min(Math.Max(Math.Max(compenetrationDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-											  baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
-					}
+                                              baumgarteStabilizationValue - uCollision, 0.0), simulationParameters.MaxCorrectionValue);
+                    }
 
-					double correctedBounce = uCollision;
+                    double correctedBounce = uCollision;
 
 					JacobianContact normalContact = JacobianCommon.GetDOF (
 						indexA,

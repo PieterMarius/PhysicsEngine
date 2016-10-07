@@ -475,24 +475,31 @@ namespace MonoPhysicsEngine
 			{
 				bool positionUpdated = PhysicsJointPositionCorrection();
 
-				if (positionUpdated)
-				{
-					CollisionDetectionStep();
-					PartitionEngineExecute();
-				}
-			}
+                if (positionUpdated)
+                {
+                    CollisionDetectionStep();
+                    PartitionEngineExecute();
+                }
+            }
 
 			if (collisionPartitionedPoints != null) 
 			{
-				for (int i = 0; i < collisionPartitionedPoints.Count;i++)
+                bool convertSetting = false;
+                if (SimulationEngineParameters.PositionStabilization)
+                {
+                    SimulationEngineParameters.SetPositionStabilization(false);
+                    convertSetting = true;
+                }
+
+                for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
-					//Sort the collision point by external force direction
+					//Sort the collision points by external force direction
 					//Increase solver convergence rate
-					CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
-						(CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
+					//CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
+					//	(CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
 
 					JacobianContact[] jacobianConstraints = GetJacobianConstraint(
-																   collisionPointsPartition,
+                                                                   collisionPartitionedPoints[i].ToArray(),
 																   partitionedJoint[i],
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
@@ -580,7 +587,12 @@ namespace MonoPhysicsEngine
 
 					#endregion
 				}
-			}
+
+                if (convertSetting)
+                {
+                    SimulationEngineParameters.SetPositionStabilization(true);
+                }
+            }
 
 			Console.WriteLine("Solver error " + solverError );
 
@@ -754,7 +766,7 @@ namespace MonoPhysicsEngine
 
 			#region Joint
 
-			simulationJointList.Shuffle();
+			//simulationJointList.Shuffle();
 			foreach (IConstraintBuilder constraintItem in simulationJointList)
 				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
 
@@ -780,7 +792,7 @@ namespace MonoPhysicsEngine
 		{
 			var constraint = new List<JacobianContact>();
 
-			simulationJointList.Shuffle();
+			//simulationJointList.Shuffle();
 			if (stabilizationCoeff.HasValue)
 			{
 				foreach (IConstraintBuilder constraintItem in simulationJointList)
@@ -1084,49 +1096,25 @@ namespace MonoPhysicsEngine
 				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 				{
 					#region Linear Velocity
-
-					Vector3 linearVelocityValue = simObj.LinearVelocity +
-										     	  (simObj.ForceValue * simObj.InverseMass) +
-										     	  (TimeStep * SimulationEngineParameters.ExternalForce);
-
-					simObj.SetLinearVelocity (linearVelocityValue);
-					simObj.SetForce(new Vector3());
-
-					double linearVelocity = simObj.LinearVelocity.Length ();
-
-					/* TODO Stabilizza l'animazione*/		
-					//Velocità lineare e angolare
-//					if(lengthw(ob[i].vel)<=smp.lineardisable) {
-//						if(ob[i].count<smp.stabIter) ob[i].count++;
-//						else if(ob[i].count==smp.stabIter) {
-//							ob[i].vel=turnZero();
-//						}
-//					}else ob[i].count=0;
-//
-//					if(lengthw(ob[i].a_vel)<=smp.angulardisable) {
-//						if(ob[i].a_count<smp.stabIter) ob[i].a_count++;
-//						else if(ob[i].a_count==smp.stabIter) {
-//							ob[i].a_vel=turnZero();
-//						}
-//					}else ob[i].a_count=0;
-
-					simObj.SetPosition (
+                    
+                    	simObj.SetPosition (
 						simObj.Position + 
 						TimeStep * 
 						simObj.LinearVelocity);
 
-					#endregion
+                    simObj.SetLinearVelocity(simObj.LinearVelocity +
+                        (simObj.ForceValue * simObj.InverseMass) +
+                        (TimeStep * SimulationEngineParameters.ExternalForce));
 
-					#region Angular Velocity
+                    simObj.SetForce(new Vector3());
 
-					Vector3 angularTorqueValue = simObj.AngularVelocity +
-												 simObj.InertiaTensor * 
-				                                 simObj.TorqueValue;
+                    double linearVelocity = simObj.LinearVelocity.Length();
+                    
+                    #endregion
 
-					simObj.SetAngularVelocity(angularTorqueValue);
-					simObj.SetTorque(new Vector3());
+                    #region Angular Velocity
 
-					double angularVelocity = simObj.AngularVelocity.Length();
+                    double angularVelocity = simObj.AngularVelocity.Length();
 
 					Vector3 versor = simObj.AngularVelocity.Normalize ();
 
@@ -1149,11 +1137,34 @@ namespace MonoPhysicsEngine
 						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
 						simObj.RotationMatrix.Transpose ());
 
-					#endregion
+                    simObj.SetAngularVelocity(simObj.AngularVelocity +
+                                              simObj.InertiaTensor *
+                                              simObj.TorqueValue);
 
-					#region Update AABB
+                    angularVelocity = simObj.AngularVelocity.Length();
+                    simObj.SetTorque(new Vector3());
 
-					if (simObj.ObjectGeometry != null &&
+                    #endregion
+
+                    /* TODO Stabilizza l'animazione*/
+                    //Velocità lineare e angolare
+                    //					if(lengthw(ob[i].vel)<=smp.lineardisable) {
+                    //						if(ob[i].count<smp.stabIter) ob[i].count++;
+                    //						else if(ob[i].count==smp.stabIter) {
+                    //							ob[i].vel=turnZero();
+                    //						}
+                    //					}else ob[i].count=0;
+                    //
+                    //					if(lengthw(ob[i].a_vel)<=smp.angulardisable) {
+                    //						if(ob[i].a_count<smp.stabIter) ob[i].a_count++;
+                    //						else if(ob[i].a_count==smp.stabIter) {
+                    //							ob[i].a_vel=turnZero();
+                    //						}
+                    //					}else ob[i].a_count=0;
+
+                    #region Update AABB
+
+                    if (simObj.ObjectGeometry != null &&
 						(linearVelocity > 0.0 || angularVelocity > 0.0))
                     {
                        simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));

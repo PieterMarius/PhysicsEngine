@@ -197,42 +197,28 @@ namespace CollisionEngine
 
             	var lockMe = new object();
 
-            foreach(CollisionPair pair in collisionPair)
-            {
-                CollisionPointStructure collisionPointStruct = NarrowPhase(
+            Parallel.ForEach(
+                collisionPair,
+                new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
+                pair =>
+                {
+                    CollisionPointStructure collisionPointStruct = NarrowPhase(
                         objects[pair.objectIndexA],
                         objects[pair.objectIndexB],
                         pair.objectIndexA,
                         pair.objectIndexB,
                         minDistance);
 
-                if (collisionPointStruct != null)
-                {
-                    result.Add(collisionPointStruct);
-                }
-            }
+                    if (collisionPointStruct != null)
+                    {
+                        lock (lockMe)
+                        {
+                            result.Add(collisionPointStruct);
+                        }
+                    }
+                });
 
-			//Parallel.ForEach (
-			//	collisionPair, 
-			//	new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
-			//	pair => {
-			//		CollisionPointStructure collisionPointStruct = NarrowPhase(
-			//			objects[pair.objectIndexA],
-			//			objects[pair.objectIndexB],
-			//			pair.objectIndexA,
-			//			pair.objectIndexB,
-			//			minDistance);
-
-   //                 if (collisionPointStruct != null)
-   //                 {
-   //                     lock (lockMe)
-   //                     {
-   //                         result.Add(collisionPointStruct);
-   //                     }
-   //                 }
-   //             });
-
-			return result;
+            return result;
 		}
 
 		#endregion
