@@ -78,6 +78,11 @@ namespace SimulationObjectDefinition
         /// Get the geometry property of object
         /// </summary>
         public ObjectGeometryType ObjectGeometryType { get; private set; }
+        
+        /// <summary>
+        /// Get the number of convex objects made the main object.
+        /// </summary>
+        public int CompoundingConvexObjectCount { get; private set; }
 
         #endregion
 
@@ -185,11 +190,11 @@ namespace SimulationObjectDefinition
             ObjectGeometry.SetAABB(UpdateAABB(this));
         }
 
-		#endregion
+        #endregion
 
-		#region Public methods
+        #region Public methods
 
-		public void SetRestitutionCoeff(double restitutionCoeff)
+        public void SetRestitutionCoeff(double restitutionCoeff)
 		{
 			RestitutionCoeff = restitutionCoeff;
 		}

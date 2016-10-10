@@ -426,7 +426,7 @@ namespace MonoPhysicsEngine
                                                                        simulationObjects,
                                                                        baumgarteStabilizationValue).ToArray();
 
-                            jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
+                            //jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
 
 							LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
 								jointConstraints,
@@ -493,12 +493,12 @@ namespace MonoPhysicsEngine
 
                 for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
-					//Sort the collision points by external force direction
-					//Increase solver convergence rate
-					//CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
-					//	(CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
+                    //Sort the collision points by external force direction
+                    //Increase solver convergence rate
+                    CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
+                        (CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
 
-					JacobianContact[] jacobianConstraints = GetJacobianConstraint(
+                    JacobianContact[] jacobianConstraints = GetJacobianConstraint(
                                                                    collisionPartitionedPoints[i].ToArray(),
 																   partitionedJoint[i],
 																   simulationObjects,
@@ -651,17 +651,17 @@ namespace MonoPhysicsEngine
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
-			#endregion
+            #endregion
 
-			#region WarmStarting
+            #region WarmStarting
 
-			//if (collisionPointsBuffer != null &&
-			//	collisionPointsBuffer.Count > 0)
-			//	WarmStarting(collisionPointsBuffer);
+            //if (collisionPointsBuffer != null &&
+            //    collisionPointsBuffer.Count > 0)
+            //    WarmStarting(collisionPointsBuffer);
 
-			#endregion
-			
-			stopwatch.Stop ();
+            #endregion
+
+            stopwatch.Stop ();
 
 			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
@@ -670,13 +670,12 @@ namespace MonoPhysicsEngine
 		{
 			foreach (CollisionPointStructure cPoint in collisionPointsBuffer)
 			{
-				//TODO Work in progress
-				int pointBufferIndex = collisionPoints.ToList().FindIndex(
-									  x => (x.ObjectA == cPoint.ObjectA &&
-											x.ObjectB == cPoint.ObjectB) ||
-										   (x.ObjectA == cPoint.ObjectB &&
-											x.ObjectB == cPoint.ObjectA) &&
-											x.Intersection == cPoint.Intersection == true);
+                //TODO Work in progress
+                int pointBufferIndex = collisionPoints.ToList().FindIndex(
+                                      x => (x.ObjectA == cPoint.ObjectA &&
+                                            x.ObjectB == cPoint.ObjectB) ||
+                                           (x.ObjectA == cPoint.ObjectB &&
+                                            x.ObjectB == cPoint.ObjectA));
 
 				if (pointBufferIndex > -1)
 				{
@@ -1251,6 +1250,8 @@ namespace MonoPhysicsEngine
 						TimeStep *
 						simObj.TempLinearVelocity);
 
+                    simObj.SetTempLinearVelocity(new Vector3());
+
 					#endregion
 
 					#region Angular Velocity
@@ -1271,6 +1272,8 @@ namespace MonoPhysicsEngine
 					simObj.SetInertiaTensor(
 						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
 						simObj.RotationMatrix.Transpose());
+
+                    simObj.SetTempAngularVelocity(new Vector3());
 
 					#endregion
 

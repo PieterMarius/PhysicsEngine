@@ -168,8 +168,8 @@ namespace MonoPhysicsEngine
 			PositionBasedJointIterations = 0;
 			NormalCollisionIterations = 0;
 			FrictionAndNormalIterations = 0;
-			JointsIterations = 0;
-			OverallConstraintsIterations = 80;
+			JointsIterations = 40;
+			OverallConstraintsIterations = 30;
 			LinearVelDisable = 0.0;
 			AngularVelDisable = 0.0;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -182,7 +182,7 @@ namespace MonoPhysicsEngine
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 2;
 			MaxCorrectionValue = 20.0;
-			PositionStabilization = true;
+			PositionStabilization = false;
 		}
 
 		//TODO Update input parameters
