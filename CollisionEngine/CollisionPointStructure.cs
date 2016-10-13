@@ -35,6 +35,11 @@ namespace CollisionEngine
 		/// </summary>
 		public CollisionPoint[] CollisionPoints;
 
+        /// <summary>
+        /// Persistent contact time counter
+        /// </summary>
+        public int FrameCount { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -53,6 +58,7 @@ namespace CollisionEngine
 			Intersection = intersection;
 			CollisionPoint = collisionPoint;
 			CollisionPoints = collisionPoints;
+            FrameCount = 0;
 		}
 
 		#endregion
@@ -68,6 +74,11 @@ namespace CollisionEngine
 		{
 			ObjectDistance = value;
 		}
+
+        public void SetFrameCount(int count)
+        {
+            FrameCount = count;
+        }
 
 		#endregion
 

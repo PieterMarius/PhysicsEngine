@@ -9,6 +9,7 @@ namespace SimulationObjectDefinition
 		SoftJoint,
 		JointLimit,
 		JointMotor,
+        None,
 	}
 }
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LCPSolver
 {
@@ -21,7 +24,7 @@ namespace LCPSolver
 		public readonly double[] ConstraintLimit;
 
 		//Tipo vincolo
-		public readonly ConstraintType[] ConstraintType;
+		public ConstraintType[] ConstraintType { get; private set; }
 
 		//Legame contatto
 		public readonly int?[] Constraints;
@@ -78,11 +81,55 @@ namespace LCPSolver
 			return matrix;
 		}
 
-		#endregion
+        public List<List<double>> GetOriginalMatrixList()
+        {
+            List<List<double>> matrix = new List<List<double>>();
 
-		#region Private Methods
+            for (int i = 0; i < Count; i++)
+            {
+                matrix.Add(GetOriginalRow(i).ToList());
+                matrix[i][i] = 1.0 / D[i];
+            }
 
-		private double[] GetOriginalRow(int index)
+            return matrix;
+        }
+
+        public void SetConstraintType(ConstraintType type, int index)
+        {
+            ConstraintType[index] = type;
+        }
+
+        public double ComputeSolverError(
+            double[] X)
+        {
+            double[][] matrix = GetOriginalMatrix();
+
+            double error = 0.0;
+
+            for (int i = 0; i < Count; i++)
+            {
+                double diffError = CalculateRowError(matrix[i], X, B[i]);
+                
+                error += diffError * diffError;
+            }
+
+            return error;
+        }
+
+        public double ComputeRowError(double[] X, int rowIndex)
+        {
+            double[] row = GetOriginalRow(rowIndex);
+
+            double error = CalculateRowError(row, X, B[rowIndex]);
+
+            return error * error;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private double[] GetOriginalRow(int index)
 		{
 			double[] row = new double[Count];
 
@@ -93,6 +140,18 @@ namespace LCPSolver
 
 			return row;
 		}
+
+        private double CalculateRowError(
+            double[] row,
+            double[] X,
+            double expected)
+        {
+            double bValue = 0.0;
+            for (int j = 0; j < Count; j++)
+                bValue += row[j] * X[j];
+            
+            return bValue - expected;
+        }
 
 		#endregion
 

@@ -254,6 +254,11 @@ namespace MonoPhysicsEngine
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
 
+        public List<List<CollisionPointStructure>> GetPartitionedCollisionPoints()
+        {
+            return collisionPartitionedPoints;
+        }
+
 		#endregion
 
 		#region Solver
@@ -274,6 +279,10 @@ namespace MonoPhysicsEngine
 				case SolverType.NonLinearConjugateGradient:
 					solver = new NonLinearConjugateGradient(SolverParam);
 					break;
+
+                case SolverType.GMRES:
+                    solver = new GMRES(SolverParam);
+                    break;
 
 				default:
 					solver = new ProjectedGaussSeidel(SolverParam);
@@ -407,57 +416,7 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-		private bool PhysicsJointPositionCorrection()
-		{
-			bool positionUpdated = false;
-
-			if (simulationJoints.Count > 0)
-			{
-				if (collisionPartitionedPoints != null)
-				{
-					double baumgarteStabilizationValue = 1.0 / TimeStep;
-
-					for (int i = 0; i < collisionPartitionedPoints.Count; i++)
-					{
-						if (SimulationEngineParameters.PositionBasedJointIterations > 0)
-						{
-                            JacobianContact[] jointConstraints = GetJacobianJointConstraint(
-                                                                       partitionedJoint[i],
-                                                                       simulationObjects,
-                                                                       baumgarteStabilizationValue).ToArray();
-
-                            //jointConstraints = Helper.PruneConstraintsFromSoftJoint(jointConstraints);
-
-							LinearProblemProperties collisionErrorLCP = BuildLCPMatrix(
-								jointConstraints,
-								SimulationEngineParameters.PositionStabilization);
-
-							if (collisionErrorLCP != null)
-							{
-								solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.PositionBasedJointIterations);
-
-								double[] correctionValues = solver.Solve(collisionErrorLCP);
-
-								UpdatePositionBasedVelocity(
-											   jointConstraints,
-											   simulationObjects,
-											   correctionValues);
-
-								positionUpdated = true;
-							}
-						}
-					}
-					#region Position and Velocity integration
-
-					if (positionUpdated)
-						UpdateObjectPosition(simulationObjects);
-
-				    #endregion
-				}
-			}
-
-			return positionUpdated;
-		}
+		
 
 		private void PhysicsExecutionFlow()
 		{
@@ -471,26 +430,8 @@ namespace MonoPhysicsEngine
 
 			solverError = 0.0;
 
-			if (SimulationEngineParameters.PositionStabilization)
-			{
-				bool positionUpdated = PhysicsJointPositionCorrection();
-
-                if (positionUpdated)
-                {
-                    CollisionDetectionStep();
-                    PartitionEngineExecute();
-                }
-            }
-
 			if (collisionPartitionedPoints != null) 
 			{
-                bool convertSetting = false;
-                if (SimulationEngineParameters.PositionStabilization)
-                {
-                    SimulationEngineParameters.SetPositionStabilization(false);
-                    convertSetting = true;
-                }
-
                 for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
                     //Sort the collision points by external force direction
@@ -504,9 +445,11 @@ namespace MonoPhysicsEngine
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
 
-					#region Solve Normal Constraints
+                    double[] overallSolution = new double[jacobianConstraints.Length];
 
-					if (SimulationEngineParameters.NormalCollisionIterations > 0)
+                    #region Solve Normal Constraints
+
+                    if (SimulationEngineParameters.NormalCollisionIterations > 0)
 					{
 						JacobianContact[] collisionJointContact = Helper.FilterConstraints(jacobianConstraints,
 																						 ConstraintType.Collision);
@@ -567,46 +510,38 @@ namespace MonoPhysicsEngine
 															jacobianConstraints,
 															SimulationEngineParameters.PositionStabilization);
 
-					if (overallLCP != null &&
-					   SimulationEngineParameters.OverallConstraintsIterations > 0)
-					{
-						solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
 
-						double[] overallSolution = solver.Solve(overallLCP);
 
-						//double testError = ComputeSolverError(overallLCP, overallSolution);
+                    if (overallLCP != null &&
+                       SimulationEngineParameters.OverallConstraintsIterations > 0)
+                    {
+                        solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
 
-						//solverError += testError;
+                        overallSolution = solver.Solve(overallLCP);
 
-						//Update Objects velocity
-						UpdateVelocity(
-							jacobianConstraints,
-							simulationObjects,
-							overallSolution);
-					}
+                        double testError = ComputeSolverError(overallLCP, overallSolution);
 
-					#endregion
-				}
+                    }
+                    else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
+                    {
+                        for (int j = 0; j < overallSolution.Length; j++)
+                            overallSolution[j] = jacobianConstraints[j].StartImpulse.StartImpulseValue;
+                    }
 
-                if (convertSetting)
-                {
-                    SimulationEngineParameters.SetPositionStabilization(true);
+                    UpdateVelocity(
+                            jacobianConstraints,
+                            simulationObjects,
+                            overallSolution);
+
+                    #endregion
                 }
             }
 
-			Console.WriteLine("Solver error " + solverError );
+            #endregion
 
-			#endregion
+            #region Position and Velocity integration
 
-			#region Position and Velocity integration
-
-			IntegrateObjectsPosition (simulationObjects);
-
-			#endregion
-
-			#region Clear Array
-
-			collisionPartitionedPoints = null;
+            IntegrateObjectsPosition (simulationObjects);
 
 			#endregion
 
@@ -677,28 +612,49 @@ namespace MonoPhysicsEngine
                                            (x.ObjectA == cPoint.ObjectB &&
                                             x.ObjectB == cPoint.ObjectA));
 
+                
+
 				if (pointBufferIndex > -1)
 				{
 					CollisionPointStructure pointBuffer = collisionPoints[pointBufferIndex];
 
-					for (int i = 0; i < pointBuffer.CollisionPoints.Count(); i++)
-					{
-						int ppBuffer = cPoint.CollisionPoints.ToList().FindIndex(x => 	(Vector3.Length(x.CollisionPointA -
-																								pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01 &&
-																						Vector3.Length(x.CollisionPointB -
-																								pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01) ||
-																						(Vector3.Length(x.CollisionPointA -
-																								pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01 &&
-																						Vector3.Length(x.CollisionPointB -
-				                                                                                pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01));
+                    if((pointBuffer.CollisionPoint.CollisionPointA - cPoint.CollisionPoint.CollisionPointA).Length() < 
+                        0.001)
+                    {
+                        if (cPoint.FrameCount > 5)
+                        {
+                            collisionPoints[pointBufferIndex].CollisionPoint = cPoint.CollisionPoint;
+                            collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
+                            //collisionPoints[pointBufferIndex].SetIntersection(cPoint.Intersection);
+                            //collisionPoints[pointBufferIndex].SetObjectDistance(cPoint.ObjectDistance);
+                        }
 
-						if (ppBuffer > -1)
-						{
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[0].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[0].StartImpulseValue);
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[1].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[1].StartImpulseValue);
-							collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[2].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[2].StartImpulseValue);
-						}
-					}
+                        collisionPoints[pointBufferIndex].SetFrameCount(cPoint.FrameCount + 1);
+                    }
+                    else
+                    {
+                        collisionPoints[pointBufferIndex].SetFrameCount(0);
+                    }
+
+
+     //               for (int i = 0; i < pointBuffer.CollisionPoints.Count(); i++)
+					//{
+					//	int ppBuffer = cPoint.CollisionPoints.ToList().FindIndex(x => 	(Vector3.Length(x.CollisionPointA -
+					//																			pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01 &&
+					//																	Vector3.Length(x.CollisionPointB -
+					//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01) ||
+					//																	(Vector3.Length(x.CollisionPointA -
+					//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01 &&
+					//																	Vector3.Length(x.CollisionPointB -
+				 //                                                                               pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01));
+
+					//	if (ppBuffer > -1)
+					//	{
+					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[0].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[0].StartImpulseValue);
+					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[1].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[1].StartImpulseValue);
+					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[2].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[2].StartImpulseValue);
+					//	}
+					//}
 				}
 			}
 		}
@@ -709,7 +665,13 @@ namespace MonoPhysicsEngine
 
 		private void PartitionEngineExecute()
 		{
-			List<SpatialPartition> partitions = contactPartitioningEngine.CalculateSpatialPartitioning(
+            #region Clear Array
+
+            collisionPartitionedPoints = null;
+
+            #endregion
+
+            List<SpatialPartition> partitions = contactPartitioningEngine.CalculateSpatialPartitioning(
 													collisionPoints,
 													simulationJoints,
 													simulationObjects);
@@ -886,9 +848,9 @@ namespace MonoPhysicsEngine
 						//Diagonal value
 						mValue += contactA.CFM +
 								  SimulationEngineParameters.CFM +
-								  1E-50;
-						
-						D[i] = 1.0 / mValue;
+								  1E-40;
+
+                        D[i] = 1.0 / mValue;
 
 						for (int j = i + 1; j < contact.Length; j++) 
 						{
@@ -902,8 +864,8 @@ namespace MonoPhysicsEngine
 								mValue = addLCPValue(
 									contactA,
 									contactB);
-
-								if (Math.Abs(mValue) > 1E-100)
+                                
+								if (Math.Abs(mValue) > 1E-30)
 								{
 									lock (sync)
 									{
@@ -1145,21 +1107,12 @@ namespace MonoPhysicsEngine
 
                     #endregion
 
-                    /* TODO Stabilizza l'animazione*/
-                    //Velocità lineare e angolare
-                    //					if(lengthw(ob[i].vel)<=smp.lineardisable) {
-                    //						if(ob[i].count<smp.stabIter) ob[i].count++;
-                    //						else if(ob[i].count==smp.stabIter) {
-                    //							ob[i].vel=turnZero();
-                    //						}
-                    //					}else ob[i].count=0;
-                    //
-                    //					if(lengthw(ob[i].a_vel)<=smp.angulardisable) {
-                    //						if(ob[i].a_count<smp.stabIter) ob[i].a_count++;
-                    //						else if(ob[i].a_count==smp.stabIter) {
-                    //							ob[i].a_vel=turnZero();
-                    //						}
-                    //					}else ob[i].a_count=0;
+                    #region Sleeping Object
+
+                    if (SimulationEngineParameters.SleepingObject)
+                        ObjectSleep(simObj);
+
+                    #endregion
 
                     #region Update AABB
 
@@ -1177,127 +1130,28 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-        	#region Position Based Integration
+        private void ObjectSleep(SimulationObject simulationObj)
+        {
+            if (simulationObj.LinearVelocity.Length() <= SimulationEngineParameters.LinearVelDisable &&
+                simulationObj.AngularVelocity.Length() <= SimulationEngineParameters.AngularVelDisable)
+            {
+                if (simulationObj.SleepingFrameCount < SimulationEngineParameters.SleepingFrameLimit)
+                    simulationObj.SetSleepingFrameCount(simulationObj.SleepingFrameCount + 1);
+                else if (simulationObj.SleepingFrameCount >= SimulationEngineParameters.SleepingFrameLimit)
+                {
+                    simulationObj.SetLinearVelocity(new Vector3());
+                    simulationObj.SetAngularVelocity(new Vector3());
+                }
+            }
+            else
+                simulationObj.SetSleepingFrameCount(0);
+        }
 
-		private void UpdatePositionBasedVelocity(
-			JacobianContact[] contact,
-			SimulationObject[] simulationObj,
-			double[] X)
-		{
-			for (int i = 0; i < contact.Length; i++)
-			{
-				double impulse = X[i];
+        #endregion
 
-				JacobianContact ct = contact[i];
+        #region IDisposable
 
-				SetPositionBasedVelocity(
-					simulationObj,
-					ct.LinearComponentA,
-					ct.AngularComponentA,
-					impulse,
-					ct.ObjectA);
-
-				SetPositionBasedVelocity(
-					simulationObj,
-					ct.LinearComponentB,
-					ct.AngularComponentB,
-					impulse,
-					ct.ObjectB);
-			}
-		}
-
-		private void SetPositionBasedVelocity(
-			SimulationObject[] simulationObj,
-			Vector3 linearComponent,
-			Vector3 angularComponent,
-			double X,
-			int index)
-		{
-			SimulationObject simObj = simulationObj[index];
-
-			if (simObj.ObjectType != ObjectType.StaticRigidBody)
-			{
-				Vector3 linearImpulse = X * linearComponent;
-				Vector3 angularImpuse = X * angularComponent;
-
-				Vector3 linearVelocity = simObj.TempLinearVelocity +
-			                             linearImpulse *
-										 simObj.InverseMass;
-
-				Vector3 angularVelocity = simObj.TempAngularVelocity + 
-		                                  simObj.InertiaTensor *
-										  angularImpuse;
-
-				simulationObj[index].SetTempLinearVelocity(linearVelocity);
-				simulationObj[index].SetTempAngularVelocity(angularVelocity);
-			}
-		}
-
-		private void UpdateObjectPosition(
-			SimulationObject[] simulationObj)
-		{
-			int index = 0;
-			foreach (SimulationObject simObj in simulationObj)
-			{
-				if (simObj.ObjectType != ObjectType.StaticRigidBody)
-				{
-					#region Linear Velocity
-
-					double linearVelocity = simObj.TempLinearVelocity.Length();
-
-					simObj.SetPosition(
-						simObj.Position +
-						TimeStep *
-						simObj.TempLinearVelocity);
-
-                    simObj.SetTempLinearVelocity(new Vector3());
-
-					#endregion
-
-					#region Angular Velocity
-
-					double angularVelocity = simObj.TempAngularVelocity.Length();
-
-					Vector3 versor = simObj.TempAngularVelocity.Normalize();
-
-					double rotationAngle = angularVelocity * TimeStep;
-
-					var rotationQuaternion = new Quaternion(versor, rotationAngle);
-
-					simObj.SetRotationStatus(
-						(rotationQuaternion * simObj.RotationStatus).Normalize());
-
-					simObj.SetRotationMatrix(simObj.RotationStatus.ConvertToMatrix());
-
-					simObj.SetInertiaTensor(
-						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
-						simObj.RotationMatrix.Transpose());
-
-                    simObj.SetTempAngularVelocity(new Vector3());
-
-					#endregion
-
-					#region Update AABB
-
-					if (simObj.ObjectGeometry != null &&
-						(linearVelocity > 0.0 || angularVelocity > 0.0))
-					{
-						simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));
-
-						simObj.SetTempLinearVelocity(new Vector3());
-						simObj.SetTempAngularVelocity(new Vector3());
-					}
-
-					#endregion
-				}
-				simulationObjects[index] = simObj;
-				index++;
-			}
-		}
-
-		#region IDisposable
-
-		bool disposed = false;
+        bool disposed = false;
 
 		public void Dispose()
 		{
@@ -1326,10 +1180,6 @@ namespace MonoPhysicsEngine
 			//
 			disposed = true;
 		}
-
-		#endregion
-
-		#endregion
 
 		#endregion
 

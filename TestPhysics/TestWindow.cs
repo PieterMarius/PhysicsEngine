@@ -29,8 +29,9 @@ namespace TestPhysics
 		long performaceValue = 0;
 
 		List<CollisionPointStructure> collPoint;
+        List<List<CollisionPointStructure>> collisionPartitionedPoints;
 
-		SimulationObject[] simulationObjects;
+        SimulationObject[] simulationObjects;
 		IConstraint[] simulationJoints;
 
 		CollisionEngineParameters collisionEngineParameters;
@@ -38,7 +39,9 @@ namespace TestPhysics
 		SimulationParameters simulationParameters;
 		PhysicsEngine physicsEngine;
 
-		bool pause = false;
+        List<List<double>> colorList = new List<List<double>>();
+
+        bool pause = false;
 
 		int redTexture;
 
@@ -62,9 +65,9 @@ namespace TestPhysics
 
 				//LoadObject loadObject = new LoadObject ("startJoint.xml");
 				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				var loadObject = new LoadObject ("startConfig.xml");
+				//var loadObject = new LoadObject ("startConfig.xml");
 				//var loadObject = new LoadObject ("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
+				var loadObject = new LoadObject("testJointBridge.xml");
 
 				simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -130,6 +133,7 @@ namespace TestPhysics
 
 
 				collPoint = new List<CollisionPointStructure> ();
+                collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
 
 			}
 			catch (Exception e) 
@@ -168,9 +172,11 @@ namespace TestPhysics
 			MoveCamera ();
 
 			//displayOrigin ();
-			displayContact ();
+			//displayContact ();
 			//displayBaseContact();
 			displayJoint ();
+
+            displayPartitionedContact();
             //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
             //    displayVertex(i);
 
@@ -243,17 +249,32 @@ namespace TestPhysics
 
 
 					//pause = true;
-					//if (elapsedTime > 6.0)
-					//	Exit();
-				}
+                    //if (elapsedTime > 6.0)
+                    //	Exit();
+                    collPoint = physicsEngine.GetCollisionPointStrucureList();
+                    collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
+
+                    colorList = new List<List<double>>();
+                    if (collisionPartitionedPoints != null)
+                    {
+                        for (int i = 0; i < collisionPartitionedPoints.Count; i++)
+                        {
+                            List<double> color = new List<double>();
+                            color.Add(GetRandomNumber(0.0, 1.0));
+                            color.Add(GetRandomNumber(0.0, 1.0));
+                            color.Add(GetRandomNumber(0.0, 1.0));
+                            colorList.Add(color);
+                        }
+                    }
+                }
 			} 
 			catch (Exception ex) 
 			{
 				throw new Exception ("Physics engine error. " + ex.StackTrace);
 			}
-			collPoint = physicsEngine.GetCollisionPointStrucureList ();
 
-		}
+            
+        }
 			
 		#region TEST
 
@@ -496,7 +517,84 @@ namespace TestPhysics
 			}
 		}
 
-		private void displayBaseContact()
+        Random random = new Random();
+
+        public double GetRandomNumber(double minimum, double maximum)
+        {
+            
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
+
+        
+        private void displayPartitionedContact()
+        {
+            //List<List<CollisionPointStructure>> collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
+
+            double[] color = new double[3];
+            if (collisionPartitionedPoints != null)
+            {
+                for (int h = 0; h < collisionPartitionedPoints.Count; h++)
+                {
+                    color[0] = colorList[h][0]; color[1] = colorList[h][1]; color[2] = colorList[h][2];
+                    List<CollisionPointStructure> collPointStr = collisionPartitionedPoints[h];
+
+                    for (int i = 0; i < collPointStr.Count; i++)
+                    {
+                        for (int j = 0; j < collPointStr[i].CollisionPoints.Length; j++)
+                        {
+
+                            GL.PushMatrix();
+
+                            Matrix4 mView = Matrix4.CreateTranslation(
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.x),
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.y),
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.z));
+
+                            var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                        };
+
+                            GL.MultMatrix(dmviewData);
+
+                            GL.Color3(color);
+                            OpenGLUtilities.drawSolidCube(0.08f);
+                            GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                            GL.PopMatrix();
+
+                            GL.PushMatrix();
+
+                            Matrix4 mView1 = Matrix4.CreateTranslation(
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.x),
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.y),
+                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.z));
+
+                            var dmviewData1 = new float[] {
+                        mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                        mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                        mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                        mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                        };
+
+                            GL.MultMatrix(dmviewData1);
+
+                            GL.Color3(color);
+
+                            OpenGLUtilities.drawSolidCube(0.08f);
+                            GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                            GL.PopMatrix();
+
+                        }
+                    }
+                }
+            }
+        }
+
+        private void displayBaseContact()
 		{
 			for (int i = 0; i < collPoint.Count; i++)
 			{
@@ -539,10 +637,10 @@ namespace TestPhysics
 				GL.MultMatrix(dmviewData1);
 
 
-				//GL.Color3 (1.0f, 0.0, 0.0);
 				OpenGLUtilities.drawSolidCube(0.08f);
 
-				GL.PopMatrix();
+                
+                GL.PopMatrix();
 
 
 			}

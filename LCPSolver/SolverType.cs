@@ -5,6 +5,7 @@ namespace LCPSolver
 	{
 		ProjectedGaussSeidel = 0,
 		NonLinearConjugateGradient = 1,
+        GMRES = 2,
 	}
 }
 

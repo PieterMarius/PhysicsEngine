@@ -78,7 +78,12 @@ namespace SimulationObjectDefinition
         /// Get the geometry property of object
         /// </summary>
         public ObjectGeometryType ObjectGeometryType { get; private set; }
-        
+
+        /// <summary>
+        /// Sleeping Frame Count value
+        /// </summary>
+        public int SleepingFrameCount { get; private set; }
+
         /// <summary>
         /// Get the number of convex objects made the main object.
         /// </summary>
@@ -188,6 +193,8 @@ namespace SimulationObjectDefinition
             Position = position;
 
             ObjectGeometry.SetAABB(UpdateAABB(this));
+
+            SleepingFrameCount = 0;
         }
 
         #endregion
@@ -290,6 +297,11 @@ namespace SimulationObjectDefinition
         public void SetGeometryType(ObjectGeometryType geometryType)
         {
             ObjectGeometryType = geometryType;
+        }
+
+        public void SetSleepingFrameCount(int frameCount)
+        {
+            SleepingFrameCount = frameCount;
         }
 
 		#endregion

@@ -1,0 +1,490 @@
+<?xml version="1.0" ?>
+<RigidBodyEngine>
+    <!-- Settings for RigidBodyEngine-->
+    <MainFolder>Users/pietervanduin/NetBeansProjects/PhysicsEngine/build/Debug/GNU-MacOSX/</MainFolder>        
+    <Parameters>
+        <TimeStep>0,01</TimeStep>
+        <LcpIter>150</LcpIter>
+        <LcpError>0,000001</LcpError>
+        <Distance>0,002</Distance>
+        <CFM>0,001</CFM>
+        <GJKD>0,008</GJKD>
+        <EPAD>0,008</EPAD>
+        <BaumStab>6,25</BaumStab>
+        <WarmStart>0,0001</WarmStart>
+        <GJKNIter>9</GJKNIter>
+        <SORP>150</SORP>
+        <LineDis>0,00000015</LineDis>
+        <AngDis>0,00000015</AngDis>
+        <StabIter>0</StabIter>
+        <ExternalForce x="0,0" y="-6,0" z="0,0 "/>
+    </Parameters>
+    
+   <ObjectsSettings>
+        <Object>
+            <Position x="-4,9" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-3,0" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-1,0" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="1,0" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="3,0" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="4,9" y="-2,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-4,0" y="-0,8" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-2,0" y="-0,8" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="-0,8" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="2,0" y="-0,8" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="4,0" y="-0,8" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-3,9" y="-0,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-2,0" y="0,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="0,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="0,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="3,9" y="0,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-3" y="1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-1,0" y="1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="1,0" y="1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="3,0" y="1,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-1,9" y="2,7" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="2,7" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="1,9" y="2,7" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-1,0" y="4,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+         <Object>
+            <Position x="1,0" y="4,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+         <Object>
+            <Position x="-0,9" y="5,2" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,9" y="5,2" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,707107" b="0,0" c="0,707107" d="0,0" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="6,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>0,5</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/tessera.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="-1,0" z="2,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="1,0" b="0,0" c="0,0" d="0,0" />
+            <Mass>50,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/pyramid.obj</ObjectGeometry>
+            <Texture>texture/stone17.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="6,4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="0,5" b="0,5" c="0,5" d="-0,5" />
+            <Mass>5,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/cilindro1.obj</ObjectGeometry>
+            <Texture>texture/stone17.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-3,2" y="3,5" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="1,0" b="0,0" c="0,0" d="0,0" />
+            <Mass>2,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/teapot.obj</ObjectGeometry>
+            <Texture>texture/metal.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="3,2" y="3,5" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="1,0" b="0,0" c="0,0" d="0,0" />
+            <Mass>5,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,6</DynamicFriction>
+            <StaticFriction>0,8</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>objs/teapot.obj</ObjectGeometry>
+            <Texture>texture/metal.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="0,0" y="-3,9" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus a="1,0" b="0,0" c="0,0" d="0,0" />
+            <Mass>-1,0</Mass>
+            <RestitutionCoeff>0,01</RestitutionCoeff>
+            <DynamicFriction>1,0</DynamicFriction>
+            <StaticFriction>1,0</StaticFriction>
+            <CollisionDetection>1</CollisionDetection>
+            <Scale>15,0</Scale>
+            <ObjectGeometry>objs/plane.obj</ObjectGeometry>
+            <Texture>texture/wood1.bmp</Texture>
+        </Object>
+    </ObjectsSettings>
+    <JointSettings>
+    
+    </JointSettings>
+</RigidBodyEngine>

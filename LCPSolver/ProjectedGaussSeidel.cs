@@ -8,8 +8,6 @@ namespace LCPSolver
     {
 		#region Fields
 
-		double MSE;
-
 		public readonly SolverParameters SolverParameters;
 
 		#endregion
@@ -30,8 +28,7 @@ namespace LCPSolver
         {
 			double[] X = new double[input.Count];
 			double[] oldX = new double[input.Count];
-			double[] diffX = new double[input.Count];
-
+			
 			for (int i = 0; i < input.Count; i++) 
 			{
 				oldX[i] = X [i] = input.StartX [i];
@@ -41,7 +38,9 @@ namespace LCPSolver
 
 			for (int k = 0; k < SolverParameters.MaxIteration; k++) 
 			{
-				double[] sum = lowerTriangularMatrix(input, X);
+				double[] sum = ElaborateLowerTriangularMatrix(input, X);
+
+                double mseDiff = 0.0;
 
 				for (int i = 0; i < input.Count; i++)
 				{
@@ -55,12 +54,10 @@ namespace LCPSolver
 					//Avoid first row elaboration
 					if (i != 0) 
 					{
-						int bufIndexValue = 0;
 						for (int j = 0; j < m.Count; j++) 
 						{
-							bufIndexValue = bufIndex[j];
-							if (bufIndexValue < i) 
-								sumBuffer += bufValue [j] * X [bufIndexValue];
+							if (bufIndex[j] < i) 
+								sumBuffer += bufValue [j] * X [bufIndex[j]];
 						}
 					}
 
@@ -68,21 +65,21 @@ namespace LCPSolver
 
 					X[i] += (sumBuffer - X[i]) * internalSOR;
 
-					sum[i] = sumBuffer;
-
 					X[i] = ClampSolution.ClampX (input, X, i);
 
-					diffX [i] = X [i] - oldX [i];
-					oldX [i] = X [i];
+                    sum[i] = sumBuffer;
+
+                    double diff = X[i] - oldX[i];
+
+                    oldX [i] = X [i];
+
+                    mseDiff += diff * diff;
 				}
 
-				if (SolverParameters.EarlyExit)
-				{
-					MSE = getMediumSquareError(diffX);
+				mseDiff /= input.Count;
 
-					if (MSE < SolverParameters.ErrorTolerance)
-						return X;
-				}
+				if (mseDiff < SolverParameters.ErrorTolerance)
+					return X;
 			}
 
             return X;
@@ -99,19 +96,19 @@ namespace LCPSolver
 		/// <returns>The mse.</returns>
 		public double GetDifferentialMSE()
 		{
-			return MSE;
+			return 0;
 		}
 
 		public SolverParameters GetSolverParameters()
 		{
-			return this.SolverParameters;
+			return SolverParameters;
 		}
 
         #endregion
 
         #region Private Methods
 
-        private double[] lowerTriangularMatrix(
+        private double[] ElaborateLowerTriangularMatrix(
             LinearProblemProperties input,
             double[] X)
         {
@@ -135,31 +132,19 @@ namespace LCPSolver
 			double sumBuffer = 0.0;
 
 			//Avoid last row elaboration
-			if (i + 1 != input.Count) {
-
+			if (i + 1 != input.Count)
+            {
 				double[] bufValue = input.M [i].Value;
 				int[] bufIndex = input.M [i].Index;
 
 				for (int j = 0; j < input.M [i].Count; j++) {
-					if (bufIndex [j] > i) {
+					if(bufIndex [j] > i) 
 						sumBuffer += bufValue [j] * X [bufIndex [j]];
-					}
 				}
 			}
             return sumBuffer;
         }
 
-		private double getMediumSquareError(
-			double[] vector)
-		{
-			double buf = 0.0;
-
-			foreach(double value in vector)
-				buf += value * value;
-			
-			return buf / vector.Length;
-		}
-       
-        #endregion
+		#endregion
     }
 }

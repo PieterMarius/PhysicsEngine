@@ -154,6 +154,16 @@ namespace MonoPhysicsEngine
 		/// <value>The baum position stabilization.</value>
 		public double BaumPositionStabilization { get; private set; }
 
+        /// <summary>
+        /// Activate/Disable objects sleep
+        /// </summary>
+        public bool SleepingObject { get; private set; }
+
+        /// <summary>
+        /// Gets the number of frame under speed limit tolerance
+        /// </summary>
+        public int SleepingFrameLimit { get; private set; }
+
 		#endregion
 
 		#region Constructors
@@ -167,11 +177,11 @@ namespace MonoPhysicsEngine
 			BaumStabilization = 60;
 			PositionBasedJointIterations = 0;
 			NormalCollisionIterations = 0;
-			FrictionAndNormalIterations = 0;
-			JointsIterations = 40;
-			OverallConstraintsIterations = 30;
-			LinearVelDisable = 0.0;
-			AngularVelDisable = 0.0;
+			FrictionAndNormalIterations = 40;
+			JointsIterations = 80;
+			OverallConstraintsIterations = 80;
+			LinearVelDisable = 0.2;
+			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.01;
 			DiscreteCCD = false;
 			CollisionDistance = 0.001;
@@ -183,6 +193,8 @@ namespace MonoPhysicsEngine
 			MaxThreadNumber = 2;
 			MaxCorrectionValue = 20.0;
 			PositionStabilization = false;
+            SleepingObject = false;
+            SleepingFrameLimit = 7;
 		}
 
 		//TODO Update input parameters

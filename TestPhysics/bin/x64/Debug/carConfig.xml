@@ -1,0 +1,187 @@
+<?xml version="1.0" ?>
+<RigidBodyEngine>
+    <!-- Settings for RigidBodyEngine-->
+    <MainFolder>Users/pietervanduin/NetBeansProjects/PhysicsEngine/build/Debug/GNU-MacOSX/</MainFolder>        
+    <Parameters>
+        <TimeStep>0,01</TimeStep>
+        <LcpIter>150</LcpIter>
+        <LcpError>0,000001</LcpError>
+        <Distance>0,002</Distance>
+        <CFM>0,001</CFM>
+        <GJKD>0,008</GJKD>
+        <EPAD>0,008</EPAD>
+        <BaumStab>6,25</BaumStab>
+        <WarmStart>0,0001</WarmStart>
+        <GJKNIter>9</GJKNIter>
+        <SORP>150</SORP>
+        <LineDis>0,00000015</LineDis>
+        <AngDis>0,00000015</AngDis>
+        <StabIter>0</StabIter>
+        <ExternalForce x="0,0" y="-6,0" z="0,0 "/>
+    </Parameters>
+    
+   <ObjectsSettings>
+       <Object>
+            <Position x="0,0" y="5,6" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>40,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>2,0</Scale>
+            <ObjectGeometry>cube1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+       <Object>
+            <Position x="-5,0" y="4,6" z="-1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="5,0" y="4,6" z="-1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>    
+        <Object>
+            <Position x="5,0" y="4,6" z="1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        <Object>
+            <Position x="-5,0" y="4,6" z="1,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <Mass>1,0</Mass>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>1,0</Scale>
+            <ObjectGeometry>cube.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+        </Object>
+        
+       <Object>
+            <Position x="0,0" y="-4" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>1</ObjectType>
+            <Mass>1000,0</Mass>
+            <RestitutionCoeff>0,01</RestitutionCoeff>
+            <DynamicFriction>1,0</DynamicFriction>
+            <StaticFriction>1,0</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <Scale>25</Scale>
+            <ObjectGeometry>cube1.obj</ObjectGeometry>
+            <Texture>texture/woodbox.bmp</Texture>
+            
+        </Object>
+        
+       
+    </ObjectsSettings>
+    
+    <JointsSettings>
+        
+	<Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>1</ObjectIndexB>
+        <JointProperties>
+            <JointType>7</JointType>
+            <Position x="-3,0" y="-1,0" z="-1,5" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>13,2</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+    
+        <Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>3</ObjectIndexB>
+        <JointProperties>
+            <JointType>7</JointType>
+            <Position x="3,0" y="-1,0" z="1,5" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>13,2</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+        
+        <Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>2</ObjectIndexB>
+        <JointProperties>
+            <JointType>7</JointType>
+            <Position x="3,0" y="-1,0" z="-1,5" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>13,2</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+        
+        <Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>4</ObjectIndexB>
+        <JointProperties>
+            <JointType>7</JointType>
+            <Position x="-3,0" y="-1,0" z="1,5" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>13,2</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+       
+    </JointsSettings>
+</RigidBodyEngine>

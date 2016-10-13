@@ -26,8 +26,7 @@ namespace LCPSolver
 				                                          solverParam.ErrorTolerance,
 				                                          solverParam.SOR,
 				                                          solverParam.MaxThreadNumber,
-				                                          solverParam.SORStep,
-														  solverParam.EarlyExit);
+				                                          solverParam.SORStep);
 			
 			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }
@@ -53,12 +52,11 @@ namespace LCPSolver
                 deltaErrorCheck = arraySquareModule(delta);
 
 				//early exit
-				if (deltaErrorCheck < solverParam.ErrorTolerance &&
-				    solverParam.EarlyExit)
+				if (deltaErrorCheck < solverParam.ErrorTolerance)
 					return Xk1;
 
                 double betaK = 0.0;
-				if (Math.Abs(deltaErrorCheck) > 10E-40)
+				if (Math.Abs(deltaErrorCheck) > 1E-40)
                     betaK = arraySquareModule(deltaK) / deltaErrorCheck;
 
 				if (betaK > 1.0)
