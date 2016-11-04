@@ -61,6 +61,8 @@
     <Compile Include="GMRES.cs" />
     <Compile Include="LinearProblemProperties.cs" />
     <Compile Include="ISolver.cs" />
+    <Compile Include="Jacobi.cs" />
+    <Compile Include="ProjectedGaussSeidelBase.cs" />
     <Compile Include="SolverParameters.cs" />
     <Compile Include="ProjectedGaussSeidel.cs" />
     <Compile Include="ClampSolution.cs" />

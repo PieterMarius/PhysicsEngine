@@ -33,9 +33,9 @@ namespace LCPSolver
 		public readonly int Count;
 
 		//Vettore delle incognite
-		public double[] StartX { get; private set; } 
+		public double[] StartX { get; private set; }
 
-		#endregion
+        	#endregion
 
 		#region Constructor
 
@@ -47,7 +47,7 @@ namespace LCPSolver
 			double[] constraintLimit,
 			ConstraintType[] constraintType,
 			int?[] constraints,
-			int count)
+            	int count)
 		{
 			this.M = M;
 			this.B = B;

@@ -775,4 +775,22 @@ private bool PhysicsJointPositionCorrection()
 		}
 
         #endregion
+		
+		
+		Vector3 cA = new Vector3();
+                Vector3 cB = new Vector3();
+
+                for (int k = 0; k < collisionPointStr.CollisionPoints.Length; k++)
+                {
+                    cA = cA + collisionPointStr.CollisionPoints[k].CollisionPointA;
+                    cB = cB + collisionPointStr.CollisionPoints[k].CollisionPointB;
+                }
+
+                if (collisionPointStr.CollisionPoints.Length > 1)
+                {
+                    testPoint = new CollisionPoint(
+                        cA / collisionPointStr.CollisionPoints.Length,
+                        cB / collisionPointStr.CollisionPoints.Length,
+                        collisionPointStr.CollisionPoint.CollisionNormal);
+                }
 

@@ -248,7 +248,7 @@ namespace TestPhysics
 
 
 
-					//pause = true;
+					pause = true;
                     //if (elapsedTime > 6.0)
                     //	Exit();
                     collPoint = physicsEngine.GetCollisionPointStrucureList();

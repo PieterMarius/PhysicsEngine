@@ -138,8 +138,7 @@ namespace CollisionEngine
 															   B,
 															   epaOutput.CollisionPoint);
 
-
-				return new CollisionPointStructure(
+                	return new CollisionPointStructure(
 					indexA,
 					indexB,
 					gjkOutput.Intersection,

@@ -280,6 +280,10 @@ namespace MonoPhysicsEngine
 					solver = new NonLinearConjugateGradient(SolverParam);
 					break;
 
+                case SolverType.Jacobi:
+                    solver = new Jacobi(SolverParam);
+                    break;
+
                 case SolverType.GMRES:
                     solver = new GMRES(SolverParam);
                     break;
@@ -410,13 +414,32 @@ namespace MonoPhysicsEngine
 
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Private Methods
+        #region Private Methods
 
-		
+        private JacobianContact[] ContactSorting(JacobianContact[] jacobianContact)
+        {
+            var sorted = jacobianContact.Select((x, i) => new KeyValuePair<JacobianContact, int>(x, i)).
+                OrderBy(x => Math.Abs(x.Key.B)).ToArray();
+
+            int[] sortedIndex = sorted.Select(x => x.Value).ToArray();
+            JacobianContact[] sortedContact = sorted.Select(x => x.Key).ToArray();
+
+            int[] randomIndex = new int[jacobianContact.Length];
+            for (int i = 0; i < randomIndex.Length; i++)
+                randomIndex[sortedIndex[i]] = i;
+
+            for (int i = 0; i < sortedContact.Length; i++)
+            {
+                if (sortedContact[i].Type == ConstraintType.Friction)
+                    sortedContact[i].SetContactReference(randomIndex[sortedContact[i].ContactReference.Value]);
+            }
+
+            return sortedContact;
+        }
 
 		private void PhysicsExecutionFlow()
 		{
@@ -434,10 +457,8 @@ namespace MonoPhysicsEngine
 			{
                 for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
-                    //Sort the collision points by external force direction
-                    //Increase solver convergence rate
-                    CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
-                        (CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
+                    //CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
+                    //   (CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
 
                     JacobianContact[] jacobianConstraints = GetJacobianConstraint(
                                                                    collisionPartitionedPoints[i].ToArray(),
@@ -445,95 +466,128 @@ namespace MonoPhysicsEngine
 																   simulationObjects,
 																   SimulationEngineParameters).ToArray();
 
-                    double[] overallSolution = new double[jacobianConstraints.Length];
-
-                    #region Solve Normal Constraints
-
-                    if (SimulationEngineParameters.NormalCollisionIterations > 0)
-					{
-						JacobianContact[] collisionJointContact = Helper.FilterConstraints(jacobianConstraints,
-																						 ConstraintType.Collision);
-
-						LinearProblemProperties collisionLCP = BuildLCPMatrix(
-																	collisionJointContact,
-																	SimulationEngineParameters.PositionStabilization);
-
-						BuildMatrixAndExecuteSolver(collisionJointContact,
-						                            collisionLCP,
-						                            SimulationEngineParameters.NormalCollisionIterations);
-					}
-
-					#endregion
-
-					#region Solve Normal And Friction Constraints
-
-					if (SimulationEngineParameters.FrictionAndNormalIterations > 0)
-					{
-						JacobianContact[] frictionConstraint = Helper.FilterConstraints(jacobianConstraints,
-																				   ConstraintType.Friction,
-																				   ConstraintType.Collision);
-
-						LinearProblemProperties frictionLCP = BuildLCPMatrix(
-																frictionConstraint,
-																SimulationEngineParameters.PositionStabilization);
-
-						double[] contactSolution = BuildMatrixAndExecuteSolver(
-													frictionConstraint,
-													frictionLCP,
-													SimulationEngineParameters.FrictionAndNormalIterations);
-					}
-
-					#endregion
-
-					#region Solve Joint Constraint
-
-					if (simulationJoints.Count > 0 &&
-						SimulationEngineParameters.JointsIterations > 0)
-					{
-						JacobianContact[] jointConstraints = Helper.FindJointConstraints(jacobianConstraints);
-
-						LinearProblemProperties jointLCP = BuildLCPMatrix(
-																jointConstraints,
-																SimulationEngineParameters.PositionStabilization);
-
-						double[] jointSolution = BuildMatrixAndExecuteSolver(
-													jointConstraints,
-													jointLCP,
-													SimulationEngineParameters.JointsIterations);
-					}
-
-					#endregion
-
-					#region Solver Overall Constraints
-
-					LinearProblemProperties overallLCP = BuildLCPMatrix(
-															jacobianConstraints,
-															SimulationEngineParameters.PositionStabilization);
-
-
-
-                    if (overallLCP != null &&
-                       SimulationEngineParameters.OverallConstraintsIterations > 0)
+                    if (jacobianConstraints.Length > 0)
                     {
-                        solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
+                        
 
-                        overallSolution = solver.Solve(overallLCP);
+                        double[] overallSolution = new double[jacobianConstraints.Length];
 
-                        double testError = ComputeSolverError(overallLCP, overallSolution);
+                        #region Solve Normal Constraints
 
+                        if (SimulationEngineParameters.NormalCollisionIterations > 0)
+                        {
+                            JacobianContact[] collisionJointContact = Helper.FilterConstraints(jacobianConstraints,
+                                                                                             ConstraintType.Collision);
+
+                            LinearProblemProperties collisionLCP = BuildLCPMatrix(
+                                                                        collisionJointContact,
+                                                                        SimulationEngineParameters.PositionStabilization);
+
+                            BuildMatrixAndExecuteSolver(collisionJointContact,
+                                                        collisionLCP,
+                                                        SimulationEngineParameters.NormalCollisionIterations);
+                        }
+
+                        #endregion
+
+                        #region Solve Normal And Friction Constraints
+
+                        if (SimulationEngineParameters.FrictionAndNormalIterations > 0)
+                        {
+                            JacobianContact[] frictionConstraint = Helper.FilterConstraints(jacobianConstraints,
+                                                                                       ConstraintType.Friction,
+                                                                                       ConstraintType.Collision);
+
+                            LinearProblemProperties frictionLCP = BuildLCPMatrix(
+                                                                    frictionConstraint,
+                                                                    SimulationEngineParameters.PositionStabilization);
+
+                            double[] contactSolution = BuildMatrixAndExecuteSolver(
+                                                        frictionConstraint,
+                                                        frictionLCP,
+                                                        SimulationEngineParameters.FrictionAndNormalIterations);
+                        }
+
+                        #endregion
+
+                        #region Solve Joint Constraint
+
+                        if (simulationJoints.Count > 0 &&
+                            SimulationEngineParameters.JointsIterations > 0)
+                        {
+                            JacobianContact[] jointConstraints = Helper.FindJointConstraints(jacobianConstraints);
+
+                            LinearProblemProperties jointLCP = BuildLCPMatrix(
+                                                                    jointConstraints,
+                                                                    SimulationEngineParameters.PositionStabilization);
+
+                            double[] jointSolution = BuildMatrixAndExecuteSolver(
+                                                        jointConstraints,
+                                                        jointLCP,
+                                                        SimulationEngineParameters.JointsIterations);
+                        }
+
+                        #endregion
+
+                        #region Solver Overall Constraints
+
+                        jacobianConstraints = ContactSorting(jacobianConstraints);
+
+                        LinearProblemProperties overallLCP = BuildLCPMatrix(
+                                                                jacobianConstraints,
+                                                                SimulationEngineParameters.PositionStabilization);
+
+                        if (overallLCP != null &&
+                           SimulationEngineParameters.OverallConstraintsIterations > 0)
+                        {
+                            solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
+                                                        
+                            overallSolution = solver.Solve(overallLCP);
+
+                            
+                            //for (int j = 0; j < jacobianConstraints.Length; j++)
+                            //{
+                            //    jacobianConstraints[j].StartImpulse.SetStartValue(overallSolution[j]);
+                            //}
+
+                            //jacobianConstraintsShuffle = ContactShuffle(jacobianConstraints);
+
+                            //overallLCP = BuildLCPMatrix(
+                            //                            jacobianConstraintsShuffle,
+                            //                            SimulationEngineParameters.PositionStabilization);
+
+                            //overallSolution = solver.Solve(overallLCP);
+
+                            double[] overallError = new double[overallLCP.Count];
+                            
+                            double testErrorGauss = ComputeSolverError(overallLCP, overallSolution);
+                            //double testErrorJacobi = ComputeSolverError(overallLCP, jabobiSolution);
+                            Console.WriteLine("test error gauss " + testErrorGauss);
+                            //Console.WriteLine("test error jacobi " + testErrorJacobi);
+
+
+
+                            //Array.Copy(jabobiSolution, overallSolution, overallSolution.Length);
+                            //bool tt = false;
+                            //if (testError > 2)
+                            //    tt = true;
+
+                        }
+                        else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
+                        {
+                            for (int j = 0; j < overallSolution.Length; j++)
+                                overallSolution[j] = jacobianConstraints[j].StartImpulse.StartImpulseValue;
+                        }
+
+                        UpdateVelocity(
+                                jacobianConstraints,
+                                simulationObjects,
+                                overallSolution);
+
+                        //Console.WriteLine("Solver error " + ComputeSolverError(overallLCP, overallSolution));
+
+                        #endregion
                     }
-                    else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
-                    {
-                        for (int j = 0; j < overallSolution.Length; j++)
-                            overallSolution[j] = jacobianConstraints[j].StartImpulse.StartImpulseValue;
-                    }
-
-                    UpdateVelocity(
-                            jacobianConstraints,
-                            simulationObjects,
-                            overallSolution);
-
-                    #endregion
                 }
             }
 
@@ -693,7 +747,7 @@ namespace MonoPhysicsEngine
 							CollisionPointStructure cpStruct = Helper.Find(
 								collisionPoints,
 								partitions[i].ObjectList[j]);
-
+                                                        
 							if (cpStruct != null)
 								partitionedCollision.Add(cpStruct);
 						}
@@ -725,25 +779,24 @@ namespace MonoPhysicsEngine
 		{
 			var constraint = new List<JacobianContact>();
 
-			#region Joint
+            #region Collision Contact
 
-			//simulationJointList.Shuffle();
-			foreach (IConstraintBuilder constraintItem in simulationJointList)
+            constraint.AddRange(
+                ContactConstraint.BuildJoints(
+                    collisionPointsStruct,
+                    simulationObjs,
+                    simulationParameters));
+
+            #endregion
+
+            #region Joint
+
+            foreach (IConstraintBuilder constraintItem in simulationJointList)
 				constraint.AddRange(constraintItem.BuildJacobian(simulationObjs));
 
-			#endregion
+            #endregion
 
-			#region Collision Contact
-
-			constraint.AddRange(
-				ContactConstraint.BuildJoints(
-					collisionPointsStruct,
-					simulationObjs,
-					simulationParameters));
-
-			#endregion
-
-			return constraint;
+            return constraint;
 		}
 
 		public List<JacobianContact> GetJacobianJointConstraint(
@@ -812,7 +865,7 @@ namespace MonoPhysicsEngine
 				ConstraintType[] constraintsType = new ConstraintType[contact.Length];
 				double[] constraintsLimit = new double[contact.Length];
 				int?[] constraints = new int?[contact.Length];
-
+                
 				List<int>[] index = new List<int>[contact.Length];
 				List<double>[] value = new List<double>[contact.Length];
 
@@ -835,13 +888,14 @@ namespace MonoPhysicsEngine
 						if (positionStabilization)
 							B[i] = contactA.CorrectionValue;
 						else
-							B[i] = -(contactA.B - contactA.CorrectionValue);
+							B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -SimulationEngineParameters.MaxCorrectionValue):
+                                                                                    Math.Min(contactA.CorrectionValue, SimulationEngineParameters.MaxCorrectionValue)));
 						
 						X[i] = contactA.StartImpulse.StartImpulseValue;
 						constraints [i] = contactA.ContactReference;
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;
-
+                        
 						double mValue = addLCPValue(contactA,
 													contactA);
 
@@ -852,7 +906,7 @@ namespace MonoPhysicsEngine
 
                         D[i] = 1.0 / mValue;
 
-						for (int j = i + 1; j < contact.Length; j++) 
+                        	for (int j = i + 1; j < contact.Length; j++) 
 						{
 							JacobianContact contactB = contact[j];
 							
@@ -894,7 +948,7 @@ namespace MonoPhysicsEngine
 					constraintsLimit,
 					constraintsType,
 					constraints,
-					contact.Length);
+                    	contact.Length);
 			}
 
 			return null;
@@ -973,14 +1027,33 @@ namespace MonoPhysicsEngine
 			return error;
 		}
 
-		#endregion
+        private double ComputeSolverRowError(
+            LinearProblemProperties LCP,
+            double[] X,
+            int rowIndex)
+        {
+            double[][] matrix = LCP.GetOriginalMatrix();
 
-		#region Integrate velocity and position
-			
-		/// <summary>
-		/// Updates velocity of the simulations objects.
-		/// </summary>
-		private void UpdateVelocity(
+            double error = 0.0;
+
+            double bValue = 0.0;
+
+            for (int j = 0; j < LCP.Count; j++)
+                bValue += matrix[rowIndex][j] * X[j];
+            
+            error += (bValue - LCP.B[rowIndex]) * (bValue - LCP.B[rowIndex]);
+
+            return error;
+        }
+
+        #endregion
+
+        #region Integrate velocity and position
+
+        /// <summary>
+        /// Updates velocity of the simulations objects.
+        /// </summary>
+        private void UpdateVelocity(
 			JacobianContact[] contact,
 			SimulationObject[] simulationObj,
 			double[] X)
@@ -1070,27 +1143,20 @@ namespace MonoPhysicsEngine
                     simObj.SetForce(new Vector3());
 
                     double linearVelocity = simObj.LinearVelocity.Length();
-                    
+
                     #endregion
 
                     #region Angular Velocity
 
                     double angularVelocity = simObj.AngularVelocity.Length();
 
-					Vector3 versor = simObj.AngularVelocity.Normalize ();
-
-					//Rotation inertia
-					angularVelocity = Math.Max (0.0, 
-						angularVelocity + 
-						angularVelocity * 
-						SimulationEngineParameters.InertiaParameter);
+                    Vector3 versor = simObj.AngularVelocity.Normalize ();
 
 					double rotationAngle = angularVelocity * TimeStep;
 
-					var rotationQuaternion = new Quaternion (versor, rotationAngle); 
+                    var rotationQuaternion = new Quaternion(versor, rotationAngle);
 
-					simObj.SetRotationStatus (
-						(rotationQuaternion * simObj.RotationStatus).Normalize ());
+                    	simObj.SetRotationStatus ((rotationQuaternion * simObj.RotationStatus).Normalize());
 
 					simObj.SetRotationMatrix (simObj.RotationStatus.ConvertToMatrix ());
 

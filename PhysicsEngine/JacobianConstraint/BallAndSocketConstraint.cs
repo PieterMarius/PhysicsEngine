@@ -104,8 +104,7 @@ namespace MonoPhysicsEngine
 
 			double constraintLimit = restoreCoeff * linearError.x;
 
-            //TODO refactoring, spostare nel costruttore
-			ConstraintType constraintType = ConstraintType.Joint;
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;

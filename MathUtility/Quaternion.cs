@@ -76,7 +76,17 @@ namespace PhysicsEngineMathUtility
 			return new Quaternion (ra, rb, rc, rd);
 		}
 
-		public static Quaternion operator+(Quaternion q1, Quaternion q2)
+        public static Quaternion operator *(double w, Quaternion q2)
+        {
+            double ra = q2.a * w;
+            double rb = q2.b * w;
+            double rc = q2.c * w;
+            double rd = q2.d * w;
+
+            return new Quaternion(ra, rb, rc, rd);
+        }
+
+        public static Quaternion operator+(Quaternion q1, Quaternion q2)
 		{
 			double ra = q1.a + q2.a;
 			double rb = q1.b + q2.b;

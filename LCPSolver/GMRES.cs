@@ -27,7 +27,7 @@ namespace LCPSolver
             solverParam = solverParameters;
 
             var gaussSeidelSolverParam = new SolverParameters(
-                                                          solverParameters.MaxIteration,
+                                                          15,
                                                           solverParameters.ErrorTolerance,
                                                           solverParameters.SOR,
                                                           solverParameters.MaxThreadNumber,
@@ -105,38 +105,39 @@ namespace LCPSolver
                 SparseElement[] sparseM = BuildSparseMatrix(M);
                 double[] X = new double[M.Count];
 
-                LinearProblemProperties newInput = new LinearProblemProperties(
-                    sparseM,
-                    B.ToArray(),
-                    X,
-                    D.ToArray(),
-                    constraintsLimit.ToArray(),
-                    type.ToArray(),
-                    constraints.ToArray(),
-                    type.Count);
+                //LinearProblemProperties newInput = new LinearProblemProperties(
+                //    sparseM,
+                //    B.ToArray(),
+                //    X,
+                //    D.ToArray(),
+                //    constraintsLimit.ToArray(),
+                //    type.ToArray(),
+                //    constraints.ToArray(),
+                //    type.Count);
 
-                double[] X2 = gaussSeidelSolver.Solve(newInput);
+                //gaussSeidelSolver.GetSolverParameters().SetSolverMaxIteration(solverParam.MaxIteration);
+                //double[] X2 = gaussSeidelSolver.Solve(newInput);
                 
-                //Union of two solutions
-                int t = 0;
-                double[] xTemp = new double[X1.Length];
-                for (int i = 0; i < X1.Length; i++)
-                {
-                    if (X1[i] != 0)
-                    {
-                        xTemp[i] = X2[t];
-                        t++;
-                    }
-                }
+                ////Union of two solutions
+                //int t = 0;
+                //double[] xTemp = new double[X1.Length];
+                //for (int i = 0; i < X1.Length; i++)
+                //{
+                //    if (X1[i] != 0)
+                //    {
+                //        xTemp[i] = X2[t];
+                //        t++;
+                //    }
+                //}
 
-                double testError1 = input.ComputeSolverError(xTemp);
+                //double testError1 = newInput.ComputeSolverError(X2);
 
-                if (testError1 < testError)
-                {
-                    Array.Copy(xTemp, X1, X1.Length);
-                }
+                //Console.WriteLine("new test error " + testError1);
+               
+                //Array.Copy(xTemp, X1, X1.Length);
+                
 
-                Console.WriteLine("Error1 " + testError + " error2 " + testError1);
+                
             }
 
             return X1;

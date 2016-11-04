@@ -65,8 +65,8 @@ namespace CollisionEngine
 
 		public CollisionEngineParameters ()
 		{
-			MaxGJKIteration = 10;
-			MaxEPAIteration = 10;
+			MaxGJKIteration = 12;
+			MaxEPAIteration = 12;
 			Precision = 0.0000001;
 			GJKManifoldTolerance = 0.009;
 			EPAManifoldTolerance = 0.009;

@@ -20,7 +20,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The contact reference.
 		/// </summary>
-		public readonly int? ContactReference;
+		public int? ContactReference;
 
 		/// <summary>
 		/// The linear component object A.
@@ -72,7 +72,7 @@ namespace MonoPhysicsEngine
 		/// </summary>
 		public readonly StartImpulseProperties StartImpulse;
 
-		#endregion
+       	#endregion
 
 		#region Constructor
 
@@ -105,8 +105,17 @@ namespace MonoPhysicsEngine
 			ConstraintLimit = constraintLimit;
 			StartImpulse = startImpulse;
 		}
-	
-		#endregion
-	}
+
+        #endregion
+
+        #region Public Methods
+
+        public void SetContactReference(int? contactRef)
+        {
+            ContactReference = contactRef;
+        }
+
+        #endregion
+    }
 }
 

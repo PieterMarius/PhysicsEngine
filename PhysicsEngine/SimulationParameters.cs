@@ -119,12 +119,6 @@ namespace MonoPhysicsEngine
 		public double VelocityTolerance { get; private set; }
 
 		/// <summary>
-		/// Gets the inertia parameter.
-		/// </summary>
-		/// <value>The inertia parameter.</value>
-		public double InertiaParameter { get; private set; }
-
-		/// <summary>
 		/// Gets the max thread number.
 		/// </summary>
 		/// <value>The max thread number.</value>
@@ -164,22 +158,27 @@ namespace MonoPhysicsEngine
         /// </summary>
         public int SleepingFrameLimit { get; private set; }
 
-		#endregion
+        /// <summary>
+        /// Gets the successiveOverRelaxation term for object collision
+        /// </summary>
+        public double CollisionSORValue { get; private set; }
 
-		#region Constructors
+        #endregion
 
-		public SimulationParameters ()
+        #region Constructors
+
+        public SimulationParameters ()
 		{
 			TimeStep = 0.0166;
-			CFM = 1E-6;
+			CFM = 1E-10;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
 			PositionBasedJointIterations = 0;
 			NormalCollisionIterations = 0;
-			FrictionAndNormalIterations = 40;
-			JointsIterations = 80;
-			OverallConstraintsIterations = 80;
+			FrictionAndNormalIterations = 0;
+			JointsIterations = 0;
+			OverallConstraintsIterations = 2000;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -188,13 +187,13 @@ namespace MonoPhysicsEngine
 			CompenetrationTolerance = 0.005;
 			VelocityTolerance = 0.5;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
-			InertiaParameter = 0.0;
 			WarmStartingValue = 0.75;
-			MaxThreadNumber = 2;
+			MaxThreadNumber = 1;
 			MaxCorrectionValue = 20.0;
 			PositionStabilization = false;
             SleepingObject = false;
             SleepingFrameLimit = 7;
+            CollisionSORValue = 0.5;
 		}
 
 		//TODO Update input parameters
