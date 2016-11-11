@@ -283,11 +283,7 @@ namespace MonoPhysicsEngine
                 case SolverType.Jacobi:
                     solver = new Jacobi(SolverParam);
                     break;
-
-                case SolverType.GMRES:
-                    solver = new GMRES(SolverParam);
-                    break;
-
+                                    
 				default:
 					solver = new ProjectedGaussSeidel(SolverParam);
 					break;
@@ -537,22 +533,13 @@ namespace MonoPhysicsEngine
                         if (overallLCP != null &&
                            SimulationEngineParameters.OverallConstraintsIterations > 0)
                         {
-                            ISolver nonLinearSolver = new NonLinearConjugateGradient(SolverParam);
-
-                            nonLinearSolver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
-
-                            SolutionValues[] solution = nonLinearSolver.Solve(overallLCP);
-
                             solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
 
-                            SolutionValues[] solbuf = new SolutionValues[overallLCP.Count];
-
-                            overallSolution = solver.Solve(overallLCP, solbuf);
+                            overallSolution = solver.Solve(overallLCP);
 
                             double[] overallError = new double[overallLCP.Count];
 
-                            Console.WriteLine("gauss " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
-                            Console.WriteLine("nonLinear " + SolverHelper.ComputeSolverError(overallLCP, solution));
+                            Console.WriteLine("error " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
                         }
                         else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
                         {
