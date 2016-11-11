@@ -120,7 +120,7 @@ namespace MonoPhysicsEngine
                     {
                         jc.SetContactReference(normalIndex);
                         contactConstraints.Add(jc);
-                    } 
+                    }
                 }
 				
 			}
@@ -191,7 +191,7 @@ namespace MonoPhysicsEngine
 				simulationParameters.FrictionCFM,
 				constraintLimit,
 				ConstraintType.Friction,
-                	-1,
+                	null,
 				startImpulseProperties[1]);
 
 			#endregion
@@ -218,7 +218,7 @@ namespace MonoPhysicsEngine
 				simulationParameters.FrictionCFM,
 				constraintLimit,
 				ConstraintType.Friction,
-                	-2,
+                null,
 				startImpulseProperties[2]);
 
 			#endregion

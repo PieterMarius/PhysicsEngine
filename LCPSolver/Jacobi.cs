@@ -24,15 +24,16 @@ namespace LCPSolver
 
         #region Public Methods
 
-        public double[] Solve(LinearProblemProperties input)
+        public SolutionValues[] Solve(
+            LinearProblemProperties input,
+            SolutionValues[] X = null)
         {
-			double[] X = new double[input.Count];
-			double[] oldX = new double[input.Count];
-			
-			for (int i = 0; i < input.Count; i++) 
-			    oldX[i] = X [i] = input.StartX [i];
-			
-			double internalSOR = SolverParameters.SOR;
+            	if (X == null)
+                X = new SolutionValues[input.Count];
+
+            SolutionValues[] oldX = X;
+
+            double internalSOR = SolverParameters.SOR;
 
 			for (int k = 0; k < SolverParameters.MaxIteration; k++) 
 			{
@@ -46,9 +47,9 @@ namespace LCPSolver
 					int[] bufIndex = m.Index;
 
 					for (int j = 0; j < m.Count; j++) 
-					    sum += bufValue[j] * oldX[bufIndex[j]];
+					    sum += bufValue[j] * oldX[bufIndex[j]].X;
 										
-					X[i] = (input.B[i] - sum) * input.D[i];
+					X[i].X = (input.B[i] - sum) * input.D[i];
                     
 					X[i] = ClampSolution.ClampX (input, X, i);
                                                            

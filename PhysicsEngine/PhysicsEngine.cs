@@ -457,9 +457,6 @@ namespace MonoPhysicsEngine
 			{
                 for (int i = 0; i < collisionPartitionedPoints.Count;i++)
 				{
-                    //CollisionPointStructure[] collisionPointsPartition = collisionPartitionedPoints[i].OrderByDescending(
-                    //   (CollisionPointStructure arg) => arg.CollisionPoint.CollisionPointA.Dot(SimulationEngineParameters.ExternalForce)).ToArray();
-
                     JacobianContact[] jacobianConstraints = GetJacobianConstraint(
                                                                    collisionPartitionedPoints[i].ToArray(),
 																   partitionedJoint[i],
@@ -470,7 +467,7 @@ namespace MonoPhysicsEngine
                     {
                         
 
-                        double[] overallSolution = new double[jacobianConstraints.Length];
+                        SolutionValues[] overallSolution = new SolutionValues[jacobianConstraints.Length];
 
                         #region Solve Normal Constraints
 
@@ -502,7 +499,7 @@ namespace MonoPhysicsEngine
                                                                     frictionConstraint,
                                                                     SimulationEngineParameters.PositionStabilization);
 
-                            double[] contactSolution = BuildMatrixAndExecuteSolver(
+                            SolutionValues[] contactSolution = BuildMatrixAndExecuteSolver(
                                                         frictionConstraint,
                                                         frictionLCP,
                                                         SimulationEngineParameters.FrictionAndNormalIterations);
@@ -521,7 +518,7 @@ namespace MonoPhysicsEngine
                                                                     jointConstraints,
                                                                     SimulationEngineParameters.PositionStabilization);
 
-                            double[] jointSolution = BuildMatrixAndExecuteSolver(
+                            SolutionValues[] jointSolution = BuildMatrixAndExecuteSolver(
                                                         jointConstraints,
                                                         jointLCP,
                                                         SimulationEngineParameters.JointsIterations);
@@ -540,51 +537,33 @@ namespace MonoPhysicsEngine
                         if (overallLCP != null &&
                            SimulationEngineParameters.OverallConstraintsIterations > 0)
                         {
+                            ISolver nonLinearSolver = new NonLinearConjugateGradient(SolverParam);
+
+                            nonLinearSolver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
+
+                            SolutionValues[] solution = nonLinearSolver.Solve(overallLCP);
+
                             solver.GetSolverParameters().SetSolverMaxIteration(SimulationEngineParameters.OverallConstraintsIterations);
-                                                        
-                            overallSolution = solver.Solve(overallLCP);
 
-                            
-                            //for (int j = 0; j < jacobianConstraints.Length; j++)
-                            //{
-                            //    jacobianConstraints[j].StartImpulse.SetStartValue(overallSolution[j]);
-                            //}
+                            SolutionValues[] solbuf = new SolutionValues[overallLCP.Count];
 
-                            //jacobianConstraintsShuffle = ContactShuffle(jacobianConstraints);
-
-                            //overallLCP = BuildLCPMatrix(
-                            //                            jacobianConstraintsShuffle,
-                            //                            SimulationEngineParameters.PositionStabilization);
-
-                            //overallSolution = solver.Solve(overallLCP);
+                            overallSolution = solver.Solve(overallLCP, solbuf);
 
                             double[] overallError = new double[overallLCP.Count];
-                            
-                            double testErrorGauss = ComputeSolverError(overallLCP, overallSolution);
-                            //double testErrorJacobi = ComputeSolverError(overallLCP, jabobiSolution);
-                            Console.WriteLine("test error gauss " + testErrorGauss);
-                            //Console.WriteLine("test error jacobi " + testErrorJacobi);
 
-
-
-                            //Array.Copy(jabobiSolution, overallSolution, overallSolution.Length);
-                            //bool tt = false;
-                            //if (testError > 2)
-                            //    tt = true;
-
+                            Console.WriteLine("gauss " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
+                            Console.WriteLine("nonLinear " + SolverHelper.ComputeSolverError(overallLCP, solution));
                         }
                         else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
                         {
                             for (int j = 0; j < overallSolution.Length; j++)
-                                overallSolution[j] = jacobianConstraints[j].StartImpulse.StartImpulseValue;
+                                overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
                         }
 
                         UpdateVelocity(
                                 jacobianConstraints,
                                 simulationObjects,
                                 overallSolution);
-
-                        //Console.WriteLine("Solver error " + ComputeSolverError(overallLCP, overallSolution));
 
                         #endregion
                     }
@@ -827,7 +806,7 @@ namespace MonoPhysicsEngine
 
 		#region Solver Matrix Builder
 
-		private double[] BuildMatrixAndExecuteSolver(
+		private SolutionValues[] BuildMatrixAndExecuteSolver(
 			JacobianContact[] contactConstraints,
 			LinearProblemProperties linearProblemProperties,
 			int nIterations)
@@ -836,11 +815,11 @@ namespace MonoPhysicsEngine
 			{
 				solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
 
-				double[]  solutionValues = solver.Solve(linearProblemProperties);
+				SolutionValues[]  solutionValues = solver.Solve(linearProblemProperties);
 
 				for (int j = 0; j < contactConstraints.Length; j++)
 				{
-					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j]);
+					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j].X);
 				}
 
 				return solutionValues;
@@ -860,11 +839,11 @@ namespace MonoPhysicsEngine
 			{
 				SparseElement[] M = new SparseElement[contact.Length];
 				double[] B = new double[contact.Length];
-				double[] X = new double[contact.Length];
+				SolutionValues[] X = new SolutionValues[contact.Length];
 				double[] D = new double[contact.Length];
 				ConstraintType[] constraintsType = new ConstraintType[contact.Length];
 				double[] constraintsLimit = new double[contact.Length];
-				int?[] constraints = new int?[contact.Length];
+				List<int?>[] constraints = new List<int?>[contact.Length];
                 
 				List<int>[] index = new List<int>[contact.Length];
 				List<double>[] value = new List<double>[contact.Length];
@@ -873,7 +852,8 @@ namespace MonoPhysicsEngine
 				{
 					index [i] = new List<int> ();
 					value [i] = new List<double> ();
-				}
+                    constraints[i] = new List<int?>();
+                }
 
 				//Critical section variable
 				var sync = new object ();
@@ -891,8 +871,12 @@ namespace MonoPhysicsEngine
 							B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -SimulationEngineParameters.MaxCorrectionValue):
                                                                                     Math.Min(contactA.CorrectionValue, SimulationEngineParameters.MaxCorrectionValue)));
 						
-						X[i] = contactA.StartImpulse.StartImpulseValue;
-						constraints [i] = contactA.ContactReference;
+						X[i].X = contactA.StartImpulse.StartImpulseValue;
+
+                        
+                        if (contactA.ContactReference.HasValue)
+                            constraints[i].Add(contactA.ContactReference);
+                        
 						constraintsLimit [i] = contactA.ConstraintLimit;
 						constraintsType [i] = contactA.Type;
                         
@@ -915,6 +899,15 @@ namespace MonoPhysicsEngine
 								contactA.ObjectA == contactB.ObjectB ||
 								contactA.ObjectB == contactB.ObjectA)
 							{
+                                if (contactA.Type == contactB.Type && 
+                                    contactB.Type == ConstraintType.Collision && 
+                                    contactA.ObjectA == contactB.ObjectA && 
+                                    contactA.ObjectB == contactB.ObjectB)
+                                {
+                                    constraints[i].Add(j);
+                                    constraints[j].Add(i);
+                                }
+
 								mValue = addLCPValue(
 									contactA,
 									contactB);
@@ -933,12 +926,17 @@ namespace MonoPhysicsEngine
 						}
 					});
 
-				for (int i = 0; i < contact.Length; i++) 
+
+                int?[][] constraintsArray = new int?[contact.Length][];
+                for (int i = 0; i < contact.Length; i++) 
 				{
 					M [i] = new SparseElement (
 						value [i].ToArray (),
 						index [i].ToArray ());
+
+                    constraintsArray[i] = constraints[i].ToArray();
 				}
+                
 
 				return new LinearProblemProperties (
 					M,
@@ -947,7 +945,7 @@ namespace MonoPhysicsEngine
 					D,
 					constraintsLimit,
 					constraintsType,
-					constraints,
+                    constraintsArray,
                     	contact.Length);
 			}
 
@@ -1004,50 +1002,6 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-		#region Compute Solver Error
-
-		private double ComputeSolverError(
-			LinearProblemProperties LCP,
-			double[] X)
-		{
-			double[][] matrix = LCP.GetOriginalMatrix();
-
-			double error = 0.0;
-
-			for (int i = 0; i < LCP.Count; i++)
-			{
-				double bValue = 0.0;
-				for (int j = 0; j < LCP.Count; j++)
-				{
-					bValue += matrix[i][j] * X[j];
-				}
-				error += (bValue - LCP.B[i]) * (bValue - LCP.B[i]);
-			}
-
-			return error;
-		}
-
-        private double ComputeSolverRowError(
-            LinearProblemProperties LCP,
-            double[] X,
-            int rowIndex)
-        {
-            double[][] matrix = LCP.GetOriginalMatrix();
-
-            double error = 0.0;
-
-            double bValue = 0.0;
-
-            for (int j = 0; j < LCP.Count; j++)
-                bValue += matrix[rowIndex][j] * X[j];
-            
-            error += (bValue - LCP.B[rowIndex]) * (bValue - LCP.B[rowIndex]);
-
-            return error;
-        }
-
-        #endregion
-
         #region Integrate velocity and position
 
         /// <summary>
@@ -1056,29 +1010,32 @@ namespace MonoPhysicsEngine
         private void UpdateVelocity(
 			JacobianContact[] contact,
 			SimulationObject[] simulationObj,
-			double[] X)
+			SolutionValues[] X)
 		{
 			for (int i =0; i< contact.Length;i++) 
 			{
-				double impulse = X [i];
+                if (Math.Abs(X[i].X) > 1E-50)
+                {
+                    double impulse = X[i].X;
 
-				JacobianContact ct = contact[i];
+                    JacobianContact ct = contact[i];
 
-				UpdateObjectVelocity(
-					simulationObj,
-					ct.LinearComponentA,
-					ct.AngularComponentA,
-					impulse,
-					ct.ObjectA);
+                    UpdateObjectVelocity(
+                        simulationObj,
+                        ct.LinearComponentA,
+                        ct.AngularComponentA,
+                        impulse,
+                        ct.ObjectA);
 
-				UpdateObjectVelocity(
-					simulationObj,
-					ct.LinearComponentB,
-					ct.AngularComponentB,
-					impulse,
-					ct.ObjectB);
+                    UpdateObjectVelocity(
+                        simulationObj,
+                        ct.LinearComponentB,
+                        ct.AngularComponentB,
+                        impulse,
+                        ct.ObjectB);
 
-				ct.StartImpulse.SetStartValue (impulse * SimulationEngineParameters.WarmStartingValue);
+                    ct.StartImpulse.SetStartValue(impulse * SimulationEngineParameters.WarmStartingValue);
+                }
 			}
 		}
 

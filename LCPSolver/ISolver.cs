@@ -3,9 +3,10 @@ namespace LCPSolver
 {
 	public interface ISolver
 	{
-		double[] Solve(LinearProblemProperties linearProblemProperties);
-
-		double GetDifferentialMSE();
+		SolutionValues[] Solve(
+            LinearProblemProperties linearProblemProperties,
+            SolutionValues[] X = null);
+        		
 		SolverParameters GetSolverParameters();
 	}
 }

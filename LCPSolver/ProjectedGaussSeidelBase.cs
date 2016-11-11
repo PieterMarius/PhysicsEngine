@@ -31,11 +31,6 @@ namespace LCPSolver
 			double[] X = new double[input.Count];
 			double[] oldX = new double[input.Count];
 			
-			for (int i = 0; i < input.Count; i++) 
-			{
-				oldX[i] = X [i] = input.StartX [i];
-			}
-
 			double internalSOR = SolverParameters.SOR;
 
             	for (int k = 0; k < SolverParameters.MaxIteration; k++) 

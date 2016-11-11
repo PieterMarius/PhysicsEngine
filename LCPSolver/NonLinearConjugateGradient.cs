@@ -22,11 +22,12 @@ namespace LCPSolver
             solverParam = solverParameters;
 
 			var gaussSeidelSolverParam = new SolverParameters (
-				                                          1,
+				                                          3,
 				                                          solverParam.ErrorTolerance,
-				                                          solverParam.SOR,
+				                                          1.0,
 				                                          solverParam.MaxThreadNumber,
-				                                          solverParam.SORStep);
+				                                          solverParam.SORStep,
+                                                          false);
 			
 			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }
@@ -35,27 +36,32 @@ namespace LCPSolver
 
         #region Public Methods
 
-        public double[] Solve(LinearProblemProperties input)
+        public SolutionValues[] Solve(
+            LinearProblemProperties input,
+            SolutionValues[] X = null)
         {
-            double[] Xk = gaussSeidelSolver.Solve(input);
-            double[] delta = calculateDelta(Xk, input.StartX);
+            if (X == null)
+                X = new SolutionValues[input.Count];
+
+            SolutionValues[] Xk = gaussSeidelSolver.Solve(input);
+            double[] delta = calculateDelta(Xk, X);
             double[] searchDirection = negateArray(delta);
 
-            input.SetStartValue(Xk);
+            SolutionValues[] Xk1 = new SolutionValues[input.Count];
 
             for (int i = 0; i < solverParam.MaxIteration; i++)
             {
-                double[] Xk1 = gaussSeidelSolver.Solve(input);
+                Xk1 = gaussSeidelSolver.Solve(input, Xk);
                                 
                 double[] deltaK = calculateDelta(Xk1, Xk);
 
                 deltaErrorCheck = arraySquareModule(delta);
 
-				//early exit
-				if (deltaErrorCheck < solverParam.ErrorTolerance)
-					return Xk1;
+                //early exit
+                //if (deltaErrorCheck < solverParam.ErrorTolerance)
+                //    return Xk1;
 
-                double betaK = 0.0;
+                double betaK = 1.1;
 				if (Math.Abs(deltaErrorCheck) > 1E-40)
                     betaK = arraySquareModule(deltaK) / deltaErrorCheck;
 
@@ -63,19 +69,18 @@ namespace LCPSolver
 					searchDirection = new double[searchDirection.Length];
                 else
                 {
-					Xk = calculateDirection (
+					Xk1 = calculateDirection (
 						input,
 						Xk1, 
 						deltaK, 
 						ref searchDirection, 
 						betaK);
-
-                    input.SetStartValue(Xk);
                 }
 
-				Array.Copy(deltaK, delta, deltaK.Length);
+                Array.Copy(Xk1, Xk, Xk1.Length);
+                Array.Copy(deltaK, delta, deltaK.Length);
             }
-            return Xk;
+            return Xk1;
         }
 
 		public double GetDifferentialMSE()
@@ -93,8 +98,8 @@ namespace LCPSolver
         #region Private Methods
 
         private double[] calculateDelta(
-            double[] a,
-            double[] b)
+            SolutionValues[] a,
+            SolutionValues[] b)
         {
 			if (a.Length < 0 ||
 				b.Length < 0 ||
@@ -106,7 +111,7 @@ namespace LCPSolver
             double[] result = new double[a.Length];
 
             for (int i = 0; i < a.Length; i++)
-                result[i] = -(a[i] - b[i]);
+                result[i] = -(a[i].X - b[i].X);
             
             return result;
         }
@@ -137,24 +142,24 @@ namespace LCPSolver
             return mod;
         }
 
-        private double[] calculateDirection(
+        private SolutionValues[] calculateDirection(
 			LinearProblemProperties input,
-			double[] Xk1,
+			SolutionValues[] Xk1,
             double[] deltaK,
             ref double[] searchDirection,
             double betak)
         {
-            double[] result = new double[Xk1.Length];
+            SolutionValues[] result = new SolutionValues[Xk1.Length];
 
             for (int i = 0; i < Xk1.Length; i++)
             {
-				double bDirection = betak * searchDirection[i];
+                double bDirection = betak * searchDirection[i];
 
-                result[i] = Xk1[i] + bDirection;
-                
-				searchDirection[i] = bDirection - deltaK[i];
-				
-				result[i] = ClampSolution.ClampX (input, result, i);
+                result[i].X = Xk1[i].X + bDirection;
+
+                searchDirection[i] = bDirection - deltaK[i];
+
+                result[i] = ClampSolution.ClampX(input, result, i);
             }
 
             return result;

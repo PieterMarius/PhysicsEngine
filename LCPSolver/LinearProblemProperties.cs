@@ -27,13 +27,10 @@ namespace LCPSolver
 		public ConstraintType[] ConstraintType { get; private set; }
 
 		//Legame contatto
-		public readonly int?[] Constraints;
+		public readonly int?[][] Constraints;
 
 		//Dimensioni vettori
 		public readonly int Count;
-
-		//Vettore delle incognite
-		public double[] StartX { get; private set; }
 
         	#endregion
 
@@ -42,16 +39,15 @@ namespace LCPSolver
 		public LinearProblemProperties (
 			SparseElement[] M,
 			double[] B,
-			double[] startX,
+			SolutionValues[] startX,
 			double[] d,
 			double[] constraintLimit,
 			ConstraintType[] constraintType,
-			int?[] constraints,
+			int?[][] constraints,
             	int count)
 		{
 			this.M = M;
 			this.B = B;
-			StartX = startX;
 			D = d;
 			ConstraintLimit = constraintLimit;
 			ConstraintType = constraintType;
@@ -62,12 +58,7 @@ namespace LCPSolver
 		#endregion
 
 		#region Public Methods
-
-		public void SetStartValue(double[] X)
-		{
-			Array.Copy (X, StartX, X.Length);
-		}
-
+        
 		public double[][] GetOriginalMatrix()
 		{
 			double[][] matrix = new double[Count][];
@@ -114,15 +105,6 @@ namespace LCPSolver
             }
 
             return error;
-        }
-
-        public double ComputeRowError(double[] X, int rowIndex)
-        {
-            double[] row = GetOriginalRow(rowIndex);
-
-            double error = CalculateRowError(row, X, B[rowIndex]);
-
-            return error * error;
         }
 
         #endregion

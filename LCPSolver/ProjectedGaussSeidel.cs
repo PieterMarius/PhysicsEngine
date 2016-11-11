@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
+using SimulationObjectDefinition;
 
 namespace LCPSolver
 {
@@ -24,15 +25,12 @@ namespace LCPSolver
 
         #region Public Methods
 
-        public double[] Solve(LinearProblemProperties input)
+        public SolutionValues[] Solve(
+            LinearProblemProperties input,
+            SolutionValues[] X = null)
         {
-			double[] X = new double[input.Count];
-			double[] oldX = new double[input.Count];
-			
-			for (int i = 0; i < input.Count; i++) 
-			{
-				oldX[i] = X [i] = input.StartX [i];
-			}
+            if(X == null)
+                X = new SolutionValues[input.Count];
 
 			double internalSOR = SolverParameters.SOR;
             double solverError = double.MaxValue;
@@ -56,34 +54,33 @@ namespace LCPSolver
 						for (int j = 0; j < m.Count; j++) 
 						{
 							if (bufIndex[j] < i) 
-								sumBuffer += bufValue [j] * X [bufIndex[j]];
+								sumBuffer += bufValue [j] * X [bufIndex[j]].X;
 						}
 					}
 
-					sumBuffer = (input.B[i] - sumBuffer) * input.D[i];
+                    sumBuffer = (input.B[i] - sumBuffer) * input.D[i];
 
-					X[i] += (sumBuffer - X[i]) * internalSOR;
+                    	X[i].X += (sumBuffer - X[i].X) * internalSOR;
 
 					X[i] = ClampSolution.ClampX (input, X, i);
 
                     sum[i] = sumBuffer;
-
 				}
 
-                double actualSolverError = ComputeSolverError1(input, X);
+                if (SolverParameters.DynamicSORUpdate)
+                {
+                    double actualSolverError = SolverHelper.ComputeSolverError(input, X);
+                    
+                    if (actualSolverError > solverError)
+                        internalSOR = Math.Max(internalSOR - SolverParameters.SORStep, SolverParameters.SORStep);
+                    else
+                        solverError = actualSolverError;
 
-                if (actualSolverError > solverError)
-                    internalSOR = Math.Max(internalSOR - SolverParameters.SORStep, SolverParameters.SORStep);
-                else
-                    solverError = actualSolverError;
-
-                if (actualSolverError < SolverParameters.ErrorTolerance)
-                    return X;
-                
+                    if (actualSolverError < SolverParameters.ErrorTolerance)
+                        return X;
+                }
             }
-
-            Console.WriteLine("Sor " + internalSOR);
-                         
+             
             return X;
         }
 
@@ -91,15 +88,6 @@ namespace LCPSolver
         {
 			SolverParameters.SetSOR(SOR);
         }
-
-		/// <summary>
-		/// Gets the difference between second to last/last vector solution.
-		/// </summary>
-		/// <returns>The mse.</returns>
-		public double GetDifferentialMSE()
-		{
-			return 0;
-		}
 
 		public SolverParameters GetSolverParameters()
 		{
@@ -112,7 +100,7 @@ namespace LCPSolver
 
         private double[] ElaborateLowerTriangularMatrix(
             LinearProblemProperties input,
-            double[] X)
+            SolutionValues[] X)
         {
             double[] sum = new double[input.Count];
 
@@ -128,7 +116,7 @@ namespace LCPSolver
 
         private double kernel(
             LinearProblemProperties input,
-            double[] X,
+            SolutionValues[] X,
             int i)
         {
 			double sumBuffer = 0.0;
@@ -141,54 +129,10 @@ namespace LCPSolver
 
 				for (int j = 0; j < input.M [i].Count; j++) {
 					if(bufIndex [j] > i) 
-						sumBuffer += bufValue [j] * X [bufIndex [j]];
+						sumBuffer += bufValue [j] * X [bufIndex [j]].X;
 				}
 			}
             return sumBuffer;
-        }
-
-        private double ComputeSolverError(
-            LinearProblemProperties input,
-            double[] X)
-        {
-            double error = 0.0;
-
-            for (int i = 0; i < input.Count; i++)
-            {
-                SparseElement m = input.M[i];
-
-                double[] bufValue = m.Value;
-                int[] bufIndex = m.Index;
-
-                double bValue = 0.0;
-                for (int j = 0; j < m.Count; j++)
-                    bValue += bufValue[j] * X[bufIndex[j]];
-
-                error += (bValue - input.B[i]) * (bValue - input.B[i]);
-            }
-
-            return error;
-        }
-
-        private double ComputeSolverError1(
-            LinearProblemProperties LCP,
-            double[] X)
-        {
-            double[][] matrix = LCP.GetOriginalMatrix();
-
-            double error = 0.0;
-
-            for (int i = 0; i < LCP.Count; i++)
-            {
-                double bValue = 0.0;
-                for (int j = 0; j < LCP.Count; j++)
-                {
-                    bValue += matrix[i][j] * X[j];
-                }
-                error += (bValue - LCP.B[i]) * (bValue - LCP.B[i]);
-            }
-
-            return error;
         }
 
         #endregion

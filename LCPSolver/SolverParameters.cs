@@ -35,32 +35,41 @@ namespace LCPSolver
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
 
-		#endregion
+        /// <summary>
+        /// Dynamic update of SOR value
+        /// </summary>
+        public bool DynamicSORUpdate { get; private set; }
 
-		#region Constructors
+        #endregion
 
-		public SolverParameters ()
+        #region Constructors
+
+        public SolverParameters ()
 		{
 			MaxIteration = 10;
 			ErrorTolerance = 1E-20;
-			SOR = 1.1;
+			SOR = 1.0;
 			SORStep = 0.007;
 			MaxThreadNumber = 2;
-		}
+            DynamicSORUpdate = false;
+
+        }
 
 		public SolverParameters (
 			int maxIteration,
 			double errorTolerance,
 			double sor,
 			int maxThreadNumber,
-			double sorStep)
+			double sorStep,
+            bool dynamicSORUpdate)
 		{
 			MaxIteration = maxIteration;
 			ErrorTolerance = errorTolerance;
 			SOR = sor;
 			MaxThreadNumber = maxThreadNumber;
 			SORStep = sorStep;
-		}
+            DynamicSORUpdate = dynamicSORUpdate;
+        }
 			
 		#endregion
 
