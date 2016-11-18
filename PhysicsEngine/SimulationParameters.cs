@@ -174,11 +174,11 @@ namespace MonoPhysicsEngine
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
-			PositionBasedJointIterations = 0;
+			PositionBasedJointIterations = 50;
 			NormalCollisionIterations = 0;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 1500;
+			OverallConstraintsIterations = 100;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -190,7 +190,7 @@ namespace MonoPhysicsEngine
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 1;
 			MaxCorrectionValue = 20.0;
-			PositionStabilization = false;
+			PositionStabilization = true;
             SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;

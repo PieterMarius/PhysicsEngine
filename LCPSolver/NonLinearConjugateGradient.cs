@@ -56,11 +56,7 @@ namespace LCPSolver
                 double[] deltaK = calculateDelta(Xk1, Xk);
 
                 deltaErrorCheck = arraySquareModule(delta);
-
-                //early exit
-                //if (deltaErrorCheck < solverParam.ErrorTolerance)
-                //    return Xk1;
-
+                
                 double betaK = 1.1;
 				if (Math.Abs(deltaErrorCheck) > 1E-40)
                     betaK = arraySquareModule(deltaK) / deltaErrorCheck;

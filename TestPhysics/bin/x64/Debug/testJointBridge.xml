@@ -186,14 +186,14 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-		
+		<!--
 		 <Object>
             <Position x="0,0" y="3,5" z="0,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
-            <Mass>5,0</Mass>
+            <Mass>30,0</Mass>
             <RestitutionCoeff>0,1</RestitutionCoeff>
             <DynamicFriction>0,8</DynamicFriction>
             <StaticFriction>0,9</StaticFriction>
@@ -202,7 +202,7 @@
             <ObjectGeometry>cube.obj</ObjectGeometry>
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
-		
+		-->
        <Object>
             <Position x="0,0" y="-4,0" z="0,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
