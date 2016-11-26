@@ -85,6 +85,24 @@ namespace LCPSolver
             return matrix;
         }
 
+        public SparseElement[] GetOriginalMatrixSparse()
+        {
+            SparseElement[] originalMatrix = new SparseElement[M.Length];
+
+            for (int i = 0; i < M.Length; i++)
+            {
+                List<double> valueList = M[i].Value.ToList();
+                List<int> indexList = M[i].Index.ToList();
+
+                valueList.Add(1.0 / D[i]);
+                indexList.Add(i);
+
+                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray(), M[i].RowLength);
+            }
+
+            return originalMatrix;
+        }
+
         public void SetConstraintType(ConstraintType type, int index)
         {
             ConstraintType[index] = type;

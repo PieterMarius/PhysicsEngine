@@ -13,8 +13,7 @@ namespace PhysicsEngineMathUtility
 		#endregion
 
 		#region Public Static Methods
-
-
+        
 		/// <summary>
 		/// Gets the projected point on line.
 		/// </summary>

@@ -48,6 +48,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="GeneralMathUtilities.cs" />
     <Compile Include="Vector3.cs" />
     <Compile Include="ConstValues.cs" />
     <Compile Include="Matrix3x3.cs" />
@@ -55,5 +56,8 @@
     <Compile Include="GeometryUtilities.cs" />
     <Compile Include="Vertices.cs" />
     <Compile Include="SparseElement.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
 </Project>

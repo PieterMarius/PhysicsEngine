@@ -8,6 +8,7 @@ namespace PhysicsEngineMathUtility
 		public readonly double[] Value;
 		public readonly int[] Index;
 		public readonly int Count;
+        public readonly int RowLength;
 
 		#endregion
 
@@ -15,11 +16,13 @@ namespace PhysicsEngineMathUtility
 
 		public SparseElement (
 			double[] value,
-			int[] index)
+			int[] index,
+            int rowLength)
 		{
 			Value = value;
 			Index = index;
-			Count = value.Length;
+            RowLength = rowLength;
+            Count = value.Length;
 		}
 
 		#endregion

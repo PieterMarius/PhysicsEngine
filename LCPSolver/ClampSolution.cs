@@ -6,7 +6,7 @@ namespace LCPSolver
 {
 	public static class ClampSolution
 	{
-		public static SolutionValues ClampX(
+		public static SolutionValues Clamp(
 			LinearProblemProperties input,
 			SolutionValues[] X,
             	int i)
@@ -50,6 +50,80 @@ namespace LCPSolver
                     return new SolutionValues(X[i].X, false);
             }
 		}
-	}
+
+        public static bool GetIfClamped(
+            LinearProblemProperties input,
+            double[] X,
+            int i)
+        {
+
+            switch (input.ConstraintType[i])
+            {
+                case ConstraintType.Collision:
+                case ConstraintType.JointLimit:
+                    if (X[i] != 0)
+                        return true;
+                    else
+                        return false;
+
+                case ConstraintType.Friction:
+                    
+                    double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+
+                    if (X[i] != -frictionLimit && X[i] != frictionLimit)
+                        return true;
+                    else
+                        return false;
+                    
+                case ConstraintType.JointMotor:
+                    double limit = input.ConstraintLimit[i];
+
+                    if (X[i] != -limit && X[i] != limit)
+                        return true;
+                    else
+                        return false;
+                                        
+                default:
+                    return true;
+            }
+        }
+
+        public static void GetConstraintValues(
+            LinearProblemProperties input,
+            double[] x,
+            int i,
+            ref double Min,
+            ref double Max)
+        {
+            switch (input.ConstraintType[i])
+            {
+                case ConstraintType.Collision:
+                case ConstraintType.JointLimit:
+                    Min = 0.0;
+                    Max = double.MaxValue;
+                    break;   
+
+                case ConstraintType.Friction:
+
+                    double frictionLimit = x[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+
+                    Min = -frictionLimit;
+                    Max = frictionLimit;
+                    break;
+
+                case ConstraintType.JointMotor:
+                    double limit = input.ConstraintLimit[i];
+
+                    Min = -input.ConstraintLimit[i];
+                    Max = input.ConstraintLimit[i];
+                    break;
+
+                default:
+                    Min = double.MinValue;
+                    Max = double.MaxValue;
+                    break;
+            }
+        }
+    }
 }
 

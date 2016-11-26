@@ -57,12 +57,6 @@ namespace MonoPhysicsEngine
 		#region Iterations values
 
 		/// <summary>
-		/// Gets the normal collision iterations.
-		/// </summary>
-		/// <value>The normal collision iterations.</value>
-		public int NormalCollisionIterations { get; private set; }
-
-		/// <summary>
 		/// Gets the friction and normal iterations.
 		/// </summary>
 		/// <value>The friction and normal iterations.</value>
@@ -169,16 +163,15 @@ namespace MonoPhysicsEngine
 
         public SimulationParameters ()
 		{
-			TimeStep = 0.0166;
-			CFM = 1E-8;
+			TimeStep = 0.01;
+			CFM = 1E-9;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
-			PositionBasedJointIterations = 50;
-			NormalCollisionIterations = 0;
+			PositionBasedJointIterations = 200;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 100;
+			OverallConstraintsIterations = 500;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.01;

@@ -155,7 +155,7 @@ namespace LCPSolver
 
                 searchDirection[i] = bDirection - deltaK[i];
 
-                result[i] = ClampSolution.ClampX(input, result, i);
+                result[i] = ClampSolution.Clamp(input, result, i);
             }
 
             return result;

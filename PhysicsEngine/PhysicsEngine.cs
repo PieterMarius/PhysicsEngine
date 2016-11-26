@@ -279,11 +279,7 @@ namespace MonoPhysicsEngine
 				case SolverType.NonLinearConjugateGradient:
 					solver = new NonLinearConjugateGradient(SolverParam);
 					break;
-
-                case SolverType.Jacobi:
-                    solver = new Jacobi(SolverParam);
-                    break;
-                                    
+                                                        
 				default:
 					solver = new ProjectedGaussSeidel(SolverParam);
 					break;
@@ -529,27 +525,7 @@ namespace MonoPhysicsEngine
 
                     if (jacobianConstraints.Length > 0)
                     {
-                        
-
                         SolutionValues[] overallSolution = new SolutionValues[jacobianConstraints.Length];
-
-                        #region Solve Normal Constraints
-
-                        if (SimulationEngineParameters.NormalCollisionIterations > 0)
-                        {
-                            JacobianContact[] collisionJointContact = Helper.FilterConstraints(jacobianConstraints,
-                                                                                             ConstraintType.Collision);
-
-                            LinearProblemProperties collisionLCP = BuildLCPMatrix(
-                                                                        collisionJointContact,
-                                                                        SimulationEngineParameters.PositionStabilization);
-
-                            BuildMatrixAndExecuteSolver(collisionJointContact,
-                                                        collisionLCP,
-                                                        SimulationEngineParameters.NormalCollisionIterations);
-                        }
-
-                        #endregion
 
                         #region Solve Normal And Friction Constraints
 
@@ -846,10 +822,11 @@ namespace MonoPhysicsEngine
             			
 			if (stabilizationCoeff.HasValue)
 			{
-				foreach (IConstraintBuilder constraintItem in simulationJointList)
+                	foreach (IConstraintBuilder constraintItem in simulationJointList)
 				{
 					constraint.AddRange(constraintItem.BuildJacobian(simulationObjs, stabilizationCoeff));
 				}
+
 			}
 			else
 			{
@@ -990,7 +967,8 @@ namespace MonoPhysicsEngine
 				{
 					M [i] = new SparseElement (
 						value [i].ToArray (),
-						index [i].ToArray ());
+						index [i].ToArray (),
+                        contact.Length);
 
                     constraintsArray[i] = constraints[i].ToArray();
 				}

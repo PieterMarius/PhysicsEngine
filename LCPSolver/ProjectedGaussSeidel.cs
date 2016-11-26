@@ -62,7 +62,7 @@ namespace LCPSolver
 
                     	X[i].X += (sumBuffer - X[i].X) * internalSOR;
 
-					X[i] = ClampSolution.ClampX (input, X, i);
+					X[i] = ClampSolution.Clamp (input, X, i);
 
                     sum[i] = sumBuffer;
 				}
