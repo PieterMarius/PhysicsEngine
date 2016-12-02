@@ -163,7 +163,7 @@ namespace MonoPhysicsEngine
 
         public SimulationParameters ()
 		{
-			TimeStep = 0.01;
+			TimeStep = 0.016;
 			CFM = 1E-9;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
@@ -171,7 +171,7 @@ namespace MonoPhysicsEngine
 			PositionBasedJointIterations = 200;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 500;
+			OverallConstraintsIterations = 60;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.01;
@@ -183,7 +183,7 @@ namespace MonoPhysicsEngine
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 1;
 			MaxCorrectionValue = 20.0;
-			PositionStabilization = true;
+			PositionStabilization = false;
             SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;

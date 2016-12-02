@@ -51,6 +51,50 @@ namespace LCPSolver
             }
 		}
 
+        public static double Clamp(
+            LinearProblemProperties input,
+            double[] X,
+            int i)
+        {
+            switch (input.ConstraintType[i])
+            {
+                case ConstraintType.Collision:
+                case ConstraintType.JointLimit:
+                    if (X[i] < 0)
+                        return 0.0;
+                    else
+                        return X[i];
+
+                case ConstraintType.Friction:
+                    if (Math.Abs(X[i]) < 1E-50)
+                        return 0.0;
+                    else
+                    {
+                        double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+
+                        if (X[i] < -frictionLimit)
+                            return -frictionLimit;
+                        if (X[i] > frictionLimit)
+                            return frictionLimit;
+
+                        return X[i];
+                    }
+
+                case ConstraintType.JointMotor:
+                    double limit = input.ConstraintLimit[i];
+
+                    if (X[i] < -limit)
+                        return -limit;
+                    if (X[i] > limit)
+                        return limit;
+
+                    return X[i];
+
+                default:
+                    return X[i];
+            }
+        }
+
         public static bool GetIfClamped(
             LinearProblemProperties input,
             double[] X,
@@ -61,7 +105,7 @@ namespace LCPSolver
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    if (X[i] != 0)
+                    if (Math.Abs(X[i]) < 1E-50)
                         return true;
                     else
                         return false;
@@ -70,21 +114,21 @@ namespace LCPSolver
                     
                     double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
 
-                    if (X[i] != -frictionLimit && X[i] != frictionLimit)
+                    if (Math.Abs(X[i] + frictionLimit) < 1E-50 ||
+                        Math.Abs(X[i] - frictionLimit) < 1E-50)
                         return true;
                     else
                         return false;
                     
                 case ConstraintType.JointMotor:
-                    double limit = input.ConstraintLimit[i];
-
-                    if (X[i] != -limit && X[i] != limit)
+                    if (Math.Abs(X[i] - input.ConstraintLimit[i]) < 1E-50 ||
+                        Math.Abs(X[i] + input.ConstraintLimit[i]) < 1E-50)
                         return true;
                     else
                         return false;
                                         
                 default:
-                    return true;
+                    return false;
             }
         }
 

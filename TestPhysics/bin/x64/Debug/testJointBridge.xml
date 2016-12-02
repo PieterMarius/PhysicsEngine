@@ -172,7 +172,7 @@
             <Texture>texture/woodbox.bmp</Texture>
         </Object>
         <Object>
-            <Position x="0,0" y="0,0" z="-13,2" />
+            <Position x="0,0" y="0,0" z="-13,5" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
@@ -233,7 +233,7 @@
             <Position x="0,5" y="1,2" z="-1,8" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>50,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <StretchCoefficient>0,1</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>
@@ -249,7 +249,7 @@
             <Position x="-0,5" y="1,2" z="-1,8" />
             <ActionAxis x="0,0" y="1,0" z="0,0" />
             <RestoreCoefficient>50,0</RestoreCoefficient>
-            <StretchCoefficient>0,0</StretchCoefficient>
+            <StretchCoefficient>0,1</StretchCoefficient>
             <AngularLimitMin>-0,78539816339</AngularLimitMin>
             <AngularLimitMax>0,78539816339</AngularLimitMax>
             <LinearLimitMin>5,0</LinearLimitMin>

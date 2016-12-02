@@ -279,7 +279,11 @@ namespace MonoPhysicsEngine
 				case SolverType.NonLinearConjugateGradient:
 					solver = new NonLinearConjugateGradient(SolverParam);
 					break;
-                                                        
+
+                case SolverType.MLCPSolver:
+                    solver = new MLCPSolver(SolverParam);
+                    break;
+                                                      
 				default:
 					solver = new ProjectedGaussSeidel(SolverParam);
 					break;
