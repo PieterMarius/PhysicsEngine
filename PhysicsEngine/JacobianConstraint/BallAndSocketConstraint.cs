@@ -7,7 +7,7 @@ namespace MonoPhysicsEngine
 {
 	public sealed class BallAndSocketConstraint : IConstraint, IConstraintBuilder
 	{
-		#region Public Fields
+		#region Fields
 
 		const JointType jointType = JointType.BallAndSocket;
 

@@ -22,19 +22,16 @@ namespace LCPSolver
                         return new SolutionValues(X[i].X, false);
                                         
 				case ConstraintType.Friction:
-                    if (Math.Abs(X[i].X) < 1E-50)
-                        return new SolutionValues(0.0, true);
-                    else
-                    { 
-                        double frictionLimit = X[input.Constraints[i][0].Value].X * input.ConstraintLimit[i];
+                    
+                    double frictionLimit = X[input.Constraints[i][0].Value].X * input.ConstraintLimit[i];
 
-                        if (X[i].X < -frictionLimit)
-                            return new SolutionValues(-frictionLimit, true);
-                        if (X[i].X > frictionLimit)
-                            return new SolutionValues(frictionLimit, true);
+                    if (X[i].X < -frictionLimit)
+                        return new SolutionValues(-frictionLimit, true);
+                    if (X[i].X > frictionLimit)
+                        return new SolutionValues(frictionLimit, true);
 
-                        return new SolutionValues(X[i].X, false);
-                    }
+                    return new SolutionValues(X[i].X, false);
+                    
 
                 case ConstraintType.JointMotor:
 					double limit = input.ConstraintLimit[i];
@@ -66,19 +63,16 @@ namespace LCPSolver
                         return X[i];
 
                 case ConstraintType.Friction:
-                    if (Math.Abs(X[i]) < 1E-50)
-                        return 0.0;
-                    else
-                    {
-                        double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+                   
+                    double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
 
-                        if (X[i] < -frictionLimit)
-                            return -frictionLimit;
-                        if (X[i] > frictionLimit)
-                            return frictionLimit;
+                    if (X[i] < -frictionLimit)
+                        return -frictionLimit;
+                    if (X[i] > frictionLimit)
+                        return frictionLimit;
 
-                        return X[i];
-                    }
+                    return X[i];
+                    
 
                 case ConstraintType.JointMotor:
                     double limit = input.ConstraintLimit[i];

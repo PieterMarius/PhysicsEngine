@@ -12,6 +12,7 @@ namespace SimulationObjectDefinition
 		Generic6DOF  = 5,
 		Universal = 6,
 		Hinge2 = 7,
+        Angular = 8,
 	}
 }
 

@@ -92,7 +92,7 @@ namespace TestPhysics
 					collisionEngineParameters,
 					solverParameters);
 
-				physicsEngine.SetSolver(SolverType.MLCPSolver);
+				physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
 				for (int i = 0; i < simulationObjects.Count (); i++) 
 				{

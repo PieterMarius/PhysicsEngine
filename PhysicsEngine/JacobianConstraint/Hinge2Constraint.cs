@@ -79,12 +79,12 @@ namespace MonoPhysicsEngine
 			Vector3 rHingeAxis = objectA.RotationMatrix * HingeAxis;
 			Vector3 rRotationAxis = objectB.RotationMatrix * RotationAxis;
 
-			RelativeOrientation1 = calculateRelativeOrientation(
+			RelativeOrientation1 = CalculateRelativeOrientation(
 				rHingeAxis,
 				rRotationAxis,
 				objectA.RotationStatus);
 
-			RelativeOrientation2 = calculateRelativeOrientation(
+			RelativeOrientation2 = CalculateRelativeOrientation(
 				rRotationAxis,
 				rHingeAxis,
 				objectB.RotationStatus);
@@ -235,7 +235,7 @@ namespace MonoPhysicsEngine
 
 			#region Limit Constraints 
 
-			hinge2Constraints.AddRange(getAngularLimit(
+			hinge2Constraints.AddRange(GetAngularLimit(
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
@@ -245,7 +245,7 @@ namespace MonoPhysicsEngine
 
 			#region Motor Constraint
 
-			hinge2Constraints.AddRange(getMotorConstraint(
+			hinge2Constraints.AddRange(GetMotorConstraint(
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
@@ -352,17 +352,17 @@ namespace MonoPhysicsEngine
 
 		#region Private Methods
 
-		double getAngle2(
+		double GetAngle2(
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 startAxis,
 			Quaternion rotationStatus,
 			Quaternion startRelativeRotation)
 		{
-			return -getAngle1(axis2, axis1, startAxis, rotationStatus, startRelativeRotation);
+			return -GetAngle1(axis2, axis1, startAxis, rotationStatus, startRelativeRotation);
 		}
 
-		double getAngle1(
+		double GetAngle1(
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 startAxis,
@@ -383,7 +383,7 @@ namespace MonoPhysicsEngine
 			return JacobianCommon.GetRotationAngle(quaternionVectorPart, mult2.a, startAxis);
 		}
 
-		Quaternion calculateRelativeOrientation(
+		Quaternion CalculateRelativeOrientation(
 			Vector3 axis1,
 			Vector3 axis2,
 			Quaternion bodyRotationStatus)
@@ -394,7 +394,7 @@ namespace MonoPhysicsEngine
 			return Quaternion.Multiply1(bodyRotationStatus, rotationQ);
 		}
 
-		List<JacobianContact> getAngularLimit(
+		List<JacobianContact> GetAngularLimit(
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			Vector3 hingeAxis,
@@ -405,7 +405,7 @@ namespace MonoPhysicsEngine
 			if (AngularLimitMin1.HasValue &&
 				AngularLimitMax1.HasValue)
 			{
-				double angle1 = getAngle1(
+				double angle1 = GetAngle1(
 					hingeAxis,
 					rotationAxis,
 					HingeAxis,
@@ -432,7 +432,7 @@ namespace MonoPhysicsEngine
 			if (AngularLimitMin2.HasValue &&
 				AngularLimitMax2.HasValue)
 			{
-				double angle2 = getAngle2(
+				double angle2 = GetAngle2(
 					hingeAxis,
 					rotationAxis,
 					RotationAxis,
@@ -460,7 +460,7 @@ namespace MonoPhysicsEngine
 			return angularConstraint;
 		}
 
-		List<JacobianContact> getMotorConstraint(
+		List<JacobianContact> GetMotorConstraint(
 			SimulationObject simulationObjectA,
 			SimulationObject simulationObjectB,
 			Vector3 hingeAxis,

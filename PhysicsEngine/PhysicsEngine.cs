@@ -280,10 +280,10 @@ namespace MonoPhysicsEngine
 					solver = new NonLinearConjugateGradient(SolverParam);
 					break;
 
-                case SolverType.MLCPSolver:
-                    solver = new MLCPSolver(SolverParam);
+                case SolverType.ConjugateGradient:
+                    solver = new ConjugateGradient(SolverParam);
                     break;
-                                                      
+                                                                                         
 				default:
 					solver = new ProjectedGaussSeidel(SolverParam);
 					break;
@@ -587,7 +587,14 @@ namespace MonoPhysicsEngine
 
                             double[] overallError = new double[overallLCP.Count];
 
+                            //SolverParameters test = new SolverParameters(300, solver.GetSolverParameters().ErrorTolerance, solver.GetSolverParameters().SOR, solver.GetSolverParameters().MaxThreadNumber, solver.GetSolverParameters().SORStep, solver.GetSolverParameters().DynamicSORUpdate);
+
+                            //ProjectedGaussSeidel testVerifica = new ProjectedGaussSeidel(test);
+
+                            //SolutionValues[] sol = testVerifica.Solve(overallLCP);
+
                             Console.WriteLine("error " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
+                            //Console.WriteLine("errorTest " + SolverHelper.ComputeSolverError(overallLCP, sol));
                         }
                         else if (SimulationEngineParameters.OverallConstraintsIterations == 0)
                         {

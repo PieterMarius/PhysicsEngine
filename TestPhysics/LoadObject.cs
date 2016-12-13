@@ -305,6 +305,18 @@ namespace TestPhysics
 
 							break;
 
+                        case JointType.Angular:
+                            joint[j] = new AngularConstraint(
+                                indexA, 
+                                indexB, 
+                                objects, 
+                                startAnchorPosition, 
+                                actionAxis, 
+                                new Vector3(1.0, 0.0, 0.0), 
+                                K);
+
+                            break;
+
 					}
 					joints[i] = joint[j];
 				}
