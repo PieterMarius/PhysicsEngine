@@ -68,3 +68,4 @@ TestPhysics/bin/Debug/testJointBridge.txt
 *.suo
 .vs/PhysicsEngine/v14/.suo
 .vs/PhysicsEngine/v14/.suo
+*.suo

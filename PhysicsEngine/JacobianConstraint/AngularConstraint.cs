@@ -15,6 +15,8 @@ namespace MonoPhysicsEngine
         int IndexA;
         int IndexB;
         int KeyIndex;
+        double SpringCoefficientHingeAxis;
+        double SpringCoefficientRotationAxis;
         readonly Vector3 StartAnchorPoint;
         readonly Vector3 StartErrorAxis1;
         readonly Vector3 StartErrorAxis2;
@@ -25,6 +27,7 @@ namespace MonoPhysicsEngine
 
         Vector3 AnchorPoint;
         double RestoreCoefficient;
+
 
         #endregion
 
@@ -37,12 +40,16 @@ namespace MonoPhysicsEngine
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
             Vector3 rotationAxis,
-            double restoreCoefficient)
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficientRotationAxis)
         {
             IndexA = indexA;
             IndexB = indexB;
             KeyIndex = GetHashCode();
             RestoreCoefficient = restoreCoefficient;
+            SpringCoefficientHingeAxis = springCoefficientHingeAxis;
+            SpringCoefficientRotationAxis = springCoefficientRotationAxis;
             StartAnchorPoint = startAnchorPosition;
             HingeAxis = hingeAxis.Normalize();
             RotationAxis = rotationAxis.Normalize();
@@ -115,15 +122,13 @@ namespace MonoPhysicsEngine
                     RotationAxis,
                     simulationObjectB.RotationStatus,
                     RelativeOrientation2);
-
-            Console.WriteLine("Angle " + hingeAngle + " " + twistAngle);
-
+            
             #endregion
 
             #region Jacobian Constraint
 
             double angularLimit = RestoreCoefficient * hingeAngle;
-                    
+
             angularConstraints.Add(JacobianCommon.GetDOF(
                 IndexA,
                 IndexB,
@@ -135,7 +140,7 @@ namespace MonoPhysicsEngine
                 simulationObjectB,
                 0.0,
                 angularLimit,
-                1.0,
+                SpringCoefficientHingeAxis,
                 0.0,
                 ConstraintType.Joint));
 
@@ -152,40 +157,10 @@ namespace MonoPhysicsEngine
                 simulationObjectB,
                 0.0,
                 angularLimit,
-                1.0,
+                SpringCoefficientRotationAxis,
                 0.0,
                 ConstraintType.Joint));
-
-            //JacobianContact? jContact = (JacobianCommon.GetAngularLimit(
-            //            IndexA,
-            //            IndexB,
-            //            hingeAngle,
-            //            RestoreCoefficient,
-            //            0.0,
-            //            simulationObjectA,
-            //            simulationObjectB,
-            //            hingeAxis,
-            //            0.0,
-            //            0.0));
-
-            //if (jContact.HasValue)
-            //    angularConstraints.Add(jContact.Value);
-
-            //jContact = (JacobianCommon.GetAngularLimit(
-            //            IndexA,
-            //            IndexB,
-            //            twistAngle,
-            //            RestoreCoefficient,
-            //            0.0,
-            //            simulationObjectA,
-            //            simulationObjectB,
-            //            rotationAxis,
-            //            0.0,
-            //            0.0));
-
-            //if (jContact.HasValue)
-            //    angularConstraints.Add(jContact.Value);
-
+            
             #endregion
 
             return angularConstraints;

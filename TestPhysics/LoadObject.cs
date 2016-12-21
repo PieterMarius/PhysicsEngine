@@ -313,7 +313,9 @@ namespace TestPhysics
                                 startAnchorPosition, 
                                 actionAxis, 
                                 new Vector3(1.0, 0.0, 0.0), 
-                                K);
+                                1.0,
+                                10.0,
+                                4.0);
 
                             break;
 
