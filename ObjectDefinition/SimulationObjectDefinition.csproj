@@ -54,6 +54,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
     <Compile Include="ObjectGeometry.cs" />
     <Compile Include="ObjectGeometryType.cs" />
     <Compile Include="SimulationObject.cs" />

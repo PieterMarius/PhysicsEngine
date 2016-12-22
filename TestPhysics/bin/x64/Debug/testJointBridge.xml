@@ -321,7 +321,7 @@
         </JointProperties>
 	</Joint>
 	
-	<Joint>
+	<!-- <Joint>
         <ObjectIndexA>2</ObjectIndexA>
         <ObjectIndexB>3</ObjectIndexB>
         <JointProperties>
@@ -367,7 +367,7 @@
             <LinearLimitMin>5,0</LinearLimitMin>
             <LinearLimitMax>9,0</LinearLimitMax>
         </JointProperties>
-	</Joint>
+	</Joint> -->
 	
 	<Joint>
         <ObjectIndexA>3</ObjectIndexA>

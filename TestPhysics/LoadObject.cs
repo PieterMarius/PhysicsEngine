@@ -142,9 +142,7 @@ namespace TestPhysics
 				//Baumgarte Stabilization value
 				objects[i].SetBaumgarteStabilizationCoeff(30.0);
 
-				objects[i].SetGeometryType(ObjectGeometryType.ConvexBody);
-
-			}
+            }
 
 			return objects;
 		}
@@ -310,12 +308,12 @@ namespace TestPhysics
                                 indexA, 
                                 indexB, 
                                 objects, 
-                                startAnchorPosition, 
-                                actionAxis, 
+                                startAnchorPosition,
                                 new Vector3(1.0, 0.0, 0.0), 
-                                1.0,
-                                10.0,
-                                4.0);
+                                new Vector3(0.0, 1.0, 0.0), 
+                                20.0,
+                                3.0,
+                                3.0);
 
                             break;
 
@@ -427,7 +425,8 @@ namespace TestPhysics
 
 			return new ObjectGeometry (
 				vertexStartPoint,
-				triangleIndex);
+				triangleIndex,
+                ObjectGeometryType.ConvexBody);
 		}
 
 		#endregion

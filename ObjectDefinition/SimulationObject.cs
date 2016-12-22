@@ -66,19 +66,14 @@ namespace SimulationObjectDefinition
 		/// Gets or sets the object geometry.
 		/// </summary>
 		/// <value>The object geometry.</value>
-		public ObjectGeometry ObjectGeometry{ get; private set; }
+		public ObjectGeometry[] ObjectGeometry{ get; private set; }
 
 		/// <summary>
 		/// Gets the type of the object.
 		/// </summary>
 		/// <value>The type of the object.</value>
 		public ObjectType ObjectType { get; private set; }
-
-        /// <summary>
-        /// Get the geometry property of object
-        /// </summary>
-        public ObjectGeometryType ObjectGeometryType { get; private set; }
-
+        
         /// <summary>
         /// Sleeping Frame Count value
         /// </summary>
@@ -175,7 +170,7 @@ namespace SimulationObjectDefinition
 			Quaternion rotationStatus)
 		{
 			ObjectType = type;
-			ObjectGeometry = geometry;
+            ObjectGeometry = new ObjectGeometry[1] { geometry };
 			Mass = mass;
 
 			if (ObjectType == ObjectType.StaticRigidBody)
@@ -192,9 +187,40 @@ namespace SimulationObjectDefinition
 
             Position = position;
 
-            ObjectGeometry.SetAABB(UpdateAABB(this));
+            SetAABB();
 
             SleepingFrameCount = 0;
+        }
+
+        public SimulationObject(
+            ObjectType type,
+            ObjectGeometry[] geometry,
+            double mass,
+            Vector3 position,
+            Quaternion rotationStatus)
+        {
+            ObjectType = type;
+            ObjectGeometry = geometry;
+            Mass = mass;
+
+            if (ObjectType == ObjectType.StaticRigidBody)
+            {
+                Mass = 0.0;
+                InverseMass = 0.0;
+            }
+            else if (Mass > 0.0)
+                InverseMass = 1.0 / Mass;
+
+            RotationStatus = rotationStatus;
+
+            SetObjectProperties();
+
+            Position = position;
+
+            SetAABB();
+
+            SleepingFrameCount = 0;
+
         }
 
         #endregion
@@ -293,29 +319,37 @@ namespace SimulationObjectDefinition
 		{
 			BaumgarteStabilizationCoeff = value;
 		}
-
-        public void SetGeometryType(ObjectGeometryType geometryType)
-        {
-            ObjectGeometryType = geometryType;
-        }
-
+        
         public void SetSleepingFrameCount(int frameCount)
         {
             SleepingFrameCount = frameCount;
+        }
+
+        public void SetAABB()
+        {
+            if(ObjectGeometry.Length == 1)
+                ObjectGeometry[0].SetAABB(Helper.UpdateAABB(this));
+            else
+            {
+                foreach(ObjectGeometry obj in ObjectGeometry)
+                    obj.SetAABB(Helper.UpdateAABB(this));
+            }
         }
 
 		#endregion
 
 		#region Private Methods
 
+        //TODO funziona solo per oggetto convessi
 		private void SetObjectProperties()
 		{
-            Vector3[] vertexPosition = Array.ConvertAll(ObjectGeometry.VertexPosition,
+            Vector3[] vertexPosition = Array.ConvertAll(
+                                        ObjectGeometry[0].VertexPosition,
                                         item => item.Vertex);
 
             var inertiaTensor = new InertiaTensor(
 					vertexPosition,
-					ObjectGeometry.Triangle,
+					ObjectGeometry[0].Triangle,
 					Mass);
 
             var normalizedInertiaTensor = inertiaTensor;
@@ -323,16 +357,16 @@ namespace SimulationObjectDefinition
             //Traslo per normalizzare l'oggetto rispetto al suo centro di massa
             if (inertiaTensor.GetMassCenter() != new Vector3())
             {
-                for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+                for (int j = 0; j < ObjectGeometry[0].VertexPosition.Length; j++)
                 {
-                    ObjectGeometry.SetVertexPosition(
-                        ObjectGeometry.VertexPosition[j].Vertex + inertiaTensor.GetMassCenter(),
+                    ObjectGeometry[0].SetVertexPosition(
+                        ObjectGeometry[0].VertexPosition[j].Vertex + inertiaTensor.GetMassCenter(),
                         j);
                 }
 
                 normalizedInertiaTensor = new InertiaTensor(
                     vertexPosition,
-                    ObjectGeometry.Triangle,
+                    ObjectGeometry[0].Triangle,
                     Mass);
             }
 
@@ -348,57 +382,14 @@ namespace SimulationObjectDefinition
 
 		private void SetRelativePosition()
 		{
-			if (ObjectGeometry.VertexPosition.Length > 0)
+			if (ObjectGeometry[0].VertexPosition.Length > 0)
 			{
-				RelativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
-				for (int i = 0; i < ObjectGeometry.VertexPosition.Length; i++)
-					RelativePositions[i] = ObjectGeometry.VertexPosition[i].Vertex - StartPosition;
+				RelativePositions = new Vector3[ObjectGeometry[0].VertexPosition.Length];
+				for (int i = 0; i < ObjectGeometry[0].VertexPosition.Length; i++)
+					RelativePositions[i] = ObjectGeometry[0].VertexPosition[i].Vertex - StartPosition;
 			}
 		}
-
-        private AABB UpdateAABB(
-            SimulationObject simObject)
-        {
-            Vector3 vertexPos = GetVertexPosition(simObject, 0);
-            double xMax = vertexPos.x;
-            double xMin = vertexPos.x;
-            double yMax = vertexPos.y;
-            double yMin = vertexPos.y;
-            double zMax = vertexPos.z;
-            double zMin = vertexPos.z;
-
-            for (int i = 1; i < simObject.RelativePositions.Length; i++)
-            {
-                Vector3 vertex = GetVertexPosition(simObject, i);
-
-                if (vertex.x < xMin)
-                    xMin = vertex.x;
-                else if (vertex.x > xMax)
-                    xMax = vertex.x;
-
-                if (vertex.y < yMin)
-                    yMin = vertex.y;
-                else if (vertex.y > yMax)
-                    yMax = vertex.y;
-
-                if (vertex.z < zMin)
-                    zMin = vertex.z;
-                else if (vertex.z > zMax)
-                    zMax = vertex.z;
-            }
-
-            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
-        }
-
-        private Vector3 GetVertexPosition(
-            SimulationObject obj,
-            int index)
-        {
-            return
-                obj.Position +
-                (obj.RotationMatrix * obj.RelativePositions[index]);
-        }
-
+        
         #endregion
     }
 }

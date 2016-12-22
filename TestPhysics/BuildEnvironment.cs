@@ -65,25 +65,25 @@ namespace TestPhysics
 			objects[0].SetStaticFrictionCoeff(1.0);
 			objects[0].SetExcludeFromCollisionDetection(false);
 
-            Vector3[] vertexPosition = Array.ConvertAll(objects[0].ObjectGeometry.VertexPosition,
+            Vector3[] vertexPosition = Array.ConvertAll(objects[0].ObjectGeometry[0].VertexPosition,
                                         item => item.Vertex);
 
             var inertiaTensor = new InertiaTensor(
                 vertexPosition,
-				objects[0].ObjectGeometry.Triangle,
+				objects[0].ObjectGeometry[0].Triangle,
 				objects[0].Mass);
 
 			//Traslo per normalizzare l'oggetto rispetto al suo centro di massa
-			for (int j = 0; j < objects[0].ObjectGeometry.VertexPosition.Length; j++)
+			for (int j = 0; j < objects[0].ObjectGeometry[0].VertexPosition.Length; j++)
 			{
-				objects[0].ObjectGeometry.SetVertexPosition(
+				objects[0].ObjectGeometry[0].SetVertexPosition(
                     vertexPosition[j] - inertiaTensor.GetMassCenter(),
 					j);
 			}
 
 			var inertiaTensor1 = new InertiaTensor(
                 vertexPosition,
-				objects[0].ObjectGeometry.Triangle,
+				objects[0].ObjectGeometry[0].Triangle,
 				objects[0].Mass);
 
 			objects[0].SetStartPosition(inertiaTensor1.GetMassCenter());
@@ -92,10 +92,10 @@ namespace TestPhysics
 			objects[0].SetInertiaTensor((objects[0].RotationMatrix * objects[0].BaseInertiaTensor) *
 				Matrix3x3.Transpose(objects[0].RotationMatrix));
 
-			for (int j = 0; j < objects[0].ObjectGeometry.VertexPosition.Length; j++)
+			for (int j = 0; j < objects[0].ObjectGeometry[0].VertexPosition.Length; j++)
 			{
 				Vector3 relPositionRotate = objects[0].RotationMatrix * objects[0].RelativePositions[j];
-				objects[0].ObjectGeometry.SetVertexPosition(objects[0].Position + relPositionRotate, j);
+				objects[0].ObjectGeometry[0].SetVertexPosition(objects[0].Position + relPositionRotate, j);
 			}
 
 			#endregion
@@ -135,7 +135,8 @@ namespace TestPhysics
 
 			return new ObjectGeometry(
 				vertexStartPoint,
-				triangleIndex);
+				triangleIndex,
+                ObjectGeometryType.ConvexBody);
 		}
 
 		private LoadResult LoadObjSolid(

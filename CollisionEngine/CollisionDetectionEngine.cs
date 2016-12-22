@@ -83,6 +83,78 @@ namespace CollisionEngine
 
 		#region Private Methods
 
+        private CollisionPointStructure NarrowPhaseCollisionControl(
+            GJKOutput gjkOutput,
+            SimulationObject A,
+            SimulationObject B,
+            int indexA,
+            int indexB,
+            int geometryIndexA,
+            int geometryIndexB,
+            double minDistance)
+        {
+            
+                if (!gjkOutput.Intersection &&
+                    gjkOutput.CollisionDistance <= minDistance)
+                {
+                    var mpg = new ManifoldPointsGenerator(
+                                                  collisionEngineParameters.ManifoldPointNumber,
+                                                  collisionEngineParameters.GJKManifoldTolerance,
+                                                  collisionEngineParameters.ManifoldProjectionTolerance);
+
+                    if (gjkOutput.CollisionNormal.Length() < 1E-15)
+                        return null;
+
+                    List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+                                                                   A,
+                                                                   B,
+                                                                   gjkOutput.CollisionPoint);
+
+                    return new CollisionPointStructure(
+                        indexA,
+                        indexB,
+                        gjkOutput.Intersection,
+                        gjkOutput.CollisionDistance,
+                        gjkOutput.CollisionPoint,
+                        collisionPointsList.ToArray());
+                }
+
+            if (gjkOutput.Intersection)
+            {
+                EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
+                                                A,
+                                                B,
+                                                geometryIndexA,
+                                                geometryIndexB,
+                                                gjkOutput.SupportTriangles,
+                                                gjkOutput.Centroid);
+
+                if (epaOutput.CollisionPoint.CollisionNormal.Length() < 1E-15)
+                    return null;
+
+                var mpg = new ManifoldPointsGenerator(
+                                                  collisionEngineParameters.ManifoldPointNumber,
+                                                  collisionEngineParameters.EPAManifoldTolerance,
+                                                  collisionEngineParameters.ManifoldProjectionTolerance);
+
+                List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+                                                               A,
+                                                               B,
+                                                               epaOutput.CollisionPoint);
+
+                return new CollisionPointStructure(
+                    indexA,
+                    indexB,
+                    gjkOutput.Intersection,
+                    epaOutput.CompenetrationDistance,
+                    epaOutput.CollisionPoint,
+                    collisionPointsList.ToArray());
+
+            }
+
+            return null;
+        }
+
 		private CollisionPointStructure NarrowPhase(
 			SimulationObject A,
 			SimulationObject B,
@@ -90,64 +162,32 @@ namespace CollisionEngine
 			int indexB,
 			double minDistance)
 		{
-			GJKOutput gjkOutput = collisionEngine.Execute (A, B);
+            List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-			if (!gjkOutput.Intersection &&
-				gjkOutput.CollisionDistance <= minDistance)
-			{
-  				var mpg = new ManifoldPointsGenerator (
-					                              collisionEngineParameters.ManifoldPointNumber,
-					                              collisionEngineParameters.GJKManifoldTolerance,
-					                              collisionEngineParameters.ManifoldProjectionTolerance);
+            for (int i = 0; i < A.ObjectGeometry.Length; i++)
+            {
+                for (int j = 0; j < B.ObjectGeometry.Length; j++)
+                {
+                    GJKOutput gjkOutput = (collisionEngine.Execute(A, B, i, j));
+                    collisionPointStructure.Add(NarrowPhaseCollisionControl(
+                        gjkOutput, 
+                        A, 
+                        B, 
+                        indexA, 
+                        indexB,
+                        i,
+                        j,
+                        minDistance));
+                }
+            }
+            
+            if(collisionPointStructure.Count > 1)
+            {
 
-				if (gjkOutput.CollisionNormal.Length() < 1E-15)
-					return null;
+            }
 
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints (
-					                                           A,
-					                                           B,
-					                                           gjkOutput.CollisionPoint);
-
-				return new CollisionPointStructure (
-					indexA,
-					indexB,
-					gjkOutput.Intersection,
-					gjkOutput.CollisionDistance,
-					gjkOutput.CollisionPoint,
-					collisionPointsList.ToArray ());
-			} 
-
-			if (gjkOutput.Intersection)
-			{
-				EPAOutput epaOutput = compenetrationCollisionEngine.Execute (
-					                      	A,
-					                     	B,
-											gjkOutput.SupportTriangles,
-											gjkOutput.Centroid);
-
-				if (epaOutput.CollisionPoint.CollisionNormal.Length() < 1E-15)
-					return null;
-
-				var mpg = new ManifoldPointsGenerator(
-												  collisionEngineParameters.ManifoldPointNumber,
-												  collisionEngineParameters.EPAManifoldTolerance,
-												  collisionEngineParameters.ManifoldProjectionTolerance);
-
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-															   A,
-															   B,
-															   epaOutput.CollisionPoint);
-
-                	return new CollisionPointStructure(
-					indexA,
-					indexB,
-					gjkOutput.Intersection,
-					epaOutput.CompenetrationDistance,
-					epaOutput.CollisionPoint,
-					collisionPointsList.ToArray());		
-			} 
-
-			return null;
+            return collisionPointStructure[0];
+            
 		}
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
@@ -190,7 +230,7 @@ namespace CollisionEngine
 		{
 			var result = new List<CollisionPointStructure> ();
 
-			AABB[] boxs = Array.ConvertAll (objects, item => (item.ObjectGeometry == null) ? null : item.ObjectGeometry.AABBox);
+            AABB[][] boxs = Array.ConvertAll(objects, item => (item.ObjectGeometry == null) ? null : Array.ConvertAll(item.ObjectGeometry, x => x.AABBox));
 
 			List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
 

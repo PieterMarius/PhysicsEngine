@@ -392,10 +392,10 @@ namespace TestPhysics
 			simulationObjects[index].SetRotationMatrix (
 				PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
 
-			for (int i = 0; i < simulationObjects[index].ObjectGeometry.VertexPosition.Length; i++) 
+			for (int i = 0; i < simulationObjects[index].ObjectGeometry[0].VertexPosition.Length; i++) 
 			{
 				PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
-				simulationObjects [index].ObjectGeometry.SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
+				simulationObjects [index].ObjectGeometry[0].SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
 			}
 		}
 			
@@ -648,14 +648,14 @@ namespace TestPhysics
 
 		private void displayVertex(int index)
 		{
-			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry.VertexPosition.Length; i++) 
+			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition.Length; i++) 
 			{
 				GL.PushMatrix ();
 
 				Matrix4 mView = Matrix4.CreateTranslation (
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.x), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.y), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry.VertexPosition[i].Vertex.z));
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.x), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.y), 
+					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.z));
 
 				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
@@ -678,7 +678,7 @@ namespace TestPhysics
 			{
 					GL.PushMatrix ();
 
-				IConstraint joint = physicsEngine.GetJoint(i);
+				IConstraint joint = physicsEngine.GetJoints(i);
 
 					Matrix4 mView = Matrix4.CreateTranslation (
 						                Convert.ToSingle (joint.GetAnchorPosition ().x), 
@@ -703,10 +703,10 @@ namespace TestPhysics
 
         private void displayAABB()
         {
-            SimulationObject[] simObj = physicsEngine.GetSimulationObjectArray();
+            SimulationObject[] simObj = physicsEngine.GetSimulationObjects();
             for (int i = 0; i < simObj.Length; i++)
             {
-                AABB joint = simObj[i].ObjectGeometry.AABBox;
+                AABB joint = simObj[i].ObjectGeometry[0].AABBox;
 
                 
                     GL.PushMatrix();

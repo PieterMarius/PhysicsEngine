@@ -186,7 +186,7 @@ namespace MonoPhysicsEngine
 			return simulationObjects.Length;
 		}
 
-		public SimulationObject[] GetSimulationObjectArray()
+		public SimulationObject[] GetSimulationObjects()
 		{
 			return simulationObjects;
 		}
@@ -223,7 +223,7 @@ namespace MonoPhysicsEngine
 			simulationJoints = new List<IConstraint>();
 		}
 
-		public IConstraint GetJoint(int constraintId)
+		public IConstraint GetJoints(int constraintId)
 		{
 			if (simulationJoints != null &&
 				simulationJoints.Count > constraintId)
@@ -1189,7 +1189,7 @@ namespace MonoPhysicsEngine
                     if (simObj.ObjectGeometry != null &&
 						(linearVelocity > 0.0 || angularVelocity > 0.0))
                     {
-                       simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));
+                       simObj.SetAABB();
                     }
 
                     #endregion
@@ -1324,7 +1324,7 @@ namespace MonoPhysicsEngine
                     if (simObj.ObjectGeometry != null &&
                         (linearVelocity > 0.0 || angularVelocity > 0.0))
                     {
-                        simObj.ObjectGeometry.SetAABB(Helper.UpdateAABB(simObj));
+                        simObj.SetAABB();
 
                         simObj.SetTempLinearVelocity(new Vector3());
                         simObj.SetTempAngularVelocity(new Vector3());

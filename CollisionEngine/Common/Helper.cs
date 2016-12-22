@@ -10,24 +10,26 @@ namespace CollisionEngine
 		#region Public Methods
 
 		public static Support GetMinkowskiFarthestPoint(
-			SimulationObject obj1,
-			SimulationObject obj2,
-			Vector3 direction)
+			SimulationObject objA,
+			SimulationObject objB,
+            int geometryIndexA,
+            int geometryIndexB,
+            Vector3 direction)
 		{
             int a = 0;
             int b = 0;
-            if (obj1.ObjectGeometryType == ObjectGeometryType.ConvexBody)
-                a = GetFarthestPoint(obj1, direction);
+            if (objA.ObjectGeometry[geometryIndexA].GeometryType == ObjectGeometryType.ConvexBody)
+                a = GetFarthestPoint(objA, geometryIndexA, direction);
             else
-                a = GetNonConvexFarthestPoint(obj1, direction);
+                a = GetNonConvexFarthestPoint(objA, geometryIndexA, direction);
 
-            if (obj2.ObjectGeometryType == ObjectGeometryType.ConvexBody)
-                b = GetFarthestPoint(obj2, direction * -1.0);
+            if (objB.ObjectGeometry[geometryIndexB].GeometryType == ObjectGeometryType.ConvexBody)
+                b = GetFarthestPoint(objB, geometryIndexB, direction * -1.0);
             else
-                b = GetNonConvexFarthestPoint(obj2, direction * -1.0);
+                b = GetNonConvexFarthestPoint(objB, geometryIndexB, direction * -1.0);
             
             	var sp = new Support(
-                GetVertexPosition(obj1, a) - GetVertexPosition(obj2, b),
+                GetVertexPosition(objA, a) - GetVertexPosition(objB, b),
 				a,
 				b);
 
@@ -36,6 +38,7 @@ namespace CollisionEngine
 
 		public static int GetFarthestPoint(
 			SimulationObject obj,
+            int geoemtryIndex,
 			Vector3 direction)
 		{
 			int index = 0;
@@ -47,13 +50,13 @@ namespace CollisionEngine
                 check = false;
                 int maxIndex = -1;
 
-                for (int i = 0; i < obj.ObjectGeometry.VertexPosition[index].Adjacency.Count; i++)
+                for (int i = 0; i < obj.ObjectGeometry[geoemtryIndex].VertexPosition[index].Adjacency.Count; i++)
                 {
-                    double dot = Vector3.Dot(GetVertexPosition(obj, obj.ObjectGeometry.VertexPosition[index].Adjacency[i]), direction);
+                    double dot = Vector3.Dot(GetVertexPosition(obj, obj.ObjectGeometry[geoemtryIndex].VertexPosition[index].Adjacency[i]), direction);
                     if (dot > maxDot)
                     {
                         maxDot = dot;
-                        maxIndex = obj.ObjectGeometry.VertexPosition[index].Adjacency[i];
+                        maxIndex = obj.ObjectGeometry[geoemtryIndex].VertexPosition[index].Adjacency[i];
                         check = true;
                     }
                 }
@@ -76,12 +79,13 @@ namespace CollisionEngine
 
         public static int GetNonConvexFarthestPoint(
             SimulationObject obj,
+            int geometryIndex,
             Vector3 direction)
         {
             int index = 0;
             double maxDot = Vector3.Dot(GetVertexPosition(obj, index), direction);
 
-            for (int i = 1; i < obj.ObjectGeometry.VertexPosition.Length; i++)
+            for (int i = 1; i < obj.ObjectGeometry[geometryIndex].VertexPosition.Length; i++)
             {
                 Vector3 vertex = GetVertexPosition(obj, i);
                 double dot = Vector3.Dot(vertex, direction);
@@ -270,13 +274,13 @@ namespace CollisionEngine
 			SimulationObject shape2,
 			ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = Helper.GetVertexPosition(shape1, triangle.a.a);
-			Vector3 ba1 = Helper.GetVertexPosition(shape1, triangle.b.a) - a1;
-			Vector3 ca1 = Helper.GetVertexPosition(shape1, triangle.c.a) - a1;
+			Vector3 a1 = GetVertexPosition(shape1, triangle.a.a);
+			Vector3 ba1 = GetVertexPosition(shape1, triangle.b.a) - a1;
+			Vector3 ca1 = GetVertexPosition(shape1, triangle.c.a) - a1;
 
-			Vector3 a2 = Helper.GetVertexPosition(shape2, triangle.a.b);
-            Vector3 ba2 = Helper.GetVertexPosition(shape2, triangle.b.b) - a2;
-			Vector3 ca2 = Helper.GetVertexPosition(shape2, triangle.c.b) - a2;
+			Vector3 a2 = GetVertexPosition(shape2, triangle.a.b);
+            Vector3 ba2 = GetVertexPosition(shape2, triangle.b.b) - a2;
+			Vector3 ca2 = GetVertexPosition(shape2, triangle.c.b) - a2;
 
 			collisionPoint.SetA(a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			collisionPoint.SetB(a2 + (ba2 * triangle.s) + (ca2 * triangle.t));

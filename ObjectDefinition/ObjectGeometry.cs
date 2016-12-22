@@ -10,14 +10,20 @@ namespace SimulationObjectDefinition
 		public VertexAdjacency[] VertexPosition { get; private set; }
 		public int[][] Triangle { get; private set; }
 		public AABB AABBox { get; private set; }
+        
+        /// <summary>
+        /// Get the geometry property of object
+        /// </summary>
+        public ObjectGeometryType GeometryType { get; private set; }
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public ObjectGeometry (
+        public ObjectGeometry (
 			Vector3[] inputVertexPosition,
-			int[][] inputTriangle)
+			int[][] inputTriangle,
+            ObjectGeometryType geometryType)
 		{
 			Triangle = new int[inputTriangle.Length][];
 
@@ -30,7 +36,8 @@ namespace SimulationObjectDefinition
             }
 
             SetVertexAdjacency(inputVertexPosition);
-		}
+            GeometryType = geometryType;
+        }
 
 		#endregion
 
@@ -102,7 +109,7 @@ namespace SimulationObjectDefinition
             if (!adjacencyList.Contains(itemIndex))
                 adjacencyList.Add(itemIndex);
         }
-
+        
         #endregion
     }
 

@@ -66,7 +66,9 @@ namespace CollisionEngine
 		private EngineCollisionPoint ExecuteEngine(
 			SimulationObject shape1,
 			SimulationObject shape2,
-			List<SupportTriangle> triangles,
+            int geometryIndexA,
+            int geometryIndexB,
+            List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
 			var epaCollisionPoint = new EngineCollisionPoint();
@@ -143,6 +145,8 @@ namespace CollisionEngine
                     Support vt = Helper.GetMinkowskiFarthestPoint(
                              shape1,
                              shape2,
+                             geometryIndexA,
+                             geometryIndexB,
                              direction.Normalize());
 
                     triangles = Helper.AddPointToConvexPolygon (
@@ -172,12 +176,16 @@ namespace CollisionEngine
 		public EPAOutput Execute(
 			SimulationObject objectA,
 			SimulationObject objectB,
-			List<SupportTriangle> startTriangles,
+            int geometryIndexA,
+            int geometryIndexB,
+            List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{
 			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
 				                                      objectA,
 				                                      objectB,
+                                                      geometryIndexA,
+                                                      geometryIndexB,
 				                                      startTriangles,
 													  centroid);
 
