@@ -58,25 +58,30 @@ namespace Utility
 		/// <returns>The GL objects.</returns>
 		/// <param name="objects">Objects.</param>
 		/// <param name="nObject">N object.</param>
-		public static int[] LoadGLObjects(
-			LoadResult[] objects,
-			PhysicsEngineMathUtility.Vector3[] translate,
+		public static int[][] LoadGLObjects(
+			LoadResult[][] objects,
+			PhysicsEngineMathUtility.Vector3[][] translate,
 			int nObject,
 			bool GLM_TEXTURE = false, 
 			bool GLM_FLAT = false,
 			bool GLM_SMOOTH = false )
 		{
-			int[] displayList = new int[nObject]; 
+			int[][] displayList = new int[nObject][]; 
 
 			for (int i = 0; i < nObject; i++) 
 			{
-				displayList [i] = GL.GenLists (1);
+                displayList[i] = new int[objects[i].Length];
 
-				GL.NewList (displayList [i], ListMode.CompileAndExecute);
+                for (int j = 0; j < objects[i].Length; j++)
+                {
+                    displayList[i][j] = GL.GenLists(1);
 
-				GLDrawSolid (objects[i], translate[i], GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+                    GL.NewList(displayList[i][j], ListMode.CompileAndExecute);
 
-				GL.EndList ();
+                    GLDrawSolid(objects[i][j], translate[i][j], GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+
+                    GL.EndList();
+                }
 			}
 
 			return displayList;

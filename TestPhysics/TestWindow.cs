@@ -21,9 +21,9 @@ namespace TestPhysics
 
 		Stopwatch stopwatch = new Stopwatch();
 
-		int[] textureID;
+		int[][] textureID;
 
-		int[] displayList;
+		int[][] displayList;
 
 		double elapsedTime = 0.0;
 		long performaceValue = 0;
@@ -60,16 +60,17 @@ namespace TestPhysics
 		{
 			try
 			{
-				//var env = new BuildEnvironment();
-				//env.GetPhysicsEnvironment();
+                //var env = new BuildEnvironment();
+                //env.GetPhysicsEnvironment();
 
-				//LoadObject loadObject = new LoadObject ("startJoint.xml");
-				//LoadObject loadObject = new LoadObject ("configJoint.xml");
-				//var loadObject = new LoadObject ("startConfig.xml");
-				//var loadObject = new LoadObject ("carConfig.xml");
-				var loadObject = new LoadObject("testJointBridge.xml");
+                //LoadObject loadObject = new LoadObject ("startJoint.xml");
+                //LoadObject loadObject = new LoadObject ("configJoint.xml");
+                //var loadObject = new LoadObject ("startConfig.xml");
+                //var loadObject = new LoadObject ("carConfig.xml");
+                //var loadObject = new LoadObject("testJointBridge.xml");
+                var loadObject = new LoadObject("compositeObjectConfig.xml");
 
-				simulationObjects = loadObject.LoadSimulationObjects ();
+                simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
 
 				displayList = loadObject.GetOpenGLObjectList ();
@@ -177,8 +178,9 @@ namespace TestPhysics
 			displayJoint ();
 
             displayPartitionedContact();
-            //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-            //    displayVertex(i);
+
+            for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+                displayVertex(i);
 
             //displayAABB();
             //displayVertex (0);
@@ -201,8 +203,6 @@ namespace TestPhysics
 			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Escape])
 				Exit ();
 			
-				
-
 			GL.Viewport (0, 0, Width, Height);
 			GL.MatrixMode (MatrixMode.Projection);
 			GL.LoadIdentity ();
@@ -218,9 +218,7 @@ namespace TestPhysics
 			//Physics
 			UpdateMouse ();
 			UpdateKeyboard ();
-
             
-
             try {
 				
 				if (!pause)
@@ -411,58 +409,61 @@ namespace TestPhysics
 			PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = physicsEngine.GetObject (id).RotationMatrix;
 			PhysicsEngineMathUtility.Vector3 position = physicsEngine.GetObject (id).Position;
 			ObjectType type = physicsEngine.GetObject (id).ObjectType;
+            
+            for (int i = 0; i < physicsEngine.GetObject(id).ObjectGeometry.Length; i++)
+            {
+                GL.PushMatrix();
+                GL.Enable(EnableCap.Texture2D);
 
-			//if (type != ObjectType.JointConnector) {
+                PhysicsEngineMathUtility.Vector3 positionMt = position +
+                                                              physicsEngine.GetObject(id).StartCompositePositionObjects[i] +
+                                                              physicsEngine.GetObject(id).StartPosition;
 
-				GL.PushMatrix ();
-				GL.Enable (EnableCap.Texture2D);
+                Matrix4 positionMatrix = new Matrix4(
+                                            Convert.ToSingle(rotatioMatrix.r1c1),
+                                            Convert.ToSingle(rotatioMatrix.r2c1),
+                                            Convert.ToSingle(rotatioMatrix.r3c1),
+                                            0.0f,
 
-				Matrix4 positionMatrix = new Matrix4 (
-					                        Convert.ToSingle (rotatioMatrix.r1c1), 
-					                        Convert.ToSingle (rotatioMatrix.r2c1), 
-					                        Convert.ToSingle (rotatioMatrix.r3c1),
-					                        0.0f,
+                                            Convert.ToSingle(rotatioMatrix.r1c2),
+                                            Convert.ToSingle(rotatioMatrix.r2c2),
+                                            Convert.ToSingle(rotatioMatrix.r3c2),
+                                            0.0f,
 
-					                        Convert.ToSingle (rotatioMatrix.r1c2), 
-					                        Convert.ToSingle (rotatioMatrix.r2c2), 
-					                        Convert.ToSingle (rotatioMatrix.r3c2),
-					                        0.0f,
+                                            Convert.ToSingle(rotatioMatrix.r1c3),
+                                            Convert.ToSingle(rotatioMatrix.r2c3),
+                                            Convert.ToSingle(rotatioMatrix.r3c3),
+                                            0.0f,
 
-					                        Convert.ToSingle (rotatioMatrix.r1c3), 
-					                        Convert.ToSingle (rotatioMatrix.r2c3), 
-					                        Convert.ToSingle (rotatioMatrix.r3c3),
-					                        0.0f,
+                                            Convert.ToSingle(positionMt.x),
+                                            Convert.ToSingle(positionMt.y),
+                                            Convert.ToSingle(positionMt.z),
+                                            1.0f);
 
-					                        Convert.ToSingle (position.x), 
-					                        Convert.ToSingle (position.y), 
-					                        Convert.ToSingle (position.z),
-					                        1.0f);
-			
-				Matrix4 mView = positionMatrix;
+                Matrix4 mView = positionMatrix;
 
-				var dmviewData = new float[] {
-					mView.M11, mView.M12, mView.M13, mView.M14,
-					mView.M21, mView.M22, mView.M23, mView.M24,
-					mView.M31, mView.M32, mView.M33, mView.M34,
-					mView.M41, mView.M42, mView.M43, mView.M44
-				};
+                var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
 
-				//Fine parte da modificare
-				GL.MultMatrix (dmviewData);
+                //Fine parte da modificare
+                GL.MultMatrix(dmviewData);
 
-				//Inserire il textire ID
-				if (id == selectedObjIndex)
-					GL.BindTexture (TextureTarget.Texture2D, redTexture);
-				else
-					GL.BindTexture (TextureTarget.Texture2D, textureID [id]);
-			
-				GL.CallList (displayList [id]);
-				GL.Disable (EnableCap.Texture2D);
+                //Inserire il textire ID
+                if (id == selectedObjIndex)
+                    GL.BindTexture(TextureTarget.Texture2D, redTexture);
+                else
+                    GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
 
-
-	
-				GL.PopMatrix ();
-			//}
+                GL.CallList(displayList[id][i]);
+                GL.Disable(EnableCap.Texture2D);
+                
+                GL.PopMatrix();
+            }
+					
 		}
 
 		private void displayContact()
@@ -648,27 +649,32 @@ namespace TestPhysics
 
 		private void displayVertex(int index)
 		{
-			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition.Length; i++) 
+
+			for (int i = 0; i < physicsEngine.GetObject (index).RelativePositions.Length; i++) 
 			{
-				GL.PushMatrix ();
+                PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetObject(index).Position +
+                                (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).RelativePositions[i]);
 
-				Matrix4 mView = Matrix4.CreateTranslation (
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.x), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.y), 
-					Convert.ToSingle (physicsEngine.GetObject (index).ObjectGeometry[0].VertexPosition[i].Vertex.z));
+                GL.PushMatrix();
 
-				var dmviewData = new float[] {
-					mView.M11, mView.M12, mView.M13, mView.M14,
-					mView.M21, mView.M22, mView.M23, mView.M24,
-					mView.M31, mView.M32, mView.M33, mView.M34,
-					mView.M41, mView.M42, mView.M43, mView.M44
-				};
+                Matrix4 mView = Matrix4.CreateTranslation(
+                    Convert.ToSingle(relativePosition.x),
+                    Convert.ToSingle(relativePosition.y),
+                    Convert.ToSingle(relativePosition.z));
 
-				GL.MultMatrix (dmviewData);
+                var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
 
-				OpenGLUtilities.drawSolidCube (0.04f);
+                GL.MultMatrix(dmviewData);
 
-				GL.PopMatrix ();
+                OpenGLUtilities.drawSolidCube(0.04f);
+
+                GL.PopMatrix();
+                
 			}
 		}
 

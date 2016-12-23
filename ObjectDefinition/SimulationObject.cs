@@ -103,13 +103,18 @@ namespace SimulationObjectDefinition
 		/// Gets the mass center start position.
 		/// </summary>
 		/// <value>The start position.</value>
-		public Vector3 StartPosition{ get; private set; }
+		public Vector3 StartPosition { get; private set; }
 
-		/// <summary>
-		/// Gets the actual linear velocity.
-		/// </summary>
-		/// <value>The linear velocity.</value>
-		public Vector3 LinearVelocity{ get; private set; }
+        /// <summary>
+        /// Gets the start position of each elements of composite Objects
+        /// </summary>
+        public Vector3[] StartCompositePositionObjects { get; private set; }
+
+        /// <summary>
+        /// Gets the actual linear velocity.
+        /// </summary>
+        /// <value>The linear velocity.</value>
+        public Vector3 LinearVelocity { get; private set; }
 
 		/// <summary>
 		/// Gets the temp linear velocity.
@@ -145,13 +150,13 @@ namespace SimulationObjectDefinition
 		/// Gets the force value.
 		/// </summary>
 		/// <value>The force value.</value>
-		public Vector3 ForceValue { get; private set;}
+		public Vector3 ForceValue { get; private set; }
 
 		/// <summary>
 		/// Gets the torque value.
 		/// </summary>
 		/// <value>The torque value.</value>
-		public Vector3 TorqueValue { get; private set;}
+		public Vector3 TorqueValue { get; private set; }
 
 		#endregion
 
@@ -167,6 +172,7 @@ namespace SimulationObjectDefinition
 
 		#region Constructor
 
+        //TODO Refactoring costruttori(inserire possibilità di creeare oggetti con centro di massa e inertia tensor prestabiliti)
 		public SimulationObject(
 			ObjectType type,
 			ObjectGeometry geometry,
@@ -187,12 +193,14 @@ namespace SimulationObjectDefinition
 			else if (Mass > 0.0)
 				InverseMass = 1.0 / Mass;
 
-			RotationStatus = rotationStatus;
+            StartCompositePositionObjects = new Vector3[1];
 
-			SetObjectProperties();
+			RotationStatus = rotationStatus;
 
             Position = position;
 
+            SetObjectProperties();
+            
             SetAABB();
 
             SleepingFrameCount = 0;
@@ -202,6 +210,7 @@ namespace SimulationObjectDefinition
             ObjectType type,
             ObjectGeometry[] geometry,
             double[] mass,
+            Vector3[] startCompositePosition,
             Vector3 position,
             Quaternion rotationStatus)
         {
@@ -223,6 +232,8 @@ namespace SimulationObjectDefinition
 
             RotationStatus = rotationStatus;
 
+            StartCompositePositionObjects = startCompositePosition;
+            
             SetObjectProperties();
 
             Position = position;
@@ -360,8 +371,8 @@ namespace SimulationObjectDefinition
             {
                 Vector3[] vertexPosition = Array.ConvertAll(
                                         ObjectGeometry[i].VertexPosition,
-                                        item => item.Vertex);
-
+                                        item => item.Vertex + StartCompositePositionObjects[i]);
+                //TODO da rivedere
                 var inertiaTensor = new InertiaTensor(
                         vertexPosition,
                         ObjectGeometry[i].Triangle,
@@ -392,14 +403,15 @@ namespace SimulationObjectDefinition
             }
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
-            SetRelativePosition(totalVertex);
 
             if (Mass > 0)
                 StartPosition = startPosition / Mass;
 
+            SetRelativePosition(totalVertex);
+            
             BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
             InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
-                Matrix3x3.Transpose(RotationMatrix);
+                            Matrix3x3.Transpose(RotationMatrix);
         }
 
         private void SetRelativePosition(int totalVertex)
@@ -412,7 +424,7 @@ namespace SimulationObjectDefinition
                 {
                     for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
                         RelativePositions[(i * ObjectGeometry[i].VertexPosition.Length) + j] =
-                            ObjectGeometry[i].VertexPosition[j].Vertex -
+                            ObjectGeometry[i].VertexPosition[j].Vertex +
                             StartPosition;
                 }
             }

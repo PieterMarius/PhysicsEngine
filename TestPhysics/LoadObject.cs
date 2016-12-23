@@ -15,7 +15,8 @@ namespace TestPhysics
 		#region Private Fields
 
 		string nodePathObjects = "/RigidBodyEngine/ObjectsSettings/Object";
-		string nodePathJoints = "/RigidBodyEngine/JointsSettings/Joint";
+        string nodePathGeometry = "ObjectGeometry";
+        string nodePathJoints = "/RigidBodyEngine/JointsSettings/Joint";
 
 		#region Object Attribute
 
@@ -32,6 +33,7 @@ namespace TestPhysics
 		string textureAttribute = "Texture";
 		string objectType = "ObjectType";
 		string excludeFromCollisionDetection = "ExludeFromCollisionDetection";
+        string compositePosition = "CompositePosition";
 
 		#endregion
 
@@ -51,10 +53,7 @@ namespace TestPhysics
 		string angularLimitMax = "AngularLimitMax";
 
 		#endregion
-
-		Vector3[] translate;
-
-
+        		
 		#endregion
 
 		#region Public Fields
@@ -83,19 +82,11 @@ namespace TestPhysics
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
 			SimulationObject[] objects = new SimulationObject[xmlList.Count];
-
-			translate = new Vector3[xmlList.Count];
-
+            			
 			for (int i = 0; i < xmlList.Count; i++)
 			{
-				//Scale
-				float scale = Convert.ToSingle(xmlList[i][scaleAttribute].InnerText);
-
-				//Object geometry file name
-				string geometryFileName = xmlList[i][objectGeometryAttribute].InnerText;
-
-				//Rotation Status
-				var versor = new Vector3(
+                //Rotation Status
+                var versor = new Vector3(
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["x"].Value),
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["y"].Value),
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["z"].Value));
@@ -108,15 +99,53 @@ namespace TestPhysics
 					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["y"].Value),
 					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["z"].Value));
 
-				objects[i] = new SimulationObject(
-					(ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
-					GetObjectGeometry(geometryFileName, scale),
-					Convert.ToDouble(xmlList[i][massAttribute].InnerText),
-					position,
-					new Quaternion(versor, angle));
+                XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-				//Linear Velocity
-				objects [i].SetLinearVelocity (new Vector3 (
+                ObjectGeometry[] objGeometry = new ObjectGeometry[xmlGeometryList.Count];
+                double[] mass = new double[xmlGeometryList.Count];
+                Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
+
+                for (int j = 0; j < xmlGeometryList.Count; j++)
+                {
+                    //Scale
+                    float scale = Convert.ToSingle(xmlGeometryList[j][scaleAttribute].InnerText);
+
+                    //Object geometry file name
+                    string geometryFileName = xmlGeometryList[j][objectGeometryAttribute].InnerText;
+
+                    //Object mass
+                    mass[j] = Convert.ToDouble(xmlGeometryList[j][massAttribute].InnerText);
+
+                    objGeometry[j] = GetObjectGeometry(geometryFileName, scale);
+
+                    startCompositePosition[j] = new Vector3(
+                        Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["x"].Value),
+                        Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["y"].Value),
+                        Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["z"].Value));
+                }
+
+                if (xmlGeometryList.Count > 1)
+                {
+                    objects[i] = new SimulationObject(
+                        (ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
+                        objGeometry,
+                        mass,
+                        startCompositePosition,
+                        position,
+                        new Quaternion(versor, angle));
+                }
+                else
+                {
+                    objects[i] = new SimulationObject(
+                        (ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
+                        objGeometry[0],
+                        mass[0],
+                        position,
+                        new Quaternion(versor, angle));
+                }
+
+                //Linear Velocity
+                objects [i].SetLinearVelocity (new Vector3 (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["y"].Value),
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["z"].Value)));
@@ -327,24 +356,36 @@ namespace TestPhysics
 			return joints;
 		}
 
-		public int[] GetOpenGLObjectList()
+		public int[][] GetOpenGLObjectList()
 		{
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
-			LoadResult[] loadObjects = new LoadResult[xmlList.Count];
+			LoadResult[][] loadObjects = new LoadResult[xmlList.Count][];
+
+            Vector3[][] translate = new Vector3[xmlList.Count][];
 
 			for (int i = 0; i < xmlList.Count; i++) 
 			{
-				//Object geometry file name
-				string geometryFileName = xmlList [i] [objectGeometryAttribute].InnerText;
+                XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-				//Scale
-				float scale = Convert.ToSingle (xmlList [i] [scaleAttribute].InnerText);
+                translate[i] = new Vector3[xmlGeometryList.Count];
+                loadObjects[i] = new LoadResult[xmlGeometryList.Count];
 
-				loadObjects[i]  = LoadObjSolid (geometryFileName, scale);
+                for (int j = 0; j < xmlGeometryList.Count; j++)
+                {
+                    //Object geometry file name
+                    string geometryFileName = xmlGeometryList[j][objectGeometryAttribute].InnerText;
+
+                    //Scale
+                    float scale = Convert.ToSingle(xmlGeometryList[j][scaleAttribute].InnerText);
+
+                    loadObjects[i][j] = LoadObjSolid(geometryFileName, scale);
+                }
+
+                    
 			}
 
 			return OpenGLUtilities.LoadGLObjects (
@@ -356,21 +397,29 @@ namespace TestPhysics
 				true);
 		}
 
-		public int[] LoadTexture()
+		public int[][] LoadTexture()
 		{
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
-			int[] textureID = new int[xmlList.Count];
+			int[][] textureID = new int[xmlList.Count][];
 
 			for (int i = 0; i < xmlList.Count; i++) 
 			{
-				//Object geometry file name
-				string textureFileName = xmlList [i] [textureAttribute].InnerText;
+                XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-				textureID[i] = OpenGLUtilities.LoadTexture(textureFileName);
+                textureID[i] = new int[xmlGeometryList.Count];
+
+                for (int j = 0; j < xmlGeometryList.Count; j++)
+                {
+                    //Object geometry file name
+                    string textureFileName = xmlGeometryList[j][textureAttribute].InnerText;
+
+                    textureID[i][j] = OpenGLUtilities.LoadTexture(textureFileName);
+                }
+                   
 			}
 
 			return textureID;
