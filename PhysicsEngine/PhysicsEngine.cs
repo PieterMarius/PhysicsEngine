@@ -1049,7 +1049,7 @@ namespace MonoPhysicsEngine
 
 		#endregion
 
-        #region Integrate velocity and position
+        #region Integrate Velocity and Position
 
         /// <summary>
         /// Updates velocity of the simulations objects.
