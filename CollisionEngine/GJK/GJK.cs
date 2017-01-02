@@ -45,15 +45,17 @@ namespace CollisionEngine
 		/// <param name="objB">Object b.</param>
 		private Support GetFarthestPoint(
 			SimulationObject objA,
-			SimulationObject objB)
+			SimulationObject objB,
+            int geometryIndexA,
+            int geometryIndexB)
 		{
 			int indexA = 0;
 			int indexB = objB.RelativePositions.Length / 2;
-			
-			return new Support(
-				Helper.GetVertexPosition(objA,indexA) - Helper.GetVertexPosition(objB, indexB),
-				indexA,
-				indexB);
+
+            return new Support(
+                Helper.GetVertexPosition(objA, geometryIndexA ,indexA) - Helper.GetVertexPosition(objB, geometryIndexB, indexB),
+                indexA,
+                indexB);
 		}
 
 		private Vector3 GetDirectionOnSimplex2(Simplex simplex)
@@ -145,8 +147,8 @@ namespace CollisionEngine
 			var oldDirection = new Vector3();
 			var simplex = new Simplex();
 
-			//Primo punto del simplex
-			simplex.Support.Add(GetFarthestPoint(shape1, shape2));
+            //Primo punto del simplex
+            simplex.Support.Add(GetFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB));
 
 			//Secondo punto del simplex
 			Vector3 direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
@@ -183,7 +185,7 @@ namespace CollisionEngine
 
 			result.SetDist(triangleDistance);
 			result.SetNormal(Vector3.Normalize(triangleDistance));
-			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
+			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, geometryIndexA, geometryIndexB, ref result);
 
 			minDistance = triangleDistance.Length();
 
@@ -234,7 +236,7 @@ namespace CollisionEngine
 				{
 					result.SetDist(triangleDistance);
 					result.SetNormal(Vector3.Normalize(triangleDistance));
-					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
+					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, geometryIndexA, geometryIndexB, ref result);
 
 					minDistance = mod;
 				}

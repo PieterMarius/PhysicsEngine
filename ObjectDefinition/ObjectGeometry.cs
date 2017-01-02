@@ -7,9 +7,20 @@ namespace SimulationObjectDefinition
 	{
 		#region Object Properties
 
+        /// <summary>
+        /// Vertex Position
+        /// </summary>
 		public VertexAdjacency[] VertexPosition { get; private set; }
-		public int[][] Triangle { get; private set; }
-		public AABB AABBox { get; private set; }
+        
+        /// <summary>
+        /// Triangle Index
+        /// </summary>
+        public int[][] Triangle { get; private set; }
+        
+        /// <summary>
+        /// Bounding Box
+        /// </summary>
+        public AABB AABBox { get; private set; }
         
         /// <summary>
         /// Get the geometry property of object

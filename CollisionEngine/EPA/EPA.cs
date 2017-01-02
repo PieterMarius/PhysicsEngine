@@ -43,15 +43,17 @@ namespace CollisionEngine
 			SupportTriangle triangle,
 			SimulationObject shape1,
 			SimulationObject shape2,
+            int geometryIndexA,
+            int geometryIndexB,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = Helper.GetVertexPosition(shape1, triangle.a.a);
-			Vector3 ba1 = Helper.GetVertexPosition(shape1, triangle.b.a) - a1;
-			Vector3 ca1 = Helper.GetVertexPosition(shape1, triangle.c.a) - a1;
+			Vector3 a1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.a.a);
+			Vector3 ba1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.b.a) - a1;
+			Vector3 ca1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.c.a) - a1;
 
-			Vector3 a2 = Helper.GetVertexPosition(shape2, triangle.a.b);
-			Vector3 ba2 = Helper.GetVertexPosition(shape2, triangle.b.b) - a2;
-			Vector3 ca2 = Helper.GetVertexPosition(shape2, triangle.c.b) - a2;
+			Vector3 a2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.a.b);
+			Vector3 ba2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.b.b) - a2;
+			Vector3 ca2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.c.b) - a2;
 
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
@@ -129,6 +131,8 @@ namespace CollisionEngine
 								triangles[i],
 								shape1,
 								shape2,
+                                geometryIndexA,
+                                geometryIndexB,
 								ref epaCollisionPoint);
 						}
 					}

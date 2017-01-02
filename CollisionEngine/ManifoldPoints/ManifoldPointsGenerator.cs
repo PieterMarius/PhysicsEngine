@@ -34,16 +34,20 @@ namespace CollisionEngine
 		public List<CollisionPoint> GetManifoldPoints(
 			SimulationObject objectA, 
 			SimulationObject objectB,
-			CollisionPoint collisionPoint)
+            int geometryIndexA,
+            int geometryIndexB,
+            CollisionPoint collisionPoint)
 		{
 			List<Vector3> collisionA = getNearestPoint (
 				objectA,
-				collisionPoint.CollisionPointA,
+                geometryIndexA,
+                collisionPoint.CollisionPointA,
 				collisionPoint.CollisionNormal);
 
 			List<Vector3> collisionB = getNearestPoint (
 				objectB,
-				collisionPoint.CollisionPointB,
+                geometryIndexB,
+                collisionPoint.CollisionPointB,
 				collisionPoint.CollisionNormal);
 
 			List<CollisionPoint> collisionPointsList = findCollisionPoints (
@@ -70,17 +74,18 @@ namespace CollisionEngine
 		/// <param name="collisionPoint">Collision point.</param>
 		private List<Vector3> getNearestPoint(
 			SimulationObject shape,
-			Vector3 collisionPoint,
+            int geometryIndex,
+            Vector3 collisionPoint,
 			Vector3 planeNormal)
 		{
 			var collisionPoints = new List<Vector3> ();
 
 			Vector3 normal = Vector3.Normalize(planeNormal);
-			for (int i = 0; i < shape.ObjectGeometry[0].VertexPosition.Length; i++) 
+			for (int i = 0; i < shape.ObjectGeometry[geometryIndex].VertexPosition.Length; i++) 
 			{
-                Vector3 nt = Vector3.Normalize (Helper.GetVertexPosition(shape, i) - collisionPoint);
-				if (Math.Abs (Vector3.Dot (nt, normal)) < ManifoldPlaneTolerance)
-					collisionPoints.Add (Helper.GetVertexPosition(shape, i));
+                Vector3 nt = Vector3.Normalize(Helper.GetVertexPosition(shape, geometryIndex, i) - collisionPoint);
+                if (Math.Abs(Vector3.Dot(nt, normal)) < ManifoldPlaneTolerance)
+                    collisionPoints.Add(Helper.GetVertexPosition(shape, geometryIndex, i));
 			}
 
 			return collisionPoints;

@@ -8,6 +8,7 @@ namespace SimulationObjectDefinition
 
 		Vector3 massCenter;
 		Matrix3x3 inertiaTensor;
+        bool bodyCoords;
 		readonly double objMass;
 
 		readonly Vector3[] vertexStartPosition;
@@ -38,10 +39,12 @@ namespace SimulationObjectDefinition
 		public InertiaTensor (
 			Vector3[] vertexStartPosition,
 			int[][] triangleVertexIndex,
-			double mass)
+			double mass,
+            bool bodyCoords = true)
 		{
 			this.vertexStartPosition = vertexStartPosition;
 			this.triangleVertexIndex = triangleVertexIndex;
+            this.bodyCoords = bodyCoords;
 			objMass = mass;
 
 			massCenter = new Vector3 ();
@@ -112,6 +115,8 @@ namespace SimulationObjectDefinition
 				double y2 = vertexStartPosition [triangleVertexIndex [i] [2]].y;
 				double z2 = vertexStartPosition [triangleVertexIndex [i] [2]].z;
 
+
+
 				//Bordi e prodotto vettoriale 
 
 				double a1 = x1 - x0;
@@ -133,18 +138,23 @@ namespace SimulationObjectDefinition
 				subExpression (ref y0, ref y1, ref y2, ref f1y, ref f2y, ref f3y, ref g0y, ref g1y, ref g2y);
 				subExpression (ref z0, ref z1, ref z2, ref f1z, ref f2z, ref f3z, ref g0z, ref g1z, ref g2z);
 
-				//Aggiorno l'integrale
+                //Aggiorno l'integrale
 
-				intg [0] += d0 * f1x;
-				intg [1] += d0*f2x; intg[2] += d1*f2y; intg [3] += d2 * f2z;
-				intg [4] += d0*f3x; intg[5] += d1*f3y; intg [6] += d2 * f3z;
-				intg [7] += d0 * (y0 * g0x + y1 * g1x + y2 * g2x);
-				intg [8] += d1 * (z0 * g0y + z1 * g1y + z2 * g2y);
-				intg [9] += d2 * (x0 * g0z + x1 * g1z + x2 * g2z);
+                intg[0] += d0 * f1x;
+                intg[1] += d0 * f2x;
+                intg[2] += d1 * f2y;
+                intg[3] += d2 * f2z;
+                intg[4] += d0 * f3x;
+                intg[5] += d1 * f3y;
+                intg[6] += d2 * f3z;
+                intg[7] += d0 * (y0 * g0x + y1 * g1x + y2 * g2x);
+                intg[8] += d1 * (z0 * g0y + z1 * g1y + z2 * g2y);
+                intg[9] += d2 * (x0 * g0z + x1 * g1z + x2 * g2z);
 			}
+
 			for (int i = 0; i < 10; i++) 
 			{
-				intg [i] *= mult [i];
+                intg[i] *= mult[i];
 			}
 			double mass = intg [0];
 
@@ -155,17 +165,30 @@ namespace SimulationObjectDefinition
 			double massCenterZ = intg [3] / mass;
 
 			massCenter = new Vector3 (massCenterX, massCenterY, massCenterZ);
-			//matrice tensore d'inerzia sul centro di massa
 
-			double r1x = intg [5] + intg [6] - mass * (massCenter.y * massCenter.y + massCenter.z * massCenter.z);
-			double r2y = intg [4] + intg [6] - mass * (massCenter.z * massCenter.z + massCenter.x * massCenter.x);
-			double r3z = intg [4] + intg [5] - mass * (massCenter.x * massCenter.x + massCenter.y * massCenter.y);
-			double r1y = -(intg [7] - mass * massCenter.x * massCenter.y);
-			double r2z = -(intg [8] - mass * massCenter.y * massCenter.z);
-			double r1z = -(intg [9] - mass * massCenter.z * massCenter.x);
-			double r2x = -(intg [7] - mass * massCenter.x * massCenter.y);
-			double r3y = -(intg [8] - mass * massCenter.y * massCenter.z);
-			double r3x = -(intg [9] - mass * massCenter.z * massCenter.x);
+            double r1x = intg[5] + intg[6];
+            double r2y = intg[4] + intg[6];
+            double r3z = intg[4] + intg[5];
+            double r1y = -intg[7];
+            double r2z = -intg[8];
+            double r1z = -intg[9];
+            double r2x = -intg[7];
+            double r3y = -intg[8];
+            double r3x = -intg[9];
+
+            //matrice tensore d'inerzia sul centro di massa
+            if (bodyCoords)
+            {
+                r1x -= mass * (massCenter.y * massCenter.y + massCenter.z * massCenter.z);
+                r2y -= mass * (massCenter.z * massCenter.z + massCenter.x * massCenter.x);
+                r3z -= mass * (massCenter.x * massCenter.x + massCenter.y * massCenter.y);
+                r1y += mass * massCenter.x * massCenter.y;
+                r2z += mass * massCenter.y * massCenter.z;
+                r1z += mass * massCenter.z * massCenter.x;
+                r2x = r1y;
+                r3y = r2z;
+                r3x = r1z;
+            }
 		
 			inertiaTensor = new Matrix3x3 (
 				r1x, r1y, r1z,

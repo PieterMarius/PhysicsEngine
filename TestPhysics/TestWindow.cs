@@ -385,17 +385,17 @@ namespace TestPhysics
 
 		}
 
-		private void UpdateVertexPosition(int index)
-		{
-			simulationObjects[index].SetRotationMatrix (
-				PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
+		//private void UpdateVertexPosition(int index)
+		//{
+		//	simulationObjects[index].SetRotationMatrix (
+		//		PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
 
-			for (int i = 0; i < simulationObjects[index].ObjectGeometry[0].VertexPosition.Length; i++) 
-			{
-				PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
-				simulationObjects [index].ObjectGeometry[0].SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
-			}
-		}
+		//	for (int i = 0; i < simulationObjects[index].ObjectGeometry[0].VertexPosition.Length; i++) 
+		//	{
+		//		PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
+		//		simulationObjects [index].ObjectGeometry[0].SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
+		//	}
+		//}
 			
 
 		#endregion
@@ -415,8 +415,7 @@ namespace TestPhysics
                 GL.PushMatrix();
                 GL.Enable(EnableCap.Texture2D);
 
-                PhysicsEngineMathUtility.Vector3 positionMt = position +
-                                                              physicsEngine.GetObject(id).StartCompositePositionObjects[i] +
+                PhysicsEngineMathUtility.Vector3 positionMt = position + physicsEngine.GetObject(id).StartCompositePositionObjects[i]-
                                                               physicsEngine.GetObject(id).StartPosition;
 
                 Matrix4 positionMatrix = new Matrix4(
@@ -468,53 +467,58 @@ namespace TestPhysics
 
 		private void displayContact()
 		{
-			for (int i = 0; i < collPoint.Count; i++) {
-				for (int j = 0; j < collPoint [i].CollisionPoints.Length; j++) {
+			for (int i = 0; i < collPoint.Count; i++)
+            {
+                for (int h = 0; h < collPoint[i].CollisionPointBase.Length; h++)
+                {
+                    for (int j = 0; j < collPoint[i].CollisionPointBase[h].CollisionPoints.Length; j++)
+                    {
 
-					GL.PushMatrix ();
+                        GL.PushMatrix();
 
-					Matrix4 mView = Matrix4.CreateTranslation (
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.x), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.y), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointA.z));
+                        Matrix4 mView = Matrix4.CreateTranslation(
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.x),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.y),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.z));
 
-					var dmviewData = new float[] {
-						mView.M11, mView.M12, mView.M13, mView.M14,
-						mView.M21, mView.M22, mView.M23, mView.M24,
-						mView.M31, mView.M32, mView.M33, mView.M34,
-						mView.M41, mView.M42, mView.M43, mView.M44
-					};
+                        var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
 
-					GL.MultMatrix (dmviewData);
+                        GL.MultMatrix(dmviewData);
 
-					//GL.Color3 (1.0f, 0.0, 0.0);
-					OpenGLUtilities.drawSolidCube (0.08f);
+                        //GL.Color3 (1.0f, 0.0, 0.0);
+                        OpenGLUtilities.drawSolidCube(0.08f);
 
-					GL.PopMatrix ();
+                        GL.PopMatrix();
 
-					GL.PushMatrix ();
+                        GL.PushMatrix();
 
-					Matrix4 mView1 = Matrix4.CreateTranslation (
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.x), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.y), 
-						Convert.ToSingle (collPoint[i].CollisionPoints [j].CollisionPointB.z));
+                        Matrix4 mView1 = Matrix4.CreateTranslation(
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.x),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.y),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.z));
 
-					var dmviewData1 = new float[] {
-						mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-						mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-						mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-						mView1.M41, mView1.M42, mView1.M43, mView1.M44
-					};
+                        var dmviewData1 = new float[] {
+                        mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                        mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                        mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                        mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                    };
 
-					GL.MultMatrix (dmviewData1);
+                        GL.MultMatrix(dmviewData1);
 
 
-					//GL.Color3 (1.0f, 0.0, 0.0);
-					OpenGLUtilities.drawSolidCube (0.08f);
+                        //GL.Color3 (1.0f, 0.0, 0.0);
+                        OpenGLUtilities.drawSolidCube(0.08f);
 
-					GL.PopMatrix ();
+                        GL.PopMatrix();
 
-				}
+                    }
+                }
 			}
 		}
 
@@ -541,54 +545,57 @@ namespace TestPhysics
 
                     for (int i = 0; i < collPointStr.Count; i++)
                     {
-                        for (int j = 0; j < collPointStr[i].CollisionPoints.Length; j++)
+                        for (int n = 0; n < collPointStr[i].CollisionPointBase.Length; n++)
                         {
+                            for (int j = 0; j < collPointStr[i].CollisionPointBase[n].CollisionPoints.Length; j++)
+                            {
 
-                            GL.PushMatrix();
+                                GL.PushMatrix();
 
-                            Matrix4 mView = Matrix4.CreateTranslation(
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.x),
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.y),
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointA.z));
+                                Matrix4 mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.x),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.y),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.z));
 
-                            var dmviewData = new float[] {
-                        mView.M11, mView.M12, mView.M13, mView.M14,
-                        mView.M21, mView.M22, mView.M23, mView.M24,
-                        mView.M31, mView.M32, mView.M33, mView.M34,
-                        mView.M41, mView.M42, mView.M43, mView.M44
-                        };
+                                var dmviewData = new float[] {
+                                    mView.M11, mView.M12, mView.M13, mView.M14,
+                                    mView.M21, mView.M22, mView.M23, mView.M24,
+                                    mView.M31, mView.M32, mView.M33, mView.M34,
+                                    mView.M41, mView.M42, mView.M43, mView.M44
+                                    };
 
-                            GL.MultMatrix(dmviewData);
+                                GL.MultMatrix(dmviewData);
 
-                            GL.Color3(color);
-                            OpenGLUtilities.drawSolidCube(0.08f);
-                            GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                                GL.Color3(color);
+                                OpenGLUtilities.drawSolidCube(0.08f);
+                                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
-                            GL.PopMatrix();
+                                GL.PopMatrix();
 
-                            GL.PushMatrix();
+                                GL.PushMatrix();
 
-                            Matrix4 mView1 = Matrix4.CreateTranslation(
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.x),
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.y),
-                                Convert.ToSingle(collPointStr[i].CollisionPoints[j].CollisionPointB.z));
+                                Matrix4 mView1 = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.x),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.y),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.z));
 
-                            var dmviewData1 = new float[] {
-                        mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-                        mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-                        mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-                        mView1.M41, mView1.M42, mView1.M43, mView1.M44
-                        };
+                                var dmviewData1 = new float[] {
+                                    mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                                    mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                                    mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                                    mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                                    };
 
-                            GL.MultMatrix(dmviewData1);
+                                GL.MultMatrix(dmviewData1);
 
-                            GL.Color3(color);
+                                GL.Color3(color);
 
-                            OpenGLUtilities.drawSolidCube(0.08f);
-                            GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                                OpenGLUtilities.drawSolidCube(0.08f);
+                                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
-                            GL.PopMatrix();
+                                GL.PopMatrix();
 
+                            }
                         }
                     }
                 }
@@ -599,50 +606,51 @@ namespace TestPhysics
 		{
 			for (int i = 0; i < collPoint.Count; i++)
 			{
-				
-				GL.PushMatrix();
+                for (int n = 0; n < collPoint[i].CollisionPointBase.Length; n++)
+                {
+                    GL.PushMatrix();
 
-				Matrix4 mView = Matrix4.CreateTranslation(
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.x),
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.y),
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointA.z));
+                    Matrix4 mView = Matrix4.CreateTranslation(
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.x),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.y),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.z));
 
-				var dmviewData = new float[] {
-					mView.M11, mView.M12, mView.M13, mView.M14,
-					mView.M21, mView.M22, mView.M23, mView.M24,
-					mView.M31, mView.M32, mView.M33, mView.M34,
-					mView.M41, mView.M42, mView.M43, mView.M44
-				};
+                    var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
 
-				GL.MultMatrix(dmviewData);
+                    GL.MultMatrix(dmviewData);
 
-				//GL.Color3 (1.0f, 0.0, 0.0);
-				OpenGLUtilities.drawSolidCube(0.08f);
+                    //GL.Color3 (1.0f, 0.0, 0.0);
+                    OpenGLUtilities.drawSolidCube(0.08f);
 
-				GL.PopMatrix();
+                    GL.PopMatrix();
 
-				GL.PushMatrix();
+                    GL.PushMatrix();
 
-				Matrix4 mView1 = Matrix4.CreateTranslation(
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.x),
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.y),
-					Convert.ToSingle(collPoint[i].CollisionPoint.CollisionPointB.z));
+                    Matrix4 mView1 = Matrix4.CreateTranslation(
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.x),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.y),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.z));
 
-				var dmviewData1 = new float[] {
-					mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-					mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-					mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-					mView1.M41, mView1.M42, mView1.M43, mView1.M44
-				};
+                    var dmviewData1 = new float[] {
+                    mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                    mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                    mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                    mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                };
 
-				GL.MultMatrix(dmviewData1);
+                    GL.MultMatrix(dmviewData1);
 
 
-				OpenGLUtilities.drawSolidCube(0.08f);
+                    OpenGLUtilities.drawSolidCube(0.08f);
 
-                
-                GL.PopMatrix();
 
+                    GL.PopMatrix();
+                }
 
 			}
 		}
@@ -652,29 +660,31 @@ namespace TestPhysics
 
 			for (int i = 0; i < physicsEngine.GetObject (index).RelativePositions.Length; i++) 
 			{
-                PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetObject(index).Position +
-                                (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).RelativePositions[i]);
+                for (int j = 0; j < physicsEngine.GetObject(index).RelativePositions[i].Length; j++)
+                {
+                    PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetObject(index).Position +
+                                    (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).RelativePositions[i][j]);
 
-                GL.PushMatrix();
+                    GL.PushMatrix();
 
-                Matrix4 mView = Matrix4.CreateTranslation(
-                    Convert.ToSingle(relativePosition.x),
-                    Convert.ToSingle(relativePosition.y),
-                    Convert.ToSingle(relativePosition.z));
+                    Matrix4 mView = Matrix4.CreateTranslation(
+                        Convert.ToSingle(relativePosition.x),
+                        Convert.ToSingle(relativePosition.y),
+                        Convert.ToSingle(relativePosition.z));
 
-                var dmviewData = new float[] {
+                    var dmviewData = new float[] {
                     mView.M11, mView.M12, mView.M13, mView.M14,
                     mView.M21, mView.M22, mView.M23, mView.M24,
                     mView.M31, mView.M32, mView.M33, mView.M34,
                     mView.M41, mView.M42, mView.M43, mView.M44
                 };
 
-                GL.MultMatrix(dmviewData);
+                    GL.MultMatrix(dmviewData);
 
-                OpenGLUtilities.drawSolidCube(0.04f);
+                    OpenGLUtilities.drawSolidCube(0.04f);
 
-                GL.PopMatrix();
-                
+                    GL.PopMatrix();
+                }
 			}
 		}
 

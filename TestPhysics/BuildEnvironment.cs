@@ -92,11 +92,11 @@ namespace TestPhysics
 			objects[0].SetInertiaTensor((objects[0].RotationMatrix * objects[0].BaseInertiaTensor) *
 				Matrix3x3.Transpose(objects[0].RotationMatrix));
 
-			for (int j = 0; j < objects[0].ObjectGeometry[0].VertexPosition.Length; j++)
-			{
-				Vector3 relPositionRotate = objects[0].RotationMatrix * objects[0].RelativePositions[j];
-				objects[0].ObjectGeometry[0].SetVertexPosition(objects[0].Position + relPositionRotate, j);
-			}
+			//for (int j = 0; j < objects[0].ObjectGeometry[0].VertexPosition.Length; j++)
+			//{
+			//	Vector3 relPositionRotate = objects[0].RotationMatrix * objects[0].RelativePositions[j];
+			//	objects[0].ObjectGeometry[0].SetVertexPosition(objects[0].Position + relPositionRotate, j);
+			//}
 
 			#endregion
 

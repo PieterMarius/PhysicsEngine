@@ -94,30 +94,33 @@ namespace CollisionEngine
             double minDistance)
         {
             
-                if (!gjkOutput.Intersection &&
-                    gjkOutput.CollisionDistance <= minDistance)
-                {
-                    var mpg = new ManifoldPointsGenerator(
-                                                  collisionEngineParameters.ManifoldPointNumber,
-                                                  collisionEngineParameters.GJKManifoldTolerance,
-                                                  collisionEngineParameters.ManifoldProjectionTolerance);
+            if (!gjkOutput.Intersection &&
+                gjkOutput.CollisionDistance <= minDistance)
+            {
+                var mpg = new ManifoldPointsGenerator(
+                                                collisionEngineParameters.ManifoldPointNumber,
+                                                collisionEngineParameters.GJKManifoldTolerance,
+                                                collisionEngineParameters.ManifoldProjectionTolerance);
 
-                    if (gjkOutput.CollisionNormal.Length() < 1E-15)
-                        return null;
+                if (gjkOutput.CollisionNormal.Length() < 1E-15)
+                    return null;
 
-                    List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-                                                                   A,
-                                                                   B,
-                                                                   gjkOutput.CollisionPoint);
+                List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+                                                                A,
+                                                                B,
+                                                                geometryIndexA,
+                                                                geometryIndexB,
+                                                                gjkOutput.CollisionPoint);
 
-                    return new CollisionPointStructure(
-                        indexA,
-                        indexB,
-                        gjkOutput.Intersection,
-                        gjkOutput.CollisionDistance,
+                return new CollisionPointStructure(
+                    indexA,
+                    indexB,
+                    new CollisionPointBaseStructure(
+                        gjkOutput.CollisionDistance, 
+                        gjkOutput.Intersection, 
                         gjkOutput.CollisionPoint,
-                        collisionPointsList.ToArray());
-                }
+                        collisionPointsList.ToArray()));
+            }
 
             if (gjkOutput.Intersection)
             {
@@ -140,16 +143,18 @@ namespace CollisionEngine
                 List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
                                                                A,
                                                                B,
+                                                               geometryIndexA,
+                                                               geometryIndexB,
                                                                epaOutput.CollisionPoint);
 
                 return new CollisionPointStructure(
                     indexA,
                     indexB,
-                    gjkOutput.Intersection,
-                    epaOutput.CompenetrationDistance,
-                    epaOutput.CollisionPoint,
-                    collisionPointsList.ToArray());
-
+                    new CollisionPointBaseStructure(
+                        epaOutput.CompenetrationDistance,
+                        gjkOutput.Intersection,
+                        epaOutput.CollisionPoint,
+                        collisionPointsList.ToArray()));
             }
 
             return null;
@@ -163,31 +168,42 @@ namespace CollisionEngine
 			double minDistance)
 		{
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
-
+            
             for (int i = 0; i < A.ObjectGeometry.Length; i++)
             {
                 for (int j = 0; j < B.ObjectGeometry.Length; j++)
                 {
-                    GJKOutput gjkOutput = (collisionEngine.Execute(A, B, i, j));
-                    collisionPointStructure.Add(NarrowPhaseCollisionControl(
-                        gjkOutput, 
-                        A, 
-                        B, 
-                        indexA, 
+                    GJKOutput gjkOutput = collisionEngine.Execute(A, B, i, j);
+                    
+                    CollisionPointStructure collision = NarrowPhaseCollisionControl(
+                        gjkOutput,
+                        A,
+                        B,
+                        indexA,
                         indexB,
                         i,
                         j,
-                        minDistance));
+                        minDistance);
+
+                    if (collision != null)
+                        collisionPointStructure.Add(collision);
                 }
             }
             
-            if(collisionPointStructure.Count > 1)
+            if (collisionPointStructure.Count > 1)
             {
+                List<CollisionPointBaseStructure> baseStructure = new List<CollisionPointBaseStructure>();
 
+                foreach (CollisionPointStructure cps in collisionPointStructure)
+                {
+                    if(cps != null)
+                        baseStructure.AddRange(cps.CollisionPointBase);
+                }
+
+                collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
             }
 
             return collisionPointStructure[0];
-            
 		}
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
@@ -200,7 +216,7 @@ namespace CollisionEngine
 
 			Parallel.For (0, 
 				objects.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
+				new ParallelOptions { MaxDegreeOfParallelism = 1/*collisionEngineParameters.MaxThreadNumber*/ }, 
 				i => {
 					if (objects [i] != null) {
 						for (int j = i + 1; j < objects.Length; j++) {

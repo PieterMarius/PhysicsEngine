@@ -680,63 +680,63 @@ namespace MonoPhysicsEngine
 			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
 
-		private void WarmStarting(List<CollisionPointStructure> collisionPointsBuffer)
-		{
-			foreach (CollisionPointStructure cPoint in collisionPointsBuffer)
-			{
-                //TODO Work in progress
-                int pointBufferIndex = collisionPoints.ToList().FindIndex(
-                                      x => (x.ObjectA == cPoint.ObjectA &&
-                                            x.ObjectB == cPoint.ObjectB) ||
-                                           (x.ObjectA == cPoint.ObjectB &&
-                                            x.ObjectB == cPoint.ObjectA));
+		//private void WarmStarting(List<CollisionPointStructure> collisionPointsBuffer)
+		//{
+		//	foreach (CollisionPointStructure cPoint in collisionPointsBuffer)
+		//	{
+  //              //TODO Work in progress
+  //              int pointBufferIndex = collisionPoints.ToList().FindIndex(
+  //                                    x => (x.ObjectA == cPoint.ObjectA &&
+  //                                          x.ObjectB == cPoint.ObjectB) ||
+  //                                         (x.ObjectA == cPoint.ObjectB &&
+  //                                          x.ObjectB == cPoint.ObjectA));
 
                 
 
-				if (pointBufferIndex > -1)
-				{
-					CollisionPointStructure pointBuffer = collisionPoints[pointBufferIndex];
+		//		if (pointBufferIndex > -1)
+		//		{
+		//			CollisionPointStructure pointBuffer = collisionPoints[pointBufferIndex];
 
-                    if((pointBuffer.CollisionPoint.CollisionPointA - cPoint.CollisionPoint.CollisionPointA).Length() < 
-                        0.001)
-                    {
-                        if (cPoint.FrameCount > 5)
-                        {
-                            collisionPoints[pointBufferIndex].CollisionPoint = cPoint.CollisionPoint;
-                            collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
-                            //collisionPoints[pointBufferIndex].SetIntersection(cPoint.Intersection);
-                            //collisionPoints[pointBufferIndex].SetObjectDistance(cPoint.ObjectDistance);
-                        }
+  //                  if((pointBuffer.CollisionPoint.CollisionPointA - cPoint.CollisionPoint.CollisionPointA).Length() < 
+  //                      0.001)
+  //                  {
+  //                      if (cPoint.FrameCount > 5)
+  //                      {
+  //                          collisionPoints[pointBufferIndex].CollisionPoint = cPoint.CollisionPoint;
+  //                          collisionPoints[pointBufferIndex].CollisionPoints = cPoint.CollisionPoints;
+  //                          //collisionPoints[pointBufferIndex].SetIntersection(cPoint.Intersection);
+  //                          //collisionPoints[pointBufferIndex].SetObjectDistance(cPoint.ObjectDistance);
+  //                      }
 
-                        collisionPoints[pointBufferIndex].SetFrameCount(cPoint.FrameCount + 1);
-                    }
-                    else
-                    {
-                        collisionPoints[pointBufferIndex].SetFrameCount(0);
-                    }
+  //                      collisionPoints[pointBufferIndex].SetFrameCount(cPoint.FrameCount + 1);
+  //                  }
+  //                  else
+  //                  {
+  //                      collisionPoints[pointBufferIndex].SetFrameCount(0);
+  //                  }
 
 
-     //               for (int i = 0; i < pointBuffer.CollisionPoints.Count(); i++)
-					//{
-					//	int ppBuffer = cPoint.CollisionPoints.ToList().FindIndex(x => 	(Vector3.Length(x.CollisionPointA -
-					//																			pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01 &&
-					//																	Vector3.Length(x.CollisionPointB -
-					//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01) ||
-					//																	(Vector3.Length(x.CollisionPointA -
-					//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01 &&
-					//																	Vector3.Length(x.CollisionPointB -
-				 //                                                                               pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01));
+  //   //               for (int i = 0; i < pointBuffer.CollisionPoints.Count(); i++)
+		//			//{
+		//			//	int ppBuffer = cPoint.CollisionPoints.ToList().FindIndex(x => 	(Vector3.Length(x.CollisionPointA -
+		//			//																			pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01 &&
+		//			//																	Vector3.Length(x.CollisionPointB -
+		//			//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01) ||
+		//			//																	(Vector3.Length(x.CollisionPointA -
+		//			//																			pointBuffer.CollisionPoints[i].CollisionPointB) < 0.01 &&
+		//			//																	Vector3.Length(x.CollisionPointB -
+		//		 //                                                                               pointBuffer.CollisionPoints[i].CollisionPointA) < 0.01));
 
-					//	if (ppBuffer > -1)
-					//	{
-					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[0].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[0].StartImpulseValue);
-					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[1].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[1].StartImpulseValue);
-					//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[2].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[2].StartImpulseValue);
-					//	}
-					//}
-				}
-			}
-		}
+		//			//	if (ppBuffer > -1)
+		//			//	{
+		//			//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[0].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[0].StartImpulseValue);
+		//			//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[1].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[1].StartImpulseValue);
+		//			//		collisionPoints[pointBufferIndex].CollisionPoints[i].StartImpulseValue[2].SetStartValue(cPoint.CollisionPoints[ppBuffer].StartImpulseValue[2].StartImpulseValue);
+		//			//	}
+		//			//}
+		//		}
+		//	}
+		//}
 
 		#endregion
 

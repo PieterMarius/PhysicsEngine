@@ -22,9 +22,9 @@
     
    <ObjectsSettings>
 		<Object>
-            <Position x="0,0" y="0,0" z="15,5" />
+            <Position x="0,0" y="0,0" z="0,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="2,0" y="2,0" z="1,0" />
+            <AngularVelocity x="0,0" y="2,0" z="1,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             
@@ -40,7 +40,7 @@
 				<Texture>texture/woodbox.bmp</Texture>
 			</ObjectGeometry>
 			<ObjectGeometry>
-				<Mass>10,0</Mass>
+				<Mass>100,0</Mass>
 				<CompositePosition x="0,0" y="3,0" z="0,0" />
 				<Scale>1,0</Scale>
 				<ObjectGeometry>cube.obj</ObjectGeometry>
@@ -51,7 +51,7 @@
 		<Object>
             <Position x="0,0" y="1,2" z="9,5" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="2,0" y="2,0" z="1,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             <RestitutionCoeff>0,1</RestitutionCoeff>
