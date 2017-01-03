@@ -13,7 +13,7 @@ namespace SimulationObjectDefinition
 
 		readonly Vector3[] vertexStartPosition;
 		readonly int[][] triangleVertexIndex;
-
+                
 		readonly double[] mult =
 		{
 			1.0 / 6.0,
@@ -48,7 +48,8 @@ namespace SimulationObjectDefinition
 			objMass = mass;
 
 			massCenter = new Vector3 ();
-			inertiaTensor = new Matrix3x3 (); 
+			inertiaTensor = new Matrix3x3 ();
+                         
 			computeInertiaTensor ();
 		}
 
@@ -64,93 +65,78 @@ namespace SimulationObjectDefinition
 			return inertiaTensor;
 		}
 
-		#region Public Methods
+        #region Public Methods
 
-		#endregion
+        #endregion
 
-		#region Private Methods
+        #region Private Methods
 
-		private void subExpression(
-			ref double w0, 
-			ref double w1, 
-			ref double w2, 
-			ref double f1, 
-			ref double f2, 
-			ref double f3, 
-			ref double g0, 
-			ref double g1, 
-			ref double g2)
-		{
-			double temp0 = w0 + w1;
-			f1 = temp0 + w2;
-			double temp1 = w0 * w0;
-			double temp2 = temp1 + w1 * temp0;
-			f2 = temp2 + w2 * f1;
-			f3 = w0 * temp1 + w1 * temp2 + w2 * f2;
-			g0 = f2 + w0 * (f1 + w0);
-			g2 = f2 + w2 * (f1 + w2);
-		}
-
-
-		private void computeInertiaTensor()
+        private void computeInertiaTensor()
 		{
 			
 			for (int i = 0; i < triangleVertexIndex.Length; i++) 
 			{
-				//Vertice 1 triangolo
+                //Vertice 1 triangolo
+                Vector3 v0 = vertexStartPosition[triangleVertexIndex[i][0]];
 
-				double x0 = vertexStartPosition [triangleVertexIndex [i] [0]].x;
-				double y0 = vertexStartPosition [triangleVertexIndex [i] [0]].y;
-				double z0 = vertexStartPosition [triangleVertexIndex [i] [0]].z;
+                //Vertice 2 triangolo
+                Vector3 v1 = vertexStartPosition[triangleVertexIndex[i][1]];
 
-				//Vertice 2 triangolo
+                //Vertice 3 triangolo
+                Vector3 v2 = vertexStartPosition[triangleVertexIndex[i][2]];
 
-				double x1 = vertexStartPosition [triangleVertexIndex [i] [1]].x;
-				double y1 = vertexStartPosition [triangleVertexIndex [i] [1]].y;
-				double z1 = vertexStartPosition [triangleVertexIndex [i] [1]].z;
+                // Get cross product of edges and normal vector.
+                Vector3 V1mV0 = v1 - v0;
+                Vector3 V2mV0 = v2 - v0;
+                Vector3 N = Vector3.Cross(V1mV0, V2mV0);
 
-				//Vertice 3 triangolo
+                // Compute integral terms.
+                double tmp0, tmp1, tmp2;
+                double f1x, f2x, f3x, g0x, g1x, g2x;
+                tmp0 = v0[0] + v1[0];
+                f1x = tmp0 + v2[0];
+                tmp1 = v0[0] * v0[0];
+                tmp2 = tmp1 + v1[0] * tmp0;
+                f2x = tmp2 + v2[0] * f1x;
+                f3x = v0[0] * tmp1 + v1[0] * tmp2 + v2[0] * f2x;
+                g0x = f2x + v0[0] * (f1x + v0[0]);
+                g1x = f2x + v1[0] * (f1x + v1[0]);
+                g2x = f2x + v2[0] * (f1x + v2[0]);
 
-				double x2 = vertexStartPosition [triangleVertexIndex [i] [2]].x;
-				double y2 = vertexStartPosition [triangleVertexIndex [i] [2]].y;
-				double z2 = vertexStartPosition [triangleVertexIndex [i] [2]].z;
+                double f1y, f2y, f3y, g0y, g1y, g2y;
+                tmp0 = v0[1] + v1[1];
+                f1y = tmp0 + v2[1];
+                tmp1 = v0[1] * v0[1];
+                tmp2 = tmp1 + v1[1] * tmp0;
+                f2y = tmp2 + v2[1] * f1y;
+                f3y = v0[1] * tmp1 + v1[1] * tmp2 + v2[1] * f2y;
+                g0y = f2y + v0[1] * (f1y + v0[1]);
+                g1y = f2y + v1[1] * (f1y + v1[1]);
+                g2y = f2y + v2[1] * (f1y + v2[1]);
 
+                double f1z, f2z, f3z, g0z, g1z, g2z;
+                tmp0 = v0[2] + v1[2];
+                f1z = tmp0 + v2[2];
+                tmp1 = v0[2] * v0[2];
+                tmp2 = tmp1 + v1[2] * tmp0;
+                f2z = tmp2 + v2[2] * f1z;
+                f3z = v0[2] * tmp1 + v1[2] * tmp2 + v2[2] * f2z;
+                g0z = f2z + v0[2] * (f1z + v0[2]);
+                g1z = f2z + v1[2] * (f1z + v1[2]);
+                g2z = f2z + v2[2] * (f1z + v2[2]);
 
-
-				//Bordi e prodotto vettoriale 
-
-				double a1 = x1 - x0;
-				double b1 = y1 - y0;
-				double c1 = z1 - z0;
-				double a2 = x2 - x0;
-				double b2 = y2 - y0;
-				double c2 = z2 - z0;
-				double d0 = b1 * c2 - b2 * c1;
-				double d1 = a2 * c1 - a1 * c2;
-				double d2 = a1 * b2 - a2 * b1;
-
-				//Calcolo i termini dell'integrale
-
-				double f1x = 0.0, f2x = 0.0, f3x = 0.0, g0x = 0.0, g1x = 0.0, g2x = 0.0;
-				double f1y = 0.0, f2y = 0.0, f3y = 0.0, g0y = 0.0, g1y = 0.0, g2y = 0.0;
-				double f1z = 0.0, f2z = 0.0, f3z = 0.0, g0z = 0.0, g1z = 0.0, g2z = 0.0;
-				subExpression (ref x0, ref x1, ref x2, ref f1x, ref f2x, ref f3x, ref g0x, ref g1x, ref g2x);
-				subExpression (ref y0, ref y1, ref y2, ref f1y, ref f2y, ref f3y, ref g0y, ref g1y, ref g2y);
-				subExpression (ref z0, ref z1, ref z2, ref f1z, ref f2z, ref f3z, ref g0z, ref g1z, ref g2z);
-
-                //Aggiorno l'integrale
-
-                intg[0] += d0 * f1x;
-                intg[1] += d0 * f2x;
-                intg[2] += d1 * f2y;
-                intg[3] += d2 * f2z;
-                intg[4] += d0 * f3x;
-                intg[5] += d1 * f3y;
-                intg[6] += d2 * f3z;
-                intg[7] += d0 * (y0 * g0x + y1 * g1x + y2 * g2x);
-                intg[8] += d1 * (z0 * g0y + z1 * g1y + z2 * g2y);
-                intg[9] += d2 * (x0 * g0z + x1 * g1z + x2 * g2z);
-			}
+                // Update integrals.
+                intg[0] += N[0] * f1x;
+                intg[1] += N[0] * f2x;
+                intg[2] += N[1] * f2y;
+                intg[3] += N[2] * f2z;
+                intg[4] += N[0] * f3x;
+                intg[5] += N[1] * f3y;
+                intg[6] += N[2] * f3z;
+                intg[7] += N[0] * (v0[1] * g0x + v1[1] * g1x + v2[1] * g2x);
+                intg[8] += N[1] * (v0[2] * g0y + v1[2] * g1y + v2[2] * g2y);
+                intg[9] += N[2] * (v0[0] * g0z + v1[0] * g1z + v2[0] * g2z);
+            }
 
 			for (int i = 0; i < 10; i++) 
 			{
@@ -170,12 +156,12 @@ namespace SimulationObjectDefinition
             double r2y = intg[4] + intg[6];
             double r3z = intg[4] + intg[5];
             double r1y = -intg[7];
-            double r2z = -intg[8];
             double r1z = -intg[9];
             double r2x = -intg[7];
-            double r3y = -intg[8];
+            double r2z = -intg[8];
             double r3x = -intg[9];
-
+            double r3y = -intg[8];
+            
             //matrice tensore d'inerzia sul centro di massa
             if (bodyCoords)
             {

@@ -203,7 +203,10 @@ namespace CollisionEngine
                 collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
             }
 
-            return collisionPointStructure[0];
+            if (collisionPointStructure.Count > 0)
+                return collisionPointStructure[0];
+
+            return null;
 		}
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
@@ -216,7 +219,7 @@ namespace CollisionEngine
 
 			Parallel.For (0, 
 				objects.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = 1/*collisionEngineParameters.MaxThreadNumber*/ }, 
+				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				i => {
 					if (objects [i] != null) {
 						for (int j = i + 1; j < objects.Length; j++) {

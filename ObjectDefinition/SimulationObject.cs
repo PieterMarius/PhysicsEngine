@@ -190,6 +190,8 @@ namespace SimulationObjectDefinition
 
             InertiaTensor = inertiaTensor;
 
+            StartPosition = new Vector3();
+
             Position = position;
 
             SetAABB();
@@ -209,10 +211,10 @@ namespace SimulationObjectDefinition
                 new Vector3[1],
                 rotationStatus);
 
+            SetObjectProperties();
+
             Position = position + StartPosition;
 
-            SetObjectProperties();
-            
             SetAABB();
         }
 
@@ -391,7 +393,8 @@ namespace SimulationObjectDefinition
                 if (ObjectGeometry[i].VertexPosition.Length > 0)
                 {
                     for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
-                        ObjectGeometry[i].VertexPosition[j].SetVertexPosition(ObjectGeometry[i].VertexPosition[j].Vertex + StartCompositePositionObjects[i]);
+                        ObjectGeometry[i].VertexPosition[j].SetVertexPosition(ObjectGeometry[i].VertexPosition[j].Vertex +
+                                                                              StartCompositePositionObjects[i]);
                 }
             }
 
@@ -400,12 +403,12 @@ namespace SimulationObjectDefinition
 
         private void SetObjectProperties()
         {
-            Vector3 startPosition = new Vector3();
             Matrix3x3 baseTensors = new Matrix3x3();
 
             int totalVertex = 0;
 
-            //Calcolo in centro di massa
+            CalculateMassCenter();
+            
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
                 Vector3[] vertexPosition = Array.ConvertAll(
@@ -416,32 +419,16 @@ namespace SimulationObjectDefinition
                         vertexPosition,
                         ObjectGeometry[i].Triangle,
                         PartialMass[i],
-                        false);
-
-                startPosition += inertiaTensor.GetMassCenter() * PartialMass[i];
-            }
-
-            if (Mass > 0)
-                StartPosition = startPosition / Mass;
-
-            for (int i = 0; i < ObjectGeometry.Length; i++)
-            {
-
-                Vector3[] vertexPosition = Array.ConvertAll(
-                                        ObjectGeometry[i].VertexPosition,
-                                        item => item.Vertex + StartPosition);
-                //TODO da rivedere
-                var inertiaTensor = new InertiaTensor(
-                        vertexPosition,
-                        ObjectGeometry[i].Triangle,
-                        PartialMass[i],
-                        false);
+                        true);
 
                 var normalizedInertiaTensor = inertiaTensor;
                                 
                 totalVertex += ObjectGeometry[i].VertexPosition.Length;
 
-                baseTensors += inertiaTensor.GetInertiaTensor();
+                Vector3 r = inertiaTensor.GetMassCenter() - StartPosition;
+                baseTensors += inertiaTensor.GetInertiaTensor() +
+                               (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
+                               PartialMass[i];
             }
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
@@ -468,6 +455,29 @@ namespace SimulationObjectDefinition
                             StartPosition;
                 }
             }
+        }
+
+        private void CalculateMassCenter()
+        {
+            Vector3 startPosition = new Vector3();
+
+            for (int i = 0; i < ObjectGeometry.Length; i++)
+            {
+                Vector3[] vertexPosition = Array.ConvertAll(
+                                        ObjectGeometry[i].VertexPosition,
+                                        item => item.Vertex);
+
+                var inertiaTensor = new InertiaTensor(
+                        vertexPosition,
+                        ObjectGeometry[i].Triangle,
+                        PartialMass[i],
+                        false);
+
+                startPosition += inertiaTensor.GetMassCenter() * PartialMass[i];
+            }
+
+            if (Mass > 0)
+                StartPosition = startPosition / Mass;
         }
 
         #endregion

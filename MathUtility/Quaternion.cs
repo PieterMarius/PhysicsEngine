@@ -339,6 +339,20 @@ namespace PhysicsEngineMathUtility
 			return new Vector3 (bank, heading, attitude);
 		}
 
+        public static double GetAngle(Quaternion q)
+        {
+            return 2.0 * Math.Acos(q.a);
+        }
+
+        public static Vector3 GetVector(Quaternion q)
+        {
+            double s = Math.Sqrt(1 - q.a * q.a);
+            if (s < 0.00001)
+                return new Vector3(q.b, q.c, q.d);
+            else
+                return new Vector3(q.b / s, q.c / s, q.d / s);
+        }
+
 		#endregion
 
 		#region Const

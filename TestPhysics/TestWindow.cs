@@ -434,9 +434,9 @@ namespace TestPhysics
                                             Convert.ToSingle(rotatioMatrix.r3c3),
                                             0.0f,
 
-                                            Convert.ToSingle(positionMt.x),
-                                            Convert.ToSingle(positionMt.y),
-                                            Convert.ToSingle(positionMt.z),
+                                            0.0f,
+                                            0.0f,
+                                            0.0f,
                                             1.0f);
 
                 Matrix4 mView = positionMatrix;
@@ -448,8 +448,13 @@ namespace TestPhysics
                     mView.M41, mView.M42, mView.M43, mView.M44
                 };
 
-                //Fine parte da modificare
+                //Traslo sull'origine
+                GL.Translate(position.x, position.y, position.z);
+                //Ruoto
                 GL.MultMatrix(dmviewData);
+                //Traslo nella posizione desiderata
+                GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z-position.z);
+                
 
                 //Inserire il textire ID
                 if (id == selectedObjIndex)
