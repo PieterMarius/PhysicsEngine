@@ -63,13 +63,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollisionDetectionEngine.cs" />
-    <Compile Include="ICollisionEngine.cs" />
+    <Compile Include="Common\ICollisionEngine.cs" />
     <Compile Include="EPA\EPA.cs" />
     <Compile Include="EPA\Edge.cs" />
     <Compile Include="GJK\GJK.cs" />
     <Compile Include="GJK\Simplex.cs" />
-    <Compile Include="CollisionPointStructure.cs" />
-    <Compile Include="CollisionPoint.cs" />
+    <Compile Include="Common\CollisionPointStructure.cs" />
+    <Compile Include="Common\CollisionPoint.cs" />
     <Compile Include="CollisionEngineParameters.cs" />
     <Compile Include="ManifoldPoints\ManifoldPointsGenerator.cs" />
     <Compile Include="Common\Support.cs" />
