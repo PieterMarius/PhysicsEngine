@@ -7,9 +7,11 @@ namespace CollisionEngine
 {
 	public class CollisionDetectionEngine: ICollisionEngine
 	{
-		#region Private Fields
+        #region Private Fields
 
-		GJK collisionEngine;
+        const double normalTolerance = 1E-15;
+        
+        GJK collisionEngine;
 		EPA compenetrationCollisionEngine;
 		readonly CollisionEngineParameters collisionEngineParameters;
 		readonly SweepAndPruneEngine sweepAndPruneEngine;
@@ -102,7 +104,7 @@ namespace CollisionEngine
                                                 collisionEngineParameters.GJKManifoldTolerance,
                                                 collisionEngineParameters.ManifoldProjectionTolerance);
 
-                if (gjkOutput.CollisionNormal.Length() < 1E-15)
+                if (gjkOutput.CollisionNormal.Length() < normalTolerance)
                     return null;
 
                 List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
@@ -132,7 +134,7 @@ namespace CollisionEngine
                                                 gjkOutput.SupportTriangles,
                                                 gjkOutput.Centroid);
 
-                if (epaOutput.CollisionPoint.CollisionNormal.Length() < 1E-15)
+                if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
                     return null;
 
                 var mpg = new ManifoldPointsGenerator(
@@ -169,11 +171,11 @@ namespace CollisionEngine
 		{
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
             
-            for (int i = 0; i < A.ObjectGeometry.Length; i++)
+            for (int geometryIndexA = 0; geometryIndexA < A.ObjectGeometry.Length; geometryIndexA++)
             {
-                for (int j = 0; j < B.ObjectGeometry.Length; j++)
+                for (int geometryIndexB = 0; geometryIndexB < B.ObjectGeometry.Length; geometryIndexB++)
                 {
-                    GJKOutput gjkOutput = collisionEngine.Execute(A, B, i, j);
+                    GJKOutput gjkOutput = collisionEngine.Execute(A, B, geometryIndexA, geometryIndexB);
                     
                     CollisionPointStructure collision = NarrowPhaseCollisionControl(
                         gjkOutput,
@@ -181,8 +183,8 @@ namespace CollisionEngine
                         B,
                         indexA,
                         indexB,
-                        i,
-                        j,
+                        geometryIndexA,
+                        geometryIndexB,
                         minDistance);
 
                     if (collision != null)
@@ -217,28 +219,33 @@ namespace CollisionEngine
 
 			var lockMe = new object();
 
-			Parallel.For (0, 
-				objects.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
-				i => {
-					if (objects [i] != null) {
-						for (int j = i + 1; j < objects.Length; j++) {
-							if (objects [j] != null) {
-								CollisionPointStructure collisionPointStruct = NarrowPhase (
-									                                              objects [i], 
-									                                              objects [j],
-									                                              i,
-									                                              j,
-									                                              minDistance);
+            Parallel.For(0,
+                objects.Length,
+                new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
+                i =>
+                {
+                    if (objects[i] != null)
+                    {
+                        for (int j = i + 1; j < objects.Length; j++)
+                        {
+                            if (objects[j] != null)
+                            {
+                                CollisionPointStructure collisionPointStruct = NarrowPhase(
+                                                                              objects[i],
+                                                                              objects[j],
+                                                                              i,
+                                                                              j,
+                                                                              minDistance);
 
-								lock (lockMe) {    
-									if (collisionPointStruct != null)
-										result.Add (collisionPointStruct);
-								}
-							}
-						}
-					}
-				});
+                                lock (lockMe)
+                                {
+                                    if (collisionPointStruct != null)
+                                        result.Add(collisionPointStruct);
+                                }
+                            }
+                        }
+                    }
+                });
 			
 			return result;
 		}

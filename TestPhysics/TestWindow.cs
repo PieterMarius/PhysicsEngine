@@ -10,6 +10,7 @@ using SimulationObjectDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
+using System.Numerics;
 
 namespace TestPhysics
 {
@@ -54,12 +55,49 @@ namespace TestPhysics
 		float ypos = 0.0f;
 		float zpos = -7.0f;
 
-		#endregion
+        #endregion
 
-		void initProgram()
+        //void TestNumeric()
+        //{
+        //    int nvalue = 10000000;
+        //    stopwatch.Reset();
+        //    stopwatch.Start();
+        //    System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
+
+        //    //double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
+        //    for (int i = 0; i < nvalue; i++)
+        //        testVector[i] = new System.Numerics.Vector3(0, 0, 0);
+
+        //    System.Numerics.Vector3 test;
+        //    for (int i = 0; i < nvalue; i++)
+        //        test = testVector[i] * 1.0f;
+
+        //    stopwatch.Stop();
+        //    Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+        //    stopwatch.Reset();
+        //    stopwatch.Start();
+
+        //    PhysicsEngineMathUtility.Vector3[] testVector1 = new PhysicsEngineMathUtility.Vector3[nvalue];
+
+        //    for (int i = 0; i < nvalue; i++)
+        //        testVector1[i] = new PhysicsEngineMathUtility.Vector3(0.0, 0.0, 0.0);
+
+        //    PhysicsEngineMathUtility.Vector3 test1;
+        //    for (int i = 0; i < nvalue; i++)
+        //        test1 = testVector1[i] * 1.0;
+
+        //    stopwatch.Stop();
+        //    Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+
+        //}
+
+        void initProgram()
 		{
 			try
 			{
+                //TestNumeric();
                 //var env = new BuildEnvironment();
                 //env.GetPhysicsEnvironment();
 
@@ -68,7 +106,9 @@ namespace TestPhysics
                 //var loadObject = new LoadObject ("startConfig.xml");
                 //var loadObject = new LoadObject ("carConfig.xml");
                 //var loadObject = new LoadObject("testJointBridge.xml");
-                var loadObject = new LoadObject("compositeObjectConfig.xml");
+                //var loadObject = new LoadObject("compositeObjectConfig.xml");
+                var loadObject = new LoadObject("frictionTestConfig.xml");
+
 
                 simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -93,7 +133,7 @@ namespace TestPhysics
 					collisionEngineParameters,
 					solverParameters);
 
-				physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
+				physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
 				for (int i = 0; i < simulationObjects.Count (); i++) 
 				{

@@ -407,7 +407,7 @@ namespace SimulationObjectDefinition
 
             int totalVertex = 0;
 
-            CalculateMassCenter();
+            StartPosition = CalculateMassCenter();
             
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
@@ -457,7 +457,7 @@ namespace SimulationObjectDefinition
             }
         }
 
-        private void CalculateMassCenter()
+        private Vector3 CalculateMassCenter()
         {
             Vector3 startPosition = new Vector3();
 
@@ -477,7 +477,9 @@ namespace SimulationObjectDefinition
             }
 
             if (Mass > 0)
-                StartPosition = startPosition / Mass;
+                return startPosition / Mass;
+
+            return new Vector3();
         }
 
         #endregion

@@ -174,7 +174,7 @@ namespace MonoPhysicsEngine
 			OverallConstraintsIterations = 200;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
-			ShiftToStaticFrictionTolerance = 0.01;
+			ShiftToStaticFrictionTolerance = 0.05;
 			DiscreteCCD = false;
 			CollisionDistance = 0.001;
 			CompenetrationTolerance = 0.005;

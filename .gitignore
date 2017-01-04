@@ -70,3 +70,12 @@ TestPhysics/bin/Debug/testJointBridge.txt
 .vs/PhysicsEngine/v14/.suo
 *.suo
 .vs/PhysicsEngine/v14/.suo
+packages/System.Numerics.Vectors.4.3.0/dotnet_library_license.txt
+*._
+packages/System.Numerics.Vectors.4.3.0/lib/net46/System.Numerics.Vectors.xml
+packages/System.Numerics.Vectors.4.3.0/lib/netstandard1.0/System.Numerics.Vectors.xml
+packages/System.Numerics.Vectors.4.3.0/lib/portable-net45+win8+wp8+wpa81/System.Numerics.Vectors.xml
+packages/System.Numerics.Vectors.4.3.0/ThirdPartyNotices.txt
+packages/System.Numerics.Vectors.4.3.0/System.Numerics.Vectors.4.3.0.nupkg
+packages/System.Numerics.Vectors.4.3.0/ref/net46/System.Numerics.Vectors.xml
+packages/System.Numerics.Vectors.4.3.0/ref/netstandard1.0/System.Numerics.Vectors.xml
