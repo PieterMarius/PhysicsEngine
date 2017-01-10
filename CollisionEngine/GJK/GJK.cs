@@ -44,16 +44,14 @@ namespace CollisionEngine
 		/// <param name="objA">Object a.</param>
 		/// <param name="objB">Object b.</param>
 		private Support GetFarthestPoint(
-			SimulationObject objA,
-			SimulationObject objB,
-            int geometryIndexA,
-            int geometryIndexB)
+			IGeometry objA,
+            IGeometry objB)
 		{
 			int indexA = 0;
-			int indexB = objB.RelativePositions.Length / 2;
+			int indexB = objB.RelativePosition.Length / 2;
 
             return new Support(
-                Helper.GetVertexPosition(objA, geometryIndexA ,indexA) - Helper.GetVertexPosition(objB, geometryIndexB, indexB),
+                Helper.GetVertexPosition(objA, indexA) - Helper.GetVertexPosition(objB, indexB),
                 indexA,
                 indexB);
 		}
@@ -131,10 +129,8 @@ namespace CollisionEngine
 		/// <param name="cp">Cp.</param>
 		/// <param name="isIntersection">If set to <c>true</c> is itersection.</param>
 		private double ExecuteGJKAlgorithm(
-			SimulationObject shape1,
-			SimulationObject shape2,
-            int geometryIndexA,
-            int geometryIndexB,
+			IGeometry shape1,
+            IGeometry shape2,
 			ref Vector3 collisionNormal,
 			ref CollisionPoint cp,
 			ref List<SupportTriangle> triangles,
@@ -148,16 +144,16 @@ namespace CollisionEngine
 			var simplex = new Simplex();
 
             //Primo punto del simplex
-            simplex.Support.Add(GetFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB));
+            simplex.Support.Add(GetFarthestPoint(shape1, shape2));
 
 			//Secondo punto del simplex
 			Vector3 direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
-            if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, direction)))
+            if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
                 return -1.0;
 
 			//Terzo punto del simplex
 			direction = Vector3.Normalize(GetDirectionOnSimplex2(simplex));
-			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, direction)))
+			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
                 return -1.0;
 
             	//Quarto punto del simplex
@@ -166,8 +162,8 @@ namespace CollisionEngine
 				simplex.Support[1].s,
 				simplex.Support[2].s));
 
-			if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, direction)))
-				simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, -1.0 * direction));
+			if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+				simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, -1.0 * direction));
 
 			//Costruisco il poliedro
 			centroid = Helper.SetStartTriangle(
@@ -185,7 +181,7 @@ namespace CollisionEngine
 
 			result.SetDist(triangleDistance);
 			result.SetNormal(Vector3.Normalize(triangleDistance));
-			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, geometryIndexA, geometryIndexB, ref result);
+			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
 
 			minDistance = triangleDistance.Length();
 
@@ -203,14 +199,14 @@ namespace CollisionEngine
 
 				oldDirection = direction;
 
-				if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, direction)))
+				if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
 				{
 					for (int j = 0; j < triangles.Count; j++)
 					{
 						direction = triangles[j].normal;
-						if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, direction)))
+						if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
 						{
-							if (simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, geometryIndexA, geometryIndexB, -1.0 * direction)))
+							if (simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, -1.0 * direction)))
 							   break;
 							
 							continue;
@@ -236,7 +232,7 @@ namespace CollisionEngine
 				{
 					result.SetDist(triangleDistance);
 					result.SetNormal(Vector3.Normalize(triangleDistance));
-					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, geometryIndexA, geometryIndexB, ref result);
+					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
 
 					minDistance = mod;
 				}
@@ -263,10 +259,8 @@ namespace CollisionEngine
 		/// <param name="objectA">Object a.</param>
 		/// <param name="objectB">Object b.</param>
 		public GJKOutput Execute(
-			SimulationObject objectA, 
-			SimulationObject objectB,
-            int geometryIndexA,
-            int geometryIndexB)
+			IGeometry objectA,
+            IGeometry objectB)
 		{
 			var collisionPoint = new CollisionPoint();
 			var collisionNormal = new Vector3();
@@ -277,8 +271,6 @@ namespace CollisionEngine
 			double collisionDistance = ExecuteGJKAlgorithm (
 				                          objectA,
 				                          objectB,
-                                          geometryIndexA,
-                                          geometryIndexB,
 				                          ref collisionNormal,
 				                          ref collisionPoint,
 				                          ref supportTriangles,

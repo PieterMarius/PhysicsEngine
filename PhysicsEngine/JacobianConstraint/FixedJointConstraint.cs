@@ -30,7 +30,7 @@ namespace MonoPhysicsEngine
 		public FixedJointConstraint(
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObject,
+			IShape[] simulationObject,
 			double restoreCoefficient,
 			double springCoefficient)
 		{
@@ -40,8 +40,8 @@ namespace MonoPhysicsEngine
 			SpringCoefficient = springCoefficient;
 			RestoreCoefficient = restoreCoefficient;
 
-			SimulationObject objectA = simulationObject[IndexA];
-			SimulationObject objectB = simulationObject[IndexB];
+			IShape objectA = simulationObject[IndexA];
+			IShape objectB = simulationObject[IndexB];
 
 			StartAnchorPoint = (objectB.Position - objectA.Position) * 0.5;
 
@@ -72,13 +72,13 @@ namespace MonoPhysicsEngine
 		/// <returns>The fixed joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null)
 		{
 			var fixedConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [IndexA];
-			SimulationObject simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = simulationObjs [IndexA];
+			IShape simulationObjectB = simulationObjs [IndexB];
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 								(StartAnchorPoint - simulationObjectA.StartPosition)) +

@@ -41,19 +41,17 @@ namespace CollisionEngine
             		       
 		private void GetEpaVertexFromMinkowsky(
 			SupportTriangle triangle,
-			SimulationObject shape1,
-			SimulationObject shape2,
-            int geometryIndexA,
-            int geometryIndexB,
+            IGeometry shape1,
+            IGeometry shape2,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.a.a);
-			Vector3 ba1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.b.a) - a1;
-			Vector3 ca1 = Helper.GetVertexPosition(shape1, geometryIndexA, triangle.c.a) - a1;
+			Vector3 a1 = Helper.GetVertexPosition(shape1, triangle.a.a);
+			Vector3 ba1 = Helper.GetVertexPosition(shape1, triangle.b.a) - a1;
+			Vector3 ca1 = Helper.GetVertexPosition(shape1, triangle.c.a) - a1;
 
-			Vector3 a2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.a.b);
-			Vector3 ba2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.b.b) - a2;
-			Vector3 ca2 = Helper.GetVertexPosition(shape2, geometryIndexB, triangle.c.b) - a2;
+			Vector3 a2 = Helper.GetVertexPosition(shape2, triangle.a.b);
+			Vector3 ba2 = Helper.GetVertexPosition(shape2, triangle.b.b) - a2;
+			Vector3 ca2 = Helper.GetVertexPosition(shape2, triangle.c.b) - a2;
 
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
@@ -66,10 +64,8 @@ namespace CollisionEngine
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
 		private EngineCollisionPoint ExecuteEngine(
-			SimulationObject shape1,
-			SimulationObject shape2,
-            int geometryIndexA,
-            int geometryIndexB,
+            IGeometry shape1,
+            IGeometry shape2,
             List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
@@ -131,8 +127,6 @@ namespace CollisionEngine
 								triangles[i],
 								shape1,
 								shape2,
-                                geometryIndexA,
-                                geometryIndexB,
 								ref epaCollisionPoint);
 						}
 					}
@@ -149,8 +143,6 @@ namespace CollisionEngine
                     Support vt = Helper.GetMinkowskiFarthestPoint(
                              shape1,
                              shape2,
-                             geometryIndexA,
-                             geometryIndexB,
                              direction.Normalize());
 
                     triangles = Helper.AddPointToConvexPolygon (
@@ -178,18 +170,14 @@ namespace CollisionEngine
 		/// <param name="objectB">Object b.</param>
 		/// <param name="startTriangles">Start triangles.</param>
 		public EPAOutput Execute(
-			SimulationObject objectA,
-			SimulationObject objectB,
-            int geometryIndexA,
-            int geometryIndexB,
+			IGeometry objectA,
+            IGeometry objectB,
             List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{
 			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
 				                                      objectA,
 				                                      objectB,
-                                                      geometryIndexA,
-                                                      geometryIndexB,
 				                                      startTriangles,
 													  centroid);
 

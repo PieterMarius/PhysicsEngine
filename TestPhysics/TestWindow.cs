@@ -703,12 +703,12 @@ namespace TestPhysics
 		private void displayVertex(int index)
 		{
 
-			for (int i = 0; i < physicsEngine.GetObject (index).RelativePositions.Length; i++) 
+			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry.Length; i++) 
 			{
-                for (int j = 0; j < physicsEngine.GetObject(index).RelativePositions[i].Length; j++)
+                for (int j = 0; j < physicsEngine.GetObject(index).ObjectGeometry[i].RelativePosition.Length; j++)
                 {
                     PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetObject(index).Position +
-                                    (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).RelativePositions[i][j]);
+                                    (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).ObjectGeometry[i].RelativePosition[j]);
 
                     GL.PushMatrix();
 
@@ -764,7 +764,7 @@ namespace TestPhysics
 
         private void displayAABB()
         {
-            SimulationObject[] simObj = physicsEngine.GetSimulationObjects();
+            IShape[] simObj = physicsEngine.GetSimulationObjects();
             for (int i = 0; i < simObj.Length; i++)
             {
                 AABB joint = simObj[i].ObjectGeometry[0].AABBox;

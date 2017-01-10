@@ -44,7 +44,7 @@ namespace MonoPhysicsEngine
 		/// <summary>
 		/// The simulation objects.
 		/// </summary>
-		SimulationObject[] simulationObjects;
+		IShape[] simulationObjects;
 
 		/// <summary>
 		/// The simulation joints.
@@ -104,7 +104,7 @@ namespace MonoPhysicsEngine
 
 			contactPartitioningEngine = new ContactPartitioningEngine();
 
-			simulationObjects = new SimulationObject[0];
+			simulationObjects = new IShape[0];
 			simulationJoints = new List<IConstraint> ();
 		}
 
@@ -114,18 +114,18 @@ namespace MonoPhysicsEngine
 
 		#region Simulation Object 
 
-		public void AddObject(SimulationObject simulationObject)
+		public void AddObject(IShape simulationObject)
 		{
 			if (simulationObjects != null && 
 			    simulationObjects.Length > 0) 
 			{
-				List<SimulationObject> bufferList = simulationObjects.ToList ();
+				List<IShape> bufferList = simulationObjects.ToList ();
 				bufferList.Add (simulationObject);
 				simulationObjects = bufferList.ToArray ();
 			} 
 			else 
 			{
-				var bufferList = new List<SimulationObject> ();
+				var bufferList = new List<IShape> ();
 				bufferList.Add (simulationObject);
 				simulationObjects = bufferList.ToArray ();
 			}
@@ -138,7 +138,7 @@ namespace MonoPhysicsEngine
 			{
 				#region Remove object
 				
-				List<SimulationObject> bufferList = simulationObjects.ToList ();
+				List<IShape> bufferList = simulationObjects.ToList ();
 				bufferList.RemoveAt (objectIndex);
 				simulationObjects = bufferList.ToArray ();
 
@@ -172,11 +172,11 @@ namespace MonoPhysicsEngine
 
 		public void RemoveAllObjects()
 		{
-			simulationObjects = new SimulationObject[0];
+			simulationObjects = new IShape[0];
 			simulationJoints = new List<IConstraint>();
 		}
 
-		public SimulationObject GetObject(int objectIndex)
+		public IShape GetObject(int objectIndex)
 		{
 			return simulationObjects[objectIndex];
 		}
@@ -186,7 +186,7 @@ namespace MonoPhysicsEngine
 			return simulationObjects.Length;
 		}
 
-		public SimulationObject[] GetSimulationObjects()
+		public IShape[] GetSimulationObjects()
 		{
 			return simulationObjects;
 		}
@@ -650,7 +650,7 @@ namespace MonoPhysicsEngine
 			#region Find New Collision Points
 
 			//Creo l'array contenente la geometria degli oggetti
-			SimulationObject[] simObjects = Array.ConvertAll (
+			IShape[] simObjects = Array.ConvertAll (
 							simulationObjects, 
 							item => (item.ExcludeFromCollisionDetection) ? null : item);
 
@@ -661,7 +661,7 @@ namespace MonoPhysicsEngine
 
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.Execute(
-                                    simObjects,
+                                    Array.ConvertAll(simObjects, item => (SimulationObject)item),
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
@@ -799,7 +799,7 @@ namespace MonoPhysicsEngine
 		public List<JacobianContact> GetJacobianConstraint(
 			CollisionPointStructure[] collisionPointsStruct,
 			List<IConstraint> simulationJointList,
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
 			var constraint = new List<JacobianContact>();
@@ -826,7 +826,7 @@ namespace MonoPhysicsEngine
 
 		public List<JacobianContact> GetJacobianJointConstraint(
 			List<IConstraint> simulationJointList,
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? stabilizationCoeff = null)
 		{
 			var constraint = new List<JacobianContact>();
@@ -1056,7 +1056,7 @@ namespace MonoPhysicsEngine
         /// </summary>
         private void UpdateVelocity(
 			JacobianContact[] contact,
-			SimulationObject[] simulationObj,
+			IShape[] simulationObj,
 			SolutionValues[] X)
 		{
 			for (int i =0; i< contact.Length;i++) 
@@ -1096,13 +1096,13 @@ namespace MonoPhysicsEngine
 		/// <param name="X">X.</param>
 		/// <param name="index">Object index.</param>
 		private void UpdateObjectVelocity(
-			SimulationObject[] simulationObj,
+			IShape[] simulationObj,
 			Vector3 linearComponent,
 			Vector3 angularComponent,
 			double X,
 			int index)
 		{
-			SimulationObject simObj = simulationObj[index];
+			IShape simObj = simulationObj[index];
 
 			if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 			{
@@ -1126,10 +1126,10 @@ namespace MonoPhysicsEngine
 		/// Integrates the objects position.
 		/// </summary>
 		private void IntegrateObjectsPosition(
-			SimulationObject[] simulationObj)
+			IShape[] simulationObj)
 		{
 			int index = 0;
-			foreach (SimulationObject simObj in simulationObj) 
+			foreach (IShape simObj in simulationObj) 
 			{
 				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 				{
@@ -1200,7 +1200,7 @@ namespace MonoPhysicsEngine
 			}
 		}
 
-        private void ObjectSleep(SimulationObject simulationObj)
+        private void ObjectSleep(IShape simulationObj)
         {
             if (simulationObj.LinearVelocity.Length() <= SimulationEngineParameters.LinearVelDisable &&
                 simulationObj.AngularVelocity.Length() <= SimulationEngineParameters.AngularVelDisable)
@@ -1223,7 +1223,7 @@ namespace MonoPhysicsEngine
 
         private void UpdatePositionBasedVelocity(
             JacobianContact[] contact,
-            SimulationObject[] simulationObj,
+            IShape[] simulationObj,
             SolutionValues[] X)
         {
             for (int i = 0; i < contact.Length; i++)
@@ -1249,13 +1249,13 @@ namespace MonoPhysicsEngine
         }
 
         private void SetPositionBasedVelocity(
-            SimulationObject[] simulationObj,
+            IShape[] simulationObj,
             Vector3 linearComponent,
             Vector3 angularComponent,
             double X,
             int index)
         {
-            SimulationObject simObj = simulationObj[index];
+            IShape simObj = simulationObj[index];
 
             if (simObj.ObjectType != ObjectType.StaticRigidBody)
             {
@@ -1276,10 +1276,10 @@ namespace MonoPhysicsEngine
         }
 
         private void UpdateObjectPosition(
-            SimulationObject[] simulationObj)
+            IShape[] simulationObj)
         {
             int index = 0;
-            foreach (SimulationObject simObj in simulationObj)
+            foreach (IShape simObj in simulationObj)
             {
                 if (simObj.ObjectType != ObjectType.StaticRigidBody)
                 {

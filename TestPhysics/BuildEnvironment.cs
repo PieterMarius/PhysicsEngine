@@ -51,14 +51,12 @@ namespace TestPhysics
 
 			#region Terrain Base
 
-			objects[0] = new SimulationObject(
-				ObjectType.StaticRigidBody,
-				geometry: GetObjectGeometry("cube.obj", 25),
-				mass: 1000.0,
-				position: new Vector3(0.0, -4.0, 0.0),
-				rotationStatus: new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-			
-			objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+			objects[0].SetPartialMass(new double[] { 1000.0 });
+            objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
+            objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            objects[0].SetObjectGeometry(new Geometry[] { GetObjectGeometry(objects[0], "cube.obj", 25) });
+
+            objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
 			objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
 			objects[0].SetRestitutionCoeff(0.1);
 			objects[0].SetDynamicFrictionCoeff(1.0);
@@ -86,7 +84,6 @@ namespace TestPhysics
 				objects[0].ObjectGeometry[0].Triangle,
 				objects[0].Mass);
 
-			objects[0].SetStartPosition(inertiaTensor1.GetMassCenter());
 			objects[0].SetBaseInertiaTensor(inertiaTensor1.GetInertiaTensor());
 			objects[0].SetRotationMatrix(Quaternion.ConvertToMatrix(Quaternion.Normalize(objects[0].RotationStatus)));
 			objects[0].SetInertiaTensor((objects[0].RotationMatrix * objects[0].BaseInertiaTensor) *
@@ -107,8 +104,9 @@ namespace TestPhysics
 		{
 		}
 
-		private ObjectGeometry GetObjectGeometry(
-			string fileName,
+		private Geometry GetObjectGeometry(
+			IShape shape,
+            string fileName,
 			float scale)
 		{
 			LoadResult objectGeometry = LoadObjSolid(fileName, scale);
@@ -133,7 +131,8 @@ namespace TestPhysics
 				triangleIndex[i][2] = objectGeometry.Groups[0].Faces[i][2].VertexIndex - 1;
 			}
 
-			return new ObjectGeometry(
+			return new Geometry(
+                shape,
 				vertexStartPoint,
 				triangleIndex,
                 ObjectGeometryType.ConvexBody);

@@ -10,11 +10,9 @@ namespace SimulationObjectDefinition
 {
     public static class Helper
     {
-        public static AABB UpdateAABB(
-            SimulationObject simObject,
-            int geometryIndex)
+        public static AABB UpdateAABB(IGeometry simObject)
         {
-            Vector3 vertexPos = GetVertexPosition(simObject, geometryIndex, 0);
+            Vector3 vertexPos = GetVertexPosition(simObject, 0);
             double xMax = vertexPos.x;
             double xMin = vertexPos.x;
             double yMax = vertexPos.y;
@@ -22,9 +20,9 @@ namespace SimulationObjectDefinition
             double zMax = vertexPos.z;
             double zMin = vertexPos.z;
 
-            for (int i = 1; i < simObject.RelativePositions[geometryIndex].Length; i++)
+            for (int i = 1; i < simObject.RelativePosition.Length; i++)
             {
-                Vector3 vertex = GetVertexPosition(simObject, geometryIndex, i);
+                Vector3 vertex = GetVertexPosition(simObject, i);
 
                 if (vertex.x < xMin)
                     xMin = vertex.x;
@@ -46,13 +44,12 @@ namespace SimulationObjectDefinition
         }
 
         public static Vector3 GetVertexPosition(
-            SimulationObject obj,
-            int geometryIndex,
+            IGeometry obj,
             int vertexIndex)
         {
             return
-                obj.Position +
-                (obj.RotationMatrix * obj.RelativePositions[geometryIndex][vertexIndex]);
+                obj.Shape.Position +
+                (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]);
         }
     }
 }

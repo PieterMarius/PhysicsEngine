@@ -36,7 +36,7 @@ namespace MonoPhysicsEngine
         public AngularConstraint(
             int indexA,
             int indexB,
-            SimulationObject[] simulationObject,
+            IShape[] simulationObject,
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
             Vector3 rotationAxis,
@@ -54,8 +54,8 @@ namespace MonoPhysicsEngine
             HingeAxis = hingeAxis.Normalize();
             RotationAxis = rotationAxis.Normalize();
 
-            SimulationObject objectA = simulationObject[IndexA];
-            SimulationObject objectB = simulationObject[IndexB];
+            IShape objectA = simulationObject[IndexA];
+            IShape objectB = simulationObject[IndexB];
 
             Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
             relativePos = objectA.RotationMatrix * relativePos;
@@ -88,13 +88,13 @@ namespace MonoPhysicsEngine
 
         #region IConstraintBuilder
         public List<JacobianContact> BuildJacobian(
-            SimulationObject[] simulationObjs, 
+            IShape[] simulationObjs, 
             double? baumStabilization = null)
         {
             var angularConstraints = new List<JacobianContact>();
 
-            SimulationObject simulationObjectA = simulationObjs[IndexA];
-            SimulationObject simulationObjectB = simulationObjs[IndexB];
+            IShape simulationObjectA = simulationObjs[IndexA];
+            IShape simulationObjectB = simulationObjs[IndexB];
 
             AnchorPoint = (simulationObjectA.RotationMatrix *
                           (StartAnchorPoint - simulationObjectA.StartPosition)) +

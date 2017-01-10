@@ -12,7 +12,7 @@ namespace MonoPhysicsEngine
 
 		public static List<JacobianContact> BuildJoints(
 			CollisionPointStructure[] collisionPointsStruct,
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			SimulationParameters simulationParameters)
 		{
 			var contactConstraints = new List<JacobianContact> ();
@@ -24,8 +24,8 @@ namespace MonoPhysicsEngine
 				int indexA = collisionPointStr.ObjectA;
 				int indexB = collisionPointStr.ObjectB;
 
-				SimulationObject objectA = simulationObjs[indexA];
-				SimulationObject objectB = simulationObjs[indexB];
+				IShape objectA = simulationObjs[indexA];
+				IShape objectB = simulationObjs[indexB];
 
 				double restitutionCoefficient =
 					(simulationObjs[indexA].RestitutionCoeff +
@@ -135,8 +135,8 @@ namespace MonoPhysicsEngine
 		#region Private Methods
 
 		private static JacobianContact[] addFriction(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			IShape objectA,
+			IShape objectB,
 			SimulationParameters simulationParameters,
 			int indexA,
 			int indexB,

@@ -12,7 +12,7 @@ namespace MonoPhysicsEngine
 		public List<SpatialPartition> CalculateSpatialPartitioning(
 			CollisionPointStructure[] collisionPoints,
 			List<IConstraint> simulationJoints,
-			SimulationObject[] simulationObjects)
+			IShape[] simulationObjects)
 		{
 			if (collisionPoints.Length > 0 ||
 				simulationJoints.Count > 0) 
@@ -93,7 +93,7 @@ namespace MonoPhysicsEngine
 			ContactIndex searchPoint,
 			List<ContactIndex> readList,
 			List<ContactIndex> partition,
-			SimulationObject[] simulationObjects)
+			IShape[] simulationObjects)
 		{
 			for (int i = 0; i < readList.Count; i++) 
 			{

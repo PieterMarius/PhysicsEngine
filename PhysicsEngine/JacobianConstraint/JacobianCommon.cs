@@ -7,8 +7,8 @@ namespace MonoPhysicsEngine
 	public static class JacobianCommon
 	{
 		public static Vector3 GetFixedAngularError(
-			SimulationObject objectA,
-			SimulationObject objectB,
+			IShape objectA,
+			IShape objectB,
 			Quaternion relativeOrientation)
 		{
 			Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse () *
@@ -53,8 +53,8 @@ namespace MonoPhysicsEngine
 		}
 
 		public static double GetAngle(
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			Quaternion relativeRotation,
 			Vector3 rotationAxis)
 		{
@@ -84,8 +84,8 @@ namespace MonoPhysicsEngine
 			Vector3 linearComponentB,
 			Vector3 angularComponentA,
 			Vector3 angularComponentB,
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			double constraintValue,
 			double correctionValue,
 			double cfm,
@@ -123,8 +123,8 @@ namespace MonoPhysicsEngine
 		public static JacobianContact GetLinearLimit (
 			int indexA, 
 			int indexB, 
-			SimulationObject simulationObjectA, 
-			SimulationObject simulationObjectB, 
+			IShape simulationObjectA, 
+			IShape simulationObjectB, 
 			Vector3 sliderAxis,
 			Vector3 r1, 
 			Vector3 r2,
@@ -185,8 +185,8 @@ namespace MonoPhysicsEngine
 			double angle,
 			double K,
 			double C,
-			SimulationObject simulationObjectA, 
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA, 
+			IShape simulationObjectB,
 			Vector3 rotationAxis,
 			double angularLimitMin,
 			double angularLimitMax)

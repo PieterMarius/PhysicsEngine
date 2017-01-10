@@ -36,7 +36,7 @@ namespace MonoPhysicsEngine
 		public HingeConstraint(
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObject,
+			IShape[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			double restoreCoefficient,
@@ -49,8 +49,8 @@ namespace MonoPhysicsEngine
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
 
-			SimulationObject objectA = simulationObject[IndexA];
-			SimulationObject objectB = simulationObject[IndexB];
+			IShape objectA = simulationObject[IndexA];
+			IShape objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -81,13 +81,13 @@ namespace MonoPhysicsEngine
 		/// <returns>The hinge joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null)
 		{
 			var hingeConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [IndexA];
-			SimulationObject simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = simulationObjs [IndexA];
+			IShape simulationObjectB = simulationObjs [IndexB];
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 						  (StartAnchorPoint - simulationObjectA.StartPosition)) +

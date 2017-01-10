@@ -99,13 +99,13 @@ namespace MonoPhysicsEngine
 		/// <returns>The Universal joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null)
 		{
 			var universalConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [IndexA];
-			SimulationObject simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = simulationObjs [IndexA];
+			IShape simulationObjectB = simulationObjs [IndexB];
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
@@ -341,8 +341,8 @@ namespace MonoPhysicsEngine
 		#region Private Static Methods
 
 		List<JacobianContact> getAngularLimit(
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis)
 		{

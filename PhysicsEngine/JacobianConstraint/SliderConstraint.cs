@@ -36,7 +36,7 @@ namespace MonoPhysicsEngine
 		public SliderConstraint(
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObject,
+			IShape[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 sliderAxis,
 			double restoreCoefficient,
@@ -50,8 +50,8 @@ namespace MonoPhysicsEngine
 			StartAnchorPoint = startAnchorPosition;
 			SliderAxis = -1.0 * sliderAxis.Normalize ();
 
-			SimulationObject objectA = simulationObject[IndexA];
-			SimulationObject objectB = simulationObject[IndexB];
+			IShape objectA = simulationObject[IndexA];
+			IShape objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
@@ -80,13 +80,13 @@ namespace MonoPhysicsEngine
 		/// <returns>The slider joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null)
 		{
 			var sliderConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [IndexA];
-			SimulationObject simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = simulationObjs [IndexA];
+			IShape simulationObjectB = simulationObjs [IndexB];
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 						  (StartAnchorPoint - simulationObjectA.StartPosition)) +

@@ -3,8 +3,8 @@ using PhysicsEngineMathUtility;
 
 namespace SimulationObjectDefinition
 {
-	public class SimulationObject
-	{
+	public class SimulationObject : IShape
+    {
 
 		#region Object status properties
 
@@ -50,12 +50,6 @@ namespace SimulationObjectDefinition
 		public double BaumgarteStabilizationCoeff{ get; private set; } 
 
 		/// <summary>
-		/// Gets the relative positions of each point of the object from initial mass center.
-		/// </summary>
-		/// <value>The relative positions.</value>
-		public Vector3[][] RelativePositions{ get; private set; }
-
-		/// <summary>
 		/// Gets the base inertia tensor ^(-1).
 		/// </summary>
 		/// <value>The inertia tensor.</value>
@@ -71,7 +65,7 @@ namespace SimulationObjectDefinition
 		/// Gets or sets the object geometry.
 		/// </summary>
 		/// <value>The object geometry.</value>
-		public ObjectGeometry[] ObjectGeometry{ get; private set; }
+		public IGeometry[] ObjectGeometry{ get; private set; }
 
 		/// <summary>
 		/// Gets the type of the object.
@@ -172,72 +166,20 @@ namespace SimulationObjectDefinition
 
 		#region Constructor
 
-        public SimulationObject(
-            ObjectType type,
-            ObjectGeometry[] geometry,
-            double[] mass,
-            Vector3[] startCompositePosition,
-            Vector3 position,
-            Quaternion rotationStatus,
-            Matrix3x3 inertiaTensor)
+        public SimulationObject(ObjectType type)
         {
-            InitObject(
-                type,
-                geometry,
-                mass,
-                startCompositePosition,
-                rotationStatus);
+            ObjectType = type;
 
-            InertiaTensor = inertiaTensor;
+            if (ObjectType == ObjectType.StaticRigidBody)
+            {
+                Mass = 0.0;
+                InverseMass = 0.0;
+            }
+            else if (Mass > 0.0)
+                InverseMass = 1.0;
 
-            StartPosition = new Vector3();
-
-            Position = position;
-
-            SetAABB();
-        }
-
-        	public SimulationObject(
-			ObjectType type,
-			ObjectGeometry geometry,
-			double mass,
-			Vector3 position,
-			Quaternion rotationStatus)
-		{
-			InitObject(
-                type, 
-                new ObjectGeometry[1] { geometry }, 
-                new double[1] { mass }, 
-                new Vector3[1],
-                rotationStatus);
-
-            SetObjectProperties();
-
-            Position = position + StartPosition;
-
-            SetAABB();
-        }
-
-        public SimulationObject(
-            ObjectType type,
-            ObjectGeometry[] geometry,
-            double[] mass,
-            Vector3[] startCompositePosition,
-            Vector3 position,
-            Quaternion rotationStatus)
-        {
-            InitObject(
-                type, 
-                geometry, 
-                mass, 
-                startCompositePosition, 
-                rotationStatus);
-            
-            SetObjectProperties();
-
-            Position = position + StartPosition;
-
-            SetAABB();
+            InertiaTensor = Matrix3x3.IdentityMatrix();
+            SleepingFrameCount = 0;
         }
 
         #endregion
@@ -259,11 +201,6 @@ namespace SimulationObjectDefinition
 			DynamicFrictionCoeff = dynamicFrictionCoeff;
 		}
 
-		public void SetRelativePositions(Vector3[] inputRelativePositions)
-		{
-			Array.Copy (inputRelativePositions, RelativePositions, inputRelativePositions.Length);
-		}
-
 		public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
 		{
 			BaseInertiaTensor = Matrix3x3.Invert(inputIntertiaTensor);
@@ -277,14 +214,6 @@ namespace SimulationObjectDefinition
 		public void SetPosition(Vector3 inputPosition)
 		{
 			Position = inputPosition;
-		}
-
-		public void SetStartPosition(Vector3 inputStartPosition)
-		{
-			StartPosition = new Vector3 (
-				inputStartPosition.x, 
-				inputStartPosition.y, 
-				inputStartPosition.z);
 		}
 
 		public void SetLinearVelocity(Vector3 inputLinearVelocity)
@@ -344,37 +273,34 @@ namespace SimulationObjectDefinition
 
         public void SetAABB()
         {
-            if (ObjectGeometry.Length == 1)
-                ObjectGeometry[0].SetAABB(Helper.UpdateAABB(this, 0));
-            else
+            if (ObjectGeometry != null && ObjectGeometry.Length == 1)
+                ObjectGeometry[0].SetAABB(Helper.UpdateAABB(ObjectGeometry[0]));
+            else if (ObjectGeometry.Length > 1)
             {
                 int geometryIndex = 0;
-                foreach (ObjectGeometry obj in ObjectGeometry)
+                foreach (Geometry obj in ObjectGeometry)
                 {
-                    obj.SetAABB(Helper.UpdateAABB(this, geometryIndex));
+                    obj.SetAABB(Helper.UpdateAABB(obj));
                     geometryIndex++;
                 }
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
-        private void InitObject(
-            ObjectType type,
-            ObjectGeometry[] geometry,
-            double[] mass,
-            Vector3[] startCompositePosition,
-            Quaternion rotationStatus)
+        public void SetMass(double mass)
         {
-            ObjectType = type;
-            ObjectGeometry = geometry;
-            PartialMass = new double[geometry.Length];
+            Mass = mass;
+            if (Mass > 0.0)
+                InverseMass = 1.0;
+        }
 
-            Array.Copy(mass, PartialMass, geometry.Length);
-            for (int i = 0; i < geometry.Length; i++)
+        public void SetPartialMass(double[] mass)
+        {
+            PartialMass = new double[mass.Length];
+            Array.Copy(mass, PartialMass, mass.Length);
+            for (int i = 0; i < mass.Length; i++)
+            {
                 Mass += mass[i];
+            }
 
             if (ObjectType == ObjectType.StaticRigidBody)
             {
@@ -383,23 +309,38 @@ namespace SimulationObjectDefinition
             }
             else if (Mass > 0.0)
                 InverseMass = 1.0 / Mass;
-            
-            RotationStatus = rotationStatus;
+        }
 
-            StartCompositePositionObjects = startCompositePosition;
+        public void SetCompoundPosition(Vector3[] compoundPosition)
+        {
+            StartCompositePositionObjects = compoundPosition;
+        }
 
-            for (int i = 0; i < ObjectGeometry.Length; i++)
+        public void SetObjectGeometry(IGeometry[] geometry)
+        {
+            ObjectGeometry = geometry;
+
+            if (geometry != null)
             {
-                if (ObjectGeometry[i].VertexPosition.Length > 0)
+                for (int i = 0; i < ObjectGeometry.Length; i++)
                 {
-                    for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
-                        ObjectGeometry[i].VertexPosition[j].SetVertexPosition(ObjectGeometry[i].VertexPosition[j].Vertex +
-                                                                              StartCompositePositionObjects[i]);
+                    if (ObjectGeometry[i].VertexPosition != null && 
+                        ObjectGeometry[i].VertexPosition.Length > 0)
+                    {
+                        for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
+                            ObjectGeometry[i].VertexPosition[j].SetVertexPosition(ObjectGeometry[i].VertexPosition[j].Vertex +
+                                                                                  StartCompositePositionObjects[i]);
+                    }
                 }
             }
 
-            SleepingFrameCount = 0;
+            SetObjectProperties();
+            SetAABB();
         }
+
+        #endregion
+
+        #region Private Methods
 
         private void SetObjectProperties()
         {
@@ -442,18 +383,18 @@ namespace SimulationObjectDefinition
 
         private void SetRelativePosition(int totalVertex)
         {
-            RelativePositions = new Vector3[ObjectGeometry.Length][];
-
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
-                RelativePositions[i] = new Vector3[ObjectGeometry[i].VertexPosition.Length];
+                Vector3[] relativePositions = new Vector3[ObjectGeometry[i].VertexPosition.Length];
                 if (ObjectGeometry[i].VertexPosition.Length > 0)
                 {
                     for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
-                        RelativePositions[i][j] =
+                        relativePositions[j] =
                             ObjectGeometry[i].VertexPosition[j].Vertex -
                             StartPosition;
                 }
+
+                ObjectGeometry[i].SetRelativePosition(relativePositions);
             }
         }
 

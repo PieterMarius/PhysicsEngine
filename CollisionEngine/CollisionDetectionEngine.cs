@@ -53,7 +53,7 @@ namespace CollisionEngine
 		/// <param name="objects">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
 		public List<CollisionPointStructure> Execute(
-			SimulationObject[] objects,
+			IShape[] objects,
 			double minDistance)
 		{
 			if (collisionEngineParameters.ActivateSweepAndPrune) 
@@ -87,12 +87,10 @@ namespace CollisionEngine
 
         private CollisionPointStructure NarrowPhaseCollisionControl(
             GJKOutput gjkOutput,
-            SimulationObject A,
-            SimulationObject B,
+            IGeometry A,
+            IGeometry B,
             int indexA,
             int indexB,
-            int geometryIndexA,
-            int geometryIndexB,
             double minDistance)
         {
             
@@ -110,8 +108,6 @@ namespace CollisionEngine
                 List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
                                                                 A,
                                                                 B,
-                                                                geometryIndexA,
-                                                                geometryIndexB,
                                                                 gjkOutput.CollisionPoint);
 
                 return new CollisionPointStructure(
@@ -129,8 +125,6 @@ namespace CollisionEngine
                 EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
                                                 A,
                                                 B,
-                                                geometryIndexA,
-                                                geometryIndexB,
                                                 gjkOutput.SupportTriangles,
                                                 gjkOutput.Centroid);
 
@@ -145,8 +139,6 @@ namespace CollisionEngine
                 List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
                                                                A,
                                                                B,
-                                                               geometryIndexA,
-                                                               geometryIndexB,
                                                                epaOutput.CollisionPoint);
 
                 return new CollisionPointStructure(
@@ -163,8 +155,8 @@ namespace CollisionEngine
         }
 
 		private CollisionPointStructure NarrowPhase(
-			SimulationObject A,
-			SimulationObject B,
+			IShape A,
+			IShape B,
 			int indexA,
 			int indexB,
 			double minDistance)
@@ -175,16 +167,16 @@ namespace CollisionEngine
             {
                 for (int geometryIndexB = 0; geometryIndexB < B.ObjectGeometry.Length; geometryIndexB++)
                 {
-                    GJKOutput gjkOutput = collisionEngine.Execute(A, B, geometryIndexA, geometryIndexB);
+                    GJKOutput gjkOutput = collisionEngine.Execute(
+                        A.ObjectGeometry[geometryIndexA],
+                        B.ObjectGeometry[geometryIndexB]);
                     
                     CollisionPointStructure collision = NarrowPhaseCollisionControl(
                         gjkOutput,
-                        A,
-                        B,
+                        A.ObjectGeometry[geometryIndexA],
+                        B.ObjectGeometry[geometryIndexB],
                         indexA,
                         indexB,
-                        geometryIndexA,
-                        geometryIndexB,
                         minDistance);
 
                     if (collision != null)
@@ -212,7 +204,7 @@ namespace CollisionEngine
 		}
 
 		private List<CollisionPointStructure> BruteForceBroadPhase(
-			SimulationObject[] objects,
+			IShape[] objects,
 			double minDistance)
 		{
 			var result = new List<CollisionPointStructure> ();
@@ -251,7 +243,7 @@ namespace CollisionEngine
 		}
 
 		private List<CollisionPointStructure> SweepAndPruneBroadPhase(
-			SimulationObject[] objects,
+			IShape[] objects,
 			double minDistance)
 		{
 			var result = new List<CollisionPointStructure> ();

@@ -6,7 +6,7 @@ namespace MonoPhysicsEngine
 	internal interface IConstraintBuilder
 	{
 		List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null);
 	}
 }

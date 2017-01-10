@@ -101,9 +101,11 @@ namespace TestPhysics
 
                 XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-                ObjectGeometry[] objGeometry = new ObjectGeometry[xmlGeometryList.Count];
+                Geometry[] objGeometry = new Geometry[xmlGeometryList.Count];
                 double[] mass = new double[xmlGeometryList.Count];
                 Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
+
+                objects[i] = new SimulationObject((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText));
 
                 for (int j = 0; j < xmlGeometryList.Count; j++)
                 {
@@ -116,34 +118,21 @@ namespace TestPhysics
                     //Object mass
                     mass[j] = Convert.ToDouble(xmlGeometryList[j][massAttribute].InnerText);
 
-                    objGeometry[j] = GetObjectGeometry(geometryFileName, scale);
+                    objGeometry[j] = GetObjectGeometry(objects[i], geometryFileName, scale);
 
                     startCompositePosition[j] = new Vector3(
                         Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["x"].Value),
                         Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["y"].Value),
                         Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["z"].Value));
                 }
-
-                if (xmlGeometryList.Count > 1)
-                {
-                    objects[i] = new SimulationObject(
-                        (ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
-                        objGeometry,
-                        mass,
-                        startCompositePosition,
-                        position,
-                        new Quaternion(versor, angle));
-                }
-                else
-                {
-                    objects[i] = new SimulationObject(
-                        (ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText),
-                        objGeometry[0],
-                        mass[0],
-                        position,
-                        new Quaternion(versor, angle));
-                }
-
+                
+                objects[i].SetPartialMass(mass);
+                objects[i].SetCompoundPosition(startCompositePosition);
+                objects[i].SetPosition(position);
+                objects[i].SetRotationStatus(new Quaternion(versor, angle));
+                objects[i].SetObjectGeometry(objGeometry);
+                                        
+               
                 //Linear Velocity
                 objects [i].SetLinearVelocity (new Vector3 (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),
@@ -446,8 +435,9 @@ namespace TestPhysics
 			return solid;
 		}
 
-		private ObjectGeometry GetObjectGeometry(
-			string fileName,
+		private Geometry GetObjectGeometry(
+			IShape shape,
+            string fileName,
 			float scale)
 		{
 			LoadResult objectGeometry = LoadObjSolid (fileName, scale);
@@ -472,7 +462,8 @@ namespace TestPhysics
 				triangleIndex [i] [2] = objectGeometry.Groups [0].Faces [i] [2].VertexIndex - 1;
 			}
 
-			return new ObjectGeometry (
+			return new Geometry (
+                shape,
 				vertexStartPoint,
 				triangleIndex,
                 ObjectGeometryType.ConvexBody);

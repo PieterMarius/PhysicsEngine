@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
 
 namespace LCPSolver
 {

@@ -42,7 +42,7 @@ namespace MonoPhysicsEngine
 		public PistonConstraint(
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObject,
+			IShape[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 pistonAxis,
 			double restoreCoefficient,
@@ -57,8 +57,8 @@ namespace MonoPhysicsEngine
 
 			PistonAxis = -1.0 * pistonAxis.Normalize ();
 
-			SimulationObject objectA = simulationObject[IndexA];
-			SimulationObject objectB = simulationObject[IndexB];
+			IShape objectA = simulationObject[IndexA];
+			IShape objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = objectA.RotationMatrix *
 				(startAnchorPosition - objectA.StartPosition);
@@ -87,13 +87,13 @@ namespace MonoPhysicsEngine
 		/// <returns>The piston joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
 		public List<JacobianContact> BuildJacobian(
-			SimulationObject[] simulationObjs,
+			IShape[] simulationObjs,
 			double? baumStabilization = null)
 		{
 			var pistonConstraints = new List<JacobianContact> ();
 
-			SimulationObject simulationObjectA = simulationObjs [IndexA];
-			SimulationObject simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = simulationObjs [IndexA];
+			IShape simulationObjectB = simulationObjs [IndexB];
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 								(StartAnchorPoint -
@@ -344,8 +344,8 @@ namespace MonoPhysicsEngine
 		#region Private Methods
 
 		List<JacobianContact> getLinearLimit(
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			Vector3 sliderAxis,
 			Vector3 r1,
 			Vector3 r2)
@@ -374,8 +374,8 @@ namespace MonoPhysicsEngine
 		}
 
 		List<JacobianContact> getAnguarLimit(
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			Vector3 sliderAxis)
 		{
 			var angularConstraints = new List<JacobianContact>();
@@ -410,8 +410,8 @@ namespace MonoPhysicsEngine
 		}
 
 		List<JacobianContact> getMotorConstraint(
-			SimulationObject simulationObjectA,
-			SimulationObject simulationObjectB,
+			IShape simulationObjectA,
+			IShape simulationObjectB,
 			Vector3 sliderAxis)
 		{
 			var motorConstraints = new List<JacobianContact>();

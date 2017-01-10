@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace SimulationObjectDefinition
 {
-	public class ObjectGeometry
-	{
+	public class Geometry : IGeometry
+    {
 		#region Object Properties
 
         /// <summary>
@@ -26,16 +26,28 @@ namespace SimulationObjectDefinition
         /// Get the geometry property of object
         /// </summary>
         public ObjectGeometryType GeometryType { get; private set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Vector3[] RelativePosition { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IShape Shape { get; private set; }
 
         #endregion
 
         #region Constructor
 
-        public ObjectGeometry (
+        public Geometry (
+            IShape shape,
 			Vector3[] inputVertexPosition,
 			int[][] inputTriangle,
             ObjectGeometryType geometryType)
 		{
+            Shape = shape;
+
 			Triangle = new int[inputTriangle.Length][];
 
             for (int i = 0; i < inputTriangle.Length; i++)
@@ -69,10 +81,20 @@ namespace SimulationObjectDefinition
 				VertexPosition [i].SetVertexPosition(v[i]);
 		}
 
+        public void SetRelativePosition(Vector3[] relativePosition)
+        {
+            RelativePosition = relativePosition;
+        }
+
 		public void SetAABB(AABB box)
 		{
 			AABBox = box;
 		}
+
+        public void SetShape(IShape shape)
+        {
+            Shape = shape;
+        }
 
         #endregion
 

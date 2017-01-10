@@ -1,9 +1,7 @@
-﻿using System;
-using PhysicsEngineMathUtility;
+﻿using PhysicsEngineMathUtility;
 using SimulationObjectDefinition;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LCPSolver
 {

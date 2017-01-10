@@ -54,7 +54,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompoundShape.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="IGeometry.cs" />
+    <Compile Include="IShape.cs" />
     <Compile Include="ObjectGeometry.cs" />
     <Compile Include="ObjectGeometryType.cs" />
     <Compile Include="SimulationObject.cs" />
