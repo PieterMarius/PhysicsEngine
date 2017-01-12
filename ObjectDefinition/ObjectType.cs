@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
 	public enum ObjectType
 	{

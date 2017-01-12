@@ -1,6 +1,7 @@
 ﻿using PhysicsEngineMathUtility;
+using System.Collections.Generic;
 
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
     public interface IShape
     {
@@ -8,7 +9,6 @@ namespace SimulationObjectDefinition
         Vector3 AngularVelocity { get; }
         Matrix3x3 BaseInertiaTensor { get; }
         double BaumgarteStabilizationCoeff { get; }
-        int CompoundingConvexObjectCount { get; }
         double DynamicFrictionCoeff { get; }
         bool ExcludeFromCollisionDetection { get; }
         Vector3 ForceValue { get; }
@@ -16,14 +16,11 @@ namespace SimulationObjectDefinition
         double InverseMass { get; }
         Vector3 LinearVelocity { get; }
         double Mass { get; }
-        IGeometry[] ObjectGeometry { get; }
-        double[] PartialMass { get; }
         Vector3 Position { get; }
         double RestitutionCoeff { get; }
         Matrix3x3 RotationMatrix { get; }
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
-        Vector3[] StartCompositePositionObjects { get; }
         Vector3 StartPosition { get; }
         double StaticFrictionCoeff { get; }
         Vector3 TempAngularVelocity { get; }
@@ -48,6 +45,5 @@ namespace SimulationObjectDefinition
         void SetTempAngularVelocity(Vector3 inputAngularVelocity);
         void SetTempLinearVelocity(Vector3 inputLinearVelocity);
         void SetTorque(Vector3 torque);
-        void SetObjectGeometry(IGeometry[] geometry);
     }
 }

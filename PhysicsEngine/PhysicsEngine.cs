@@ -4,7 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using CollisionEngine;
 using LCPSolver;
 
@@ -661,7 +661,7 @@ namespace MonoPhysicsEngine
 
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = collisionEngine.Execute(
-                                    Array.ConvertAll(simObjects, item => (SimulationObject)item),
+                                    Array.ConvertAll(simObjects, item => (ConvexShape)item),
 									SimulationEngineParameters.CollisionDistance)
                                  	.ToArray();
 
@@ -1186,7 +1186,7 @@ namespace MonoPhysicsEngine
 
                     #region Update AABB
 
-                    if (simObj.ObjectGeometry != null &&
+                    if (ShapeDefinition.Helper.GetGeometry(simObj) != null &&
 						(linearVelocity > 0.0 || angularVelocity > 0.0))
                     {
                        simObj.SetAABB();
@@ -1321,7 +1321,7 @@ namespace MonoPhysicsEngine
 
                     #region Update AABB
 
-                    if (simObj.ObjectGeometry != null &&
+                    if (ShapeDefinition.Helper.GetGeometry(simObj) != null &&
                         (linearVelocity > 0.0 || angularVelocity > 0.0))
                     {
                         simObj.SetAABB();

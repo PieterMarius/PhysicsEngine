@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsEngineMathUtility", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionEngine", "CollisionEngine\CollisionEngine.csproj", "{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimulationObjectDefinition", "ObjectDefinition\SimulationObjectDefinition.csproj", "{B5F96090-31B4-492A-95D4-E3D2F9B59F98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeDefinition", "ObjectDefinition\ShapeDefinition.csproj", "{B5F96090-31B4-492A-95D4-E3D2F9B59F98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}"
 EndProject

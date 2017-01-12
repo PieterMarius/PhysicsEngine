@@ -1,12 +1,12 @@
 ﻿using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
     public static class Helper
     {
@@ -50,6 +50,18 @@ namespace SimulationObjectDefinition
             return
                 obj.Shape.Position +
                 (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]);
+        }
+
+
+        public static IGeometry[] GetGeometry(
+            IShape shape)
+        {
+            if (shape is ICompoundShape)
+                return ((ICompoundShape)shape).ObjectGeometry;
+            else if (shape is IConvexShape)
+                return new IGeometry[] { ((IConvexShape)shape).ObjectGeometry };
+            else
+                throw new ArgumentException("Unexpected type: " + shape.GetType());
         }
     }
 }

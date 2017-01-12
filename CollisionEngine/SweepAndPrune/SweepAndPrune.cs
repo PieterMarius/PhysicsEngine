@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace CollisionEngine
 {

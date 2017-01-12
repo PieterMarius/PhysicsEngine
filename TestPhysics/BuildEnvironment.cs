@@ -5,7 +5,7 @@ using LCPSolver;
 using MonoPhysicsEngine;
 using ObjLoader.Loader.Loaders;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using Utility;
 using System;
 
@@ -45,9 +45,9 @@ namespace TestPhysics
 
 		#region Private Methods
 
-		private SimulationObject[] getSimulationObjects()
+		private IShape[] getSimulationObjects()
 		{
-			SimulationObject[] objects = new SimulationObject[1];
+			CompoundShape[] objects = new CompoundShape[1];
 
 			#region Terrain Base
 

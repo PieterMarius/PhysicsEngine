@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>ObjectDefinition</RootNamespace>
-    <AssemblyName>ObjectDefinition</AssemblyName>
+    <RootNamespace>ShapeDefinition</RootNamespace>
+    <AssemblyName>ShapeDefinition</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -56,11 +56,13 @@
   <ItemGroup>
     <Compile Include="CompoundShape.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="ICompoundShape.cs" />
+    <Compile Include="IConvexShape.cs" />
     <Compile Include="IGeometry.cs" />
     <Compile Include="IShape.cs" />
     <Compile Include="ObjectGeometry.cs" />
     <Compile Include="ObjectGeometryType.cs" />
-    <Compile Include="SimulationObject.cs" />
+    <Compile Include="ConvexShape.cs" />
     <Compile Include="AABB.cs" />
     <Compile Include="ConstraintType.cs" />
     <Compile Include="JointType.cs" />

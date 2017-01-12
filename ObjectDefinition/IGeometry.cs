@@ -1,6 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
     public interface IGeometry
     {

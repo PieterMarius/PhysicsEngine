@@ -53,9 +53,9 @@
       <Project>{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}</Project>
       <Name>CollisionEngine</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ObjectDefinition\SimulationObjectDefinition.csproj">
+    <ProjectReference Include="..\ObjectDefinition\ShapeDefinition.csproj">
       <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
-      <Name>SimulationObjectDefinition</Name>
+      <Name>ShapeDefinition</Name>
     </ProjectReference>
     <ProjectReference Include="..\LCPSolver\LCPSolver.csproj">
       <Project>{38021940-DA65-406D-A9FF-7739B85913F5}</Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
@@ -315,7 +315,7 @@ namespace MonoPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(ConvexShape[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

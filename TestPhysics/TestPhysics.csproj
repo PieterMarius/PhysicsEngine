@@ -80,9 +80,9 @@
       <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
       <Name>Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ObjectDefinition\SimulationObjectDefinition.csproj">
+    <ProjectReference Include="..\ObjectDefinition\ShapeDefinition.csproj">
       <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
-      <Name>SimulationObjectDefinition</Name>
+      <Name>ShapeDefinition</Name>
     </ProjectReference>
     <ProjectReference Include="..\CollisionEngine\CollisionEngine.csproj">
       <Project>{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}</Project>

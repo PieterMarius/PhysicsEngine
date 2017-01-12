@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
@@ -318,7 +318,7 @@ namespace MonoPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		public void AddTorque(ConvexShape[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			Vector3 pistonAxis = objects[IndexA].RotationMatrix * PistonAxis;
 

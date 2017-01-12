@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace CollisionEngine
 {
@@ -161,28 +161,7 @@ namespace CollisionEngine
 			int indexB,
 			double minDistance)
 		{
-            List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
-            
-            for (int geometryIndexA = 0; geometryIndexA < A.ObjectGeometry.Length; geometryIndexA++)
-            {
-                for (int geometryIndexB = 0; geometryIndexB < B.ObjectGeometry.Length; geometryIndexB++)
-                {
-                    GJKOutput gjkOutput = collisionEngine.Execute(
-                        A.ObjectGeometry[geometryIndexA],
-                        B.ObjectGeometry[geometryIndexB]);
-                    
-                    CollisionPointStructure collision = NarrowPhaseCollisionControl(
-                        gjkOutput,
-                        A.ObjectGeometry[geometryIndexA],
-                        B.ObjectGeometry[geometryIndexB],
-                        indexA,
-                        indexB,
-                        minDistance);
-
-                    if (collision != null)
-                        collisionPointStructure.Add(collision);
-                }
-            }
+            List<CollisionPointStructure> collisionPointStructure = GetCollisionPointStructure(A, B, indexA, indexB, minDistance);
             
             if (collisionPointStructure.Count > 1)
             {
@@ -248,9 +227,10 @@ namespace CollisionEngine
 		{
 			var result = new List<CollisionPointStructure> ();
 
-            AABB[][] boxs = Array.ConvertAll(objects, item => (item.ObjectGeometry == null) ? null : Array.ConvertAll(item.ObjectGeometry, x => x.AABBox));
-
-			List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
+            //AABB[][] boxs = Array.ConvertAll(objects, item => (item.ObjectGeometry == null) ? null : Array.ConvertAll(item.ObjectGeometry, x => x.AABBox));
+            AABB[][] boxs = GetAABBArray(objects);
+            
+            List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
 
             	var lockMe = new object();
 
@@ -278,8 +258,68 @@ namespace CollisionEngine
             return result;
 		}
 
-		#endregion
+        private AABB[][] GetAABBArray(IShape[] objects)
+        {
+            AABB[][] boxs = new AABB[objects.Length][];
 
-	}
+            int index = 0;
+            foreach (IShape shape in objects)
+            {
+                if(shape is IConvexShape)
+                {
+                    boxs[index] = new AABB[1];
+                    boxs[index][0] = ((IConvexShape)shape).ObjectGeometry.AABBox;
+                }
+                else if (shape is ICompoundShape)
+                {
+
+                    AABB[] bufBox = Array.ConvertAll(((ICompoundShape)shape).ObjectGeometry, x => x.AABBox);
+                    boxs[index] = bufBox;
+                }
+                index++;
+            }
+
+            return boxs;
+        }
+
+        private List<CollisionPointStructure> GetCollisionPointStructure(
+            IShape A,
+            IShape B,
+            int indexA,
+            int indexB,
+            double minDistance)
+        {
+            List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
+
+            IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
+            IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
+
+            for (int geometryIndexA = 0; geometryIndexA < geometryA.Length; geometryIndexA++)
+            {
+                for (int geometryIndexB = 0; geometryIndexB < geometryB.Length; geometryIndexB++)
+                {
+                    GJKOutput gjkOutput = collisionEngine.Execute(
+                        geometryA[geometryIndexA],
+                        geometryB[geometryIndexB]);
+
+                    CollisionPointStructure collision = NarrowPhaseCollisionControl(
+                        gjkOutput,
+                        geometryA[geometryIndexA],
+                        geometryB[geometryIndexB],
+                        indexA,
+                        indexB,
+                        minDistance);
+
+                    if (collision != null)
+                        collisionPointStructure.Add(collision);
+                }
+            }
+            
+            return collisionPointStructure;
+        }
+
+        #endregion
+
+    }
 }
 

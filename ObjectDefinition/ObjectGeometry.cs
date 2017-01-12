@@ -1,7 +1,7 @@
 ﻿using PhysicsEngineMathUtility;
 using System.Collections.Generic;
 
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
 	public class Geometry : IGeometry
     {

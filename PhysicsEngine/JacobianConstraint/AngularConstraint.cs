@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace MonoPhysicsEngine
 {
@@ -171,7 +171,7 @@ namespace MonoPhysicsEngine
         #region IConstraint
 
         public void AddTorque(
-            SimulationObject[] objects, 
+            ConvexShape[] objects, 
             double torqueAxis1, 
             double torqueAxis2)
         {

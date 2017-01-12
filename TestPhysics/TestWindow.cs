@@ -6,7 +6,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;  
 using Utility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
@@ -32,7 +32,7 @@ namespace TestPhysics
 		List<CollisionPointStructure> collPoint;
         List<List<CollisionPointStructure>> collisionPartitionedPoints;
 
-        SimulationObject[] simulationObjects;
+        IShape[] simulationObjects;
 		IConstraint[] simulationJoints;
 
 		CollisionEngineParameters collisionEngineParameters;
@@ -107,8 +107,8 @@ namespace TestPhysics
                 //var loadObject = new LoadObject ("carConfig.xml");
                 //var loadObject = new LoadObject("testJointBridge.xml");
                 //var loadObject = new LoadObject("compositeObjectConfig.xml");
-                var loadObject = new LoadObject("frictionTestConfig.xml");
-
+                //var loadObject = new LoadObject("frictionTestConfig.xml");
+                var loadObject = new LoadObject("softBodyConfig.xml");
 
                 simulationObjects = loadObject.LoadSimulationObjects ();
 				simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
@@ -450,12 +450,17 @@ namespace TestPhysics
 			PhysicsEngineMathUtility.Vector3 position = physicsEngine.GetObject (id).Position;
 			ObjectType type = physicsEngine.GetObject (id).ObjectType;
             
-            for (int i = 0; i < physicsEngine.GetObject(id).ObjectGeometry.Length; i++)
+            for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetObject(id)).Length; i++)
             {
                 GL.PushMatrix();
                 GL.Enable(EnableCap.Texture2D);
 
-                PhysicsEngineMathUtility.Vector3 positionMt = position + physicsEngine.GetObject(id).StartCompositePositionObjects[i]-
+                PhysicsEngineMathUtility.Vector3 compoundPos = new PhysicsEngineMathUtility.Vector3();
+
+                if (physicsEngine.GetObject(id) is ICompoundShape)
+                    compoundPos = ((ICompoundShape)physicsEngine.GetObject(id)).StartCompoundPositionObjects[i];
+
+                PhysicsEngineMathUtility.Vector3 positionMt = position + compoundPos-
                                                               physicsEngine.GetObject(id).StartPosition;
 
                 Matrix4 positionMatrix = new Matrix4(
@@ -703,12 +708,12 @@ namespace TestPhysics
 		private void displayVertex(int index)
 		{
 
-			for (int i = 0; i < physicsEngine.GetObject (index).ObjectGeometry.Length; i++) 
+			for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetObject (index)).Length; i++) 
 			{
-                for (int j = 0; j < physicsEngine.GetObject(index).ObjectGeometry[i].RelativePosition.Length; j++)
+                for (int j = 0; j < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetObject(index))[i].RelativePosition.Length; j++)
                 {
                     PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetObject(index).Position +
-                                    (physicsEngine.GetObject(index).RotationMatrix * physicsEngine.GetObject(index).ObjectGeometry[i].RelativePosition[j]);
+                                    (physicsEngine.GetObject(index).RotationMatrix * ShapeDefinition.Helper.GetGeometry(physicsEngine.GetObject(index))[i].RelativePosition[j]);
 
                     GL.PushMatrix();
 
@@ -767,28 +772,27 @@ namespace TestPhysics
             IShape[] simObj = physicsEngine.GetSimulationObjects();
             for (int i = 0; i < simObj.Length; i++)
             {
-                AABB joint = simObj[i].ObjectGeometry[0].AABBox;
+                AABB joint = ShapeDefinition.Helper.GetGeometry(simObj[i])[0].AABBox;
+                                
+                GL.PushMatrix();
 
-                
-                    GL.PushMatrix();
+                Matrix4 mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(joint.Max[0]),
+                                    Convert.ToSingle(joint.Max[1]),
+                                    Convert.ToSingle(joint.Max[2]));
 
-                    Matrix4 mView = Matrix4.CreateTranslation(
-                                        Convert.ToSingle(joint.Max[0]),
-                                        Convert.ToSingle(joint.Max[1]),
-                                        Convert.ToSingle(joint.Max[2]));
+                var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
 
-                    var dmviewData = new float[] {
-                        mView.M11, mView.M12, mView.M13, mView.M14,
-                        mView.M21, mView.M22, mView.M23, mView.M24,
-                        mView.M31, mView.M32, mView.M33, mView.M34,
-                        mView.M41, mView.M42, mView.M43, mView.M44
-                    };
+                GL.MultMatrix(dmviewData);
 
-                    GL.MultMatrix(dmviewData);
+                OpenGLUtilities.drawSolidCube(0.08f);
 
-                    OpenGLUtilities.drawSolidCube(0.08f);
-
-                    GL.PopMatrix();
+                GL.PopMatrix();
 
 
                 GL.PushMatrix();

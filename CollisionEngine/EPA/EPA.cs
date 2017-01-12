@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 
 namespace CollisionEngine

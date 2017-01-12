@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace MonoPhysicsEngine
 {

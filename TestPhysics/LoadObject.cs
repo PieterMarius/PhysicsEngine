@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using ObjLoader.Loader.Loaders;
 using Utility;
 
@@ -74,14 +74,14 @@ namespace TestPhysics
 
 		#region Public Methods
 
-		public SimulationObject[] LoadSimulationObjects()
+		public IShape[] LoadSimulationObjects()
 		{
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(FileNameObjectProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
-			SimulationObject[] objects = new SimulationObject[xmlList.Count];
+			IShape[] objects = new IShape[xmlList.Count];
             			
 			for (int i = 0; i < xmlList.Count; i++)
 			{
@@ -105,8 +105,11 @@ namespace TestPhysics
                 double[] mass = new double[xmlGeometryList.Count];
                 Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
 
-                objects[i] = new SimulationObject((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText));
-
+                if (xmlGeometryList.Count > 1)
+                    objects[i] = new CompoundShape((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText));
+                else
+                    objects[i] = new ConvexShape((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText));
+                
                 for (int j = 0; j < xmlGeometryList.Count; j++)
                 {
                     //Scale
@@ -125,14 +128,22 @@ namespace TestPhysics
                         Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["y"].Value),
                         Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["z"].Value));
                 }
-                
-                objects[i].SetPartialMass(mass);
-                objects[i].SetCompoundPosition(startCompositePosition);
+
                 objects[i].SetPosition(position);
                 objects[i].SetRotationStatus(new Quaternion(versor, angle));
-                objects[i].SetObjectGeometry(objGeometry);
-                                        
-               
+
+                if (xmlGeometryList.Count > 1)
+                {
+                    ((ICompoundShape)objects[i]).SetPartialMass(mass);
+                    ((ICompoundShape)objects[i]).SetCompoundPosition(startCompositePosition);
+                    ((ICompoundShape)objects[i]).SetObjectGeometry(objGeometry);
+                }
+                else
+                {
+                    ((IConvexShape)objects[i]).SetMass(mass[0]);
+                    ((IConvexShape)objects[i]).SetObjectGeometry(objGeometry[0]);
+                }
+                                
                 //Linear Velocity
                 objects [i].SetLinearVelocity (new Vector3 (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),
@@ -166,7 +177,7 @@ namespace TestPhysics
 		}
 
 		public IConstraint[] LoadSimulationJoints(
-			SimulationObject[] objects)
+			IShape[] objects)
 		{
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(FileNameObjectProperties);

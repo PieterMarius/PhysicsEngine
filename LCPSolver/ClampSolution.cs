@@ -1,6 +1,6 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace LCPSolver
 {

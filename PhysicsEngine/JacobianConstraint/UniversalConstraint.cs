@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
@@ -42,7 +42,7 @@ namespace MonoPhysicsEngine
 		public UniversalConstraint(
 			int indexA,
 			int indexB,
-			SimulationObject[] simulationObject,
+			IShape[] simulationObject,
 			Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
@@ -58,8 +58,8 @@ namespace MonoPhysicsEngine
 			HingeAxis = hingeAxis.Normalize ();
 			RotationAxis = rotationAxis.Normalize ();
 
-			SimulationObject objectA = simulationObject[IndexA];
-			SimulationObject objectB = simulationObject[IndexB];
+			IShape objectA = simulationObject[IndexA];
+			IShape objectB = simulationObject[IndexB];
 
 			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
 			relativePos = objectA.RotationMatrix * relativePos;
@@ -312,7 +312,7 @@ namespace MonoPhysicsEngine
 		}
 
 		public void AddTorque(
-			SimulationObject[] objects, 
+			ConvexShape[] objects, 
 			double torqueAxis1, 
 			double torqueAxis2)
 		{

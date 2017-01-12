@@ -1,4 +1,4 @@
-﻿using SimulationObjectDefinition;
+﻿using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
 namespace MonoPhysicsEngine
@@ -24,7 +24,7 @@ namespace MonoPhysicsEngine
 		void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
 		void SetAxis1Motor(double speedValue, double forceLimit);
 		void SetAxis2Motor(double speedValue, double forceLimit);
-		void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2);
+		void AddTorque(ConvexShape[] objects, double torqueAxis1, double torqueAxis2);
 		void SetRestoreCoefficient(double restoreCoefficient);
 
 		#endregion

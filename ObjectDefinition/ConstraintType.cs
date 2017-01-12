@@ -1,5 +1,5 @@
 ﻿
-namespace SimulationObjectDefinition
+namespace ShapeDefinition
 {
 	public enum ConstraintType
 	{

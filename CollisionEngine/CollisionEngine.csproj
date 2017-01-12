@@ -52,9 +52,9 @@
       <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
       <Name>Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ObjectDefinition\SimulationObjectDefinition.csproj">
+    <ProjectReference Include="..\ObjectDefinition\ShapeDefinition.csproj">
       <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
-      <Name>SimulationObjectDefinition</Name>
+      <Name>ShapeDefinition</Name>
     </ProjectReference>
     <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>

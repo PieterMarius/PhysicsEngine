@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace MonoPhysicsEngine
 {
@@ -326,7 +326,7 @@ namespace MonoPhysicsEngine
 			AngularLimitMax2 = angularLimitMax;
 		}
 
-		public void AddTorque(SimulationObject[] objects, double torqueAxis1, double torqueAxis2)
+		public void AddTorque(ConvexShape[] objects, double torqueAxis1, double torqueAxis2)
 		{
 			Vector3 hingeAxis = objects[IndexA].RotationMatrix * HingeAxis;
 			Vector3 rotationAxis = objects[IndexB].RotationMatrix * RotationAxis;

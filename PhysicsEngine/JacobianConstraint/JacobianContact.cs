@@ -1,5 +1,5 @@
 ﻿using PhysicsEngineMathUtility;
-using SimulationObjectDefinition;
+using ShapeDefinition;
 
 namespace MonoPhysicsEngine
 {
