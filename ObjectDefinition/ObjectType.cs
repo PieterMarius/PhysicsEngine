@@ -6,6 +6,7 @@ namespace ShapeDefinition
 	{
 		RigidBody = 0,
 		StaticRigidBody = 1,
+        SoftBody = 2,
 	}
 }
 

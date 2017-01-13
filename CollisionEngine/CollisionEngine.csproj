@@ -81,7 +81,9 @@
     <Compile Include="Common\SupportTriangle.cs" />
     <Compile Include="Common\EngineCollisionPoint.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="SoftBody\" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>

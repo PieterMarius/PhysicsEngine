@@ -32,8 +32,8 @@ namespace MonoPhysicsEngine
 					 simulationObjs[indexB].RestitutionCoeff) * 0.5;
 
 				double baumgarteStabilizationValue = 
-					(simulationObjs[indexA].BaumgarteStabilizationCoeff +
-					 simulationObjs[indexB].BaumgarteStabilizationCoeff) * 0.5;
+					(simulationObjs[indexA].RestoreCoeff +
+					 simulationObjs[indexB].RestoreCoeff) * 0.5;
 
                 for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
                 {
@@ -76,7 +76,7 @@ namespace MonoPhysicsEngine
                             correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
                                                     baumgarteStabilizationValue - uCollision, 0.0);
                         }
-
+                        
                         double correctedBounce = uCollision;
 
                         JacobianContact normalContact = JacobianCommon.GetDOF(

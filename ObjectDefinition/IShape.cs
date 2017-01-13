@@ -8,7 +8,7 @@ namespace ShapeDefinition
         ObjectType ObjectType { get; }
         Vector3 AngularVelocity { get; }
         Matrix3x3 BaseInertiaTensor { get; }
-        double BaumgarteStabilizationCoeff { get; }
+        double RestoreCoeff { get; }
         double DynamicFrictionCoeff { get; }
         bool ExcludeFromCollisionDetection { get; }
         Vector3 ForceValue { get; }
@@ -30,7 +30,7 @@ namespace ShapeDefinition
         void SetAABB();
         void SetAngularVelocity(Vector3 inputAngularVelocity);
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
-        void SetBaumgarteStabilizationCoeff(double value);
+        void SetRestoreCoeff(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
         void SetExcludeFromCollisionDetection(bool excludeFromCollisionDetection);
         void SetForce(Vector3 force);

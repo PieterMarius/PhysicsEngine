@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShapeDefinition;
+using PhysicsEngineMathUtility;
 
 namespace CollisionEngine
 {
@@ -227,7 +228,6 @@ namespace CollisionEngine
 		{
 			var result = new List<CollisionPointStructure> ();
 
-            //AABB[][] boxs = Array.ConvertAll(objects, item => (item.ObjectGeometry == null) ? null : Array.ConvertAll(item.ObjectGeometry, x => x.AABBox));
             AABB[][] boxs = GetAABBArray(objects);
             
             List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, minDistance);
@@ -265,7 +265,7 @@ namespace CollisionEngine
             int index = 0;
             foreach (IShape shape in objects)
             {
-                if(shape is IConvexShape)
+                if (shape is IConvexShape)
                 {
                     boxs[index] = new AABB[1];
                     boxs[index][0] = ((IConvexShape)shape).ObjectGeometry.AABBox;
@@ -275,6 +275,11 @@ namespace CollisionEngine
 
                     AABB[] bufBox = Array.ConvertAll(((ICompoundShape)shape).ObjectGeometry, x => x.AABBox);
                     boxs[index] = bufBox;
+                }
+                else if (shape is ISoftShape)
+                {
+                    boxs[index] = new AABB[1];
+                    boxs[index][0] = ((ISoftShape)shape).AABBox;
                 }
                 index++;
             }
@@ -291,31 +296,77 @@ namespace CollisionEngine
         {
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-            IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
-            IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
-
-            for (int geometryIndexA = 0; geometryIndexA < geometryA.Length; geometryIndexA++)
+            if (!(A is ISoftShape) &&
+                !(B is ISoftShape))
             {
-                for (int geometryIndexB = 0; geometryIndexB < geometryB.Length; geometryIndexB++)
+                IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
+                IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
+
+                for (int geometryIndexA = 0; geometryIndexA < geometryA.Length; geometryIndexA++)
                 {
-                    GJKOutput gjkOutput = collisionEngine.Execute(
-                        geometryA[geometryIndexA],
-                        geometryB[geometryIndexB]);
+                    for (int geometryIndexB = 0; geometryIndexB < geometryB.Length; geometryIndexB++)
+                    {
+                        GJKOutput gjkOutput = collisionEngine.Execute(
+                            geometryA[geometryIndexA],
+                            geometryB[geometryIndexB]);
 
-                    CollisionPointStructure collision = NarrowPhaseCollisionControl(
-                        gjkOutput,
-                        geometryA[geometryIndexA],
-                        geometryB[geometryIndexB],
-                        indexA,
-                        indexB,
-                        minDistance);
+                        CollisionPointStructure collision = NarrowPhaseCollisionControl(
+                            gjkOutput,
+                            geometryA[geometryIndexA],
+                            geometryB[geometryIndexB],
+                            indexA,
+                            indexB,
+                            minDistance);
 
-                    if (collision != null)
-                        collisionPointStructure.Add(collision);
+                        if (collision != null)
+                            collisionPointStructure.Add(collision);
+                    }
                 }
             }
-            
+            else if (A is ISoftShape && 
+                     B is ISoftShape)
+            {
+                SelfSoftBodyCollisionDetection(A, minDistance);
+                SelfSoftBodyCollisionDetection(B, minDistance);
+
+
+            }
+                        
             return collisionPointStructure;
+        }
+
+        //TODO: optimize methods and move to class SoftBodyCollisionDetection
+        private List<CollisionPointBaseStructure> SelfSoftBodyCollisionDetection(
+            IShape body,
+            double minDistance)
+        {
+            ISoftShape softBody = (ISoftShape)body;
+            List<CollisionPointBaseStructure> collisionPoint = new List<CollisionPointBaseStructure>();
+
+            for (int i = 0; i < softBody.ShapePoint.Length; i++)
+            {
+                for (int j = 0; j < softBody.ShapePoint.Length; j++)
+                {
+                    double diameter = softBody.ShapePoint[i].Diameter + softBody.ShapePoint[j].Diameter + minDistance;
+                    double distance = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Length();
+
+                    if (distance < diameter)
+                    {
+                        bool intersection = (distance - minDistance < 0);
+
+                        Vector3 normal = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Normalize();
+
+                        CollisionPoint cp = new CollisionPoint(softBody.ShapePoint[i].Position, softBody.ShapePoint[j].Position, normal);
+                        collisionPoint.Add(new CollisionPointBaseStructure(
+                            distance,
+                            intersection,
+                            cp,
+                            new CollisionPoint[] { cp }));
+                    }
+                }
+            }
+
+            return collisionPoint;
         }
 
         #endregion

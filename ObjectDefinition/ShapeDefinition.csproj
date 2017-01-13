@@ -60,13 +60,16 @@
     <Compile Include="IConvexShape.cs" />
     <Compile Include="IGeometry.cs" />
     <Compile Include="IShape.cs" />
-    <Compile Include="ObjectGeometry.cs" />
+    <Compile Include="Geometry.cs" />
+    <Compile Include="ISoftShape.cs" />
     <Compile Include="ObjectGeometryType.cs" />
     <Compile Include="ConvexShape.cs" />
     <Compile Include="AABB.cs" />
     <Compile Include="ConstraintType.cs" />
     <Compile Include="JointType.cs" />
     <Compile Include="ObjectType.cs" />
+    <Compile Include="SoftShape.cs" />
+    <Compile Include="SoftShapePoint.cs" />
     <Compile Include="StartImpulseProperties.cs" />
     <Compile Include="InertiaTensor.cs" />
   </ItemGroup>

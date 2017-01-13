@@ -179,7 +179,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = restoreCoeff * 2.0 * angularError.x;
+			constraintLimit = restoreCoeff * angularError.x;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,
@@ -198,7 +198,7 @@ namespace MonoPhysicsEngine
 
 			//DOF 5
 
-			constraintLimit = restoreCoeff * 2.0 * angularError.y;
+			constraintLimit = restoreCoeff * angularError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
 				IndexA,

@@ -681,8 +681,19 @@ namespace PhysicsEngineMathUtility
 			return new Vector3 (1.0, 1.0, -1.0 * (a.x + a.y) / a.z);
 		}
 
-		#endregion
+        public static Vector3 TurnOutVNormal(
+            Vector3 normal,
+            Vector3 v)
+        {
+            Vector3 resNormal = normal;
+            if (Vector3.Dot(normal, v) < 0.0)
+                resNormal = normal * -1.0;
+                        
+            return resNormal;
+        }
 
-	}
+        #endregion
+
+    }
 }
 

@@ -5,5 +5,6 @@ namespace ShapeDefinition
     {
         ConvexBody = 0,
         NonConvexBody = 1,
+        SoftBody = 2,
     }
 }

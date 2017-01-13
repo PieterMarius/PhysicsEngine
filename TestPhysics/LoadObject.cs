@@ -169,7 +169,7 @@ namespace TestPhysics
 				objects[i].SetExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [excludeFromCollisionDetection].InnerText));
 
 				//Baumgarte Stabilization value
-				objects[i].SetBaumgarteStabilizationCoeff(30.0);
+				objects[i].SetRestoreCoeff(30.0);
 
             }
 

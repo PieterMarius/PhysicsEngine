@@ -44,7 +44,7 @@ namespace ShapeDefinition
 		/// Gets the baumgarte stabilization coeff.
 		/// </summary>
 		/// <value>The baumgarte stabilization coeff.</value>
-		public double BaumgarteStabilizationCoeff{ get; private set; } 
+		public double RestoreCoeff{ get; private set; } 
 
 		/// <summary>
 		/// Gets the base inertia tensor ^(-1).
@@ -157,14 +157,6 @@ namespace ShapeDefinition
         {
             ObjectType = type;
 
-            if (ObjectType == ObjectType.StaticRigidBody)
-            {
-                Mass = 0.0;
-                InverseMass = 0.0;
-            }
-            else if (Mass > 0.0)
-                InverseMass = 1.0;
-
             InertiaTensor = Matrix3x3.IdentityMatrix();
             SleepingFrameCount = 0;
         }
@@ -248,9 +240,9 @@ namespace ShapeDefinition
 			ForceValue = force;
 		}
 
-		public void SetBaumgarteStabilizationCoeff(double value)
+		public void SetRestoreCoeff(double value)
 		{
-			BaumgarteStabilizationCoeff = value;
+			RestoreCoeff = value;
 		}
         
         public void SetSleepingFrameCount(int frameCount)
@@ -267,8 +259,14 @@ namespace ShapeDefinition
         public void SetMass(double mass)
         {
             Mass = mass;
-            if (Mass > 0.0)
-                InverseMass = 1.0;
+            
+            if (ObjectType == ObjectType.StaticRigidBody)
+            {
+                Mass = 0.0;
+                InverseMass = 0.0;
+            }
+            else if (Mass > 0.0)
+                InverseMass = 1.0 / Mass;
         }
 
         public void SetObjectGeometry(IGeometry geometry)
