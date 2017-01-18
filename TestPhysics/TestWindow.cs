@@ -93,6 +93,96 @@ namespace TestPhysics
 
         //}
 
+
+        List<PhysicsEngineMathUtility.Vector3> spherePoint = new List<PhysicsEngineMathUtility.Vector3>();
+        void TestNonConvexDec()
+        {
+            Geometry obj = LoadObject.GetObjectGeometry(null, "teapot.obj", 1);
+
+            spherePoint = new List<PhysicsEngineMathUtility.Vector3>();
+
+            //Suddivido il volume in parti
+            int nSphere = 100;
+
+            //Provo a verificare di farlo per ogni lato del cubo
+            double sphereGap = 2.0 / nSphere;
+
+            //Direction 1
+            PhysicsEngineMathUtility.Vector3 direction1 = new PhysicsEngineMathUtility.Vector3(0.0, 0.0, -1.0);
+            PhysicsEngineMathUtility.Vector3 direction2 = new PhysicsEngineMathUtility.Vector3(0.0, 0.0, 1.0);
+            PhysicsEngineMathUtility.Vector3 direction3 = new PhysicsEngineMathUtility.Vector3(0.0, 1.0, 0.0);
+            PhysicsEngineMathUtility.Vector3 direction4 = new PhysicsEngineMathUtility.Vector3(0.0, -1.0, 0.0);
+            PhysicsEngineMathUtility.Vector3 direction5 = new PhysicsEngineMathUtility.Vector3(1.0, 0.0, 0.0);
+            PhysicsEngineMathUtility.Vector3 direction6 = new PhysicsEngineMathUtility.Vector3(-1.0, 0.0, 0.0);
+
+            PhysicsEngineMathUtility.Vector3 startPoint1 = new PhysicsEngineMathUtility.Vector3(-1.0, -1.0, 0.0);
+            PhysicsEngineMathUtility.Vector3 startPoint2 = new PhysicsEngineMathUtility.Vector3(-1.0, 0.0, -1.0);
+
+            for (int i = 0; i < nSphere; i++)
+            {
+                for (int k = 0; k < nSphere; k++)
+                {
+                    PhysicsEngineMathUtility.Vector3 point1 = startPoint1 + new PhysicsEngineMathUtility.Vector3(i * sphereGap, k * sphereGap, 0.0);
+                    PhysicsEngineMathUtility.Vector3 point2 = startPoint2 + new PhysicsEngineMathUtility.Vector3(i * sphereGap, 0.0, k * sphereGap);
+                    for (int j = 0; j < obj.Triangle.Length; j++)
+                    {
+                        PhysicsEngineMathUtility.Vector3? intersection = PhysicsEngineMathUtility.GeometryUtilities.RayTriangleIntersection(
+                            obj.VertexPosition[obj.Triangle[j][0]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][1]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][2]].Vertex,
+                            point1,
+                            direction1);
+
+                        if (intersection.HasValue)
+                        {
+                            spherePoint.Add(intersection.Value);
+                            
+                        }
+
+                        intersection = PhysicsEngineMathUtility.GeometryUtilities.RayTriangleIntersection(
+                            obj.VertexPosition[obj.Triangle[j][0]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][1]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][2]].Vertex,
+                            point1,
+                            direction2);
+
+                        if (intersection.HasValue)
+                        {
+                            spherePoint.Add(intersection.Value);
+
+                        }
+
+                        intersection = PhysicsEngineMathUtility.GeometryUtilities.RayTriangleIntersection(
+                            obj.VertexPosition[obj.Triangle[j][0]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][1]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][2]].Vertex,
+                            point2,
+                            direction3);
+
+                        if (intersection.HasValue)
+                        {
+                            spherePoint.Add(intersection.Value);
+
+                        }
+
+                        intersection = PhysicsEngineMathUtility.GeometryUtilities.RayTriangleIntersection(
+                            obj.VertexPosition[obj.Triangle[j][0]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][1]].Vertex,
+                            obj.VertexPosition[obj.Triangle[j][2]].Vertex,
+                            point2,
+                            direction4);
+
+                        if (intersection.HasValue)
+                        {
+                            spherePoint.Add(intersection.Value);
+
+                        }
+                    }
+                }
+            }
+
+        }
+
         void initProgram()
 		{
 			try
@@ -108,6 +198,8 @@ namespace TestPhysics
                 //var loadObject = new LoadObject("testJointBridge.xml");
                 //var loadObject = new LoadObject("compositeObjectConfig.xml");
                 //var loadObject = new LoadObject("frictionTestConfig.xml");
+                TestNonConvexDec();
+
                 var loadObject = new LoadObject("softBodyConfig.xml");
 
                 simulationObjects = loadObject.LoadSimulationObjects ();
@@ -212,23 +304,24 @@ namespace TestPhysics
 
 			MoveCamera ();
 
-			//displayOrigin ();
-			//displayContact ();
-			//displayBaseContact();
-			displayJoint ();
+            //displayOrigin ();
+            //displayContact ();
+            //displayBaseContact();
+            //displayJoint ();
+            displaySphere();
 
-            displayPartitionedContact();
+            //displayPartitionedContact();
 
-            for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-                displayVertex(i);
+            //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+            //    displayVertex(i);
 
             //displayAABB();
             //displayVertex (0);
             //displayVertex (1);
             //displayVertex (2);
 
-            for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-                SetOpenGLObjectMatrix(i);
+            //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+            //    SetOpenGLObjectMatrix(i);
 
             GL.Flush ();
 			SwapBuffers ();
@@ -842,25 +935,52 @@ namespace TestPhysics
 		}
 
 
-		#endregion
+        private void displaySphere()
+        {
+            for (int i = 0; i < spherePoint.Count; i++)
+            {
+                GL.PushMatrix();
+
+                Matrix4 mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(spherePoint[i].x),
+                                    Convert.ToSingle(spherePoint[i].y),
+                                    Convert.ToSingle(spherePoint[i].z));
+
+                var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
+
+                GL.MultMatrix(dmviewData);
+
+                OpenGLUtilities.drawSolidCube(0.01f);
+
+                GL.PopMatrix();
+
+            }
+        }
+
+        #endregion
 
 
 
-//		protected override void OnResize(EventArgs e)
-//		{
-//			base.OnResize (e);
-//			GL.Viewport (ClientRectangle.X, 
-//				ClientRectangle.Y, 
-//				ClientRectangle.Width, 
-//				ClientRectangle.Height);
-//
-//			GL.MatrixMode (MatrixMode.Projection);
-//			openGLUtilities.gluPerspective (
-//				60, 
-//				Convert.ToDouble(Width) / Convert.ToDouble(Height), 
-//				1.0, 
-//				100.0);
-//		}
-	}
+        //		protected override void OnResize(EventArgs e)
+        //		{
+        //			base.OnResize (e);
+        //			GL.Viewport (ClientRectangle.X, 
+        //				ClientRectangle.Y, 
+        //				ClientRectangle.Width, 
+        //				ClientRectangle.Height);
+        //
+        //			GL.MatrixMode (MatrixMode.Projection);
+        //			openGLUtilities.gluPerspective (
+        //				60, 
+        //				Convert.ToDouble(Width) / Convert.ToDouble(Height), 
+        //				1.0, 
+        //				100.0);
+        //		}
+    }
 }
 

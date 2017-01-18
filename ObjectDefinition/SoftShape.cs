@@ -167,7 +167,9 @@ namespace ShapeDefinition
         public SoftShapePoint[] ShapePoint { get; private set; }
 
         public int[][] Triangle { get; private set; }
-       
+
+        public GeometrySphere[] Sphere { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -298,6 +300,11 @@ namespace ShapeDefinition
         public void SetShapePoint(SoftShapePoint[] shapePoint)
         {
             ShapePoint = shapePoint;
+        }
+
+        public void SetGeometrySphere(GeometrySphere[] geometrySphere)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -48,17 +48,26 @@ namespace ShapeDefinition
 		{
             Shape = shape;
 
-			Triangle = new int[inputTriangle.Length][];
-
-            for (int i = 0; i < inputTriangle.Length; i++)
+            if (inputTriangle != null)
             {
-                Triangle[i] = new int[3];
-                Triangle[i][0] = inputTriangle[i][0];
-                Triangle[i][1] = inputTriangle[i][1];
-                Triangle[i][2] = inputTriangle[i][2];
+                Triangle = new int[inputTriangle.Length][];
+
+                for (int i = 0; i < inputTriangle.Length; i++)
+                {
+                    Triangle[i] = new int[3];
+                    Triangle[i][0] = inputTriangle[i][0];
+                    Triangle[i][1] = inputTriangle[i][1];
+                    Triangle[i][2] = inputTriangle[i][2];
+                }
+
+                SetVertexAdjacency(inputVertexPosition);
+                
+            }
+            else
+            {
+                SetVertexAdjacency(inputVertexPosition);
             }
 
-            SetVertexAdjacency(inputVertexPosition);
             GeometryType = geometryType;
         }
 
@@ -108,30 +117,34 @@ namespace ShapeDefinition
             for (int i = 0; i < VertexPosition.Length; i++)
             {
                 VertexPosition[i] = new VertexAdjacency(inputVertexPosition[i], null);
-                List<int> adjacencyList = new List<int>();
 
-                for (int j = 0; j < Triangle.Length; j++)
+                if (Triangle != null)
                 {
-                    if (Triangle[j][0] == i)
+                    List<int> adjacencyList = new List<int>();
+
+                    for (int j = 0; j < Triangle.Length; j++)
                     {
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
-                        continue;
+                        if (Triangle[j][0] == i)
+                        {
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                            continue;
+                        }
+                        if (Triangle[j][1] == i)
+                        {
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                            continue;
+                        }
+                        if (Triangle[j][2] == i)
+                        {
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
+                            AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
+                            continue;
+                        }
                     }
-                    if (Triangle[j][1] == i)
-                    {
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
-                        continue;
-                    }
-                    if (Triangle[j][2] == i)
-                    {
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                        AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
-                        continue;
-                    }
+                    VertexPosition[i].SetAdjacencyList(adjacencyList);
                 }
-                VertexPosition[i].SetAdjacencyList(adjacencyList);
             }
         }
 
@@ -142,7 +155,7 @@ namespace ShapeDefinition
             if (!adjacencyList.Contains(itemIndex))
                 adjacencyList.Add(itemIndex);
         }
-        
+
         #endregion
     }
 

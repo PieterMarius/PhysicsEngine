@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompoundShape.cs" />
+    <Compile Include="GeometrySphere.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="ICompoundShape.cs" />
     <Compile Include="IConvexShape.cs" />

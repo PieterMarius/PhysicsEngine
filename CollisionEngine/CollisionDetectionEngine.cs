@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShapeDefinition;
 using PhysicsEngineMathUtility;
+using CollisionEngine.SoftBody;
 
 namespace CollisionEngine
 {
@@ -16,6 +17,7 @@ namespace CollisionEngine
 		EPA compenetrationCollisionEngine;
 		readonly CollisionEngineParameters collisionEngineParameters;
 		readonly SweepAndPruneEngine sweepAndPruneEngine;
+        readonly SoftBodyCollisionDetection softBodyCollisionDetection;
 
 		#endregion
 
@@ -39,6 +41,7 @@ namespace CollisionEngine
 				collisionEngineParameters.ManifoldPointNumber);
 
 			sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
+            softBodyCollisionDetection = new SoftBodyCollisionDetection();
 		}
 
 		#endregion
@@ -326,47 +329,19 @@ namespace CollisionEngine
             else if (A is ISoftShape && 
                      B is ISoftShape)
             {
-                SelfSoftBodyCollisionDetection(A, minDistance);
-                SelfSoftBodyCollisionDetection(B, minDistance);
+                List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
 
+                ISoftShape softShapeA = (ISoftShape)A;
+                ISoftShape softShapeB = (ISoftShape)B;
 
+                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetection(softShapeA, minDistance));
+                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetection(softShapeB, minDistance));
+
+                baseCollisionList.AddRange(softBodyCollisionDetection.SoftVsSoftBodyCollisionDetection(softShapeA, softShapeB, minDistance));
+                
             }
                         
             return collisionPointStructure;
-        }
-
-        //TODO: optimize methods and move to class SoftBodyCollisionDetection
-        private List<CollisionPointBaseStructure> SelfSoftBodyCollisionDetection(
-            IShape body,
-            double minDistance)
-        {
-            ISoftShape softBody = (ISoftShape)body;
-            List<CollisionPointBaseStructure> collisionPoint = new List<CollisionPointBaseStructure>();
-
-            for (int i = 0; i < softBody.ShapePoint.Length; i++)
-            {
-                for (int j = 0; j < softBody.ShapePoint.Length; j++)
-                {
-                    double diameter = softBody.ShapePoint[i].Diameter + softBody.ShapePoint[j].Diameter + minDistance;
-                    double distance = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Length();
-
-                    if (distance < diameter)
-                    {
-                        bool intersection = (distance - minDistance < 0);
-
-                        Vector3 normal = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Normalize();
-
-                        CollisionPoint cp = new CollisionPoint(softBody.ShapePoint[i].Position, softBody.ShapePoint[j].Position, normal);
-                        collisionPoint.Add(new CollisionPointBaseStructure(
-                            distance,
-                            intersection,
-                            cp,
-                            new CollisionPoint[] { cp }));
-                    }
-                }
-            }
-
-            return collisionPoint;
         }
 
         #endregion

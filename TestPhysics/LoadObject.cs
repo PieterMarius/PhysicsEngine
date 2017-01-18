@@ -430,7 +430,7 @@ namespace TestPhysics
 
 		#region Private Methods
 
-		private LoadResult LoadObjSolid(
+		private static LoadResult LoadObjSolid(
 			string fileName,
 			float scale)
 		{
@@ -446,7 +446,7 @@ namespace TestPhysics
 			return solid;
 		}
 
-		private Geometry GetObjectGeometry(
+		public static Geometry GetObjectGeometry(
 			IShape shape,
             string fileName,
 			float scale)

@@ -692,6 +692,49 @@ namespace PhysicsEngineMathUtility
             return resNormal;
         }
 
+        public static Vector3? RayTriangleIntersection(
+            Vector3 v0,
+            Vector3 v1,
+            Vector3 v2,
+            Vector3 point,
+            Vector3 direction)
+        {
+            Vector3 e1 = v1 - v0;
+            Vector3 e2 = v2 - v0;
+
+            Vector3 h = Vector3.Cross(direction, e2);
+
+            double a = Vector3.Dot(e1, h);
+
+            if (a > -0.000001 &&
+                a < 0.000001)
+                return null;
+
+            double f = 1 / a;
+
+            Vector3 s = point - v0;
+
+            double u = f * Vector3.Dot(s, h);
+
+            if (u < 0.0 || u > 1.0)
+                return null;
+
+            Vector3 q = Vector3.Cross(s, e1);
+            double v = f * Vector3.Dot(direction, q);
+
+            if (v < 0.0 || u + v > 1.0)
+                return null;
+
+            double t = f * Vector3.Dot(e2, q);
+
+            if (t > 0.000001)
+            {
+                return point + t * direction;
+            }
+            else
+                return null;
+        }
+
         #endregion
 
     }

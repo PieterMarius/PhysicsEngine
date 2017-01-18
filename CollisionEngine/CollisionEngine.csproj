@@ -75,15 +75,14 @@
     <Compile Include="Common\Support.cs" />
     <Compile Include="GJK\GJKOutput.cs" />
     <Compile Include="EPA\EPAOutput.cs" />
+    <Compile Include="SoftBody\SoftBodyCollisionDetection.cs" />
     <Compile Include="SweepAndPrune\SweepAndPrune.cs" />
     <Compile Include="SweepAndPrune\CollisionPair.cs" />
     <Compile Include="Common\Helper.cs" />
     <Compile Include="Common\SupportTriangle.cs" />
     <Compile Include="Common\EngineCollisionPoint.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SoftBody\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
