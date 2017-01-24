@@ -697,7 +697,8 @@ namespace PhysicsEngineMathUtility
             Vector3 v1,
             Vector3 v2,
             Vector3 point,
-            Vector3 direction)
+            Vector3 direction,
+            bool bothDirection = false)
         {
             Vector3 e1 = v1 - v0;
             Vector3 e2 = v2 - v0;
@@ -727,8 +728,10 @@ namespace PhysicsEngineMathUtility
 
             double t = f * Vector3.Dot(e2, q);
 
-            if (t > 0.000001)
+            if (t > 0.000001 || 
+                (bothDirection && t < -0.000001))
             {
+                
                 return point + t * direction;
             }
             else

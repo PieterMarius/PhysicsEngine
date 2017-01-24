@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MathUtility</RootNamespace>
-    <AssemblyName>MathUtility</AssemblyName>
+    <RootNamespace>PhysicsEngineMathUtility</RootNamespace>
+    <AssemblyName>PhysicsEngineMathUtility</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -49,6 +49,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="GeneralMathUtilities.cs" />
+    <Compile Include="Vector2.cs" />
     <Compile Include="Vector3.cs" />
     <Compile Include="ConstValues.cs" />
     <Compile Include="Matrix3x3.cs" />

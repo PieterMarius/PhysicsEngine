@@ -144,7 +144,64 @@ namespace Utility
 			return scale;
 		}
 
-		public static void ScaleObject(
+        public static double UnitizeObject(ref PhysicsEngineMathUtility.Vector3[] vertices)
+        {
+            double xMax, xMin, yMax, yMin, zMax, zMin;
+            double cx, cy, cz, w, h, d;
+            double scale;
+
+            xMax = vertices[0].x;
+            xMin = vertices[0].x;
+            yMax = vertices[0].y;
+            yMin = vertices[0].y;
+            zMax = vertices[0].z;
+            zMin = vertices[0].z;
+
+            for (int i = 1; i < vertices.Length; i++)
+            {
+                if (xMax < vertices[i].x)
+                    xMax = vertices[i].x;
+                if (xMin > vertices[i].x)
+                    xMin = vertices[i].x;
+
+                if (yMax < vertices[i].y)
+                    yMax = vertices[i].y;
+                if (yMin > vertices[i].y)
+                    yMin = vertices[i].y;
+
+                if (zMax < vertices[i].z)
+                    zMax = vertices[i].z;
+                if (zMin > vertices[i].z)
+                    zMin = vertices[i].z;
+            }
+
+            /* calculate model width, height, and depth */
+            w = Math.Abs(xMax) + Math.Abs(xMin);
+            h = Math.Abs(yMax) + Math.Abs(yMin);
+            d = Math.Abs(zMax) + Math.Abs(zMin);
+
+            /* calculate center of the model */
+            cx = (xMax + xMin) / 2.0f;
+            cy = (yMax + yMin) / 2.0f;
+            cz = (zMax + zMin) / 2.0f;
+
+            scale = 2.0f / Math.Max(Math.Max(w, h), d);
+
+            /* translate around center then scale */
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                var vertex = new PhysicsEngineMathUtility.Vector3(
+                    (vertices[i].x - cx) * scale,
+                    (vertices[i].y - cy) * scale,
+                    (vertices[i].z - cz) * scale);
+
+                vertices[i] = vertex;
+            }
+
+            return scale;
+        }
+
+        public static void ScaleObject(
 			ref LoadResult obj, 
 			float scale)
 		{
@@ -159,9 +216,24 @@ namespace Utility
 			}
 		}
 
-		#region GLU Utilities
+        public static void ScaleObject(
+            ref PhysicsEngineMathUtility.Vector3[] vertices,
+            double scale)
+        {
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                var vertex = new PhysicsEngineMathUtility.Vector3(
+                    (vertices[i].x) * scale,
+                    (vertices[i].y) * scale,
+                    (vertices[i].z) * scale);
 
-		public static float[] GluOrtho2D(
+                vertices[i] = vertex;
+            }
+        }
+
+        #region GLU Utilities
+
+        public static float[] GluOrtho2D(
 			float left,
 			float right,
 			float bottom,

@@ -1,0 +1,744 @@
+<?xml version="1.0" ?>
+<RigidBodyEngine>
+    <!-- Settings for RigidBodyEngine-->
+    <MainFolder>Users/pietervanduin/NetBeansProjects/PhysicsEngine/build/Debug/GNU-MacOSX/</MainFolder>        
+    <Parameters>
+        <TimeStep>0,01</TimeStep>
+        <LcpIter>150</LcpIter>
+        <LcpError>0,000001</LcpError>
+        <Distance>0,002</Distance>
+        <CFM>0,001</CFM>
+        <GJKD>0,008</GJKD>
+        <EPAD>0,008</EPAD>
+        <BaumStab>6,25</BaumStab>
+        <WarmStart>0,0001</WarmStart>
+        <GJKNIter>9</GJKNIter>
+        <SORP>150</SORP>
+        <LineDis>0,00000015</LineDis>
+        <AngDis>0,00000015</AngDis>
+        <StabIter>0</StabIter>
+        <ExternalForce x="0,0" y="-6,0" z="0,0 "/>
+    </Parameters>
+    
+   <ObjectsSettings>
+		<Object>
+            <Position x="0,0" y="0,0" z="12,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>1</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            
+			<ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,5</Scale>
+				<Mass>0,0</Mass>
+				<ObjectGeometry>cube.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+			
+        </Object>
+		<Object>
+            <Position x="0,0" y="1,2" z="9,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            			
+			<ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+			
+        </Object>
+		<Object>
+            <Position x="0,0" y="1,2" z="7,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+		<Object>
+            <Position x="0,0" y="1,2" z="4,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+       <Object>
+            <Position x="0,0" y="1,2" z="2,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+        <Object>
+            <Position x="0,0" y="1,2" z="-0,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>    
+        <Object>
+            <Position x="0,0" y="1,2" z="-3,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+        <Object>
+            <Position x="0,0" y="1,2" z="-5,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+		<Object>
+            <Position x="0,0" y="1,2" z="-8,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+		<Object>
+            <Position x="0,0" y="1,2" z="-10,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,0</Scale>
+				<Mass>1,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+        <Object>
+            <Position x="0,0" y="0,0" z="-13,5" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>1</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            <ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,5</Scale>
+				<Mass>0,0</Mass>
+				<ObjectGeometry>cube.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+		
+		 <Object>
+            <Position x="0,0" y="3,5" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>0</ObjectType>
+            <RestitutionCoeff>0,1</RestitutionCoeff>
+            <DynamicFriction>0,8</DynamicFriction>
+            <StaticFriction>0,9</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            
+			<ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>1,5</Scale>
+				<Mass>30,0</Mass>
+				<ObjectGeometry>cube.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+        </Object>
+		
+       <Object>
+            <Position x="0,0" y="-4,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
+            <ObjectType>1</ObjectType>
+            <RestitutionCoeff>0,01</RestitutionCoeff>
+            <DynamicFriction>1,0</DynamicFriction>
+            <StaticFriction>1,0</StaticFriction>
+            <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
+            			
+			<ObjectGeometry>
+				<CompositePosition x="0,0" y="0,0" z="0,0" />
+				<Scale>25</Scale>
+				<Mass>0,0</Mass>
+				<ObjectGeometry>cube1.obj</ObjectGeometry>
+				<Texture>texture/woodbox.bmp</Texture>
+			</ObjectGeometry>
+            
+        </Object>
+        
+       
+    </ObjectsSettings>
+    
+    <JointsSettings>
+    
+	<Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>1</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="1,2" z="-1,8" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>1</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="1,2" z="-1,8" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>0</ObjectIndexA>
+        <ObjectIndexB>1</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="-0,5" y="1,2" z="-1,8" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>1</ObjectIndexA>
+        <ObjectIndexB>2</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>1</ObjectIndexA>
+        <ObjectIndexB>2</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>1</ObjectIndexA>
+        <ObjectIndexB>2</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>2</ObjectIndexA>
+        <ObjectIndexB>3</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>2</ObjectIndexA>
+        <ObjectIndexB>3</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>2</ObjectIndexA>
+        <ObjectIndexB>3</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>3</ObjectIndexA>
+        <ObjectIndexB>4</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>3</ObjectIndexA>
+        <ObjectIndexB>4</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>3</ObjectIndexA>
+        <ObjectIndexB>4</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>4</ObjectIndexA>
+        <ObjectIndexB>5</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>4</ObjectIndexA>
+        <ObjectIndexB>5</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>4</ObjectIndexA>
+        <ObjectIndexB>5</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+    <Joint>
+        <ObjectIndexA>5</ObjectIndexA>
+        <ObjectIndexB>6</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>5</ObjectIndexA>
+        <ObjectIndexB>6</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>5</ObjectIndexA>
+        <ObjectIndexB>6</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>6</ObjectIndexA>
+        <ObjectIndexB>7</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>6</ObjectIndexA>
+        <ObjectIndexB>7</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>6</ObjectIndexA>
+        <ObjectIndexB>7</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	 <Joint>
+        <ObjectIndexA>7</ObjectIndexA>
+        <ObjectIndexB>8</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>7</ObjectIndexA>
+        <ObjectIndexB>8</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>7</ObjectIndexA>
+        <ObjectIndexB>8</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint> 
+	<Joint>
+        <ObjectIndexA>8</ObjectIndexA>
+        <ObjectIndexB>9</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>8</ObjectIndexA>
+        <ObjectIndexB>9</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>8</ObjectIndexA>
+        <ObjectIndexB>9</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+	<Joint>
+        <ObjectIndexA>9</ObjectIndexA>
+        <ObjectIndexB>10</ObjectIndexB>
+        <JointProperties>
+            <JointType>1</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+		
+	</Joint>
+	<Joint>
+        <ObjectIndexA>9</ObjectIndexA>
+        <ObjectIndexB>10</ObjectIndexB>
+		<JointProperties>
+            <JointType>1</JointType>
+            <Position x="-0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	<Joint>
+        <ObjectIndexA>9</ObjectIndexA>
+        <ObjectIndexB>10</ObjectIndexB>
+		<JointProperties>
+            <JointType>8</JointType>
+            <Position x="0,5" y="0,0" z="-1,25" />
+            <ActionAxis x="0,0" y="1,0" z="0,0" />
+            <RestoreCoefficient>50,0</RestoreCoefficient>
+            <StretchCoefficient>0,0</StretchCoefficient>
+            <AngularLimitMin>-0,78539816339</AngularLimitMin>
+            <AngularLimitMax>0,78539816339</AngularLimitMax>
+            <LinearLimitMin>5,0</LinearLimitMin>
+            <LinearLimitMax>9,0</LinearLimitMax>
+        </JointProperties>
+	</Joint>
+	
+    </JointsSettings>
+</RigidBodyEngine>

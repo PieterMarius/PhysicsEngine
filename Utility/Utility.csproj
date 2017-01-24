@@ -50,6 +50,8 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="ArrayUtility.cs" />
+    <Compile Include="GenericUtility.cs" />
+    <Compile Include="ObjImporter.cs" />
     <Compile Include="OpenGLUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +61,7 @@
     <Reference Include="OpenTK">
       <HintPath>..\opentk\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="System" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>

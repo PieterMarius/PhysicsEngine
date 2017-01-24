@@ -356,46 +356,46 @@ namespace TestPhysics
 			return joints;
 		}
 
-		public int[][] GetOpenGLObjectList()
-		{
-			var xmlDoc = new XmlDocument();
-			xmlDoc.Load(FileNameObjectProperties);
+		//public int[][] GetOpenGLObjectList()
+		//{
+		//	var xmlDoc = new XmlDocument();
+		//	xmlDoc.Load(FileNameObjectProperties);
 
-			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
+		//	XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
-			LoadResult[][] loadObjects = new LoadResult[xmlList.Count][];
+		//	LoadResult[][] loadObjects = new LoadResult[xmlList.Count][];
 
-            Vector3[][] translate = new Vector3[xmlList.Count][];
+  //          Vector3[][] translate = new Vector3[xmlList.Count][];
 
-			for (int i = 0; i < xmlList.Count; i++) 
-			{
-                XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
+		//	for (int i = 0; i < xmlList.Count; i++) 
+		//	{
+  //              XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-                translate[i] = new Vector3[xmlGeometryList.Count];
-                loadObjects[i] = new LoadResult[xmlGeometryList.Count];
+  //              translate[i] = new Vector3[xmlGeometryList.Count];
+  //              loadObjects[i] = new LoadResult[xmlGeometryList.Count];
 
-                for (int j = 0; j < xmlGeometryList.Count; j++)
-                {
-                    //Object geometry file name
-                    string geometryFileName = xmlGeometryList[j][objectGeometryAttribute].InnerText;
+  //              for (int j = 0; j < xmlGeometryList.Count; j++)
+  //              {
+  //                  //Object geometry file name
+  //                  string geometryFileName = xmlGeometryList[j][objectGeometryAttribute].InnerText;
 
-                    //Scale
-                    float scale = Convert.ToSingle(xmlGeometryList[j][scaleAttribute].InnerText);
+  //                  //Scale
+  //                  float scale = Convert.ToSingle(xmlGeometryList[j][scaleAttribute].InnerText);
 
-                    loadObjects[i][j] = LoadObjSolid(geometryFileName, scale);
-                }
+  //                  loadObjects[i][j] = LoadObjSolid(geometryFileName, scale);
+  //              }
 
                     
-			}
+		//	}
 
-			return OpenGLUtilities.LoadGLObjects (
-				loadObjects,
-				translate,
-				xmlList.Count,
-				true,
-				false,
-				true);
-		}
+		//	return OpenGLUtilities.LoadGLObjects (
+		//		loadObjects,
+		//		translate,
+		//		xmlList.Count,
+		//		true,
+		//		false,
+		//		true);
+		//}
 
 		public int[][] LoadTexture()
 		{
@@ -426,61 +426,61 @@ namespace TestPhysics
 
 		}
 
-		#endregion
+        #endregion
 
-		#region Private Methods
+        #region Private Methods
 
-		private static LoadResult LoadObjSolid(
-			string fileName,
-			float scale)
-		{
-			var objLoaderFactory = new ObjLoaderFactory ();
-			var objLoader = objLoaderFactory.Create ();
-			var fileStream = new FileStream (fileName, FileMode.OpenOrCreate);
-			LoadResult solid = objLoader.Load (fileStream);
-			fileStream.Close();
+        //private static LoadResult LoadObjSolid(
+        //    string fileName,
+        //    float scale)
+        //{
+        //    var objLoaderFactory = new ObjLoaderFactory();
+        //    var objLoader = objLoaderFactory.Create();
+        //    var fileStream = new FileStream(fileName, FileMode.OpenOrCreate);
+        //    LoadResult solid = objLoader.Load(fileStream);
+        //    fileStream.Close();
 
-			OpenGLUtilities.UnitizeObject (ref solid);
-			OpenGLUtilities.ScaleObject (ref solid, scale);
+        //    OpenGLUtilities.UnitizeObject(ref solid);
+        //    OpenGLUtilities.ScaleObject(ref solid, scale);
 
-			return solid;
-		}
+        //    return solid;
+        //}
 
-		public static Geometry GetObjectGeometry(
-			IShape shape,
+        public static Geometry GetObjectGeometry(
+            IShape shape,
             string fileName,
-			float scale)
-		{
-			LoadResult objectGeometry = LoadObjSolid (fileName, scale);
+            float scale)
+        {
+            ObjImporter importer = new ObjImporter();
+            ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
 
-			Vector3[] vertexStartPoint = new Vector3[objectGeometry.Vertices.Count];
+            Vector3[] vertexStartPoint = new Vector3[mesh.vertices.Length];
 
-			for (int i = 0; i < objectGeometry.Vertices.Count; i++) 
-			{
-				vertexStartPoint [i] = new Vector3 (
-					objectGeometry.Vertices [i].X,
-					objectGeometry.Vertices [i].Y,
-					objectGeometry.Vertices [i].Z);
-			}
+            for (int i = 0; i < mesh.vertices.Length; i++)
+                vertexStartPoint[i] = mesh.vertices[i];
 
-			int[][] triangleIndex = new int[objectGeometry.Groups [0].Faces.Count][];
+            OpenGLUtilities.UnitizeObject(ref vertexStartPoint);
+            OpenGLUtilities.ScaleObject(ref vertexStartPoint, scale);
+            
+            int nTriangle = mesh.faceData.Length / 3;
+            int[][] triangleIndex = new int[nTriangle][];
 
-			for (int i = 0; i < objectGeometry.Groups [0].Faces.Count; i++) 
-			{
-				triangleIndex [i] = new int[3];
-				triangleIndex [i] [0] = objectGeometry.Groups [0].Faces [i] [0].VertexIndex - 1;
-				triangleIndex [i] [1] = objectGeometry.Groups [0].Faces [i] [1].VertexIndex - 1;
-				triangleIndex [i] [2] = objectGeometry.Groups [0].Faces [i] [2].VertexIndex - 1;
-			}
+            for (int i = 0; i < nTriangle; i++)
+            {
+                triangleIndex[i] = new int[3];
+                triangleIndex[i][0] = (int)mesh.faceData[i * 3].x - 1;
+                triangleIndex[i][1] = (int)mesh.faceData[(i * 3) + 1].x - 1;
+                triangleIndex[i][2] = (int)mesh.faceData[(i * 3) + 2].x - 1;
+            }
 
-			return new Geometry (
+            return new Geometry(
                 shape,
-				vertexStartPoint,
-				triangleIndex,
+                vertexStartPoint,
+                triangleIndex,
                 ObjectGeometryType.ConvexBody);
-		}
+        }
 
-		#endregion
-	}
+            #endregion
+        }
 }
 
