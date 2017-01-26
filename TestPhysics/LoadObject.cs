@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Xml;
-using System.IO;
-using System.Linq;
 using PhysicsEngineMathUtility;
 using MonoPhysicsEngine;
 using ShapeDefinition;
-using ObjLoader.Loader.Loaders;
 using Utility;
 
 namespace TestPhysics
@@ -356,48 +353,7 @@ namespace TestPhysics
 			return joints;
 		}
 
-		//public int[][] GetOpenGLObjectList()
-		//{
-		//	var xmlDoc = new XmlDocument();
-		//	xmlDoc.Load(FileNameObjectProperties);
-
-		//	XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
-
-		//	LoadResult[][] loadObjects = new LoadResult[xmlList.Count][];
-
-  //          Vector3[][] translate = new Vector3[xmlList.Count][];
-
-		//	for (int i = 0; i < xmlList.Count; i++) 
-		//	{
-  //              XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
-
-  //              translate[i] = new Vector3[xmlGeometryList.Count];
-  //              loadObjects[i] = new LoadResult[xmlGeometryList.Count];
-
-  //              for (int j = 0; j < xmlGeometryList.Count; j++)
-  //              {
-  //                  //Object geometry file name
-  //                  string geometryFileName = xmlGeometryList[j][objectGeometryAttribute].InnerText;
-
-  //                  //Scale
-  //                  float scale = Convert.ToSingle(xmlGeometryList[j][scaleAttribute].InnerText);
-
-  //                  loadObjects[i][j] = LoadObjSolid(geometryFileName, scale);
-  //              }
-
-                    
-		//	}
-
-		//	return OpenGLUtilities.LoadGLObjects (
-		//		loadObjects,
-		//		translate,
-		//		xmlList.Count,
-		//		true,
-		//		false,
-		//		true);
-		//}
-
-		public int[][] LoadTexture()
+        public int[][] LoadTexture()
 		{
 			var xmlDoc = new XmlDocument();
 			xmlDoc.Load(FileNameObjectProperties);

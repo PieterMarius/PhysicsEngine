@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 using OpenTK;
 using OpenTK.Graphics;
@@ -10,8 +9,6 @@ using ShapeDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
-using System.Numerics;
-using System.Threading.Tasks;
 
 namespace TestPhysics
 {
