@@ -9,6 +9,7 @@ using ShapeDefinition;
 using MonoPhysicsEngine;
 using CollisionEngine;
 using LCPSolver;
+using System.Linq;
 
 namespace TestPhysics
 {
@@ -91,20 +92,32 @@ namespace TestPhysics
 
         //}
 
-
+        public struct ShapePiece
+        {
+            public PhysicsEngineMathUtility.Vector3 IntersectionPoint; //Max => 8 index points
+            public VertexAdjacency[] Triangle; 
+        };
+        
         List<PhysicsEngineMathUtility.Vector3> spherePoint = new List<PhysicsEngineMathUtility.Vector3>();
         void TestNonConvexDec()
         {
             //Utility.ObjImporter importer = new ObjImporter();
             //Utility.ObjImporter.meshStruct mesh = importer.ImportFile("chair.obj");
 
-            Geometry obj = LoadObject.GetObjectGeometry(null, "bunny.obj", 1.0f);
+            IGeometry obj = LoadObject.GetObjectGeometry(null, "bunny.obj", 1.0f, ObjectGeometryType.NonConvexBody);
             //Geometry obj = LoadObject.GetObjectGeometry(null, "chair.obj", 1.0f);
+
+            
 
             spherePoint = new List<PhysicsEngineMathUtility.Vector3>();
 
             //Suddivido il volume in parti
-            int nSphere = 50;
+            int nSphere = 20;
+
+            var test = obj.VertexPosition.Where(x => x.Adjacency.Count < 6).ToList();
+
+            List<ShapePiece> basePoint = new List<ShapePiece>();
+
 
             //Provo a verificare di farlo per ogni lato del cubo
             double sphereGap = 2.1 / nSphere;
@@ -135,6 +148,9 @@ namespace TestPhysics
                     PhysicsEngineMathUtility.Vector3 point1 = startPoint1 + new PhysicsEngineMathUtility.Vector3(i * sphereGap, k * sphereGap, 0.0);
                     PhysicsEngineMathUtility.Vector3 point2 = startPoint2 + new PhysicsEngineMathUtility.Vector3(i * sphereGap, 0.0, k * sphereGap);
                     PhysicsEngineMathUtility.Vector3 point3 = startPoint3 + new PhysicsEngineMathUtility.Vector3(0.0, i * sphereGap, k * sphereGap);
+
+
+
                     for (int j = 0; j < obj.Triangle.Length; j++)
                     {
                         PhysicsEngineMathUtility.Vector3 vertexA = obj.VertexPosition[obj.Triangle[j][0]].Vertex;
@@ -153,6 +169,7 @@ namespace TestPhysics
                         if (intersection.HasValue)
                         {
                             spherePoint.Add(intersection.Value);
+                            basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[obj.Triangle[j][0]], obj.VertexPosition[obj.Triangle[j][1]], obj.VertexPosition[obj.Triangle[j][2]] } });
                             continue;
                         }
 
@@ -167,6 +184,7 @@ namespace TestPhysics
                         if (intersection.HasValue)
                         {
                             spherePoint.Add(intersection.Value);
+                            basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[obj.Triangle[j][0]], obj.VertexPosition[obj.Triangle[j][1]], obj.VertexPosition[obj.Triangle[j][2]] } });
                             continue;
                         }
 
@@ -181,11 +199,29 @@ namespace TestPhysics
                         if (intersection.HasValue)
                         {
                             spherePoint.Add(intersection.Value);
+                            basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[obj.Triangle[j][0]], obj.VertexPosition[obj.Triangle[j][1]], obj.VertexPosition[obj.Triangle[j][2]] } });
                             continue;
                         }
                                                
                     }
+
+
                 }
+            }
+
+            double ray = sphereGap / 2.0;
+            List<int>[] index = new List<int>[spherePoint.Count];
+            int totalCount = 0;
+            for (int i = 0; i < spherePoint.Count; i++)
+            {
+                PhysicsEngineMathUtility.Vector3 point = spherePoint[i];
+                index[i] = new List<int>();
+                for (int j = 0; j < obj.VertexPosition.Length; j++)
+                {
+                    if(PhysicsEngineMathUtility.Vector3.Length(point- obj.VertexPosition[j].Vertex) <= ray)
+                        index[i].Add(j);
+                }
+                totalCount += index[i].Count;
             }
 
             stopwatch.Stop();
@@ -209,44 +245,44 @@ namespace TestPhysics
                 //var loadObject = new LoadObject("frictionTestConfig.xml");
                TestNonConvexDec();
 
-    //            var loadObject = new LoadObject("softBodyConfig.xml");
+                //            var loadObject = new LoadObject("softBodyConfig.xml");
 
-    //            simulationObjects = loadObject.LoadSimulationObjects ();
-				//simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
+                //            simulationObjects = loadObject.LoadSimulationObjects ();
+                //simulationJoints = loadObject.LoadSimulationJoints (simulationObjects);
 
-				//displayList = loadObject.GetOpenGLObjectList ();
+                displayList = LoadObject.GetOpenGLObjectList("bunny.obj", 1);
 
-				//Carico le texture
-				//textureID = loadObject.LoadTexture ();
-				//redTexture = OpenGLUtilities.LoadTexture ("red.bmp");
+                //Carico le texture
+                //textureID = loadObject.LoadTexture();
+                redTexture = OpenGLUtilities.LoadTexture("red.bmp");
 
-				//Set Collision Detection
-				//collisionEngineParameters = new CollisionEngineParameters();
+                //Set Collision Detection
+                //collisionEngineParameters = new CollisionEngineParameters();
 
-				//Set Solver
-				//solverParameters = new SolverParameters();
-				
-				//Set Physics engine
-				//simulationParameters = new SimulationParameters();
-				
-				//physicsEngine = new PhysicsEngine(
-				//	simulationParameters,
-				//	collisionEngineParameters,
-				//	solverParameters);
+                //Set Solver
+                //solverParameters = new SolverParameters();
 
-				//physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
+                //Set Physics engine
+                //simulationParameters = new SimulationParameters();
 
-				//for (int i = 0; i < simulationObjects.Count (); i++) 
-				//{
-				//	physicsEngine.AddObject (simulationObjects [i]);
-				//}
+                //physicsEngine = new PhysicsEngine(
+                //	simulationParameters,
+                //	collisionEngineParameters,
+                //	solverParameters);
 
-				//for (int i = 0; i < simulationJoints.Count (); i++) 
-				//{
-				//	physicsEngine.AddJoint (simulationJoints [i]);
-				//}
+                //physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
-				pause = true;
+                //for (int i = 0; i < simulationObjects.Count (); i++) 
+                //{
+                //	physicsEngine.AddObject (simulationObjects [i]);
+                //}
+
+                //for (int i = 0; i < simulationJoints.Count (); i++) 
+                //{
+                //	physicsEngine.AddJoint (simulationJoints [i]);
+                //}
+
+                pause = true;
 
 				//var obj = physicsEngine.GetJointsList();
 //
@@ -318,6 +354,7 @@ namespace TestPhysics
             //displayBaseContact();
             //displayJoint ();
             displaySphere();
+            DisplayObject();
 
             //displayPartitionedContact();
 
@@ -330,7 +367,7 @@ namespace TestPhysics
             //displayVertex (2);
 
             //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-            //    SetOpenGLObjectMatrix(i);
+            //    SetOpenGLObjectMatrixAndDisplayObject(i);
 
             GL.Flush ();
 			SwapBuffers ();
@@ -545,7 +582,26 @@ namespace TestPhysics
 			
 		#region "Private Methods"
 
-		private void SetOpenGLObjectMatrix(int id)
+        private void DisplayObject()
+        {
+            for (int i = 0; i < displayList.Length; i++)
+            {
+                for (int j = 0; j < displayList[i].Length; j++)
+                {
+                    GL.PushMatrix();
+                    GL.Enable(EnableCap.Texture2D);
+
+                    //GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
+
+                    GL.CallList(displayList[i][j]);
+                    GL.Disable(EnableCap.Texture2D);
+
+                    GL.PopMatrix();
+                }
+            }
+        }
+
+		private void SetOpenGLObjectMatrixAndDisplayObject(int id)
 		{
 			// TODO parte da modificare
 			//Matrice da utilizzare come costante
@@ -965,11 +1021,14 @@ namespace TestPhysics
 
                 GL.MultMatrix(dmviewData);
 
+                GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
                 OpenGLUtilities.drawSolidCube(0.01f);
+                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                 GL.PopMatrix();
 
             }
+            
         }
 
         #endregion

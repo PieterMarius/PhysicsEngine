@@ -7,9 +7,12 @@ namespace ShapeDefinition
         #region Fields
 
         public Vector3 Position { get; private set; }
+        public Vector3 StartPosition { get; private set; }
         //TODO: delete ???
         public Vector3 AngularVelocity { get; private set; }
         public Vector3 LinearVelocity { get; private set; }
+        public Matrix3x3 RotationMatrix { get; private set; }
+        public Quaternion RotationStatus { get; private set; }
         public double Diameter { get; private set; }
         
         #endregion

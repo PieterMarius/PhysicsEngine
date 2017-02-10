@@ -33,7 +33,34 @@ namespace MonoPhysicsEngine
 			return objectA.RotationMatrix * angularError;
 		}
 
-		public static double GetRotationAngle(
+        public static Vector3 GetFixedAngularError(
+            SoftShapePoint objectA,
+            SoftShapePoint objectB,
+            Quaternion relativeOrientation)
+        {
+            Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse() *
+                                                    objectA.RotationStatus;
+
+            Quaternion relativeOrientationError = relativeOrientation.Inverse() *
+                                                  currentRelativeOrientation;
+
+            var angularError = new Vector3(
+                relativeOrientationError.b,
+                relativeOrientationError.c,
+                relativeOrientationError.d);
+
+            if (relativeOrientationError.a < 0.0)
+            {
+                angularError = new Vector3(
+                    -angularError.x,
+                    -angularError.y,
+                    -angularError.z);
+            }
+
+            return objectA.RotationMatrix * angularError;
+        }
+
+        public static double GetRotationAngle(
 			Vector3 rotationStatus,
 			double rotationValue,
 			Vector3 rotationAxis)
@@ -120,7 +147,50 @@ namespace MonoPhysicsEngine
 				startImpulseProperties);
 		}
 
-		public static JacobianContact GetLinearLimit (
+        public static JacobianContact GetDOF(
+            int indexA,
+            int indexB,
+            Vector3 linearComponentA,
+            Vector3 linearComponentB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            SoftShapePoint softShapePointA,
+            SoftShapePoint softShapePointB,
+            double constraintValue,
+            double correctionValue,
+            double cfm,
+            double constraintLimit,
+            ConstraintType type,
+                int? contactReference = null,
+            StartImpulseProperties startImpulseProperties = null)
+        {
+            double jacobianVelocityValue = linearComponentA.Dot(softShapePointA.LinearVelocity) +
+                                           linearComponentB.Dot(softShapePointB.LinearVelocity) +
+                                           angularComponentA.Dot(softShapePointA.AngularVelocity) +
+                                           angularComponentB.Dot(softShapePointB.AngularVelocity);
+
+            jacobianVelocityValue -= constraintValue;
+
+            if (startImpulseProperties == null)
+                startImpulseProperties = new StartImpulseProperties(0.0);
+
+            return new JacobianContact(
+                indexA,
+                indexB,
+                contactReference,
+                linearComponentA,
+                linearComponentB,
+                angularComponentA,
+                angularComponentB,
+                type,
+                jacobianVelocityValue,
+                correctionValue,
+                cfm,
+                constraintLimit,
+                startImpulseProperties);
+        }
+
+        public static JacobianContact GetLinearLimit (
 			int indexA, 
 			int indexB, 
 			IShape simulationObjectA, 

@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JacobianConstraint\AngularConstraint.cs" />
+    <Compile Include="JacobianConstraint\SoftBodyConstraint.cs" />
     <Compile Include="SimulationParameters.cs" />
     <Compile Include="PhysicsEngine.cs" />
     <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />

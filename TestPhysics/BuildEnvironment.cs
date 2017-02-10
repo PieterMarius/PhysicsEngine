@@ -130,12 +130,13 @@ namespace TestPhysics
 				triangleIndex[i][1] = objectGeometry.Groups[0].Faces[i][1].VertexIndex - 1;
 				triangleIndex[i][2] = objectGeometry.Groups[0].Faces[i][2].VertexIndex - 1;
 			}
-
+            
 			return new Geometry(
                 shape,
 				vertexStartPoint,
 				triangleIndex,
-                ObjectGeometryType.ConvexBody);
+                ObjectGeometryType.ConvexBody,
+                false);
 		}
 
 		private LoadResult LoadObjSolid(

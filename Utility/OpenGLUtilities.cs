@@ -59,7 +59,7 @@ namespace Utility
 		/// <param name="objects">Objects.</param>
 		/// <param name="nObject">N object.</param>
 		public static int[][] LoadGLObjects(
-			LoadResult[][] objects,
+            ObjImporter.meshStruct[][] objects,
 			PhysicsEngineMathUtility.Vector3[][] translate,
 			int nObject,
 			bool GLM_TEXTURE = false, 
@@ -390,49 +390,52 @@ namespace Utility
 		/// <param name="GLM_TEXTURE">If set to <c>true</c> GL add texture coordinates.</param>
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		private static void GLDrawSolid(
-			LoadResult solid,
+            ObjImporter.meshStruct solid,
 			PhysicsEngineMathUtility.Vector3 translate,
 			bool GLM_TEXTURE, 
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)
 		{
-			int[] indicedata = new int[solid.Groups [0].Faces.Count * 3];
-			int[] textureData = new int[solid.Groups [0].Faces.Count * 3];
-			int[] normalData = new int[solid.Groups [0].Faces.Count * 3]; 
+			int[] indicedata = new int[solid.faceData.Length];
+			int[] textureData = new int[solid.faceData.Length];
+			int[] normalData = new int[solid.faceData.Length]; 
 
 			GL.Begin (PrimitiveType.Triangles);
 
-			for (int i = 0; i < solid.Groups [0].Faces.Count; i++) 
+            int nTriangle = solid.faceData.Length / 3;
+
+            for (int i = 0; i < nTriangle; i++) 
 			{
 				int index = i * 3;
-				indicedata [index] = solid.Groups [0].Faces [i] [0].VertexIndex - 1;
-				indicedata [index + 1] = solid.Groups [0].Faces [i] [1].VertexIndex - 1;
-				indicedata [index + 2] = solid.Groups [0].Faces [i] [2].VertexIndex - 1;
+				indicedata [index] = (int)solid.faceData[i * 3].x - 1;
+				indicedata [index + 1] = (int)solid.faceData[(i * 3) + 1].x - 1;
+				indicedata [index + 2] = (int)solid.faceData[(i * 3) + 2].x - 1;
 
-				textureData [index] = solid.Groups [0].Faces [i] [0].TextureIndex - 1;
-				textureData [index + 1] = solid.Groups [0].Faces [i] [1].TextureIndex - 1;
-				textureData [index + 2] = solid.Groups [0].Faces [i] [2].TextureIndex - 1;
+                
+                textureData[index] = (int)solid.faceData[i * 3].y - 1;
+                textureData[index + 1] = (int)solid.faceData[(i * 3) + 1].y - 1;
+                textureData[index + 2] = (int)solid.faceData[(i * 3) + 2].y - 1;
+                
+                normalData [index] = (int)solid.faceData[i * 3].z - 1;
+                normalData [index + 1] = (int)solid.faceData[(i * 3) + 1].z - 1;
+                normalData [index + 2] = (int)solid.faceData[(i * 3) + 2].z - 1;
 
-				normalData [index] = solid.Groups [0].Faces [i] [0].NormalIndex - 1;
-				normalData [index + 1] = solid.Groups [0].Faces [i] [1].NormalIndex - 1;
-				normalData [index + 2] = solid.Groups [0].Faces [i] [2].NormalIndex - 1;
-
-				if (GLM_FLAT) 
+                if (GLM_FLAT) 
 				{
-					var a = new PhysicsEngineMathUtility.Vector3 (
-						solid.Vertices [indicedata [index]].X, 
-						solid.Vertices [indicedata [index]].Y, 
-						solid.Vertices [indicedata [index]].Z);
+                    var a = new PhysicsEngineMathUtility.Vector3(
+                        solid.vertices[indicedata[index]].x,
+                        solid.vertices[indicedata[index]].y,
+                        solid.vertices[indicedata[index]].z);
 					
 					var b = new PhysicsEngineMathUtility.Vector3 (
-						solid.Vertices [indicedata [index + 1]].X, 
-						solid.Vertices [indicedata [index + 1]].Y, 
-						solid.Vertices [indicedata [index + 1]].Z);
+						solid.vertices[indicedata [index + 1]].x, 
+						solid.vertices[indicedata [index + 1]].y, 
+						solid.vertices[indicedata [index + 1]].z);
 
 					var c = new PhysicsEngineMathUtility.Vector3 (
-						solid.Vertices [indicedata [index + 2]].X, 
-						solid.Vertices [indicedata [index + 2]].Y, 
-						solid.Vertices [indicedata [index + 2]].Z);
+						solid.vertices[indicedata [index + 2]].x, 
+						solid.vertices[indicedata [index + 2]].y, 
+						solid.vertices[indicedata [index + 2]].z);
 
 					PhysicsEngineMathUtility.Vector3 normal = 
 						PhysicsEngineMathUtility.GeometryUtilities.CalculateNormal (a, b, c);
@@ -441,43 +444,52 @@ namespace Utility
 				}
 
 				if (GLM_SMOOTH)
-					GL.Normal3 (solid.Normals[normalData[index]].X, 
-						solid.Normals[normalData[index]].Y, 
-						solid.Normals[normalData[index]].Z);
+					GL.Normal3 (
+                        solid.normals[normalData[index]].x, 
+						solid.normals[normalData[index]].y, 
+						solid.normals[normalData[index]].z);
 
-				if (GLM_TEXTURE && solid.Textures.Count > 0)
-					GL.TexCoord2 (solid.Textures [textureData [index]].X,
-						solid.Textures [textureData [index]].Y);
+				if (GLM_TEXTURE && solid.uv.Length > 0)
+					GL.TexCoord2 (
+                        solid.uv [textureData [index]].x,
+						solid.uv [textureData [index]].y);
 
-				GL.Vertex3 (solid.Vertices [indicedata [index]].X - translate.x, 
-					solid.Vertices [indicedata [index]].Y - translate.y,
-					solid.Vertices [indicedata [index]].Z - translate.z);
-
-				if (GLM_SMOOTH)
-					GL.Normal3 (solid.Normals[normalData[index + 1]].X, 
-						solid.Normals[normalData[index + 1]].Y, 
-						solid.Normals[normalData[index + 1]].Z);
-
-				if (GLM_TEXTURE && solid.Textures.Count > 0)
-					GL.TexCoord2 (solid.Textures [textureData [index + 1]].X,
-						solid.Textures [textureData [index + 1]].Y);
-
-				GL.Vertex3 (solid.Vertices [indicedata [index + 1]].X - translate.x, 
-					solid.Vertices [indicedata [index + 1]].Y - translate.y,
-					solid.Vertices [indicedata [index + 1]].Z - translate.z);
+				GL.Vertex3 (
+                    solid.vertices[indicedata [index]].x - translate.x, 
+					solid.vertices[indicedata [index]].y - translate.y,
+					solid.vertices[indicedata [index]].z - translate.z);
 
 				if (GLM_SMOOTH)
-					GL.Normal3 (solid.Normals[normalData[index + 2]].X, 
-						solid.Normals[normalData[index + 2]].Y, 
-						solid.Normals[normalData[index + 2]].Z);
+					GL.Normal3 (
+                        solid.normals[normalData[index + 1]].x, 
+						solid.normals[normalData[index + 1]].y, 
+						solid.normals[normalData[index + 1]].z);
 
-				if (GLM_TEXTURE && solid.Textures.Count > 0)
-					GL.TexCoord2 (solid.Textures [textureData [index + 2]].X,
-						solid.Textures [textureData [index + 2]].Y);
+				if (GLM_TEXTURE && solid.uv.Length > 0)
+					GL.TexCoord2 (
+                        solid.uv [textureData [index + 1]].x,
+						solid.uv [textureData [index + 1]].y);
 
-				GL.Vertex3 (solid.Vertices [indicedata [index + 2]].X - translate.x, 
-					solid.Vertices [indicedata [index + 2]].Y - translate.y,
-					solid.Vertices [indicedata [index + 2]].Z - translate.z);
+				GL.Vertex3 (
+                    solid.vertices[indicedata [index + 1]].x - translate.x, 
+					solid.vertices[indicedata [index + 1]].y - translate.y,
+					solid.vertices[indicedata [index + 1]].z - translate.z);
+
+				if (GLM_SMOOTH)
+					GL.Normal3 (
+                        solid.normals[normalData[index + 2]].x, 
+						solid.normals[normalData[index + 2]].y, 
+						solid.normals[normalData[index + 2]].z);
+
+				if (GLM_TEXTURE && solid.uv.Length > 0)
+					GL.TexCoord2 (
+                        solid.uv [textureData [index + 2]].x,
+						solid.uv [textureData [index + 2]].y);
+
+				GL.Vertex3 (
+                    solid.vertices[indicedata [index + 2]].x - translate.x, 
+					solid.vertices[indicedata [index + 2]].y - translate.y,
+					solid.vertices[indicedata [index + 2]].z - translate.z);
 
 			}
 

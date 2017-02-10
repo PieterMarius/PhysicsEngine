@@ -1,7 +1,5 @@
 ﻿using System;
 using PhysicsEngineMathUtility;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace ShapeDefinition
 {

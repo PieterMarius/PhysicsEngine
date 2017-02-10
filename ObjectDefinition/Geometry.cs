@@ -1,5 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShapeDefinition
 {
@@ -44,9 +45,11 @@ namespace ShapeDefinition
             IShape shape,
 			Vector3[] inputVertexPosition,
 			int[][] inputTriangle,
-            ObjectGeometryType geometryType)
+            ObjectGeometryType geometryType,
+            bool getAdjacencyList)
 		{
             Shape = shape;
+            GeometryType = geometryType;
 
             if (inputTriangle != null)
             {
@@ -60,22 +63,27 @@ namespace ShapeDefinition
                     Triangle[i][2] = inputTriangle[i][2];
                 }
 
-                SetVertexAdjacency(inputVertexPosition);
+                SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
                 
             }
             else
             {
-                SetVertexAdjacency(inputVertexPosition);
+                SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
             }
-
-            GeometryType = geometryType;
         }
 
-		#endregion
+        public Geometry(
+            IShape shape,
+            Vector3[] inputVertexPosition,
+            ObjectGeometryType geometryType)
+            : this(shape, inputVertexPosition, null, geometryType, false)
+        { }
 
-		#region Public Methods
+        #endregion
 
-		public void SetVertexPosition(Vector3 v, int index)
+            #region Public Methods
+
+        public void SetVertexPosition(Vector3 v, int index)
 		{
 			if (VertexPosition != null && 
 				VertexPosition.Length > index ) 
@@ -110,42 +118,47 @@ namespace ShapeDefinition
         #region Private Methods
 
         private void SetVertexAdjacency(
-            Vector3[] inputVertexPosition)
+            Vector3[] inputVertexPosition,
+            bool getAdjacencyList)
         {
             VertexPosition = new VertexAdjacency[inputVertexPosition.Length];
 
-            for (int i = 0; i < VertexPosition.Length; i++)
-            {
-                VertexPosition[i] = new VertexAdjacency(inputVertexPosition[i], null);
-
-                if (Triangle != null)
+            Parallel.For(0,
+                VertexPosition.Length,
+                new ParallelOptions { MaxDegreeOfParallelism = 4 },
+                i =>
                 {
-                    List<int> adjacencyList = new List<int>();
+                    VertexPosition[i] = new VertexAdjacency(inputVertexPosition[i], null);
 
-                    for (int j = 0; j < Triangle.Length; j++)
+                    if (Triangle != null && 
+                        getAdjacencyList)
                     {
-                        if (Triangle[j][0] == i)
+                        List<int> adjacencyList = new List<int>();
+
+                        for (int j = 0; j < Triangle.Length; j++)
                         {
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
-                            continue;
+                            if (Triangle[j][0] == i)
+                            {
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                                continue;
+                            }
+                            if (Triangle[j][1] == i)
+                            {
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                                continue;
+                            }
+                            if (Triangle[j][2] == i)
+                            {
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
+                                continue;
+                            }
                         }
-                        if (Triangle[j][1] == i)
-                        {
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
-                            continue;
-                        }
-                        if (Triangle[j][2] == i)
-                        {
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                            AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
-                            continue;
-                        }
+                        VertexPosition[i].SetAdjacencyList(adjacencyList);
                     }
-                    VertexPosition[i].SetAdjacencyList(adjacencyList);
-                }
-            }
+                });
         }
 
         private void AddAdjacencyItem(

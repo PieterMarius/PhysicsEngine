@@ -57,12 +57,12 @@
     <Compile Include="CompoundShape.cs" />
     <Compile Include="GeometrySphere.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="ICompoundShape.cs" />
-    <Compile Include="IConvexShape.cs" />
-    <Compile Include="IGeometry.cs" />
-    <Compile Include="IShape.cs" />
+    <Compile Include="Interfaces\ICompoundShape.cs" />
+    <Compile Include="Interfaces\IConvexShape.cs" />
+    <Compile Include="Interfaces\IGeometry.cs" />
+    <Compile Include="Interfaces\IShape.cs" />
     <Compile Include="Geometry.cs" />
-    <Compile Include="ISoftShape.cs" />
+    <Compile Include="Interfaces\ISoftShape.cs" />
     <Compile Include="ObjectGeometryType.cs" />
     <Compile Include="ConvexShape.cs" />
     <Compile Include="AABB.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="SoftShape.cs" />
     <Compile Include="SoftShapePoint.cs" />
     <Compile Include="StartImpulseProperties.cs" />
-    <Compile Include="InertiaTensor.cs" />
+    <Compile Include="Interfaces\InertiaTensor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
