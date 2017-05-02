@@ -52,10 +52,6 @@
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
       <Name>PhysicsEngineMathUtility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ObjectDefinition\ShapeDefinition.csproj">
-      <Project>{B5F96090-31B4-492A-95D4-E3D2F9B59F98}</Project>
-      <Name>ShapeDefinition</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConjugateGradient.cs" />

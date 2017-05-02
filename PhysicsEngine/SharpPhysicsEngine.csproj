@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{45BC9A44-8517-4BC3-81DC-C7007D248F8C}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SharpPhysicsEngine</RootNamespace>
+    <AssemblyName>SharpPhysicsEngine</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <Optimize>false</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+      <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
+      <Name>PhysicsEngineMathUtility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CollisionEngine\CollisionDetectionEngine.cs" />
+    <Compile Include="CollisionEngine\CollisionEngineParameters.cs" />
+    <Compile Include="CollisionEngine\Common\CollisionPoint.cs" />
+    <Compile Include="CollisionEngine\Common\CollisionPointStructure.cs" />
+    <Compile Include="CollisionEngine\Common\EngineCollisionPoint.cs" />
+    <Compile Include="CollisionEngine\Common\Helper.cs" />
+    <Compile Include="CollisionEngine\Common\ICollisionEngine.cs" />
+    <Compile Include="CollisionEngine\Common\Support.cs" />
+    <Compile Include="CollisionEngine\Common\SupportTriangle.cs" />
+    <Compile Include="CollisionEngine\EPA\Edge.cs" />
+    <Compile Include="CollisionEngine\EPA\EPA.cs" />
+    <Compile Include="CollisionEngine\EPA\EPAOutput.cs" />
+    <Compile Include="CollisionEngine\GJK\GJK.cs" />
+    <Compile Include="CollisionEngine\GJK\GJKOutput.cs" />
+    <Compile Include="CollisionEngine\GJK\Simplex.cs" />
+    <Compile Include="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" />
+    <Compile Include="CollisionEngine\SoftBody\SoftBodyCollisionDetection.cs" />
+    <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
+    <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
+    <Compile Include="JacobianConstraints\AngularConstraint.cs" />
+    <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />
+    <Compile Include="JacobianConstraints\ContactConstraint.cs" />
+    <Compile Include="JacobianConstraints\FixedJointConstraint.cs" />
+    <Compile Include="JacobianConstraints\Hinge2Constraint.cs" />
+    <Compile Include="JacobianConstraints\HingeConstraint.cs" />
+    <Compile Include="JacobianConstraints\IConstraint.cs" />
+    <Compile Include="JacobianConstraints\IConstraintBuilder.cs" />
+    <Compile Include="JacobianConstraints\JacobianCommon.cs" />
+    <Compile Include="JacobianConstraints\JacobianConstraint.cs" />
+    <Compile Include="JacobianConstraints\PistonConstraint.cs" />
+    <Compile Include="JacobianConstraints\SliderConstraint.cs" />
+    <Compile Include="JacobianConstraints\SoftBodyConstraint.cs" />
+    <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
+    <Compile Include="ShapeDefinition\AABB.cs" />
+    <Compile Include="ShapeDefinition\CompoundShape.cs" />
+    <Compile Include="ShapeDefinition\ConstraintType.cs" />
+    <Compile Include="ShapeDefinition\ConvexShape.cs" />
+    <Compile Include="ShapeDefinition\Geometry.cs" />
+    <Compile Include="ShapeDefinition\GeometrySphere.cs" />
+    <Compile Include="ShapeDefinition\Helper.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\ICompoundShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\IConvexShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\IGeometry.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\InertiaTensor.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\IShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\ISoftShape.cs" />
+    <Compile Include="ShapeDefinition\JointType.cs" />
+    <Compile Include="ShapeDefinition\ObjectGeometryType.cs" />
+    <Compile Include="ShapeDefinition\ObjectType.cs" />
+    <Compile Include="ShapeDefinition\SoftShape.cs" />
+    <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
+    <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
+    <Compile Include="SimulationParameters.cs" />
+    <Compile Include="SharpEngine.cs" />
+    <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />
+    <Compile Include="ContactPartitioning\IContactPartitioningEngine.cs" />
+    <Compile Include="ContactPartitioning\SpatialPartition.cs" />
+    <Compile Include="ContactPartitioning\ContactIndex.cs" />
+    <Compile Include="ContactPartitioning\ContactGroupType.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="Solver\ClampSolution.cs" />
+    <Compile Include="Solver\ConjugateGradient.cs" />
+    <Compile Include="Solver\ISolver.cs" />
+    <Compile Include="Solver\LinearProblemProperties.cs" />
+    <Compile Include="Solver\NonLinearConjugateGradient.cs" />
+    <Compile Include="Solver\ProjectedGaussSeidel.cs" />
+    <Compile Include="Solver\SolutionValues.cs" />
+    <Compile Include="Solver\SolverHelper.cs" />
+    <Compile Include="Solver\SolverParameters.cs" />
+    <Compile Include="Solver\SolverType.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup />
+</Project>

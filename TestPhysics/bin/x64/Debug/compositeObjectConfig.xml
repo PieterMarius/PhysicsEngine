@@ -22,9 +22,9 @@
     
    <ObjectsSettings>
 		<Object>
-            <Position x="0,0" y="0,0" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="2,0" z="2,0" />
+            <Position x="0,0" y="0,7" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="-8,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             
@@ -40,18 +40,18 @@
 				<Texture>texture/woodbox.bmp</Texture>
 			</ObjectGeometry>
 			<ObjectGeometry>
-				<Mass>1,0</Mass>
+				<Mass>2,0</Mass>
 				<CompositePosition x="0,0" y="3,0" z="0,0" />
 				<Scale>1,0</Scale>
 				<ObjectGeometry>cube.obj</ObjectGeometry>
 				<Texture>texture/woodbox.bmp</Texture>
 			</ObjectGeometry>
-			
         </Object>
+		
 		<Object>
             <Position x="0,0" y="0,0" z="-7,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="2,0" z="1,0" />
+            <LinearVelocity x="0,0" y="0,0" z="8,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             
@@ -68,10 +68,11 @@
 			</ObjectGeometry>
 						
         </Object>
+		
 		<Object>
             <Position x="0,0" y="3,0" z="-7,0" />
-            <LinearVelocity x="0,0" y="0,0" z="0,0" />
-            <AngularVelocity x="0,0" y="2,0" z="1,0" />
+            <LinearVelocity x="0,0" y="0,0" z="8,0" />
+            <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             
@@ -88,6 +89,7 @@
 			</ObjectGeometry>
 			
         </Object>
+		
 		<Object>
             <Position x="0,0" y="1,2" z="9,5" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />

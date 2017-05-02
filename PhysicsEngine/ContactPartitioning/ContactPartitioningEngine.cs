@@ -2,7 +2,7 @@
 using ShapeDefinition;
 using CollisionEngine;
 
-namespace MonoPhysicsEngine
+namespace SharpPhysicsEngine
 {
 	public class ContactPartitioningEngine: IContactPartitioningEngine
 	{

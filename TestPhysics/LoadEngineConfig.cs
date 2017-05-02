@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Xml;
-using MonoPhysicsEngine;
+using SharpPhysicsEngine;
 using PhysicsEngineMathUtility;
 
 namespace TestPhysics
@@ -46,14 +46,14 @@ namespace TestPhysics
 
 		#region Public Methods
 
-		public SimulationParameters ReadEngineConfig()
+		public PhysicsEngineParameters ReadEngineConfig()
 		{
 			XmlDocument xmlDoc = new XmlDocument();
 			xmlDoc.Load(this.FileNameEngineProperties);
 
 			XmlNodeList xmlList = xmlDoc.SelectNodes(nodePathObjects);
 
-			SimulationParameters simulationParameters = new SimulationParameters (
+			PhysicsEngineParameters simulationParameters = new PhysicsEngineParameters (
                                 Convert.ToDouble (xmlList [0] [this.timeStep].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.CFM].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.baumStabilization].InnerText),

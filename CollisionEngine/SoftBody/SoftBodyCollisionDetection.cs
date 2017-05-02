@@ -9,9 +9,7 @@ namespace CollisionEngine.SoftBody
         #region Constructor
 
         public SoftBodyCollisionDetection()
-        {
-
-        }
+        { }
 
         #endregion
 
@@ -25,32 +23,8 @@ namespace CollisionEngine.SoftBody
 
             List<CollisionPointBaseStructure> collisionPoint = new List<CollisionPointBaseStructure>();
 
-
-
             return collisionPoint;
         }
-
-        //public static Support GetMinkowskiFarthestPoint(
-        //    IGeometry objA,
-        //    ISoftShape objB,
-        //    Vector3 direction)
-        //{
-        //    int a = 0;
-        //    int b = 0;
-        //    if (objA.GeometryType == ObjectGeometryType.ConvexBody)
-        //        a = Helper.GetFarthestPoint(objA, direction);
-        //    else
-        //        a = Helper.GetNonConvexFarthestPoint(objA, direction);
-
-           
-
-        //    var sp = new Support(
-        //    Helper.GetVertexPosition(objA, a) - Helper.GetVertexPosition(objB, b),
-        //    a,
-        //    b);
-
-        //    return sp;
-        //}
 
         public List<CollisionPointBaseStructure> SoftVsSoftBodyCollisionDetection(
             ISoftShape bodyA,
@@ -93,7 +67,7 @@ namespace CollisionEngine.SoftBody
 
             for (int i = 0; i < softBody.ShapePoint.Length; i++)
             {
-                for (int j = 0; j < softBody.ShapePoint.Length; j++)
+                for (int j = i; j < softBody.ShapePoint.Length; j++)
                 {
                     double diameter = softBody.ShapePoint[i].Diameter + softBody.ShapePoint[j].Diameter + minDistance;
                     double distance = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Length();
@@ -105,6 +79,7 @@ namespace CollisionEngine.SoftBody
                         Vector3 normal = (softBody.ShapePoint[i].Position - softBody.ShapePoint[j].Position).Normalize();
 
                         CollisionPoint cp = new CollisionPoint(softBody.ShapePoint[i].Position, softBody.ShapePoint[j].Position, normal);
+
                         collisionPoint.Add(new CollisionPointBaseStructure(
                             distance,
                             intersection,

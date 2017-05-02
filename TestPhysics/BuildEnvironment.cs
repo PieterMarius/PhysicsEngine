@@ -2,7 +2,7 @@
 using System.Linq;
 using CollisionEngine;
 using LCPSolver;
-using MonoPhysicsEngine;
+using SharpPhysicsEngine;
 using ObjLoader.Loader.Loaders;
 using PhysicsEngineMathUtility;
 using ShapeDefinition;
@@ -24,19 +24,19 @@ namespace TestPhysics
 
 		#region Public Methods
 
-		public PhysicsEngine GetPhysicsEnvironment()
+		public SharpEngine GetPhysicsEnvironment()
 		{
-			var simulationParam = new SimulationParameters();
+			var simulationParam = new PhysicsEngineParameters();
 			var solverParameters = new SolverParameters();
 			var collisionEngineParam = new CollisionEngineParameters();
 
-			var physicsEnvironment = new PhysicsEngine(
-													simulationParam,
-													collisionEngineParam,
-													solverParameters);
+            var physicsEnvironment = new SharpEngine(
+                                                simulationParam,
+                                                collisionEngineParam,
+                                                solverParameters);
 
-			physicsEnvironment.AddObject(getSimulationObjects()[0]);
-			physicsEnvironment.RemoveObject(0);
+			physicsEnvironment.AddShape(getSimulationObjects()[0]);
+			physicsEnvironment.RemoveShape(0);
 
 			return physicsEnvironment;
 		}

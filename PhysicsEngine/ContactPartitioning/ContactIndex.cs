@@ -1,5 +1,5 @@
 ﻿
-namespace MonoPhysicsEngine
+namespace SharpPhysicsEngine
 {
 	public struct ContactIndex
 	{

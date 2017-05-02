@@ -1,8 +1,8 @@
 ﻿using PhysicsEngineMathUtility;
 
-namespace MonoPhysicsEngine
+namespace SharpPhysicsEngine
 {
-	public class SimulationParameters
+	public class PhysicsEngineParameters
 	{
 		#region Simulation Parameters Properties
 
@@ -161,7 +161,7 @@ namespace MonoPhysicsEngine
 
         #region Constructors
 
-        public SimulationParameters ()
+        public PhysicsEngineParameters ()
 		{
 			TimeStep = 0.016;
 			CFM = 1E-7;
@@ -190,7 +190,7 @@ namespace MonoPhysicsEngine
 		}
 
 		//TODO Update input parameters
-		public SimulationParameters (
+		public PhysicsEngineParameters (
 			double timeStep,
 			double cfm,
 			double baumStabilization,

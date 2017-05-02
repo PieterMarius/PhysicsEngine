@@ -4,19 +4,19 @@ using CollisionEngine;
 using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
-namespace MonoPhysicsEngine
+namespace SharpPhysicsEngine
 {
 	public static class Helper
 	{
         #region Public Methods
 
-        public static JacobianContact[] FilterConstraints(
-			JacobianContact[] list,
+        public static JacobianConstraint[] FilterConstraints(
+			JacobianConstraint[] list,
 			ConstraintType typeA)
 		{
-			var result = new List<JacobianContact>();
+			var result = new List<JacobianConstraint>();
 
-			foreach (JacobianContact jc in list)
+			foreach (JacobianConstraint jc in list)
 			{
 				if (jc.Type == typeA)
 					result.Add(jc);
@@ -25,14 +25,14 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] FilterConstraints(
-			JacobianContact[] list,
+		public static JacobianConstraint[] FilterConstraints(
+			JacobianConstraint[] list,
 			ConstraintType typeA,
 			ConstraintType typeB)
 		{
-			var result = new List<JacobianContact>();
+			var result = new List<JacobianConstraint>();
 
-			foreach (JacobianContact jc in list)
+			foreach (JacobianConstraint jc in list)
 			{
 				if (jc.Type == typeA ||
 					jc.Type == typeB)
@@ -42,11 +42,11 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] FindJointConstraints(JacobianContact[] list)
+		public static JacobianConstraint[] FindJointConstraints(JacobianConstraint[] list)
 		{
-			var result = new List<JacobianContact>();
+			var result = new List<JacobianConstraint>();
 
-			foreach (JacobianContact jc in list)
+			foreach (JacobianConstraint jc in list)
 			{
 				if (jc.Type != ConstraintType.Friction &&
 					jc.Type != ConstraintType.Collision)
@@ -56,14 +56,14 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] FindConstraintsWithError(
-			JacobianContact[] list,
+		public static JacobianConstraint[] FindConstraintsWithError(
+			JacobianConstraint[] list,
 			ConstraintType typeA,
 			ConstraintType typeB)
 		{
-			var result = new List<JacobianContact>();
+			var result = new List<JacobianConstraint>();
 
-			foreach (JacobianContact jc in list)
+			foreach (JacobianConstraint jc in list)
 			{
 				if ((jc.Type == typeA ||
 				    jc.Type == typeB) &&
@@ -74,12 +74,12 @@ namespace MonoPhysicsEngine
 			return result.ToArray();
 		}
 
-		public static JacobianContact[] PruneConstraintsFromSoftJoint(
-			JacobianContact[] list)
+		public static JacobianConstraint[] PruneConstraintsFromSoftJoint(
+			JacobianConstraint[] list)
 		{
-			var result = new List<JacobianContact>();
+			var result = new List<JacobianConstraint>();
 
-			foreach (JacobianContact jc in list)
+			foreach (JacobianConstraint jc in list)
 			{
 				if (jc.Type != ConstraintType.SoftJoint)
 					result.Add(jc);

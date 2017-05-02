@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MonoPhysicsEngine
+namespace SharpPhysicsEngine
 {
 	public class SpatialPartition
 	{

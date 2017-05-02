@@ -7,15 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPhysics", "TestPhysics\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsEngineMathUtility", "MathUtility\PhysicsEngineMathUtility.csproj", "{3B6B749B-D6C4-4176-B40E-84FE676733B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionEngine", "CollisionEngine\CollisionEngine.csproj", "{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeDefinition", "ObjectDefinition\ShapeDefinition.csproj", "{B5F96090-31B4-492A-95D4-E3D2F9B59F98}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoPhysicsEngine", "PhysicsEngine\MonoPhysicsEngine.csproj", "{45BC9A44-8517-4BC3-81DC-C7007D248F8C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LCPSolver", "LCPSolver\LCPSolver.csproj", "{38021940-DA65-406D-A9FF-7739B85913F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpPhysicsEngine", "PhysicsEngine\SharpPhysicsEngine.csproj", "{45BC9A44-8517-4BC3-81DC-C7007D248F8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,22 +35,6 @@ Global
 		{3B6B749B-D6C4-4176-B40E-84FE676733B7}.Release|x64.Build.0 = Release|x64
 		{3B6B749B-D6C4-4176-B40E-84FE676733B7}.Release|x86.ActiveCfg = Release|x86
 		{3B6B749B-D6C4-4176-B40E-84FE676733B7}.Release|x86.Build.0 = Release|x86
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x64.ActiveCfg = Debug|x64
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x64.Build.0 = Debug|x64
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x86.ActiveCfg = Debug|x86
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Debug|x86.Build.0 = Debug|x86
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Release|x64.ActiveCfg = Release|x64
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Release|x64.Build.0 = Release|x64
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Release|x86.ActiveCfg = Release|x86
-		{73DFBEAB-67C2-4EE3-855F-EFFFCCB3B7BA}.Release|x86.Build.0 = Release|x86
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Debug|x64.ActiveCfg = Debug|x64
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Debug|x64.Build.0 = Debug|x64
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Debug|x86.ActiveCfg = Debug|x86
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Debug|x86.Build.0 = Debug|x86
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Release|x64.ActiveCfg = Release|x64
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Release|x64.Build.0 = Release|x64
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Release|x86.ActiveCfg = Release|x86
-		{B5F96090-31B4-492A-95D4-E3D2F9B59F98}.Release|x86.Build.0 = Release|x86
 		{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}.Debug|x64.ActiveCfg = Debug|x64
 		{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}.Debug|x64.Build.0 = Debug|x64
 		{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}.Debug|x86.ActiveCfg = Debug|x86
@@ -73,14 +51,6 @@ Global
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Release|x64.Build.0 = Release|x64
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Release|x86.ActiveCfg = Release|x86
 		{45BC9A44-8517-4BC3-81DC-C7007D248F8C}.Release|x86.Build.0 = Release|x86
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Debug|x64.ActiveCfg = Debug|x64
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Debug|x64.Build.0 = Debug|x64
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Debug|x86.ActiveCfg = Debug|x86
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Debug|x86.Build.0 = Debug|x86
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Release|x64.ActiveCfg = Release|x64
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Release|x64.Build.0 = Release|x64
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Release|x86.ActiveCfg = Release|x86
-		{38021940-DA65-406D-A9FF-7739B85913F5}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
