@@ -8,14 +8,14 @@ namespace SharpPhysicsEngine
 		#region Public Properties
 
 		/// <summary>
-		/// The object index A.
+		/// The object A.
 		/// </summary>
-		public readonly int ObjectA;
+		public readonly object ObjectA;
 
 		/// <summary>
-		/// The object index B.
+		/// The object B.
 		/// </summary>
-		public readonly int ObjectB;
+		public readonly object ObjectB;
 
 		/// <summary>
 		/// The contact reference.
@@ -77,8 +77,8 @@ namespace SharpPhysicsEngine
 		#region Constructor
 
 		public JacobianConstraint (
-			int objectA,
-			int objectB,
+			object objectA,
+			object objectB,
 			int? contactReference,
 			Vector3 linearComponentA,
 			Vector3 linearComponentB,

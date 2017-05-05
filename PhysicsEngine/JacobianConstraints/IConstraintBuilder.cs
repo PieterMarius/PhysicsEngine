@@ -5,9 +5,7 @@ namespace SharpPhysicsEngine
 {
 	internal interface IConstraintBuilder
 	{
-		List<JacobianConstraint> BuildJacobian(
-			IShape[] simulationObjs,
-			double? baumStabilization = null);
+        List<JacobianConstraint> BuildJacobian(double? baumStabilization = null);
 	}
 }
 

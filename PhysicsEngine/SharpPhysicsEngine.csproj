@@ -74,6 +74,7 @@
     <Compile Include="CollisionEngine\SoftBody\SoftBodyCollisionDetection.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
+    <Compile Include="HashGenerator.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />
     <Compile Include="JacobianConstraints\ContactConstraint.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="ShapeDefinition\Helper.cs" />
     <Compile Include="ShapeDefinition\Interfaces\ICompoundShape.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IConvexShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\Identity.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IGeometry.cs" />
     <Compile Include="ShapeDefinition\Interfaces\InertiaTensor.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IShape.cs" />

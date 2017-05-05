@@ -59,7 +59,7 @@ namespace CollisionEngine.SoftBody
             return collisionPoint;
         }
 
-        public List<CollisionPointBaseStructure> SelfSoftBodyCollisionDetection(
+        public List<CollisionPointBaseStructure> SelfSoftBodyCollisionDetect(
             ISoftShape softBody,
             double minDistance)
         {

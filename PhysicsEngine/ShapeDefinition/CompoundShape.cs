@@ -1,12 +1,16 @@
-﻿
-using System;
+﻿using System;
 using PhysicsEngineMathUtility;
 
 namespace ShapeDefinition
 {
-    public class CompoundShape : IShape, ICompoundShape
+    public class CompoundShape : IShape, ICompoundShape, Identity
     {
         #region Object status properties
+
+        /// <summary>
+        /// Shape ID
+        /// </summary>
+        int Identity.ID { get; set; }
 
         /// <summary>
         /// Mass of object.
@@ -161,7 +165,7 @@ namespace ShapeDefinition
         /// </summary>
         /// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
         public bool ExcludeFromCollisionDetection { get; private set; }
-
+                
         #endregion
 
         #region Constructor
@@ -185,6 +189,11 @@ namespace ShapeDefinition
         #endregion
 
         #region Public methods
+
+        public int GetID()
+        {
+            return ((Identity)this).ID;
+        }
 
         public void SetRestitutionCoeff(double restitutionCoeff)
         {

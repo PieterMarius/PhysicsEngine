@@ -3,16 +3,21 @@ using PhysicsEngineMathUtility;
 
 namespace ShapeDefinition
 {
-	public class ConvexShape : IShape, IConvexShape
+	public class ConvexShape : IShape, IConvexShape, Identity
     {
 
-		#region Object status properties
+        #region Object status properties
 
-		/// <summary>
-		/// Mass of object.
-		/// </summary>
-		/// <value>The mass.</value>
-		public double Mass{ get; private set; }
+        /// <summary>
+        /// Shape ID
+        /// </summary>
+        int Identity.ID { get; set; }
+
+        /// <summary>
+        /// Mass of object.
+        /// </summary>
+        /// <value>The mass.</value>
+        public double Mass{ get; private set; }
 
         /// <summary>
         /// Gets the inverse mass.
@@ -137,15 +142,20 @@ namespace ShapeDefinition
 		/// <value>The torque value.</value>
 		public Vector3 TorqueValue { get; private set; }
 
-		#endregion
+        #endregion
 
-		#region Simulation Properties
+        #region Simulation Properties
 
-		/// <summary>
-		/// Gets a value indicating whether this SimulationObject exclude from collision detection.
-		/// </summary>
-		/// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
-		public bool ExcludeFromCollisionDetection{ get; private set; }
+        public int GetID()
+        {
+            return ((Identity)this).ID;
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether this SimulationObject exclude from collision detection.
+        /// </summary>
+        /// <value><c>true</c> if exclude from collision detection; otherwise, <c>false</c>.</value>
+        public bool ExcludeFromCollisionDetection{ get; private set; }
 
 		#endregion
 

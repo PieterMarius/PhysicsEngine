@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ShapeDefinition;
 using PhysicsEngineMathUtility;
 using CollisionEngine;
+using System.Linq;
 
 namespace SharpPhysicsEngine
 {
@@ -21,19 +22,16 @@ namespace SharpPhysicsEngine
 			{
 				CollisionPointStructure collisionPointStr = collisionPointsStruct [i];
 
-				int indexA = collisionPointStr.ObjectA;
-				int indexB = collisionPointStr.ObjectB;
-
-				IShape objectA = simulationObjs[indexA];
-				IShape objectB = simulationObjs[indexB];
+				IShape objectA = simulationObjs.First(x => x.GetID() == collisionPointStr.ObjectA);
+				IShape objectB = simulationObjs.First(x => x.GetID() == collisionPointStr.ObjectB);
 
 				double restitutionCoefficient =
-					(simulationObjs[indexA].RestitutionCoeff +
-					 simulationObjs[indexB].RestitutionCoeff) * 0.5;
+					(objectA.RestitutionCoeff +
+					 objectB.RestitutionCoeff) * 0.5;
 
 				double baumgarteStabilizationValue = 
-					(simulationObjs[indexA].RestoreCoeff +
-					 simulationObjs[indexB].RestoreCoeff) * 0.5;
+					(objectA.RestoreCoeff +
+					 objectB.RestoreCoeff) * 0.5;
 
                 for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
                 {
@@ -80,8 +78,6 @@ namespace SharpPhysicsEngine
                         double correctedBounce = uCollision;
 
                         JacobianConstraint normalContact = JacobianCommon.GetDOF(
-                            indexA,
-                            indexB,
                             linearComponentA,
                             linearComponentB,
                             angularComponentA,
@@ -105,8 +101,6 @@ namespace SharpPhysicsEngine
                                 objectA,
                                 objectB,
                                 simulationParameters,
-                                indexA,
-                                indexB,
                                 linearComponentA,
                                 relativeVelocity,
                                 ra,
@@ -138,8 +132,6 @@ namespace SharpPhysicsEngine
 			IShape objectA,
 			IShape objectB,
 			PhysicsEngineParameters simulationParameters,
-			int indexA,
-			int indexB,
 			Vector3 normal,
 			Vector3 relativeVelocity,
 			Vector3 ra,
@@ -181,8 +173,6 @@ namespace SharpPhysicsEngine
 			var angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
 			friction [0] = JacobianCommon.GetDOF (
-				indexA,
-				indexB,
 				linearComponentA,
 				linearComponentB,
 				angularComponentA,
@@ -208,8 +198,6 @@ namespace SharpPhysicsEngine
 			angularComponentB = -1.0 * rb.Cross (linearComponentA);
 
 			friction [1] = JacobianCommon.GetDOF (
-				indexA,
-				indexB,
 				linearComponentA,
 				linearComponentB,
 				angularComponentA,

@@ -222,29 +222,26 @@ namespace TestPhysics
 					switch (jointType) {
 						case JointType.Fixed:
 							joint [j] = new FixedJointConstraint (
-								indexA,
-								indexB,
-								objects,
+                                objects[indexA],
+                                objects[indexB],
 								K,
 								C);
 							break;
 
 						case JointType.BallAndSocket:
 							joint [j] = new BallAndSocketConstraint (
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								K,
 								C);
 							break;
 
 						case JointType.Slider:
 							joint [j] = new SliderConstraint (
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								actionAxis,
 								K,
 								C);
@@ -255,10 +252,9 @@ namespace TestPhysics
 
 						case JointType.Piston:
 							joint[j] = new PistonConstraint(
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								actionAxis,
 								K,
 								C);
@@ -275,10 +271,9 @@ namespace TestPhysics
 
 						case JointType.Hinge:
 							joint[j] = new HingeConstraint(
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								actionAxis,
 								K,
 								C);
@@ -292,10 +287,9 @@ namespace TestPhysics
 
 						case JointType.Universal:
 							joint[j] = new UniversalConstraint(
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								actionAxis,
 								new Vector3(1.0, 0.0, 0.0),
 								K,
@@ -311,10 +305,9 @@ namespace TestPhysics
 
 						case JointType.Hinge2:
 							joint [j] = new Hinge2Constraint (
-								indexA,
-								indexB,
-								objects,
-								startAnchorPosition,
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
 								actionAxis,
 								new Vector3 (1.0, 0.0, 0.0),
 								K,
@@ -331,9 +324,8 @@ namespace TestPhysics
 
                         case JointType.Angular:
                             joint[j] = new AngularConstraint(
-                                indexA, 
-                                indexB, 
-                                objects, 
+                                objects[indexA],
+                                objects[indexB],
                                 startAnchorPosition,
                                 new Vector3(1.0, 0.0, 0.0), 
                                 new Vector3(0.0, 1.0, 0.0), 

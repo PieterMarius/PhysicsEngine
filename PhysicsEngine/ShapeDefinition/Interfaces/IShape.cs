@@ -26,6 +26,7 @@ namespace ShapeDefinition
         Vector3 TempLinearVelocity { get; }
         Vector3 TorqueValue { get; }
 
+        int GetID();
         void SetAABB();
         void SetAngularVelocity(Vector3 inputAngularVelocity);
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);

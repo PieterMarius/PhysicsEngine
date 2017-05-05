@@ -10,13 +10,13 @@ namespace ShapeDefinition
         int[][] Triangle { get; }
         AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
-        List<JacobianConstraint> SoftConstraint { get; }
+        List<SoftBodyConstraint> SoftConstraint { get; }
 
         void SetPointsMass(double mass);
         void SetShapePoint(SoftShapePoint[] shapePoint);
         void SetAABB();
         void SetGeometrySphere(SoftPoint[] geometrySphere);
-        void AddConstraint(JacobianConstraint constraint);
+        void AddConstraint(SoftBodyConstraint constraint);
         void RemoveConstraint(int index);
 
     }

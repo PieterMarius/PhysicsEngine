@@ -1,11 +1,13 @@
-﻿using PhysicsEngineMathUtility;
+﻿using System;
+using PhysicsEngineMathUtility;
 
 namespace ShapeDefinition
 {
-    public class SoftShapePoint
+    public class SoftShapePoint: Identity
     {
         #region Fields
 
+        int Identity.ID { get; set; }
         public Vector3 Position { get; private set; }
         public Vector3 StartPosition { get; private set; }
         //TODO: delete ???
@@ -27,6 +29,11 @@ namespace ShapeDefinition
         #endregion
 
         #region Public Methods
+
+        public int GetID()
+        {
+            return ((Identity)this).ID;
+        }
 
         public void SetPosition(Vector3 position)
         {

@@ -5,9 +5,14 @@ using System.Collections.Generic;
 
 namespace ShapeDefinition
 {
-    public class SoftShape : IShape, ISoftShape
+    public class SoftShape : IShape, ISoftShape, Identity
     {
         #region Object status properties
+
+        /// <summary>
+        /// Shape ID
+        /// </summary>
+        int Identity.ID { get; set; }
 
         /// <summary>
         /// Mass of object point.
@@ -131,10 +136,15 @@ namespace ShapeDefinition
         /// </summary>
         /// <value>The torque value.</value>
         public Vector3 TorqueValue { get; private set; }
-        
+
         #endregion
 
         #region Simulation Properties
+
+        public int GetID()
+        {
+            return ((Identity)this).ID;
+        }
 
         /// <summary>
         /// Gets a value indicating whether this SimulationObject exclude from collision detection.
@@ -150,7 +160,7 @@ namespace ShapeDefinition
 
         public SoftPoint[] Sphere { get; private set; }
 
-        public List<JacobianConstraint> SoftConstraint { get; private set; }
+        public List<SoftBodyConstraint> SoftConstraint { get; private set; }
 
         #endregion
 
@@ -159,7 +169,7 @@ namespace ShapeDefinition
         public SoftShape(
             int[][] triangleIndex,
             SoftShapePoint[] shapePoint,
-            List<JacobianConstraint> softConstraint)
+            List<SoftBodyConstraint> softConstraint)
         {
             //TODO: da modificare
             ObjectType = ObjectType.SoftBody;
@@ -310,7 +320,7 @@ namespace ShapeDefinition
             throw new NotImplementedException();
         }
 
-        public void AddConstraint(JacobianConstraint constraint)
+        public void AddConstraint(SoftBodyConstraint constraint)
         {
             SoftConstraint.Add(constraint);
         }
@@ -324,15 +334,12 @@ namespace ShapeDefinition
 
         private void BuildSoftConstraint()
         {
+            SoftConstraint = new List<SoftBodyConstraint>();
+
             foreach(int[] triangle in Triangle)
             {
-
+                //SoftConstraint.Add(new SoftBodyConstraint())
             }
-        }
-
-        private void CheckSoftConstraintCoherence()
-        {
-
         }
 
         #endregion

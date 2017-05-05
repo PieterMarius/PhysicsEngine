@@ -11,9 +11,9 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.BallAndSocket;
 
-		int IndexA;
-		int IndexB;
-		int KeyIndex;
+        IShape ShapeA;
+        IShape ShapeB;
+        int KeyIndex;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 StartErrorAxis1;
@@ -27,33 +27,29 @@ namespace SharpPhysicsEngine
 		#region Constructor
 
 		public BallAndSocketConstraint(
-			int indexA,
-			int indexB,
-			IShape[] simulationObject,
-			Vector3 startAnchorPosition,
+            IShape shapeA,
+            IShape shapeB,
+            Vector3 startAnchorPosition,
 			double restoreCoefficient,
 			double springCoefficient)
 		{
-			IndexA = indexA;
-			IndexB = indexB;
-			KeyIndex = GetHashCode();
+            ShapeA = shapeA;
+            ShapeB = shapeB;
+            KeyIndex = GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
 
-			IShape objectA = simulationObject[IndexA];
-			IShape objectB = simulationObject[IndexB];
+			Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
+			relativePos = ShapeA.RotationMatrix * relativePos;
 
-			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
-			relativePos = objectA.RotationMatrix * relativePos;
+			AnchorPoint = relativePos + ShapeA.Position;
 
-			AnchorPoint = relativePos + objectA.Position;
+			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+									 (AnchorPoint - ShapeA.Position);
 
-			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
-									 (AnchorPoint - objectA.Position);
-
-			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
-									 (AnchorPoint - objectB.Position);
+			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+									 (AnchorPoint - ShapeB.Position);
 		}
 
 		#endregion
@@ -67,14 +63,12 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The ball socket joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(
-			IShape[] simulationObjs,
-			double? baumStabilization = null)
+		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var ballSocketConstraints = new List<JacobianConstraint>();
 
-			IShape simulationObjectA = simulationObjs[IndexA];
-			IShape simulationObjectB = simulationObjs[IndexB];
+			IShape simulationObjectA = ShapeA;
+			IShape simulationObjectB = ShapeB;
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
@@ -112,8 +106,6 @@ namespace SharpPhysicsEngine
 			//DOF 1
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
-				IndexA,
-				IndexB,
 				new Vector3(1.0, 0.0, 0.0),
 				new Vector3(-1.0, 0.0, 0.0),
 				new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
@@ -131,9 +123,7 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * linearError.y;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
-				IndexA,
-				IndexB,
-				new Vector3(0.0, 1.0, 0.0),
+                new Vector3(0.0, 1.0, 0.0),
 				new Vector3(0.0, -1.0, 0.0),
 				new Vector3(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
 				new Vector3(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
@@ -150,9 +140,7 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * linearError.z;
 
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
-				IndexA,
-				IndexB,
-				new Vector3(0.0, 0.0, 1.0),
+                new Vector3(0.0, 0.0, 1.0),
 				new Vector3(0.0, 0.0, -1.0),
 				new Vector3(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
 				new Vector3(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
@@ -180,22 +168,12 @@ namespace SharpPhysicsEngine
 
 		public int GetObjectIndexA()
 		{
-			return IndexA;
-		}
-
-		public void SetObjectIndexA(int index)
-		{
-			IndexA = index;
-		}
-
-		public void SetObjectIndexB(int index)
-		{
-			IndexB = index;
+			return ShapeA.GetID();
 		}
 
 		public int GetObjectIndexB()
 		{
-			return IndexB;
+			return ShapeB.GetID();
 		}
 
 		public int GetKeyIndex()
@@ -240,7 +218,7 @@ namespace SharpPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.AddTorque(ConvexShape[] objects, double torqueAxis1, double torqueAxis2)
+		void IConstraint.AddTorque(double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

@@ -11,8 +11,8 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Universal;
 
-		int IndexA;
-		int IndexB;
+		IShape ShapeA;
+		IShape ShapeB;
 		int KeyIndex;
 		readonly double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
@@ -40,50 +40,46 @@ namespace SharpPhysicsEngine
 		#region Constructor
 
 		public UniversalConstraint(
-			int indexA,
-			int indexB,
-			IShape[] simulationObject,
-			Vector3 startAnchorPosition,
+            IShape shapeA,
+            IShape shapeB,
+            Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
 			double restoreCoefficient,
 			double springCoefficient)
 		{
-			IndexA = indexA;
-			IndexB = indexB;
-			KeyIndex = this.GetHashCode();
+            ShapeA = shapeA;
+            ShapeB = shapeB;
+            KeyIndex = this.GetHashCode();
 			RestoreCoefficient = restoreCoefficient;
 			SpringCoefficient = springCoefficient;
 			StartAnchorPoint = startAnchorPosition;
 			HingeAxis = hingeAxis.Normalize ();
 			RotationAxis = rotationAxis.Normalize ();
 
-			IShape objectA = simulationObject[IndexA];
-			IShape objectB = simulationObject[IndexB];
+			Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
+			relativePos = ShapeA.RotationMatrix * relativePos;
 
-			Vector3 relativePos = startAnchorPosition - objectA.StartPosition;
-			relativePos = objectA.RotationMatrix * relativePos;
+			AnchorPoint = relativePos + ShapeA.Position;
 
-			AnchorPoint = relativePos + objectA.Position;
+			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+									 (AnchorPoint - ShapeA.Position);
 
-			StartErrorAxis1 = objectA.RotationMatrix.Transpose() *
-									 (AnchorPoint - objectA.Position);
+			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+									 (AnchorPoint - ShapeB.Position);
 
-			StartErrorAxis2 = objectB.RotationMatrix.Transpose() *
-									 (AnchorPoint - objectB.Position);
-
-			Vector3 rHingeAxis = objectA.RotationMatrix * HingeAxis;
-			Vector3 rRotationAxis = objectB.RotationMatrix * RotationAxis;
+			Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
+			Vector3 rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
 			RelativeOrientation1 = calculateRelativeOrientation (
 				rHingeAxis,
 				rRotationAxis,
-				objectA.RotationStatus);
+                ShapeA.RotationStatus);
 
 			RelativeOrientation2 = calculateRelativeOrientation (
 				rRotationAxis,
 				rHingeAxis,
-				objectB.RotationStatus);
+                ShapeB.RotationStatus);
 		}
 
 		#endregion
@@ -98,14 +94,12 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(
-			IShape[] simulationObjs,
-			double? baumStabilization = null)
+		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var universalConstraints = new List<JacobianConstraint> ();
 
-			IShape simulationObjectA = simulationObjs [IndexA];
-			IShape simulationObjectB = simulationObjs [IndexB];
+			IShape simulationObjectA = ShapeA;
+			IShape simulationObjectB = ShapeB;
 
 			AnchorPoint = (simulationObjectA.RotationMatrix *
 						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
@@ -154,8 +148,6 @@ namespace SharpPhysicsEngine
 			double constraintLimit = RestoreCoefficient * linearError.x;
 
 			universalConstraints.Add (JacobianCommon.GetDOF(
-				IndexA,
-				IndexB,
 				new Vector3 (1.0, 0.0, 0.0),
 				new Vector3 (-1.0, 0.0, 0.0),
 				new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
@@ -173,8 +165,6 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * linearError.y;
 
 			universalConstraints.Add (JacobianCommon.GetDOF (
-				IndexA,
-				IndexB,
 				new Vector3 (0.0, 1.0, 0.0),
 				new Vector3 (0.0, -1.0, 0.0),
 				new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
@@ -192,8 +182,6 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * linearError.z;
 
 			universalConstraints.Add (JacobianCommon.GetDOF (
-				IndexA,
-				IndexB,
 				new Vector3 (0.0, 0.0, 1.0),
 				new Vector3 (0.0, 0.0, -1.0),
 				new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
@@ -212,8 +200,6 @@ namespace SharpPhysicsEngine
 
 			universalConstraints.Add (
 				JacobianCommon.GetDOF (
-					IndexA, 
-					IndexB, 
 					new Vector3(), 
 					new Vector3(), 
 					t1, 
@@ -249,24 +235,14 @@ namespace SharpPhysicsEngine
 
 		public int GetObjectIndexA()
 		{
-			return IndexA;
+			return ShapeA.GetID();
 		}
 
 		public int GetObjectIndexB()
 		{
-			return IndexB;
+			return ShapeB.GetID();
 		}
-
-		public void SetObjectIndexA(int index)
-		{
-			IndexA = index;
-		}
-
-		public void SetObjectIndexB(int index)
-		{
-			IndexB = index;
-		}
-
+        		
 		public int GetKeyIndex()
 		{
 			return KeyIndex;
@@ -311,18 +287,17 @@ namespace SharpPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		public void AddTorque(
-			ConvexShape[] objects, 
+		public void AddTorque( 
 			double torqueAxis1, 
 			double torqueAxis2)
 		{
-			Vector3 hingeAxis = objects[IndexA].RotationMatrix * HingeAxis;
-			Vector3 rotationAxis = objects[IndexB].RotationMatrix * RotationAxis;
+			Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
+			Vector3 rotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
 			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
 
-			objects[IndexA].SetTorque(objects[IndexA].TorqueValue + torque);
-			objects[IndexB].SetTorque(objects[IndexB].TorqueValue - torque);
+            ShapeA.SetTorque(ShapeA.TorqueValue + torque);
+            ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
 
 		#region NotImplementedMethods
@@ -360,8 +335,6 @@ namespace SharpPhysicsEngine
 
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
-						IndexA,
-						IndexB,
 						angle1,
 						RestoreCoefficient,
 						0.0,
@@ -388,8 +361,6 @@ namespace SharpPhysicsEngine
 
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
-						IndexA,
-						IndexB,
 						angle2,
 						RestoreCoefficient,
 						0.0,

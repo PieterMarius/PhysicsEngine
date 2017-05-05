@@ -105,8 +105,6 @@ namespace SharpPhysicsEngine
 		}
 
 		public static JacobianConstraint GetDOF(
-			int indexA,
-			int indexB,
 			Vector3 linearComponentA,
 			Vector3 linearComponentB,
 			Vector3 angularComponentA,
@@ -132,8 +130,8 @@ namespace SharpPhysicsEngine
 				startImpulseProperties = new StartImpulseProperties(0.0);
 
 			return new JacobianConstraint (
-				indexA,
-				indexB,
+				simulationObjectA,
+                simulationObjectB,
 				contactReference,
 				linearComponentA,
 				linearComponentB,
@@ -148,8 +146,6 @@ namespace SharpPhysicsEngine
 		}
 
         public static JacobianConstraint GetDOF(
-            int indexA,
-            int indexB,
             Vector3 linearComponentA,
             Vector3 linearComponentB,
             Vector3 angularComponentA,
@@ -161,7 +157,7 @@ namespace SharpPhysicsEngine
             double cfm,
             double constraintLimit,
             ConstraintType type,
-                int? contactReference = null,
+            int? contactReference = null,
             StartImpulseProperties startImpulseProperties = null)
         {
             double jacobianVelocityValue = linearComponentA.Dot(softShapePointA.LinearVelocity) +
@@ -175,8 +171,8 @@ namespace SharpPhysicsEngine
                 startImpulseProperties = new StartImpulseProperties(0.0);
 
             return new JacobianConstraint(
-                indexA,
-                indexB,
+                softShapePointA,
+                softShapePointB,
                 contactReference,
                 linearComponentA,
                 linearComponentB,
@@ -191,8 +187,6 @@ namespace SharpPhysicsEngine
         }
 
         public static JacobianConstraint GetLinearLimit (
-			int indexA, 
-			int indexB, 
 			IShape simulationObjectA, 
 			IShape simulationObjectB, 
 			Vector3 sliderAxis,
@@ -211,8 +205,6 @@ namespace SharpPhysicsEngine
 					(linearLimitMin - sliderDistance);
 
 				return GetDOF (
-					indexA, 
-					indexB, 
 					sliderAxis, 
 					-1.0 * sliderAxis, 
 					-1.0 * Vector3.Cross (r1, sliderAxis), 
@@ -231,9 +223,7 @@ namespace SharpPhysicsEngine
 					(sliderDistance - linearLimitMax);
 
 				return GetDOF (
-					indexA, 
-					indexB, 
-					-1.0 * sliderAxis, 
+                    -1.0 * sliderAxis, 
 					sliderAxis, 
 					Vector3.Cross (r1, sliderAxis), 
 					-1.0 * Vector3.Cross (r2, sliderAxis), 
@@ -250,8 +240,6 @@ namespace SharpPhysicsEngine
 		}
 
 		public static JacobianConstraint? GetAngularLimit (
-			int indexA, 
-			int indexB, 
 			double angle,
 			double K,
 			double C,
@@ -268,9 +256,7 @@ namespace SharpPhysicsEngine
 					(angle - angularLimitMax);
 
 				return GetDOF (
-					indexA, 
-					indexB, 
-					new Vector3 (), 
+                    new Vector3 (), 
 					new Vector3 (), 
 					rotationAxis, 
 					-1.0 * rotationAxis, 
@@ -292,9 +278,7 @@ namespace SharpPhysicsEngine
 					(angularLimitMin - angle);
 
 				return GetDOF (
-					indexA, 
-					indexB, 
-					new Vector3 (), 
+                    new Vector3 (), 
 					new Vector3 (), 
 					-1.0 * rotationAxis, 
 					rotationAxis, 
