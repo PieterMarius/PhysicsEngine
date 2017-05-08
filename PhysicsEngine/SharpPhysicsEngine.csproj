@@ -49,9 +49,9 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+    <ProjectReference Include="..\MathUtility\SharpEngineMathUtility.csproj">
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
-      <Name>PhysicsEngineMathUtility</Name>
+      <Name>SharpEngineMathUtility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +102,7 @@
     <Compile Include="ShapeDefinition\Interfaces\IGeometry.cs" />
     <Compile Include="ShapeDefinition\Interfaces\InertiaTensor.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\IShapeCommon.cs" />
     <Compile Include="ShapeDefinition\Interfaces\ISoftShape.cs" />
     <Compile Include="ShapeDefinition\JointType.cs" />
     <Compile Include="ShapeDefinition\ObjectGeometryType.cs" />

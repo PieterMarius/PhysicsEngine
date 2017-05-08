@@ -65,9 +65,9 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+    <ProjectReference Include="..\MathUtility\SharpEngineMathUtility.csproj">
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
-      <Name>PhysicsEngineMathUtility</Name>
+      <Name>SharpEngineMathUtility</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

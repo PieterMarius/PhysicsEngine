@@ -10,12 +10,12 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// The object A.
 		/// </summary>
-		public readonly object ObjectA;
+		public readonly IShapeCommon ObjectA;
 
 		/// <summary>
 		/// The object B.
 		/// </summary>
-		public readonly object ObjectB;
+		public readonly IShapeCommon ObjectB;
 
 		/// <summary>
 		/// The contact reference.
@@ -77,8 +77,8 @@ namespace SharpPhysicsEngine
 		#region Constructor
 
 		public JacobianConstraint (
-			object objectA,
-			object objectB,
+            IShapeCommon objectA,
+            IShapeCommon objectB,
 			int? contactReference,
 			Vector3 linearComponentA,
 			Vector3 linearComponentB,

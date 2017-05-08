@@ -1001,12 +1001,11 @@ namespace SharpPhysicsEngine
 			JacobianConstraint contactA,
 			JacobianConstraint contactB)
 		{
-            //TODO gestire softBody
-            IShape contactAobjA = (IShape)contactA.ObjectA;
-            IShape contactAobjB = (IShape)contactA.ObjectB;
+            IShapeCommon contactAobjA = contactA.ObjectA;
+            IShapeCommon contactAobjB = contactA.ObjectB;
 
-            IShape contactBobjA = (IShape)contactB.ObjectA;
-            IShape contactBobjB = (IShape)contactB.ObjectB;
+            IShapeCommon contactBobjA = contactB.ObjectA;
+            IShapeCommon contactBobjB = contactB.ObjectB;
 
             double linearA = 0.0;
 			double angularA = 0.0;
@@ -1098,14 +1097,12 @@ namespace SharpPhysicsEngine
 		/// <param name="X">X.</param>
 		/// <param name="index">Object index.</param>
 		private void UpdateObjectVelocity(
-			object simulationObj,
+			IShapeCommon simObj,
 			Vector3 linearComponent,
 			Vector3 angularComponent,
 			double X)
 		{
-			IShape simObj = (IShape)simulationObj;
-
-			if (simObj.ObjectType != ObjectType.StaticRigidBody) 
+            	if (simObj.ObjectType != ObjectType.StaticRigidBody) 
 			{
 				Vector3 linearImpulse = X * linearComponent;
 				Vector3 angularImpuse = X * angularComponent;
@@ -1247,13 +1244,11 @@ namespace SharpPhysicsEngine
         }
 
         private void SetPositionBasedVelocity(
-            object simulationObj,
+            IShapeCommon simObj,
             Vector3 linearComponent,
             Vector3 angularComponent,
             double X)
         {
-            IShape simObj = (IShape)simulationObj;
-
             if (simObj.ObjectType != ObjectType.StaticRigidBody)
             {
                 Vector3 linearImpulse = X * linearComponent;

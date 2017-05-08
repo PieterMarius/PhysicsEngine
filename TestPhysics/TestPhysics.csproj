@@ -81,9 +81,9 @@
       <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
       <Name>Utility</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MathUtility\PhysicsEngineMathUtility.csproj">
+    <ProjectReference Include="..\MathUtility\SharpEngineMathUtility.csproj">
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
-      <Name>PhysicsEngineMathUtility</Name>
+      <Name>SharpEngineMathUtility</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhysicsEngine\SharpPhysicsEngine.csproj">
       <Project>{45BC9A44-8517-4BC3-81DC-C7007D248F8C}</Project>

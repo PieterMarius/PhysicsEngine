@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPhysics", "TestPhysics\TestPhysics.csproj", "{1F1A33F3-176C-4C2A-AFF9-487BED7DCA38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsEngineMathUtility", "MathUtility\PhysicsEngineMathUtility.csproj", "{3B6B749B-D6C4-4176-B40E-84FE676733B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpEngineMathUtility", "MathUtility\SharpEngineMathUtility.csproj", "{3B6B749B-D6C4-4176-B40E-84FE676733B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}"
 EndProject
