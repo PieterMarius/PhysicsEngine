@@ -914,11 +914,11 @@ namespace SharpPhysicsEngine
                     {
                         JacobianConstraint contactA = contact[i];
 
-                        B[i] = (positionStabilization) ?
-                            contactA.CorrectionValue :
-                            (-(contactA.B - (contactA.CorrectionValue)) < 0) ?
-                                Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
-                                Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue);
+                        if (positionStabilization)
+                            B[i] = contactA.CorrectionValue;
+                        else
+                            B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
+                                                                                    Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
 
                         if (contactA.ContactReference.HasValue)
                             constraints[i].Add(contactA.ContactReference);
@@ -939,16 +939,16 @@ namespace SharpPhysicsEngine
                         for (int j = i + 1; j < contact.Length; j++)
                         {
                             JacobianConstraint contactB = contact[j];
-
-                            if (contactA.ObjectA == contactB.ObjectA ||
-                                contactA.ObjectB == contactB.ObjectB ||
-                                contactA.ObjectA == contactB.ObjectB ||
-                                contactA.ObjectB == contactB.ObjectA)
+                            
+                            if (contactA.ObjectA.GetID() == contactB.ObjectA.GetID() ||
+                                contactA.ObjectB.GetID() == contactB.ObjectB.GetID() ||
+                                contactA.ObjectA.GetID() == contactB.ObjectB.GetID() ||
+                                contactA.ObjectB.GetID() == contactB.ObjectA.GetID())
                             {
                                 if (contactA.Type == contactB.Type &&
                                     contactB.Type == ConstraintType.Collision &&
-                                    contactA.ObjectA == contactB.ObjectA &&
-                                    contactA.ObjectB == contactB.ObjectB)
+                                    contactA.ObjectA.GetID() == contactB.ObjectA.GetID() &&
+                                    contactA.ObjectB.GetID() == contactB.ObjectB.GetID())
                                 {
                                     constraints[i].Add(j);
                                     constraints[j].Add(i);
@@ -1001,50 +1001,44 @@ namespace SharpPhysicsEngine
 			JacobianConstraint contactA,
 			JacobianConstraint contactB)
 		{
-            IShapeCommon contactAobjA = contactA.ObjectA;
-            IShapeCommon contactAobjB = contactA.ObjectB;
-
-            IShapeCommon contactBobjA = contactB.ObjectA;
-            IShapeCommon contactBobjB = contactB.ObjectB;
-
             double linearA = 0.0;
 			double angularA = 0.0;
 
-			if (contactAobjA.GetID() == contactBobjA.GetID()) {
+			if (contactA.ObjectA.GetID() == contactB.ObjectA.GetID()) {
 
 				linearA = contactA.LinearComponentA.Dot (
-					contactB.LinearComponentA * contactAobjA.InverseMass);
+					contactB.LinearComponentA * contactA.ObjectA.InverseMass);
 				
 				angularA = contactA.AngularComponentA.Dot (
-                    contactAobjA.InertiaTensor * contactB.AngularComponentA);
+                    contactA.ObjectA.InertiaTensor * contactB.AngularComponentA);
 
-			} else if (contactBobjB.GetID() == contactAobjA.GetID()) {
+			} else if (contactB.ObjectB.GetID() == contactA.ObjectA.GetID()) {
 
 				linearA = contactA.LinearComponentA.Dot (
-					contactB.LinearComponentB * contactAobjA.InverseMass);
+					contactB.LinearComponentB * contactA.ObjectA.InverseMass);
 				
 				angularA = contactA.AngularComponentA.Dot (
-                    contactAobjA.InertiaTensor * contactB.AngularComponentB);
+                    contactA.ObjectA.InertiaTensor * contactB.AngularComponentB);
 			}
 
 			double linearB = 0.0;
 			double angularB = 0.0;
 
-			if (contactBobjA.GetID() == contactAobjB.GetID()) {
+			if (contactB.ObjectA.GetID() == contactA.ObjectB.GetID()) {
 				
 				linearB = contactA.LinearComponentB.Dot (
-					contactB.LinearComponentA * contactAobjB.InverseMass);
+					contactB.LinearComponentA * contactA.ObjectB.InverseMass);
 				
 				angularB = contactA.AngularComponentB.Dot(
-                    contactAobjB.InertiaTensor * contactB.AngularComponentA);
+                    contactA.ObjectB.InertiaTensor * contactB.AngularComponentA);
 				
-			} else if (contactBobjB.GetID() == contactAobjB.GetID()) {
+			} else if (contactB.ObjectB.GetID() == contactA.ObjectB.GetID()) {
 				
 				linearB = contactA.LinearComponentB.Dot (
-					contactB.LinearComponentB * contactAobjB.InverseMass);
+					contactB.LinearComponentB * contactA.ObjectB.InverseMass);
 				
 				angularB = contactA.AngularComponentB.Dot (
-                    contactAobjB.InertiaTensor * contactB.AngularComponentB);
+                    contactA.ObjectB.InertiaTensor * contactB.AngularComponentB);
 			}
 
 			return (linearA + angularA) +

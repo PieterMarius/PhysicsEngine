@@ -88,12 +88,15 @@ namespace ShapeDefinition
 
         public static IGeometry[] GetGeometry(IShape shape)
         {
-            if (shape is ICompoundShape)
-                return ((ICompoundShape)shape).ObjectGeometry;
-            else if (shape is IConvexShape)
-                return new IGeometry[] { ((IConvexShape)shape).ObjectGeometry };
-            else
-                throw new ArgumentException("Unexpected type: " + shape.GetType());
+            ICompoundShape compoundShape = shape as ICompoundShape;
+            if (compoundShape != null)
+                return compoundShape.ObjectGeometry;
+
+            IConvexShape convexShape = shape as IConvexShape;
+            if (convexShape != null)
+                return new IGeometry[] { convexShape.ObjectGeometry };
+            
+            throw new ArgumentException("Unexpected type: " + shape.GetType());
         }
     }
 }

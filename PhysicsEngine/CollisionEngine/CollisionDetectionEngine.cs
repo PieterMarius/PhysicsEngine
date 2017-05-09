@@ -257,20 +257,28 @@ namespace CollisionEngine
 
             foreach (var item in shapes.Select((shape, i) => new { shape, i }))
             {
-                if (item.shape is IConvexShape)
+                IConvexShape shape = item.shape as IConvexShape;
+                if (shape != null)
                 {
                     boxs[item.i] = new AABB[1];
-                    boxs[item.i][0] = ((IConvexShape)item.shape).ObjectGeometry.AABBox;
+                    boxs[item.i][0] = shape.ObjectGeometry.AABBox;
+                    continue;
                 }
-                else if (item.shape is ICompoundShape)
+
+                ICompoundShape compoundShape = item.shape as ICompoundShape;
+                if (compoundShape != null)
                 {
-                    AABB[] bufBox = Array.ConvertAll(((ICompoundShape)item.shape).ObjectGeometry, x => x.AABBox);
+                    AABB[] bufBox = Array.ConvertAll(compoundShape.ObjectGeometry, x => x.AABBox);
                     boxs[item.i] = bufBox;
+                    continue;
                 }
-                else if (item.shape is ISoftShape)
+
+                ISoftShape softShape = item.shape as ISoftShape;
+                if (softShape != null)
                 {
                     boxs[item.i] = new AABB[1];
-                    boxs[item.i][0] = ((ISoftShape)item.shape).AABBox;
+                    boxs[item.i][0] = softShape.AABBox;
+                    continue;
                 }
             }
 
@@ -283,8 +291,11 @@ namespace CollisionEngine
         {
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-            if (!(A is ISoftShape) &&
-                !(B is ISoftShape))
+            ISoftShape softShapeA = A as ISoftShape;
+            ISoftShape softShapeB = B as ISoftShape;
+
+            if (softShapeA == null &&
+                softShapeA == null)
             {
                 IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
                 IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
@@ -309,13 +320,10 @@ namespace CollisionEngine
                     }
                 }
             }
-            else if (A is ISoftShape && 
-                     B is ISoftShape)
+            else if (A != null && 
+                     B != null)
             {
                 List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
-
-                ISoftShape softShapeA = (ISoftShape)A;
-                ISoftShape softShapeB = (ISoftShape)B;
 
                 baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
                 baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeB, CollisionDistance));

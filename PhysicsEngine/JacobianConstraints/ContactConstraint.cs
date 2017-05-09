@@ -112,10 +112,10 @@ namespace SharpPhysicsEngine
                         contactConstraints.Add(normalContact);
 
                         int normalIndex = contactConstraints.Count - 1;
-                        foreach (JacobianConstraint jc in frictionContact)
+                        foreach (JacobianConstraint fjc in frictionContact)
                         {
-                            jc.SetContactReference(normalIndex);
-                            contactConstraints.Add(jc);
+                            fjc.SetContactReference(normalIndex);
+                            contactConstraints.Add(fjc);
                         }
                     }
                 }
@@ -151,13 +151,12 @@ namespace SharpPhysicsEngine
 			double constraintLimit = 0.0;
 
             Vector3 tangentialVelocity = relativeVelocity -
-                                         (normal.Dot(relativeVelocity)) *
+                                         normal.Dot(relativeVelocity) *
                                          normal;
 
             #region Get start friction direction
 
-            if (Vector3.Length (tangentialVelocity) >
-				simulationParameters.ShiftToStaticFrictionTolerance) 
+            if (Vector3.Length (tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance) 
 				constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
 			else 
 				constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
