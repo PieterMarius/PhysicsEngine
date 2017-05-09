@@ -66,7 +66,7 @@ namespace ShapeDefinition
         /// Gets the type of the object.
         /// </summary>
         /// <value>The type of the object.</value>
-        public ObjectType ObjectType { get; private set; }
+        public ObjectType ObjectType { get { return ObjectType.SoftBody; } }
 
         /// <summary>
         /// Sleeping Frame Count value
@@ -171,9 +171,6 @@ namespace ShapeDefinition
             SoftShapePoint[] shapePoint,
             List<SoftBodyConstraint> softConstraint)
         {
-            //TODO: da modificare
-            ObjectType = ObjectType.SoftBody;
-
             for (int i = 0; i < triangleIndex.Length; i++)
             {
                 Triangle[i] = new int[3];
@@ -188,24 +185,31 @@ namespace ShapeDefinition
 
         public SoftShape(
             int[][] triangleIndex,
-            SoftShapePoint[] shapePoint)
+            Vector3[] shapePoint,
+            double diameter)
         {
-            //TODO: da modificare
-            ObjectType = ObjectType.SoftBody;
-
             for (int i = 0; i < triangleIndex.Length; i++)
             {
                 Triangle[i] = new int[3];
                 Triangle[i] = triangleIndex[i];
             }
 
-            ShapePoints = shapePoint;
-            InertiaTensor = Matrix3x3.IdentityMatrix();
             
+            InertiaTensor = Matrix3x3.IdentityMatrix();
+
+            AddSoftShapePoint(shapePoint, diameter);
+
             SleepingFrameCount = 0;
         }
 
         #endregion
+
+        #region Public Methods
+
+        public void SetMass(double mass)
+        {
+            Mass = mass;
+        }
 
         public void SetRestitutionCoeff(double restitutionCoeff)
         {
@@ -330,7 +334,34 @@ namespace ShapeDefinition
             SoftConstraint.RemoveAt(index);
         }
 
+        #endregion
+
         #region Private Methods
+
+        private void AddSoftShapePoint(
+            Vector3[] points,
+            double diameter)
+        {
+            ShapePoints = new SoftShapePoint[points.Length];
+
+            double mass = Mass * (1.0 / (points.Length));
+            double inverseMass = 1.0 / mass;
+            double pointMass = Mass / points.Length;
+            Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
+                                     (diameter * diameter * 0.1 * pointMass);
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                ShapePoints[i] = new SoftShapePoint(diameter);
+                ShapePoints[i].SetPosition(points[i]);
+                ShapePoints[i].SetLinearVelocity(LinearVelocity);
+                ShapePoints[i].SetAngularVelocity(AngularVelocity);
+                ShapePoints[i].SetMass(mass);
+                ShapePoints[i].SetInverseMass(inverseMass);
+                ShapePoints[i].SetBaseInertiaTensor(inertiaTensor);
+                ShapePoints[i].SetInertiaTensor(Matrix3x3.Invert(inertiaTensor));
+            }
+        }
 
         private void BuildSoftConstraint()
         {
@@ -338,7 +369,27 @@ namespace ShapeDefinition
 
             foreach(int[] triangle in Triangle)
             {
-                //SoftConstraint.Add(new SoftBodyConstraint())
+                //TODO evitare di aggiungere constraint doppi
+                SoftConstraint.Add(new SoftBodyConstraint(
+                    ShapePoints[triangle[0]],
+                    ShapePoints[triangle[1]],
+                    this,
+                    0.5,
+                    0.5));
+
+                SoftConstraint.Add(new SoftBodyConstraint(
+                    ShapePoints[triangle[0]],
+                    ShapePoints[triangle[2]],
+                    this,
+                    0.5,
+                    0.5));
+
+                SoftConstraint.Add(new SoftBodyConstraint(
+                    ShapePoints[triangle[1]],
+                    ShapePoints[triangle[2]],
+                    this,
+                    0.5,
+                    0.5));
             }
         }
 

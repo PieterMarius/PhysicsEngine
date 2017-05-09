@@ -8,6 +8,7 @@ namespace ShapeDefinition
         #region Fields
 
         int Identity.ID { get; set; }
+        public double Mass { get; private set; }
         public Vector3 Position { get; private set; }
         public Vector3 StartPosition { get; private set; }
         //TODO: delete ???
@@ -21,7 +22,8 @@ namespace ShapeDefinition
         public ObjectType ObjectType { get; private set; }
         public Vector3 TempAngularVelocity { get; private set; }
         public Vector3 TempLinearVelocity { get; private set; }
-        
+        public Matrix3x3 BaseInertiaTensor { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -38,6 +40,11 @@ namespace ShapeDefinition
         public int GetID()
         {
             return ((Identity)this).ID;
+        }
+
+        public void SetMass(double mass)
+        {
+            Mass = mass;
         }
 
         public void SetPosition(Vector3 position)
@@ -63,6 +70,21 @@ namespace ShapeDefinition
         public void SetTempLinearVelocity(Vector3 linearVelocity)
         {
             TempLinearVelocity = linearVelocity;
+        }
+
+        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        {
+            InertiaTensor = inertiaTensor;
+        }
+
+        public void SetInverseMass(double inverseMass)
+        {
+            InverseMass = inverseMass;
+        }
+
+        public void SetBaseInertiaTensor(Matrix3x3 inertiaTensor)
+        {
+            BaseInertiaTensor = inertiaTensor;
         }
 
         #endregion
