@@ -129,18 +129,26 @@ namespace SharpPhysicsEngine
 
 		public void AddShape(IShape simulationObject)
 		{
-			if (Shapes != null && 
+            ISoftShape softShape = simulationObject as ISoftShape;
+
+            if (softShape != null)
+            {
+                foreach (var point in softShape.ShapePoints)
+                    ((Identity)point).ID = HsGenerator.GetHash();
+            }
+            else
+                ((Identity)simulationObject).ID = HsGenerator.GetHash();
+            
+            if (Shapes != null && 
 			    Shapes.Length > 0) 
 			{
-				List<IShape> bufferList = Shapes.ToList ();
-                ((Identity)simulationObject).ID = HsGenerator.GetHash();
+                var bufferList = Shapes.ToList();
                 bufferList.Add (simulationObject);
 				Shapes = bufferList.ToArray ();
 			} 
 			else 
 			{
-				var bufferList = new List<IShape> ();
-                ((Identity)simulationObject).ID = HsGenerator.GetHash();
+				var bufferList = new List<IShape>();
                 bufferList.Add (simulationObject);
 				Shapes = bufferList.ToArray ();
 			}

@@ -1,12 +1,12 @@
-﻿using System;
-
+﻿
 namespace ShapeDefinition
 {
 	public enum ObjectType
 	{
 		RigidBody = 0,
 		StaticRigidBody = 1,
-        SoftBody = 2,
+        CompoundShape = 2,
+        SoftBody = 3,
 	}
 }
 

@@ -137,10 +137,10 @@ namespace TestPhysics
                 }
                 else
                 {
-                    ((IConvexShape)objects[i]).SetMass(mass[0]);
+                    objects[i].SetMass(mass[0]);
                     ((IConvexShape)objects[i]).SetObjectGeometry(objGeometry[0]);
                 }
-                                
+                                           
                 //Linear Velocity
                 objects [i].SetLinearVelocity (new Vector3 (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),

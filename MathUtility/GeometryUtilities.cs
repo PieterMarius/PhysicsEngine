@@ -5,7 +5,7 @@ namespace PhysicsEngineMathUtility
 {
 	public static class GeometryUtilities
 	{
-		#region Private Static Methods
+		#region Private Static Fields
 
 		static readonly Random random = new Random();
 		static readonly object syncLock = new object();

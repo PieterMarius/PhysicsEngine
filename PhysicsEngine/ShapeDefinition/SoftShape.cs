@@ -2,6 +2,7 @@
 using PhysicsEngineMathUtility;
 using SharpPhysicsEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ShapeDefinition
 {
@@ -193,8 +194,7 @@ namespace ShapeDefinition
                 Triangle[i] = new int[3];
                 Triangle[i] = triangleIndex[i];
             }
-
-            
+                        
             InertiaTensor = Matrix3x3.IdentityMatrix();
 
             AddSoftShapePoint(shapePoint, diameter);
@@ -367,30 +367,47 @@ namespace ShapeDefinition
         {
             SoftConstraint = new List<SoftBodyConstraint>();
 
-            foreach(int[] triangle in Triangle)
+            foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
             {
-                //TODO evitare di aggiungere constraint doppi
-                SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle[0]],
-                    ShapePoints[triangle[1]],
+                if (!CheckDuplicate(triangle.i, triangle.value[0], triangle.value[1]))
+                    SoftConstraint.Add(new SoftBodyConstraint(
+                        ShapePoints[triangle.value[0]],
+                        ShapePoints[triangle.value[1]],
+                        this,
+                        0.5,
+                        0.5));
+
+                if (!CheckDuplicate(triangle.i, triangle.value[0], triangle.value[2]))
+                    SoftConstraint.Add(new SoftBodyConstraint(
+                    ShapePoints[triangle.value[0]],
+                    ShapePoints[triangle.value[2]],
                     this,
                     0.5,
                     0.5));
 
-                SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle[0]],
-                    ShapePoints[triangle[2]],
-                    this,
-                    0.5,
-                    0.5));
-
-                SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle[1]],
-                    ShapePoints[triangle[2]],
+                if (!CheckDuplicate(triangle.i, triangle.value[1], triangle.value[2]))
+                    SoftConstraint.Add(new SoftBodyConstraint(
+                    ShapePoints[triangle.value[1]],
+                    ShapePoints[triangle.value[2]],
                     this,
                     0.5,
                     0.5));
             }
+        }
+
+        private bool CheckDuplicate(
+            int index,
+            int vertexA,
+            int vertexB)
+        {
+            for (int i = index; i >= 0; i--)
+            {
+                if (Triangle[i].Contains(vertexA) &&
+                    Triangle[i].Contains(vertexB))
+                    return true;
+            }
+
+            return false;
         }
 
         #endregion
