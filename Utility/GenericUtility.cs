@@ -26,13 +26,13 @@ namespace Utility
             ObjImporter importer = new ObjImporter();
             ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
 
-            Vector3[] vertexStartPoint = new Vector3[mesh.vertices.Length];
+            Vector3[] vertexPoint = new Vector3[mesh.vertices.Length];
 
             for (int i = 0; i < mesh.vertices.Length; i++)
-                vertexStartPoint[i] = mesh.vertices[i];
+                vertexPoint[i] = mesh.vertices[i];
 
-            OpenGLUtilities.UnitizeObject(ref vertexStartPoint);
-            OpenGLUtilities.ScaleObject(ref vertexStartPoint, scale);
+            OpenGLUtilities.UnitizeObject(ref vertexPoint);
+            OpenGLUtilities.ScaleObject(ref vertexPoint, scale);
 
             int nTriangle = mesh.faceData.Length / 3;
             int[][] triangleIndex = new int[nTriangle][];
@@ -45,9 +45,7 @@ namespace Utility
                 triangleIndex[i][2] = (int)mesh.faceData[(i * 3) + 2].x - 1;
             }
 
-            return new ObjProperties { vertexPoint = vertexStartPoint, triangleIndex = triangleIndex };
+            return new ObjProperties { vertexPoint = vertexPoint, triangleIndex = triangleIndex };
         }
-
-
     }
 }

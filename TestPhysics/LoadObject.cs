@@ -467,32 +467,12 @@ namespace TestPhysics
             float scale,
             ObjectGeometryType geometryType)
         {
-            ObjImporter importer = new ObjImporter();
-            ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
-
-            Vector3[] vertexStartPoint = new Vector3[mesh.vertices.Length];
-
-            for (int i = 0; i < mesh.vertices.Length; i++)
-                vertexStartPoint[i] = mesh.vertices[i];
-
-            OpenGLUtilities.UnitizeObject(ref vertexStartPoint);
-            OpenGLUtilities.ScaleObject(ref vertexStartPoint, scale);
+            GenericUtility.ObjProperties properties = GenericUtility.GetImportedObjectProperties(fileName, scale);
             
-            int nTriangle = mesh.faceData.Length / 3;
-            int[][] triangleIndex = new int[nTriangle][];
-
-            for (int i = 0; i < nTriangle; i++)
-            {
-                triangleIndex[i] = new int[3];
-                triangleIndex[i][0] = (int)mesh.faceData[i * 3].x - 1;
-                triangleIndex[i][1] = (int)mesh.faceData[(i * 3) + 1].x - 1;
-                triangleIndex[i][2] = (int)mesh.faceData[(i * 3) + 2].x - 1;
-            }
-
             return new Geometry(
                 shape,
-                vertexStartPoint,
-                triangleIndex,
+                properties.vertexPoint,
+                properties.triangleIndex,
                 geometryType,
                 true);
         }
