@@ -290,8 +290,7 @@ namespace CollisionEngine
 
             ISoftShape softShapeA = A as ISoftShape;
             ISoftShape softShapeB = B as ISoftShape;
-
-            
+                        
             if (softShapeA == null &&
                 softShapeB == null)
             {
@@ -340,6 +339,18 @@ namespace CollisionEngine
             else if (B != null && A == null)
             {
 
+            }
+
+            if(A != null)
+            {
+                List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
+                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
+            }
+
+            if (B != null)
+            {
+                List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
+                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeB, CollisionDistance));
             }
 
             return collisionPointStructure;

@@ -312,6 +312,15 @@ namespace Utility
 			return m;
 		}
 
+        public static void drawPoint(float size)
+        {
+            GL.Begin(PrimitiveType.Points);
+            GL.Enable(EnableCap.PointSprite);
+            GL.PointSize(size);
+            GL.Vertex3(0.0, 0.0, 0.0);
+            GL.End();
+        }
+
 		public static void drawSolidCube(float size)
 		{
 			float[][] n = new float[6] [];

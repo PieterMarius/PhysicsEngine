@@ -711,7 +711,7 @@ namespace PhysicsEngineMathUtility
                 a < 0.000001)
                 return null;
 
-            double f = 1 / a;
+            double f = 1.0 / a;
 
             Vector3 s = point - v0;
 

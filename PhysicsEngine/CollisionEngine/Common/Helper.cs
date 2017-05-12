@@ -246,23 +246,23 @@ namespace CollisionEngine
 			return centroid;
 		}
 
-		public static bool IsInConvexPoly(
-			Vector3 p, 
-			List<SupportTriangle> triangles) 
-		{
-	    	foreach (SupportTriangle spt in triangles) 
-			{
-			    Vector3 p2f = spt.a.s - p;         // f.v[0] is an arbitrary point on f
-				double d = p2f.Dot(spt.normal);
-				d /= p2f.Length();                 // for numeric stability
+        public static bool IsInConvexPoly(
+            Vector3 p,
+            List<SupportTriangle> triangles)
+        {
+            foreach (SupportTriangle spt in triangles)
+            {
+                Vector3 p2f = spt.a.s - p;         // f.v[0] is an arbitrary point on f
+                double d = p2f.Dot(spt.normal);
+                d /= p2f.Length();                 // for numeric stability
 
-			    double bound = -1e-15; // use 1e15 to exclude boundaries
-			    if (d<bound)
-			      return false;
-		    }
+                double bound = -1e-15; // use 1e15 to exclude boundaries
+                if (d < bound)
+                    return false;
+            }
 
-		    return true;
-		}
+            return true;
+        }
 
 		public static void GetVertexFromMinkowsky(
 			SupportTriangle triangle,

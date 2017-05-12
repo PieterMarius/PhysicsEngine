@@ -92,7 +92,7 @@ namespace TestPhysics
 
         //}
 
-        TestConvexDecomposition testConvexDecomp = new TestConvexDecomposition();
+        NonConvexDecomposition testConvexDecomp = new NonConvexDecomposition();
 
         private SoftShape AddSoftBody()
         {
@@ -105,8 +105,8 @@ namespace TestPhysics
 			try
 			{
 
-                //testConvexDecomp.TestNonConvexDec();
-                
+                testConvexDecomp.Decompose(0.08);
+             /*   
                 //TestNumeric();
                 //var env = new BuildEnvironment();
                 //env.GetPhysicsEnvironment();
@@ -181,7 +181,7 @@ namespace TestPhysics
 
 				collPoint = new List<CollisionPointStructure> ();
                 collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
-
+                */
 			}
 			catch (Exception e) 
 			{
@@ -222,7 +222,7 @@ namespace TestPhysics
             //displayContact ();
             //displayBaseContact();
             //displayJoint ();
-            //displaySphere(testConvexDecomp.spherePoint);
+            displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
             //displayPartitionedContact();
@@ -235,8 +235,8 @@ namespace TestPhysics
             //displayVertex (1);
             //displayVertex (2);
 
-            for (int i = 0; i < physicsEngine.ShapesCount(); i++)
-                SetOpenGLObjectMatrixAndDisplayObject(i);
+            //for (int i = 0; i < physicsEngine.ShapesCount(); i++)
+            //    SetOpenGLObjectMatrixAndDisplayObject(i);
 
             GL.Flush ();
 			SwapBuffers ();
@@ -266,7 +266,7 @@ namespace TestPhysics
 			//Physics
 			UpdateMouse ();
 			UpdateKeyboard ();
-            
+            /*
             try {
 				
 				if (!pause)
@@ -318,7 +318,7 @@ namespace TestPhysics
 			catch (Exception ex) 
 			{
 				throw new Exception ("Physics engine error. " + ex.StackTrace);
-			}
+			}*/
 
             
         }
@@ -908,16 +908,16 @@ namespace TestPhysics
 		}
 
 
-        private void displaySphere(List<PhysicsEngineMathUtility.Vector3> spherePoint)
+        private void displaySphere(List<NonConvexDecomposition.ShapePiece> spherePoint)
         {
             for (int i = 0; i < spherePoint.Count; i++)
             {
                 GL.PushMatrix();
 
                 Matrix4 mView = Matrix4.CreateTranslation(
-                                    Convert.ToSingle(spherePoint[i].x),
-                                    Convert.ToSingle(spherePoint[i].y),
-                                    Convert.ToSingle(spherePoint[i].z));
+                                    Convert.ToSingle(spherePoint[i].IntersectionPoint.x),
+                                    Convert.ToSingle(spherePoint[i].IntersectionPoint.y),
+                                    Convert.ToSingle(spherePoint[i].IntersectionPoint.z));
 
                 var dmviewData = new float[] {
                         mView.M11, mView.M12, mView.M13, mView.M14,
@@ -929,7 +929,7 @@ namespace TestPhysics
                 GL.MultMatrix(dmviewData);
 
                 GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
-                OpenGLUtilities.drawSolidCube(0.01f);
+                OpenGLUtilities.drawSolidCube(0.08f);
                 GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                 GL.PopMatrix();
