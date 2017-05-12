@@ -42,9 +42,14 @@ namespace SharpPhysicsEngine
 		#region Private Properties
 
 		/// <summary>
-		/// The simulation objects.
+		/// The simulation Shapes.
 		/// </summary>
 		IShape[] Shapes;
+
+        /// <summary>
+        /// Subset of SoftShapes
+        /// </summary>
+        ISoftShape[] SoftShapes;
 
 		/// <summary>
 		/// The simulation joints.
@@ -152,6 +157,8 @@ namespace SharpPhysicsEngine
                 bufferList.Add (simulationObject);
 				Shapes = bufferList.ToArray ();
 			}
+
+            SoftShapes = Shapes.Where(x => (x as ISoftShape) != null).Cast<ISoftShape>().ToArray();
 		}
 
 		public void RemoveShape(int shapeID)
@@ -591,7 +598,7 @@ namespace SharpPhysicsEngine
 
                         #region Solve Overall Constraints
 
-                        jacobianConstraints = ContactSorting(jacobianConstraints);
+                        //jacobianConstraints = ContactSorting(jacobianConstraints);
 
                         LinearProblemProperties overallLCP = BuildLCPMatrix(
                                                                 jacobianConstraints,
@@ -832,7 +839,11 @@ namespace SharpPhysicsEngine
 
             #region Soft Body Constraint
 
-            //foreach(IShape shape in simulationObjs)
+            foreach(ISoftShape softShape in SoftShapes)
+            {
+                foreach (var item in softShape.SoftConstraint)
+                    constraint.AddRange(item.BuildJacobian());
+            }
 
             #endregion
 
@@ -992,7 +1003,6 @@ namespace SharpPhysicsEngine
                     constraintsArray[i] = constraints[i].ToArray();
 				}
                 
-
 				return new LinearProblemProperties (
 					M,
 					B,
@@ -1092,19 +1102,13 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// Updates the object velocity.
 		/// </summary>
-		/// <returns>The object velocity.</returns>
-		/// <param name="simulationObj">Simulation object.</param>
-		/// <param name="linearComponent">Linear component.</param>
-		/// <param name="angularComponent">Angular component.</param>
-		/// <param name="X">X.</param>
-		/// <param name="index">Object index.</param>
 		private void UpdateObjectVelocity(
 			IShapeCommon simObj,
 			Vector3 linearComponent,
 			Vector3 angularComponent,
 			double X)
 		{
-            	if (simObj.ObjectType != ObjectType.StaticRigidBody) 
+            	if (simObj.ObjectType != ObjectType.StaticBody) 
 			{
 				Vector3 linearImpulse = X * linearComponent;
 				Vector3 angularImpuse = X * angularComponent;
@@ -1123,82 +1127,112 @@ namespace SharpPhysicsEngine
 		}
 
 		/// <summary>
-		/// Integrates the objects position.
+		/// Integrates the objects position for ConvexShape and CompoundShape.
 		/// </summary>
-		private void IntegrateObjectsPosition(
-			IShape[] simulationObj)
+		private void IntegrateObjectsPosition(IShape[] shapes)
 		{
-			int index = 0;
-			foreach (IShape simObj in simulationObj) 
+			foreach (var shape in shapes) 
 			{
-				if (simObj.ObjectType != ObjectType.StaticRigidBody) 
+                	if (shape.ObjectType != ObjectType.StaticBody) 
 				{
-					#region Linear Velocity
-                    
-                    	simObj.SetPosition (
-						simObj.Position + 
-						TimeStep * 
-						simObj.LinearVelocity);
+                    ISoftShape softShape = shape as ISoftShape;
 
-                    simObj.SetLinearVelocity(simObj.LinearVelocity +
-                        (simObj.ForceValue * simObj.InverseMass) +
-                        (TimeStep * EngineParameters.ExternalForce));
-
-                    simObj.SetForce(new Vector3());
-
-                    double linearVelocity = simObj.LinearVelocity.Length();
-
-                    #endregion
-
-                    #region Angular Velocity
-
-                    double angularVelocity = simObj.AngularVelocity.Length();
-
-                    Vector3 versor = simObj.AngularVelocity.Normalize ();
-
-					double rotationAngle = angularVelocity * TimeStep;
-
-                    var rotationQuaternion = new Quaternion(versor, rotationAngle);
-
-                    	simObj.SetRotationStatus ((rotationQuaternion * simObj.RotationStatus).Normalize());
-
-					simObj.SetRotationMatrix (simObj.RotationStatus.ConvertToMatrix ());
-
-					simObj.SetInertiaTensor (
-						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
-						simObj.RotationMatrix.Transpose ());
-
-                    simObj.SetAngularVelocity(simObj.AngularVelocity +
-                                              simObj.InertiaTensor *
-                                              simObj.TorqueValue);
-
-                    angularVelocity = simObj.AngularVelocity.Length();
-                    simObj.SetTorque(new Vector3());
-
-                    #endregion
-
-                    #region Sleeping Object
-
-                    if (EngineParameters.SleepingObject)
-                        ObjectSleep(simObj);
-
-                    #endregion
-
-                    #region Update AABB
-
-                    if (ShapeDefinition.Helper.GetGeometry(simObj) != null &&
-						(linearVelocity > 0.0 || angularVelocity > 0.0))
-                    {
-                       simObj.SetAABB();
-                    }
-
-                    #endregion
-
+                    if (softShape == null)
+                        IntegrateRigidShapePosition(shape);
+                    else
+                        IntegrateSoftShapePosition(softShape);                    
                 }
-				Shapes [index] = simObj;
-				index++;
 			}
 		}
+
+        private void IntegrateRigidShapePosition(IShape shape)
+        {
+            #region Linear Velocity
+
+            shape.SetPosition(
+                    shape.Position +
+                    TimeStep *
+                    shape.LinearVelocity);
+
+            shape.SetLinearVelocity(shape.LinearVelocity +
+                (shape.ForceValue * shape.InverseMass) +
+                (TimeStep * EngineParameters.ExternalForce));
+
+            shape.SetForce(new Vector3());
+
+            double linearVelocity = shape.LinearVelocity.Length();
+
+            #endregion
+
+            #region Angular Velocity
+
+            double angularVelocity = shape.AngularVelocity.Length();
+
+            Vector3 versor = shape.AngularVelocity.Normalize();
+
+            double rotationAngle = angularVelocity * TimeStep;
+
+            var rotationQuaternion = new Quaternion(versor, rotationAngle);
+
+            shape.SetRotationStatus((rotationQuaternion * shape.RotationStatus).Normalize());
+
+            shape.SetRotationMatrix(shape.RotationStatus.ConvertToMatrix());
+
+            shape.SetInertiaTensor(
+                (shape.RotationMatrix * shape.BaseInertiaTensor) *
+                shape.RotationMatrix.Transpose());
+
+            shape.SetAngularVelocity(shape.AngularVelocity +
+                                      shape.InertiaTensor *
+                                      shape.TorqueValue);
+
+            angularVelocity = shape.AngularVelocity.Length();
+            shape.SetTorque(new Vector3());
+
+            #endregion
+
+            #region Sleeping Object
+
+            if (EngineParameters.SleepingObject)
+                ObjectSleep(shape);
+
+            #endregion
+
+            #region Update AABB
+
+            if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
+                (linearVelocity > 0.0 || angularVelocity > 0.0))
+            {
+                shape.SetAABB();
+            }
+
+            #endregion
+        }
+
+        private void IntegrateSoftShapePosition(ISoftShape shape)
+        {
+            foreach(var point in shape.ShapePoints)
+            {
+                #region Linear Velocity
+
+                point.SetPosition(
+                        point.Position +
+                        TimeStep *
+                        point.LinearVelocity);
+
+                point.SetLinearVelocity(point.LinearVelocity +
+                    (point.ForceValue * point.InverseMass) +
+                    (TimeStep * EngineParameters.ExternalForce));
+
+                point.SetForce(new Vector3());
+
+                double linearVelocity = point.LinearVelocity.Length();
+
+                #endregion
+            }
+                        
+            shape.SetAABB();
+        }
 
         private void ObjectSleep(IShape simulationObj)
         {
@@ -1251,7 +1285,7 @@ namespace SharpPhysicsEngine
             Vector3 angularComponent,
             double X)
         {
-            if (simObj.ObjectType != ObjectType.StaticRigidBody)
+            if (simObj.ObjectType != ObjectType.StaticBody)
             {
                 Vector3 linearImpulse = X * linearComponent;
                 Vector3 angularImpuse = X * angularComponent;
@@ -1275,7 +1309,7 @@ namespace SharpPhysicsEngine
             int index = 0;
             foreach (IShape simObj in simulationObj)
             {
-                if (simObj.ObjectType != ObjectType.StaticRigidBody)
+                if (simObj.ObjectType != ObjectType.StaticBody)
                 {
                     #region Linear Velocity
 

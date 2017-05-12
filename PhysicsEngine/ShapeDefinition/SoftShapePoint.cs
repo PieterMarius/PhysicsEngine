@@ -11,7 +11,6 @@ namespace ShapeDefinition
         public double Mass { get; private set; }
         public Vector3 Position { get; private set; }
         public Vector3 StartPosition { get; private set; }
-        //TODO: delete ???
         public Vector3 AngularVelocity { get; private set; }
         public Vector3 LinearVelocity { get; private set; }
         public Matrix3x3 RotationMatrix { get; private set; }
@@ -23,6 +22,7 @@ namespace ShapeDefinition
         public Vector3 TempAngularVelocity { get; private set; }
         public Vector3 TempLinearVelocity { get; private set; }
         public Matrix3x3 BaseInertiaTensor { get; private set; }
+        public Vector3 ForceValue { get; private set; }
 
         #endregion
 
@@ -31,6 +31,7 @@ namespace ShapeDefinition
         public SoftShapePoint(double diameter)
         {
             Diameter = diameter;
+            RotationMatrix = Matrix3x3.IdentityMatrix();
         }
 
         #endregion
@@ -85,6 +86,11 @@ namespace ShapeDefinition
         public void SetBaseInertiaTensor(Matrix3x3 inertiaTensor)
         {
             BaseInertiaTensor = inertiaTensor;
+        }
+
+        public void SetForce(Vector3 force)
+        {
+            ForceValue = force;
         }
 
         #endregion

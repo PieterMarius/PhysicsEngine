@@ -3,7 +3,7 @@ using PhysicsEngineMathUtility;
 
 namespace ShapeDefinition
 {
-    public class CompoundShape : IShape, ICompoundShape, Identity
+    public class CompoundShape : IShape, IShapeCommon, ICompoundShape, Identity
     {
         #region Object status properties
 
@@ -174,7 +174,7 @@ namespace ShapeDefinition
         {
             ObjectType = type;
 
-            if (ObjectType == ObjectType.StaticRigidBody)
+            if (ObjectType == ObjectType.StaticBody)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;
@@ -311,7 +311,7 @@ namespace ShapeDefinition
                 Mass += mass[i];
             }
 
-            if (ObjectType == ObjectType.StaticRigidBody)
+            if (ObjectType == ObjectType.StaticBody)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;

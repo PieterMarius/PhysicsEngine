@@ -187,8 +187,13 @@ namespace ShapeDefinition
         public SoftShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
-            double diameter)
+            double diameter,
+            Vector3 startPosition)
         {
+            Mass = 1.0;
+
+            Triangle = new int[triangleIndex.Length][];
+
             for (int i = 0; i < triangleIndex.Length; i++)
             {
                 Triangle[i] = new int[3];
@@ -197,9 +202,16 @@ namespace ShapeDefinition
                         
             InertiaTensor = Matrix3x3.IdentityMatrix();
 
-            AddSoftShapePoint(shapePoint, diameter);
+            Position = startPosition;
 
+            AddSoftShapePoint(shapePoint, diameter);
+            BuildSoftConstraint();
+
+            StaticFrictionCoeff = 0.5;
+            DynamicFrictionCoeff = 0.5;
             SleepingFrameCount = 0;
+
+            SetAABB();
         }
 
         #endregion
@@ -305,7 +317,7 @@ namespace ShapeDefinition
         {
             Mass = mass;
             
-            if (ObjectType == ObjectType.StaticRigidBody)
+            if (ObjectType == ObjectType.StaticBody)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;
@@ -346,14 +358,14 @@ namespace ShapeDefinition
 
             double mass = Mass * (1.0 / (points.Length));
             double inverseMass = 1.0 / mass;
-            double pointMass = Mass / points.Length;
+            
             Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
-                                     (diameter * diameter * 0.1 * pointMass);
+                                     (diameter * diameter * 0.1 * mass);
 
             for (int i = 0; i < points.Length; i++)
             {
                 ShapePoints[i] = new SoftShapePoint(diameter);
-                ShapePoints[i].SetPosition(points[i]);
+                ShapePoints[i].SetPosition(points[i] + Position);
                 ShapePoints[i].SetLinearVelocity(LinearVelocity);
                 ShapePoints[i].SetAngularVelocity(AngularVelocity);
                 ShapePoints[i].SetMass(mass);
@@ -400,7 +412,7 @@ namespace ShapeDefinition
             int vertexA,
             int vertexB)
         {
-            for (int i = index; i >= 0; i--)
+            for (int i = index - 1; i >= 0; i--)
             {
                 if (Triangle[i].Contains(vertexA) &&
                     Triangle[i].Contains(vertexB))

@@ -94,6 +94,12 @@ namespace TestPhysics
 
         TestConvexDecomposition testConvexDecomp = new TestConvexDecomposition();
 
+        private SoftShape AddSoftBody()
+        {
+            GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties("cube.obj", 1);
+            return new SoftShape(prop.triangleIndex, prop.vertexPoint, 0.3, new PhysicsEngineMathUtility.Vector3(3.0, 5.0, 0.0));
+        }
+
         void initProgram()
 		{
 			try
@@ -123,11 +129,13 @@ namespace TestPhysics
 
                 displayList = loadObject.GetOpenGLObjectList();
 
+                //AddSoftBody();
+
                 //Carico le texture
                 textureID = loadObject.LoadTexture();
                 redTexture = OpenGLUtilities.LoadTexture("red.bmp");
 
-                physicsEngine = new SharpPhysicsEngine.SharpEngine();
+                physicsEngine = new SharpEngine();
 
                 //physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
@@ -140,6 +148,8 @@ namespace TestPhysics
                 {
                     physicsEngine.AddJoint(simulationJoints[i]);
                 }
+
+                physicsEngine.AddShape(AddSoftBody());
 
                 pause = true;
 
@@ -463,47 +473,98 @@ namespace TestPhysics
 
 		private void SetOpenGLObjectMatrixAndDisplayObject(int id)
 		{
-			// TODO parte da modificare
-			//Matrice da utilizzare come costante
-			PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = physicsEngine.GetShape (id).RotationMatrix;
-			PhysicsEngineMathUtility.Vector3 position = physicsEngine.GetShape (id).Position;
-			ObjectType type = physicsEngine.GetShape (id).ObjectType;
-            
-            for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(id)).Length; i++)
+            // TODO parte da modificare
+            //Matrice da utilizzare come costante
+            IShape shape = physicsEngine.GetShapes()[id];
+                        
+            ISoftShape softShape = shape as ISoftShape;
+            if (softShape != null)
+                DisplaySoftPoint(softShape);
+            else
             {
+                PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = shape.RotationMatrix;
+                PhysicsEngineMathUtility.Vector3 position = shape.Position;
+
+                ObjectType type = shape.ObjectType;
+                
+                for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(shape).Length; i++)
+                {
+                    GL.PushMatrix();
+                    GL.Enable(EnableCap.Texture2D);
+
+                    PhysicsEngineMathUtility.Vector3 compoundPos = new PhysicsEngineMathUtility.Vector3();
+
+                    if (shape is ICompoundShape)
+                        compoundPos = ((ICompoundShape)shape).StartCompoundPositionObjects[i];
+
+                    PhysicsEngineMathUtility.Vector3 positionMt = position + compoundPos -
+                                                                  shape.StartPosition;
+
+                    Matrix4 positionMatrix = new Matrix4(
+                                                Convert.ToSingle(rotatioMatrix.r1c1),
+                                                Convert.ToSingle(rotatioMatrix.r2c1),
+                                                Convert.ToSingle(rotatioMatrix.r3c1),
+                                                0.0f,
+
+                                                Convert.ToSingle(rotatioMatrix.r1c2),
+                                                Convert.ToSingle(rotatioMatrix.r2c2),
+                                                Convert.ToSingle(rotatioMatrix.r3c2),
+                                                0.0f,
+
+                                                Convert.ToSingle(rotatioMatrix.r1c3),
+                                                Convert.ToSingle(rotatioMatrix.r2c3),
+                                                Convert.ToSingle(rotatioMatrix.r3c3),
+                                                0.0f,
+
+                                                0.0f,
+                                                0.0f,
+                                                0.0f,
+                                                1.0f);
+
+                    Matrix4 mView = positionMatrix;
+
+                    var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
+
+                    //Traslo sull'origine
+                    GL.Translate(position.x, position.y, position.z);
+                    //Ruoto
+                    GL.MultMatrix(dmviewData);
+                    //Traslo nella posizione desiderata
+                    GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z - position.z);
+
+
+                    //Inserire il textire ID
+                    if (id == selectedObjIndex)
+                        GL.BindTexture(TextureTarget.Texture2D, redTexture);
+                    else
+                        GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
+
+                    GL.CallList(displayList[id][i]);
+                    GL.Disable(EnableCap.Texture2D);
+
+                    GL.PopMatrix();
+                }
+            }
+					
+		}
+
+        private void DisplaySoftPoint(ISoftShape softShape)
+        {
+            foreach(var item in softShape.ShapePoints)
+            {
+                PhysicsEngineMathUtility.Vector3 relativePosition = item.Position;
+
                 GL.PushMatrix();
-                GL.Enable(EnableCap.Texture2D);
 
-                PhysicsEngineMathUtility.Vector3 compoundPos = new PhysicsEngineMathUtility.Vector3();
-
-                if (physicsEngine.GetShape(id) is ICompoundShape)
-                    compoundPos = ((ICompoundShape)physicsEngine.GetShape(id)).StartCompoundPositionObjects[i];
-
-                PhysicsEngineMathUtility.Vector3 positionMt = position + compoundPos-
-                                                              physicsEngine.GetShape(id).StartPosition;
-
-                Matrix4 positionMatrix = new Matrix4(
-                                            Convert.ToSingle(rotatioMatrix.r1c1),
-                                            Convert.ToSingle(rotatioMatrix.r2c1),
-                                            Convert.ToSingle(rotatioMatrix.r3c1),
-                                            0.0f,
-
-                                            Convert.ToSingle(rotatioMatrix.r1c2),
-                                            Convert.ToSingle(rotatioMatrix.r2c2),
-                                            Convert.ToSingle(rotatioMatrix.r3c2),
-                                            0.0f,
-
-                                            Convert.ToSingle(rotatioMatrix.r1c3),
-                                            Convert.ToSingle(rotatioMatrix.r2c3),
-                                            Convert.ToSingle(rotatioMatrix.r3c3),
-                                            0.0f,
-
-                                            0.0f,
-                                            0.0f,
-                                            0.0f,
-                                            1.0f);
-
-                Matrix4 mView = positionMatrix;
+                Matrix4 mView = Matrix4.CreateTranslation(
+                    Convert.ToSingle(relativePosition.x),
+                    Convert.ToSingle(relativePosition.y),
+                    Convert.ToSingle(relativePosition.z));
 
                 var dmviewData = new float[] {
                     mView.M11, mView.M12, mView.M13, mView.M14,
@@ -512,27 +573,13 @@ namespace TestPhysics
                     mView.M41, mView.M42, mView.M43, mView.M44
                 };
 
-                //Traslo sull'origine
-                GL.Translate(position.x, position.y, position.z);
-                //Ruoto
                 GL.MultMatrix(dmviewData);
-                //Traslo nella posizione desiderata
-                GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z-position.z);
-                
 
-                //Inserire il textire ID
-                if (id == selectedObjIndex)
-                    GL.BindTexture(TextureTarget.Texture2D, redTexture);
-                else
-                    GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
+                OpenGLUtilities.drawSolidCube(0.04f);
 
-                GL.CallList(displayList[id][i]);
-                GL.Disable(EnableCap.Texture2D);
-                
                 GL.PopMatrix();
             }
-					
-		}
+        }
 
 		private void displayContact()
 		{

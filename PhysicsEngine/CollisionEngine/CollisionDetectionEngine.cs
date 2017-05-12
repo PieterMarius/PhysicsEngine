@@ -107,17 +107,14 @@ namespace CollisionEngine
                 if (gjkOutput.CollisionNormal.Length() < normalTolerance)
                     return null;
 
-                List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-                                                                A,
-                                                                B,
-                                                                gjkOutput.CollisionPoint);
+                List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(A, B, gjkOutput.CollisionPoint);
 
                 return new CollisionPointStructure(
                     ID_A,
                     ID_B,
                     new CollisionPointBaseStructure(
-                        gjkOutput.CollisionDistance, 
-                        gjkOutput.Intersection, 
+                        gjkOutput.CollisionDistance,
+                        gjkOutput.Intersection,
                         gjkOutput.CollisionPoint,
                         collisionPointsList.ToArray()));
             }
@@ -294,9 +291,12 @@ namespace CollisionEngine
             ISoftShape softShapeA = A as ISoftShape;
             ISoftShape softShapeB = B as ISoftShape;
 
+            
             if (softShapeA == null &&
-                softShapeA == null)
+                softShapeB == null)
             {
+                //Rigid Body Collision Detection
+
                 IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
                 IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
 
@@ -323,6 +323,8 @@ namespace CollisionEngine
             else if (A != null && 
                      B != null)
             {
+                //Soft Body Collision Detection
+
                 List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
 
                 baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
@@ -331,7 +333,15 @@ namespace CollisionEngine
                 baseCollisionList.AddRange(softBodyCollisionDetection.SoftVsSoftBodyCollisionDetection(softShapeA, softShapeB, CollisionDistance));
                 
             }
-                        
+            else if(A != null && B == null)
+            {
+
+            }
+            else if (B != null && A == null)
+            {
+
+            }
+
             return collisionPointStructure;
         }
 

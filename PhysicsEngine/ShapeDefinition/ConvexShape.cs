@@ -3,7 +3,7 @@ using PhysicsEngineMathUtility;
 
 namespace ShapeDefinition
 {
-	public class ConvexShape : IShape, IConvexShape, Identity
+	public class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
     {
 
         #region Object status properties
@@ -268,7 +268,7 @@ namespace ShapeDefinition
         {
             Mass = mass;
             
-            if (ObjectType == ObjectType.StaticRigidBody)
+            if (ObjectType == ObjectType.StaticBody)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;

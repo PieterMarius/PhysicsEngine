@@ -4,7 +4,7 @@ namespace ShapeDefinition
 	public enum ObjectType
 	{
 		RigidBody = 0,
-		StaticRigidBody = 1,
+		StaticBody = 1,
         CompoundShape = 2,
         SoftBody = 3,
 	}

@@ -104,11 +104,11 @@ namespace SharpPhysicsEngine
 				    searchPoint.KeyIndex == collisionValue.KeyIndex)
 					continue;
 
-				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
-				    simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticRigidBody)
+				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticBody &&
+				    simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticBody)
 					break;
 
-				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticRigidBody &&
+				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticBody &&
 				           (searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexB == collisionValue.IndexB)) {
 
@@ -123,7 +123,7 @@ namespace SharpPhysicsEngine
 							simulationObjects);
 					}
 
-				} else if (simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticRigidBody &&
+				} else if (simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticBody &&
 				           (searchPoint.IndexA == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexB)) {
 
