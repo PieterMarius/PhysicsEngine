@@ -66,9 +66,9 @@ namespace TestPhysics
                 {
                     //for (int i = 0; i < nSphere; i++)
                     //{
+                    double va = i * sphereGap;
                     for (int k = 0; k < nSphere; k++)
-                    {
-                        double va = i * sphereGap;
+                    {                        
                         double vb = k * sphereGap;
 
                         Vector3 point1 = startPoint1 + new Vector3(va, vb, 0.0);
