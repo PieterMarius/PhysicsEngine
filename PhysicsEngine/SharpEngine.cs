@@ -945,8 +945,7 @@ namespace SharpPhysicsEngine
                         constraintsLimit[i] = contactA.ConstraintLimit;
                         constraintsType[i] = contactA.Type;
 
-                        double mValue = addLCPValue(contactA,
-                                                    contactA);
+                        double mValue = addLCPValue(contactA, contactA);
 
                         //Diagonal value
                         mValue += contactA.CFM +

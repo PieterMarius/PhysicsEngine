@@ -105,8 +105,8 @@ namespace TestPhysics
 			try
 			{
 
-                testConvexDecomp.Decompose(0.08);
-             /*   
+                //testConvexDecomp.Decompose(0.08);
+              
                 //TestNumeric();
                 //var env = new BuildEnvironment();
                 //env.GetPhysicsEnvironment();
@@ -149,7 +149,7 @@ namespace TestPhysics
                     physicsEngine.AddJoint(simulationJoints[i]);
                 }
 
-                physicsEngine.AddShape(AddSoftBody());
+                //physicsEngine.AddShape(AddSoftBody());
 
                 pause = true;
 
@@ -181,7 +181,7 @@ namespace TestPhysics
 
 				collPoint = new List<CollisionPointStructure> ();
                 collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
-                */
+                
 			}
 			catch (Exception e) 
 			{
@@ -222,7 +222,7 @@ namespace TestPhysics
             //displayContact ();
             //displayBaseContact();
             //displayJoint ();
-            displaySphere(testConvexDecomp.basePoint);
+            //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
             //displayPartitionedContact();
@@ -235,8 +235,8 @@ namespace TestPhysics
             //displayVertex (1);
             //displayVertex (2);
 
-            //for (int i = 0; i < physicsEngine.ShapesCount(); i++)
-            //    SetOpenGLObjectMatrixAndDisplayObject(i);
+            for (int i = 0; i < physicsEngine.ShapesCount(); i++)
+                SetOpenGLObjectMatrixAndDisplayObject(i);
 
             GL.Flush ();
 			SwapBuffers ();
@@ -266,7 +266,7 @@ namespace TestPhysics
 			//Physics
 			UpdateMouse ();
 			UpdateKeyboard ();
-            /*
+            
             try {
 				
 				if (!pause)
@@ -298,27 +298,27 @@ namespace TestPhysics
 					pause = true;
                     //if (elapsedTime > 6.0)
                     //	Exit();
-                    collPoint = physicsEngine.GetCollisionPointStrucureList();
-                    collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
+                    //collPoint = physicsEngine.GetCollisionPointStrucureList();
+                    //collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
 
-                    colorList = new List<List<double>>();
-                    if (collisionPartitionedPoints != null)
-                    {
-                        for (int i = 0; i < collisionPartitionedPoints.Count; i++)
-                        {
-                            List<double> color = new List<double>();
-                            color.Add(GetRandomNumber(0.0, 1.0));
-                            color.Add(GetRandomNumber(0.0, 1.0));
-                            color.Add(GetRandomNumber(0.0, 1.0));
-                            colorList.Add(color);
-                        }
-                    }
+                    //colorList = new List<List<double>>();
+                    //if (collisionPartitionedPoints != null)
+                    //{
+                    //    for (int i = 0; i < collisionPartitionedPoints.Count; i++)
+                    //    {
+                    //        List<double> color = new List<double>();
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        colorList.Add(color);
+                    //    }
+                    //}
                 }
 			} 
 			catch (Exception ex) 
 			{
 				throw new Exception ("Physics engine error. " + ex.StackTrace);
-			}*/
+			}
 
             
         }
@@ -908,7 +908,7 @@ namespace TestPhysics
 		}
 
 
-        private void displaySphere(List<NonConvexDecomposition.ShapePiece> spherePoint)
+        private void displaySphere(List<NonConvexDecomposition.NonConvexPoint> spherePoint)
         {
             for (int i = 0; i < spherePoint.Count; i++)
             {

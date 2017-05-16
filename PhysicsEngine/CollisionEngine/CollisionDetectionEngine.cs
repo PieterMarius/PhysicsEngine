@@ -319,8 +319,8 @@ namespace CollisionEngine
                     }
                 }
             }
-            else if (A != null && 
-                     B != null)
+            else if (softShapeA != null &&
+                     softShapeB != null)
             {
                 //Soft Body Collision Detection
 
@@ -332,22 +332,22 @@ namespace CollisionEngine
                 baseCollisionList.AddRange(softBodyCollisionDetection.SoftVsSoftBodyCollisionDetection(softShapeA, softShapeB, CollisionDistance));
                 
             }
-            else if(A != null && B == null)
+            else if(softShapeB != null && softShapeB == null)
             {
 
             }
-            else if (B != null && A == null)
+            else if (softShapeB != null && softShapeB == null)
             {
 
             }
 
-            if(A != null)
+            if(softShapeB != null)
             {
                 List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
                 baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
             }
 
-            if (B != null)
+            if (softShapeB != null)
             {
                 List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
                 baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeB, CollisionDistance));

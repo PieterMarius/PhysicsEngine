@@ -1,5 +1,4 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
 using ShapeDefinition;
 
 namespace LCPSolver

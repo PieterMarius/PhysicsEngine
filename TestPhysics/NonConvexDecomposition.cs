@@ -12,13 +12,13 @@ namespace TestPhysics
     {
         #region Fields
 
-        public struct ShapePiece
+        public struct NonConvexPoint
         {
             public Vector3 IntersectionPoint; //Max => 8 index points
             public VertexAdjacency[] Triangle;
         };
 
-        public List<ShapePiece> basePoint = new List<ShapePiece>();
+        public List<NonConvexPoint> basePoint = new List<NonConvexPoint>();
 
         #endregion
 
@@ -93,7 +93,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
                                 }
                                 continue;
                             }
@@ -110,7 +110,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
                                 }
                                 continue;
                             }
@@ -127,7 +127,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new ShapePiece() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
                                 }
                                 continue;
                             }
