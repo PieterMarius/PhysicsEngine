@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
 	public class NonLinearConjugateGradient : ISolver
     {

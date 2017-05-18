@@ -1,5 +1,5 @@
 ﻿
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class CollisionPointStructure
 	{

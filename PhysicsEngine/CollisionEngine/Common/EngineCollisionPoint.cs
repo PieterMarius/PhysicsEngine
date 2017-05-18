@@ -1,6 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class EngineCollisionPoint
 	{

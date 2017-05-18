@@ -5,8 +5,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using PhysicsEngineMathUtility;
 using ShapeDefinition;
-using CollisionEngine;
-using LCPSolver;
+using SharpPhysicsEngine.CollisionEngine;
+using SharpPhysicsEngine.LCPSolver;
 
 namespace SharpPhysicsEngine
 {
@@ -905,8 +905,7 @@ namespace SharpPhysicsEngine
 			bool positionStabilization = false)
 		{
 			if (contact.Length > 0) 
-			{
-				SparseElement[] M = new SparseElement[contact.Length];
+			{				
 				double[] B = new double[contact.Length];
 				double[] D = new double[contact.Length];
 				ConstraintType[] constraintsType = new ConstraintType[contact.Length];
@@ -963,20 +962,21 @@ namespace SharpPhysicsEngine
                                 contactA.ObjectA.GetID() == contactB.ObjectB.GetID() ||
                                 contactA.ObjectB.GetID() == contactB.ObjectA.GetID())
                             {
-                                if (contactA.Type == contactB.Type &&
-                                    contactB.Type == ConstraintType.Collision &&
-                                    contactA.ObjectA.GetID() == contactB.ObjectA.GetID() &&
-                                    contactA.ObjectB.GetID() == contactB.ObjectB.GetID())
-                                {
-                                    constraints[i].Add(j);
-                                    constraints[j].Add(i);
-                                }
+                                //Add Common constraint (verify?)
+                                //if (contactA.Type == contactB.Type &&
+                                //    contactB.Type == ConstraintType.Collision &&
+                                //    contactA.ObjectA.GetID() == contactB.ObjectA.GetID() &&
+                                //    contactA.ObjectB.GetID() == contactB.ObjectB.GetID())
+                                //{
+                                //    constraints[i].Add(j);
+                                //    constraints[j].Add(i);
+                                //}
 
                                 mValue = addLCPValue(
                                     contactA,
                                     contactB);
 
-                                if (Math.Abs(mValue) > 1E-30)
+                                if (Math.Abs(mValue) > 1E-32)
                                 {
                                     lock (sync)
                                     {
@@ -990,7 +990,7 @@ namespace SharpPhysicsEngine
                         }
                     });
 
-
+                SparseElement[] M = new SparseElement[contact.Length];
                 int?[][] constraintsArray = new int?[contact.Length][];
                 for (int i = 0; i < contact.Length; i++) 
 				{

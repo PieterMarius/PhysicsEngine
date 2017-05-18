@@ -1,7 +1,7 @@
 ﻿using PhysicsEngineMathUtility;
 using static PhysicsEngineMathUtility.GeneralMathUtilities;
 
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
     public class ConjugateGradient : ISolver
     {

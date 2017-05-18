@@ -87,7 +87,41 @@ namespace Utility
 			return displayList;
 		}
 
-		public static float UnitizeObject(ref LoadResult obj)
+        /// <summary>
+		/// Loads the GL objects into OpenGL buffer.
+		/// </summary>
+		/// <returns>The GL objects.</returns>
+		/// <param name="objects">Objects.</param>
+		/// <param name="nObject">N object.</param>
+		public static int[][] LoadGLObjects(
+            ObjImporter.meshStruct[][] objects,
+            int nObject,
+            bool GLM_TEXTURE = false,
+            bool GLM_FLAT = false,
+            bool GLM_SMOOTH = false)
+        {
+            int[][] displayList = new int[nObject][];
+
+            for (int i = 0; i < nObject; i++)
+            {
+                displayList[i] = new int[objects[i].Length];
+
+                for (int j = 0; j < objects[i].Length; j++)
+                {
+                    displayList[i][j] = GL.GenLists(1);
+
+                    GL.NewList(displayList[i][j], ListMode.CompileAndExecute);
+
+                    GLDrawSolid(objects[i][j], new PhysicsEngineMathUtility.Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+
+                    GL.EndList();
+                }
+            }
+
+            return displayList;
+        }
+
+        public static float UnitizeObject(ref LoadResult obj)
 		{
 			float xMax, xMin, yMax, yMin, zMax, zMin;
 			float cx, cy, cz, w, h, d;

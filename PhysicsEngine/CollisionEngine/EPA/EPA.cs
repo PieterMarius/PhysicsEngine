@@ -4,7 +4,7 @@ using PhysicsEngineMathUtility;
 using ShapeDefinition;
 
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class EPA
 	{

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PhysicsEngineMathUtility;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class GJKOutput
 	{

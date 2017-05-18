@@ -1,7 +1,7 @@
 ﻿using System;
 using ShapeDefinition;
 
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
 	public static class ClampSolution
 	{

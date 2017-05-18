@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using PhysicsEngineMathUtility;
 using ShapeDefinition;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class ManifoldPointsGenerator
 	{

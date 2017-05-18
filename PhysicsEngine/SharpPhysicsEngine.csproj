@@ -89,6 +89,7 @@
     <Compile Include="JacobianConstraints\SliderConstraint.cs" />
     <Compile Include="JacobianConstraints\SoftBodyConstraint.cs" />
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
+    <Compile Include="NonConvexDecomposition\NonConvexDecomposition.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintType.cs" />

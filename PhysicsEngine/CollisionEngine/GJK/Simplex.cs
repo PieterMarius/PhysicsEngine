@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class Simplex : ICloneable, IEquatable<Simplex>
 	{

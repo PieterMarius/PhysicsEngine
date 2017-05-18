@@ -3,7 +3,7 @@ using ShapeDefinition;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
 	public class LinearProblemProperties
 	{
@@ -53,11 +53,11 @@ namespace LCPSolver
 			Count = B.Length;
 		}
 
-		#endregion
+        #endregion
 
-		#region Public Methods
-        
-		public double[][] GetOriginalMatrix()
+        #region Public Methods
+
+        public double[][] GetOriginalMatrix()
 		{
 			double[][] matrix = new double[Count][];
 

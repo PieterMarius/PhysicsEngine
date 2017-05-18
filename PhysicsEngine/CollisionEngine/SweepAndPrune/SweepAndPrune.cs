@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ShapeDefinition;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class SweepAndPruneEngine
 	{

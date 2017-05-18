@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ShapeDefinition;
 using PhysicsEngineMathUtility;
-using CollisionEngine;
+using SharpPhysicsEngine.CollisionEngine;
 using System.Linq;
 
 namespace SharpPhysicsEngine

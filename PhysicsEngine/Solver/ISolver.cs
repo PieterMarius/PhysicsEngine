@@ -1,5 +1,5 @@
 ﻿
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
 	public interface ISolver
 	{

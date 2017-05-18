@@ -2,7 +2,7 @@
 using ShapeDefinition;
 using PhysicsEngineMathUtility;
 
-namespace CollisionEngine.SoftBody
+namespace SharpPhysicsEngine.CollisionEngine.SoftBody
 {
     public class SoftBodyCollisionDetection
     {

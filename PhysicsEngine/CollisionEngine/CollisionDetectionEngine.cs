@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ShapeDefinition;
-using CollisionEngine.SoftBody;
+using SharpPhysicsEngine.CollisionEngine.SoftBody;
 using System.Linq;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public class CollisionDetectionEngine: ICollisionEngine
 	{
@@ -326,17 +326,17 @@ namespace CollisionEngine
 
                 List<CollisionPointBaseStructure> baseCollisionList = new List<CollisionPointBaseStructure>();
 
-                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
-                baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeB, CollisionDistance));
+                //baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeA, CollisionDistance));
+                //baseCollisionList.AddRange(softBodyCollisionDetection.SelfSoftBodyCollisionDetect(softShapeB, CollisionDistance));
 
                 baseCollisionList.AddRange(softBodyCollisionDetection.SoftVsSoftBodyCollisionDetection(softShapeA, softShapeB, CollisionDistance));
                 
             }
-            else if(softShapeB != null && softShapeB == null)
+            else if(softShapeB != null && softShapeA == null)
             {
 
             }
-            else if (softShapeB != null && softShapeB == null)
+            else if (softShapeA != null && softShapeB == null)
             {
 
             }

@@ -7,9 +7,8 @@ using OpenTK.Graphics.OpenGL;
 using Utility;
 using ShapeDefinition;
 using SharpPhysicsEngine;
-using CollisionEngine;
-using LCPSolver;
-using System.Linq;
+using SharpPhysicsEngine.CollisionEngine;
+using SharpPhysicsEngine.LCPSolver;
 
 namespace TestPhysics
 {
@@ -94,11 +93,7 @@ namespace TestPhysics
 
         NonConvexDecomposition testConvexDecomp = new NonConvexDecomposition();
 
-        private SoftShape AddSoftBody()
-        {
-            GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties("cube.obj", 1);
-            return new SoftShape(prop.triangleIndex, prop.vertexPoint, 0.3, new PhysicsEngineMathUtility.Vector3(3.0, 5.0, 0.0));
-        }
+       
 
         void initProgram()
 		{
@@ -108,7 +103,7 @@ namespace TestPhysics
                 //testConvexDecomp.Decompose(0.08);
               
                 //TestNumeric();
-                //var env = new BuildEnvironment();
+               
                 //env.GetPhysicsEnvironment();
 
                 //LoadObject loadObject = new LoadObject("startJoint.xml");
@@ -116,38 +111,41 @@ namespace TestPhysics
                 //var loadObject = new LoadObject("startConfig.xml");
                 //var loadObject = new LoadObject("carConfig.xml");
                 //var loadObject = new LoadObject("testJointBridge.xml");
-                var loadObject = new LoadObject("compositeObjectConfig.xml");
+                //var loadObject = new LoadObject("compositeObjectConfig.xml");
                 //var loadObject = new LoadObject("frictionTestConfig.xml");
 
-                
+
                 //var loadObject = new LoadObject("softBodyConfig.xml");
+                var env = new BuildEnvironment();
 
-                simulationObjects = loadObject.LoadSimulationObjects();
-                simulationJoints = loadObject.LoadSimulationJoints(simulationObjects);
+                //simulationObjects = loadObject.LoadSimulationObjects();
+                //simulationJoints = loadObject.LoadSimulationJoints(simulationObjects);
 
-                //displayList = LoadObject.GetOpenGLObjectList("bunny.obj", 1);
+                ////displayList = LoadObject.GetOpenGLObjectList("bunny.obj", 1);
 
-                displayList = loadObject.GetOpenGLObjectList();
+                //displayList = loadObject.GetOpenGLObjectList();
 
-                //AddSoftBody();
+                ////AddSoftBody();
 
-                //Carico le texture
-                textureID = loadObject.LoadTexture();
+                ////Carico le texture
+                //textureID = loadObject.LoadTexture();
                 redTexture = OpenGLUtilities.LoadTexture("red.bmp");
-
-                physicsEngine = new SharpEngine();
+                                
+                physicsEngine = env.GetPhysicsEnvironment();
+                displayList = env.GetOpenGLEnvironment();
+                textureID = env.LoadTexture();
 
                 //physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
-                for (int i = 0; i < simulationObjects.Count(); i++)
-                {
-                    physicsEngine.AddShape(simulationObjects[i]);
-                }
+                //for (int i = 0; i < simulationObjects.Count(); i++)
+                //{
+                //    physicsEngine.AddShape(simulationObjects[i]);
+                //}
 
-                for (int i = 0; i < simulationJoints.Count(); i++)
-                {
-                    physicsEngine.AddJoint(simulationJoints[i]);
-                }
+                //for (int i = 0; i < simulationJoints.Count(); i++)
+                //{
+                //    physicsEngine.AddJoint(simulationJoints[i]);
+                //}
 
                 //physicsEngine.AddShape(AddSoftBody());
 

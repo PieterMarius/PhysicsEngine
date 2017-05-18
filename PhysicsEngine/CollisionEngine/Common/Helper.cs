@@ -3,7 +3,7 @@ using PhysicsEngineMathUtility;
 using ShapeDefinition;
 using System;
 
-namespace CollisionEngine
+namespace SharpPhysicsEngine.CollisionEngine
 {
 	public static class Helper
 	{

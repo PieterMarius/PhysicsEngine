@@ -1,6 +1,6 @@
 ﻿using PhysicsEngineMathUtility;
 
-namespace LCPSolver
+namespace SharpPhysicsEngine.LCPSolver
 {
     public static class SolverHelper
     {
