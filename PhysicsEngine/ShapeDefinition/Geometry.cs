@@ -1,8 +1,8 @@
-﻿using PhysicsEngineMathUtility;
+﻿using SharpEngineMathUtility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
 	public class Geometry : IGeometry
     {
@@ -16,7 +16,7 @@ namespace ShapeDefinition
         /// <summary>
         /// Triangle Index
         /// </summary>
-        public int[][] Triangle { get; private set; }
+        public TriangleIndexes[] Triangle { get; private set; }
         
         /// <summary>
         /// Bounding Box
@@ -44,7 +44,7 @@ namespace ShapeDefinition
         public Geometry (
             IShape shape,
 			Vector3[] inputVertexPosition,
-			int[][] inputTriangle,
+            TriangleIndexes[] inputTriangle,
             ObjectGeometryType geometryType,
             bool getAdjacencyList)
 		{
@@ -53,16 +53,8 @@ namespace ShapeDefinition
 
             if (inputTriangle != null)
             {
-                Triangle = new int[inputTriangle.Length][];
-
-                for (int i = 0; i < inputTriangle.Length; i++)
-                {
-                    Triangle[i] = new int[3];
-                    Triangle[i][0] = inputTriangle[i][0];
-                    Triangle[i][1] = inputTriangle[i][1];
-                    Triangle[i][2] = inputTriangle[i][2];
-                }
-
+                Triangle = inputTriangle;
+                
                 SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
                 
             }
@@ -137,22 +129,22 @@ namespace ShapeDefinition
 
                         for (int j = 0; j < Triangle.Length; j++)
                         {
-                            if (Triangle[j][0] == i)
+                            if (Triangle[j].a == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].b);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].c);
                                 continue;
                             }
-                            if (Triangle[j][1] == i)
+                            if (Triangle[j].b == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][2]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].a);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].c);
                                 continue;
                             }
-                            if (Triangle[j][2] == i)
+                            if (Triangle[j].c == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][0]);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j][1]);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].a);
+                                AddAdjacencyItem(ref adjacencyList, Triangle[j].b);
                                 continue;
                             }
                         }

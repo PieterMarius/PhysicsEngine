@@ -1,6 +1,6 @@
-﻿using PhysicsEngineMathUtility;
+﻿using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
 	public class InertiaTensor
 	{
@@ -12,7 +12,7 @@ namespace ShapeDefinition
 		readonly double objMass;
 
 		readonly Vector3[] vertexStartPosition;
-		readonly int[][] triangleVertexIndex;
+		readonly TriangleIndexes[] triangleVertexIndex;
                 
 		readonly double[] mult =
 		{
@@ -38,7 +38,7 @@ namespace ShapeDefinition
 
 		public InertiaTensor (
 			Vector3[] vertexStartPosition,
-			int[][] triangleVertexIndex,
+            TriangleIndexes[] triangleVertexIndex,
 			double mass,
             bool bodyCoords = true)
 		{
@@ -53,19 +53,19 @@ namespace ShapeDefinition
 			computeInertiaTensor ();
 		}
 
-		#endregion
-
-		public Vector3 GetMassCenter()
-		{
-			return massCenter;
-		}
-
-		public Matrix3x3 GetInertiaTensor()
-		{
-			return inertiaTensor;
-		}
-
+        #endregion
+        
         #region Public Methods
+
+        public Vector3 GetMassCenter()
+        {
+            return massCenter;
+        }
+
+        public Matrix3x3 GetInertiaTensor()
+        {
+            return inertiaTensor;
+        }
 
         #endregion
 
@@ -77,13 +77,13 @@ namespace ShapeDefinition
 			for (int i = 0; i < triangleVertexIndex.Length; i++) 
 			{
                 //Vertice 1 triangolo
-                Vector3 v0 = vertexStartPosition[triangleVertexIndex[i][0]];
+                Vector3 v0 = vertexStartPosition[triangleVertexIndex[i].a];
 
                 //Vertice 2 triangolo
-                Vector3 v1 = vertexStartPosition[triangleVertexIndex[i][1]];
+                Vector3 v1 = vertexStartPosition[triangleVertexIndex[i].b];
 
                 //Vertice 3 triangolo
-                Vector3 v2 = vertexStartPosition[triangleVertexIndex[i][2]];
+                Vector3 v2 = vertexStartPosition[triangleVertexIndex[i].c];
 
                 // Get cross product of edges and normal vector.
                 Vector3 V1mV0 = v1 - v0;

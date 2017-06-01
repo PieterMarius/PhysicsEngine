@@ -2,12 +2,12 @@
 using SharpPhysicsEngine;
 using System.Collections.Generic;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public interface ISoftShape
     {
         SoftShapePoint[] ShapePoints { get; }
-        int[][] Triangle { get; }
+        TriangleIndexes[] Triangle { get; }
         AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
         List<SoftBodyConstraint> SoftConstraint { get; }

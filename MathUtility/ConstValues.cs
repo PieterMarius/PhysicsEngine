@@ -1,4 +1,4 @@
-﻿namespace PhysicsEngineMathUtility
+﻿namespace SharpEngineMathUtility
 {
 	public static class ConstValues
 	{

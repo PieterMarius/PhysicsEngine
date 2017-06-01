@@ -60,7 +60,7 @@ namespace Utility
 		/// <param name="nObject">N object.</param>
 		public static int[][] LoadGLObjects(
             ObjImporter.meshStruct[][] objects,
-			PhysicsEngineMathUtility.Vector3[][] translate,
+			SharpEngineMathUtility.Vector3[][] translate,
 			int nObject,
 			bool GLM_TEXTURE = false, 
 			bool GLM_FLAT = false,
@@ -112,7 +112,7 @@ namespace Utility
 
                     GL.NewList(displayList[i][j], ListMode.CompileAndExecute);
 
-                    GLDrawSolid(objects[i][j], new PhysicsEngineMathUtility.Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+                    GLDrawSolid(objects[i][j], new SharpEngineMathUtility.Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
 
                     GL.EndList();
                 }
@@ -178,7 +178,7 @@ namespace Utility
 			return scale;
 		}
 
-        public static double UnitizeObject(ref PhysicsEngineMathUtility.Vector3[] vertices)
+        public static double UnitizeObject(ref SharpEngineMathUtility.Vector3[] vertices)
         {
             double xMax, xMin, yMax, yMin, zMax, zMin;
             double cx, cy, cz, w, h, d;
@@ -224,7 +224,7 @@ namespace Utility
             /* translate around center then scale */
             for (int i = 0; i < vertices.Length; i++)
             {
-                var vertex = new PhysicsEngineMathUtility.Vector3(
+                var vertex = new SharpEngineMathUtility.Vector3(
                     (vertices[i].x - cx) * scale,
                     (vertices[i].y - cy) * scale,
                     (vertices[i].z - cz) * scale);
@@ -251,12 +251,12 @@ namespace Utility
 		}
 
         public static void ScaleObject(
-            ref PhysicsEngineMathUtility.Vector3[] vertices,
+            ref SharpEngineMathUtility.Vector3[] vertices,
             double scale)
         {
             for (int i = 0; i < vertices.Length; i++)
             {
-                var vertex = new PhysicsEngineMathUtility.Vector3(
+                var vertex = new SharpEngineMathUtility.Vector3(
                     (vertices[i].x) * scale,
                     (vertices[i].y) * scale,
                     (vertices[i].z) * scale);
@@ -398,21 +398,21 @@ namespace Utility
 		}
 
 		public static void glLookAt(
-			PhysicsEngineMathUtility.Vector3 eye,
-			PhysicsEngineMathUtility.Vector3 center,
-			PhysicsEngineMathUtility.Vector3 up)
+			SharpEngineMathUtility.Vector3 eye,
+			SharpEngineMathUtility.Vector3 center,
+			SharpEngineMathUtility.Vector3 up)
 		{
-			PhysicsEngineMathUtility.Vector3 forward = center - eye;
+			SharpEngineMathUtility.Vector3 forward = center - eye;
 
-			forward = PhysicsEngineMathUtility.Vector3.Normalize(forward);
+			forward = SharpEngineMathUtility.Vector3.Normalize(forward);
 
-			var upBuf = new PhysicsEngineMathUtility.Vector3(up.x, up.y, up.z);
+			var upBuf = new SharpEngineMathUtility.Vector3(up.x, up.y, up.z);
 
-			var side = PhysicsEngineMathUtility.Vector3.Cross(forward, upBuf);
+			var side = SharpEngineMathUtility.Vector3.Cross(forward, upBuf);
 
-			side = PhysicsEngineMathUtility.Vector3.Normalize(side);
+			side = SharpEngineMathUtility.Vector3.Normalize(side);
 
-			upBuf = PhysicsEngineMathUtility.Vector3.Cross(side, forward);
+			upBuf = SharpEngineMathUtility.Vector3.Cross(side, forward);
 
 			var matrix = new float[] {
 				Convert.ToSingle (side.x), Convert.ToSingle (up.x), Convert.ToSingle (-forward.x),
@@ -434,7 +434,7 @@ namespace Utility
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		private static void GLDrawSolid(
             ObjImporter.meshStruct solid,
-			PhysicsEngineMathUtility.Vector3 translate,
+			SharpEngineMathUtility.Vector3 translate,
 			bool GLM_TEXTURE, 
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)
@@ -465,23 +465,23 @@ namespace Utility
 
                 if (GLM_FLAT) 
 				{
-                    var a = new PhysicsEngineMathUtility.Vector3(
+                    var a = new SharpEngineMathUtility.Vector3(
                         solid.vertices[indicedata[index]].x,
                         solid.vertices[indicedata[index]].y,
                         solid.vertices[indicedata[index]].z);
 					
-					var b = new PhysicsEngineMathUtility.Vector3 (
+					var b = new SharpEngineMathUtility.Vector3 (
 						solid.vertices[indicedata [index + 1]].x, 
 						solid.vertices[indicedata [index + 1]].y, 
 						solid.vertices[indicedata [index + 1]].z);
 
-					var c = new PhysicsEngineMathUtility.Vector3 (
+					var c = new SharpEngineMathUtility.Vector3 (
 						solid.vertices[indicedata [index + 2]].x, 
 						solid.vertices[indicedata [index + 2]].y, 
 						solid.vertices[indicedata [index + 2]].z);
 
-					PhysicsEngineMathUtility.Vector3 normal = 
-						PhysicsEngineMathUtility.GeometryUtilities.CalculateNormal (a, b, c);
+					SharpEngineMathUtility.Vector3 normal = 
+						SharpEngineMathUtility.GeometryUtilities.CalculateNormal (a, b, c);
 
 					GL.Normal3 (normal.x, normal.y, normal.z);	
 				}

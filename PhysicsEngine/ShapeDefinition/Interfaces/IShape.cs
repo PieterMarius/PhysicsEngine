@@ -1,6 +1,6 @@
-﻿using PhysicsEngineMathUtility;
+﻿using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public interface IShape : IShapeCommon
     {

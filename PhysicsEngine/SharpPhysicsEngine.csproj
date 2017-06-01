@@ -89,7 +89,8 @@
     <Compile Include="JacobianConstraints\SliderConstraint.cs" />
     <Compile Include="JacobianConstraints\SoftBodyConstraint.cs" />
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
-    <Compile Include="NonConvexDecomposition\NonConvexDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\Octree\OctTree.cs" />
+    <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintType.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="ShapeDefinition\SoftShape.cs" />
     <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
     <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
+    <Compile Include="ShapeDefinition\TriangleIndexes.cs" />
     <Compile Include="SimulationParameters.cs" />
     <Compile Include="SharpEngine.cs" />
     <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />

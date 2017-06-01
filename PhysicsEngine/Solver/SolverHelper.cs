@@ -1,4 +1,4 @@
-﻿using PhysicsEngineMathUtility;
+﻿using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.LCPSolver
 {

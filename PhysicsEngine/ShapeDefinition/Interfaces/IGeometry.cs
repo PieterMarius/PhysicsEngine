@@ -1,13 +1,13 @@
-﻿using PhysicsEngineMathUtility;
+﻿using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public interface IGeometry
     {
         AABB AABBox { get; }
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
-        int[][] Triangle { get; }
+        TriangleIndexes[] Triangle { get; }
         VertexAdjacency[] VertexPosition { get; }
         Vector3[] RelativePosition { get; }
 

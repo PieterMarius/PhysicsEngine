@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {

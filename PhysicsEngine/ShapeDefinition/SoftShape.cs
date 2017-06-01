@@ -1,10 +1,10 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public class SoftShape : IShape, ISoftShape, Identity
     {
@@ -157,7 +157,7 @@ namespace ShapeDefinition
 
         public SoftShapePoint[] ShapePoints { get; private set; }
 
-        public int[][] Triangle { get; private set; }
+        public TriangleIndexes[] Triangle { get; private set; }
 
         public SoftPoint[] Sphere { get; private set; }
 
@@ -168,16 +168,11 @@ namespace ShapeDefinition
         #region Constructor
 
         public SoftShape(
-            int[][] triangleIndex,
+            TriangleIndexes[] triangleIndex,
             SoftShapePoint[] shapePoint,
             List<SoftBodyConstraint> softConstraint)
         {
-            for (int i = 0; i < triangleIndex.Length; i++)
-            {
-                Triangle[i] = new int[3];
-                Triangle[i] = triangleIndex[i];
-            }
-
+            Triangle = triangleIndex;
             ShapePoints = shapePoint;
             InertiaTensor = Matrix3x3.IdentityMatrix();
             SoftConstraint = softConstraint;
@@ -185,21 +180,14 @@ namespace ShapeDefinition
         }
 
         public SoftShape(
-            int[][] triangleIndex,
+            TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
             double diameter,
             Vector3 startPosition)
         {
             Mass = 1.0;
-
-            Triangle = new int[triangleIndex.Length][];
-
-            for (int i = 0; i < triangleIndex.Length; i++)
-            {
-                Triangle[i] = new int[3];
-                Triangle[i] = triangleIndex[i];
-            }
-                        
+            Triangle = triangleIndex;
+                                    
             InertiaTensor = Matrix3x3.IdentityMatrix();
 
             Position = startPosition;
@@ -310,7 +298,7 @@ namespace ShapeDefinition
 
         public void SetAABB()
         {
-            AABBox = Helper.UpdateAABB(ShapePoints);
+            AABBox = AABB.GetShapePointAABB(ShapePoints);
         }
 
         public void SetPointsMass(double mass)
@@ -381,26 +369,26 @@ namespace ShapeDefinition
 
             foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
             {
-                if (!CheckDuplicate(triangle.i, triangle.value[0], triangle.value[1]))
+                if (!CheckDuplicate(triangle.i, triangle.value.a, triangle.value.b))
                     SoftConstraint.Add(new SoftBodyConstraint(
-                        ShapePoints[triangle.value[0]],
-                        ShapePoints[triangle.value[1]],
+                        ShapePoints[triangle.value.a],
+                        ShapePoints[triangle.value.b],
                         this,
                         0.5,
                         0.5));
 
-                if (!CheckDuplicate(triangle.i, triangle.value[0], triangle.value[2]))
+                if (!CheckDuplicate(triangle.i, triangle.value.a, triangle.value.c))
                     SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle.value[0]],
-                    ShapePoints[triangle.value[2]],
+                    ShapePoints[triangle.value.a],
+                    ShapePoints[triangle.value.c],
                     this,
                     0.5,
                     0.5));
 
-                if (!CheckDuplicate(triangle.i, triangle.value[1], triangle.value[2]))
+                if (!CheckDuplicate(triangle.i, triangle.value.b, triangle.value.c))
                     SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle.value[1]],
-                    ShapePoints[triangle.value[2]],
+                    ShapePoints[triangle.value.b],
+                    ShapePoints[triangle.value.c],
                     this,
                     0.5,
                     0.5));

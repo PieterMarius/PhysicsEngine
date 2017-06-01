@@ -1,5 +1,5 @@
-﻿using PhysicsEngineMathUtility;
-using static PhysicsEngineMathUtility.GeneralMathUtilities;
+﻿using SharpEngineMathUtility;
+using static SharpEngineMathUtility.GeneralMathUtilities;
 
 namespace SharpPhysicsEngine.LCPSolver
 {

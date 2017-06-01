@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhysicsEngineMathUtility
+namespace SharpEngineMathUtility
 {
 	public struct Matrix3x3
 	{

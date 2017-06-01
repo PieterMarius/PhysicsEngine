@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhysicsEngineMathUtility
+namespace SharpEngineMathUtility
 {
     public static class GeneralMathUtilities
     {
@@ -76,6 +76,19 @@ namespace PhysicsEngineMathUtility
                 result[i] = a[i] + b[i];
 
             return result;
+        }
+
+        public static int SigBit(int x)
+        {
+            if (x < 0)
+                return 0;
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return x + 1;
         }
 
     }

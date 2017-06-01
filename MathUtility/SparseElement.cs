@@ -1,5 +1,5 @@
 ﻿
-namespace PhysicsEngineMathUtility
+namespace SharpEngineMathUtility
 {
 	public struct SparseElement
 	{

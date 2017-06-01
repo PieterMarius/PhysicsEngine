@@ -49,6 +49,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="GeneralMathUtilities.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Vector3.cs" />
     <Compile Include="ConstValues.cs" />

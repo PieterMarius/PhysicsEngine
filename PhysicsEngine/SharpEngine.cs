@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using PhysicsEngineMathUtility;
-using ShapeDefinition;
+using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 
@@ -138,6 +138,7 @@ namespace SharpPhysicsEngine
 
             if (softShape != null)
             {
+                ((Identity)softShape).ID = HsGenerator.GetHash();
                 foreach (var point in softShape.ShapePoints)
                     ((Identity)point).ID = HsGenerator.GetHash();
             }

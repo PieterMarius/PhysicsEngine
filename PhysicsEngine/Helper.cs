@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpPhysicsEngine.CollisionEngine;
-using ShapeDefinition;
+using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {

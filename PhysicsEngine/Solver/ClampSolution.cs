@@ -1,5 +1,5 @@
 ﻿using System;
-using ShapeDefinition;
+using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.LCPSolver
 {

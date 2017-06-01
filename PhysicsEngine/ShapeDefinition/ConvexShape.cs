@@ -1,7 +1,7 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
 	public class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
     {
@@ -261,7 +261,7 @@ namespace ShapeDefinition
         public void SetAABB()
         {
             if (ObjectGeometry != null)
-                ObjectGeometry.SetAABB(Helper.UpdateAABB(ObjectGeometry));
+                ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
         }
 
         public void SetMass(double mass)

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using PhysicsEngineMathUtility;
-using ShapeDefinition;
+using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using System;
 
 namespace SharpPhysicsEngine.CollisionEngine

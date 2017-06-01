@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ShapeDefinition;
+using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine.SoftBody;
 using System.Linq;
 

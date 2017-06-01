@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PhysicsEngineMathUtility
+namespace SharpEngineMathUtility
 {
 	public static class GeometryUtilities
 	{

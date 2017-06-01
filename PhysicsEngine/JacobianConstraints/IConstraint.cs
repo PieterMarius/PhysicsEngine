@@ -1,5 +1,5 @@
-﻿using ShapeDefinition;
-using PhysicsEngineMathUtility;
+﻿using SharpPhysicsEngine.ShapeDefinition;
+using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {

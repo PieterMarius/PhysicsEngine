@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml;
 using SharpPhysicsEngine;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
 namespace TestPhysics
 {

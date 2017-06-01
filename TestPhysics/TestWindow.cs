@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using Utility;
-using ShapeDefinition;
+using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
+using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 
 namespace TestPhysics
 {
@@ -91,7 +93,7 @@ namespace TestPhysics
 
         //}
 
-        NonConvexDecomposition testConvexDecomp = new NonConvexDecomposition();
+        NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
 
        
 
@@ -135,6 +137,19 @@ namespace TestPhysics
                 displayList = env.GetOpenGLEnvironment();
                 textureID = env.LoadTexture();
 
+                AABB region = new AABB(
+                    new SharpEngineMathUtility.Vector3(-2.0, -2.0, -2.0),
+                    new SharpEngineMathUtility.Vector3(2.0, 2.0, 2.0));
+
+                ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+
+                OctTree octTree = new OctTree(
+                    region,
+                    softShape.Triangle.ToList(),
+                    Array.ConvertAll(softShape.ShapePoints, item => item.Position));
+
+                octTree.BuildOctree();
+
                 //physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
                 //for (int i = 0; i < simulationObjects.Count(); i++)
@@ -155,26 +170,7 @@ namespace TestPhysics
 //
 //				obj.Add(null);
 
-				#region Object Removing
-
-				//physicsEngine.RemoveAllJoints();
-
-				//physicsEngine.RemoveAllObjects();
-
-				//int objectIndex = 2;
-
-				//physicsEngine.RemoveObject(objectIndex);
-
-				////Graphics engine
-				//var buf = displayList.ToList();
-				//buf.RemoveAt(objectIndex);
-				//displayList = buf.ToArray();
-
-				//var buf1 = textureID.ToList();
-				//buf1.RemoveAt(objectIndex);
-				//textureID = buf1.ToArray();
-
-				#endregion
+				
 
 
 				collPoint = new List<CollisionPointStructure> ();
@@ -480,22 +476,22 @@ namespace TestPhysics
                 DisplaySoftPoint(softShape);
             else
             {
-                PhysicsEngineMathUtility.Matrix3x3 rotatioMatrix = shape.RotationMatrix;
-                PhysicsEngineMathUtility.Vector3 position = shape.Position;
+                SharpEngineMathUtility.Matrix3x3 rotatioMatrix = shape.RotationMatrix;
+                SharpEngineMathUtility.Vector3 position = shape.Position;
 
                 ObjectType type = shape.ObjectType;
                 
-                for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(shape).Length; i++)
+                for (int i = 0; i < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(shape).Length; i++)
                 {
                     GL.PushMatrix();
                     GL.Enable(EnableCap.Texture2D);
 
-                    PhysicsEngineMathUtility.Vector3 compoundPos = new PhysicsEngineMathUtility.Vector3();
+                    SharpEngineMathUtility.Vector3 compoundPos = new SharpEngineMathUtility.Vector3();
 
                     if (shape is ICompoundShape)
                         compoundPos = ((ICompoundShape)shape).StartCompoundPositionObjects[i];
 
-                    PhysicsEngineMathUtility.Vector3 positionMt = position + compoundPos -
+                    SharpEngineMathUtility.Vector3 positionMt = position + compoundPos -
                                                                   shape.StartPosition;
 
                     Matrix4 positionMatrix = new Matrix4(
@@ -555,7 +551,7 @@ namespace TestPhysics
         {
             foreach(var item in softShape.ShapePoints)
             {
-                PhysicsEngineMathUtility.Vector3 relativePosition = item.Position;
+                SharpEngineMathUtility.Vector3 relativePosition = item.Position;
 
                 GL.PushMatrix();
 
@@ -772,12 +768,12 @@ namespace TestPhysics
 		private void displayVertex(int index)
 		{
 
-			for (int i = 0; i < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape (index)).Length; i++) 
+			for (int i = 0; i < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape (index)).Length; i++) 
 			{
-                for (int j = 0; j < ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
+                for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
                 {
-                    PhysicsEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
-                                    (physicsEngine.GetShape(index).RotationMatrix * ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
+                    SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
+                                    (physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
 
                     GL.PushMatrix();
 
@@ -836,7 +832,7 @@ namespace TestPhysics
             IShape[] simObj = physicsEngine.GetShapes();
             for (int i = 0; i < simObj.Length; i++)
             {
-                AABB joint = ShapeDefinition.Helper.GetGeometry(simObj[i])[0].AABBox;
+                AABB joint = SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(simObj[i])[0].AABBox;
                                 
                 GL.PushMatrix();
 
@@ -906,7 +902,7 @@ namespace TestPhysics
 		}
 
 
-        private void displaySphere(List<NonConvexDecomposition.NonConvexPoint> spherePoint)
+        private void displaySphere(List<NonConvexSphereDecomposition.NonConvexPoint> spherePoint)
         {
             for (int i = 0; i < spherePoint.Count; i++)
             {

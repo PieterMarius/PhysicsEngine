@@ -1,7 +1,7 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public class CompoundShape : IShape, IShapeCommon, ICompoundShape, Identity
     {
@@ -283,13 +283,13 @@ namespace ShapeDefinition
         public void SetAABB()
         {
             if (ObjectGeometry != null && ObjectGeometry.Length == 1)
-                ObjectGeometry[0].SetAABB(Helper.UpdateAABB(ObjectGeometry[0]));
+                ObjectGeometry[0].SetAABB(AABB.GetGeometryAABB(ObjectGeometry[0]));
             else if (ObjectGeometry.Length > 1)
             {
                 int geometryIndex = 0;
                 foreach (Geometry obj in ObjectGeometry)
                 {
-                    obj.SetAABB(Helper.UpdateAABB(obj));
+                    obj.SetAABB(AABB.GetGeometryAABB(obj));
                     geometryIndex++;
                 }
             }

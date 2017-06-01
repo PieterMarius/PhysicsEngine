@@ -1,6 +1,6 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
-using ShapeDefinition;
+using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {

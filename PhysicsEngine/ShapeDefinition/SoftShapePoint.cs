@@ -1,7 +1,7 @@
 ﻿using System;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public class SoftShapePoint: IShapeCommon, Identity
     {

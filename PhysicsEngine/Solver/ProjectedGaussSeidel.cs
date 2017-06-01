@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.LCPSolver
 {

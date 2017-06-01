@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PhysicsEngineMathUtility
+namespace SharpEngineMathUtility
 {
 	public struct Vector3: IComparable, IEquatable<Vector3>
 	{
@@ -221,6 +221,11 @@ namespace PhysicsEngineMathUtility
 		{
 			return Normalize (this);
 		}
+
+        public static Vector3 Zero()
+        {
+            return new Vector3(0.0, 0.0, 0.0);
+        }
 
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{

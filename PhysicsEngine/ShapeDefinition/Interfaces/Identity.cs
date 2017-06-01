@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     internal interface Identity
     {

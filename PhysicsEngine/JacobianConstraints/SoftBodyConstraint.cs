@@ -1,5 +1,5 @@
-﻿using PhysicsEngineMathUtility;
-using ShapeDefinition;
+﻿using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
 

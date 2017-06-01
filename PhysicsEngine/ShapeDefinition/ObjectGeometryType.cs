@@ -1,5 +1,5 @@
 ﻿
-namespace ShapeDefinition
+namespace SharpPhysicsEngine.ShapeDefinition
 {
     public enum ObjectGeometryType
     {

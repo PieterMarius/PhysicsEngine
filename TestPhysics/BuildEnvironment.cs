@@ -3,8 +3,8 @@ using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine;
 using ObjLoader.Loader.Loaders;
-using PhysicsEngineMathUtility;
-using ShapeDefinition;
+using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
 using System;
 
@@ -126,7 +126,7 @@ namespace TestPhysics
             objects[1].SetMass(1.0);
             objects[1].SetPosition(new Vector3(0.0, 1.2, 9.5));
             objects[1].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            ((ConvexShape)objects[0]).SetObjectGeometry(GetObjectGeometry(objects[1], ShapeFilename[1][0], ShapeScale[1][0], ObjectGeometryType.ConvexBody));
+            ((ConvexShape)objects[1]).SetObjectGeometry(GetObjectGeometry(objects[1], ShapeFilename[1][0], ShapeScale[1][0], ObjectGeometryType.ConvexBody));
             objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[1].SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
             objects[1].SetRestitutionCoeff(0.1);
@@ -143,7 +143,7 @@ namespace TestPhysics
             objects[2].SetMass(1.0);
             objects[2].SetPosition(new Vector3(0.0, 1.2, 7.0));
             objects[2].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            ((ConvexShape)objects[0]).SetObjectGeometry(GetObjectGeometry(objects[2], ShapeFilename[2][0], ShapeScale[2][0], ObjectGeometryType.ConvexBody));
+            ((ConvexShape)objects[2]).SetObjectGeometry(GetObjectGeometry(objects[2], ShapeFilename[2][0], ShapeScale[2][0], ObjectGeometryType.ConvexBody));
             objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[2].SetRestitutionCoeff(0.1);
@@ -153,7 +153,10 @@ namespace TestPhysics
             objects[2].SetRestoreCoeff(30.0);
 
             TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
-            objects[3] = BuildSoftBody("cube1.obj", 1, 0.5, new Vector3(0.0, 3.0, 7.0));
+            //TODO rimuovere
+            ShapeFilename[3] = new string[1] { "teapot.obj" };
+            ShapeScale[3] = new float[1] { 1 };
+            objects[3] = BuildSoftBody("teapot.obj", 1, 0.5, new Vector3(0.0, 3.0, 7.0));
 
             #endregion
 

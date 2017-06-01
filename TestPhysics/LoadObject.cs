@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Xml;
-using PhysicsEngineMathUtility;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine;
-using ShapeDefinition;
+using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
 
 namespace TestPhysics

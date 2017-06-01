@@ -1,5 +1,5 @@
-﻿using PhysicsEngineMathUtility;
-using ShapeDefinition;
+﻿using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TestPhysics
 {
-    public class NonConvexDecomposition
+    public class NonConvexSphereDecomposition
     {
         #region Fields
 
@@ -78,9 +78,9 @@ namespace TestPhysics
 
                         foreach(var triangle in obj.Triangle)
                         {
-                            Vector3 vertexA = obj.VertexPosition[triangle[0]].Vertex;
-                            Vector3 vertexB = obj.VertexPosition[triangle[1]].Vertex;
-                            Vector3 vertexC = obj.VertexPosition[triangle[2]].Vertex;
+                            Vector3 vertexA = obj.VertexPosition[triangle.a].Vertex;
+                            Vector3 vertexB = obj.VertexPosition[triangle.b].Vertex;
+                            Vector3 vertexC = obj.VertexPosition[triangle.c].Vertex;
                             
                             Vector3? intersection = GeometryUtilities.RayTriangleIntersection(
                                     vertexA,
@@ -94,7 +94,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }
@@ -111,7 +111,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }
@@ -128,7 +128,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle[0]], obj.VertexPosition[triangle[1]], obj.VertexPosition[triangle[2]] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }
