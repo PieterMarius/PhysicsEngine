@@ -93,6 +93,7 @@
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\CompoundShape.cs" />
+    <Compile Include="ShapeDefinition\ConstraintIndex.cs" />
     <Compile Include="ShapeDefinition\ConstraintType.cs" />
     <Compile Include="ShapeDefinition\ConvexShape.cs" />
     <Compile Include="ShapeDefinition\Geometry.cs" />

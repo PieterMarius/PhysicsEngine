@@ -154,9 +154,9 @@ namespace TestPhysics
 
             TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
             //TODO rimuovere
-            ShapeFilename[3] = new string[1] { "teapot.obj" };
+            ShapeFilename[3] = new string[1] { "bunny.obj" };
             ShapeScale[3] = new float[1] { 1 };
-            objects[3] = BuildSoftBody("teapot.obj", 1, 0.5, new Vector3(0.0, 3.0, 7.0));
+            objects[3] = BuildSoftBody("bunny.obj", 1, 0.5, new Vector3(0.0, 0.0, 0.0));
 
             #endregion
 

@@ -48,22 +48,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public bool Contains(AABB box)
         {
-            if (Min.x >= box.Min.x && Max.x <= box.Max.x &&
-                Min.y >= box.Min.y && Max.y <= box.Max.y &&
-                Min.z >= box.Min.z && Max.z <= box.Max.z)
-                return true;
-
-            return false;
+            return Min.x <= box.Min.x && Max.x >= box.Max.x &&
+                Min.y <= box.Min.y && Max.y >= box.Max.y &&
+                Min.z <= box.Min.z && Max.z >= box.Max.z;
         }
 
         public bool Intersect(AABB box)
         {
-            if (Min.x > box.Max.x || Max.x < box.Min.x ||
+            return Min.x > box.Max.x || Max.x < box.Min.x ||
                 Min.y > box.Max.y || Max.y < box.Min.y ||
-                Min.z > box.Max.z || Max.z < box.Min.z)
-                return true;
-
-            return false;
+                Min.z > box.Max.z || Max.z < box.Min.z;
         }
 
         #endregion

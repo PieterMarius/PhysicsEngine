@@ -38,12 +38,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public bool Contains(int index)
         {
-            if (a == index ||
-                b == index ||
-                c == index)
-                return true;
-
-            return false;
+            return a == index ||
+                   b == index ||
+                   c == index;
         }
 
         public static TriangleIndexes[] GenerateTriangleIndexes(int[][] trianglesIndexes)

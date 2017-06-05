@@ -424,6 +424,16 @@ namespace Utility
 			GL.Translate(-eye.x, -eye.y, -eye.z);
 		}
 
+        public static void DrawLine(
+            SharpEngineMathUtility.Vector3 a,
+            SharpEngineMathUtility.Vector3 b)
+        {
+            GL.Begin(PrimitiveType.Lines);
+            GL.Vertex3(a.x, a.y, a.z);
+            GL.Vertex3(b.x, b.y, b.z);
+            GL.End();
+        }
+
 		#region "Private methods"
 
 		/// <summary>

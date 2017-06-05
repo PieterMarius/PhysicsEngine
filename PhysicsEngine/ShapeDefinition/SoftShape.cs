@@ -1,6 +1,5 @@
 ﻿using System;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -366,10 +365,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         private void BuildSoftConstraint()
         {
             SoftConstraint = new List<SoftBodyConstraint>();
-
+            HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
+            
             foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
             {
-                if (!CheckDuplicate(triangle.i, triangle.value.a, triangle.value.b))
+                if(indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.b)))
                     SoftConstraint.Add(new SoftBodyConstraint(
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.b],
@@ -377,37 +377,22 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         0.5,
                         0.5));
 
-                if (!CheckDuplicate(triangle.i, triangle.value.a, triangle.value.c))
+                if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)))
                     SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle.value.a],
-                    ShapePoints[triangle.value.c],
-                    this,
-                    0.5,
-                    0.5));
+                        ShapePoints[triangle.value.a],
+                        ShapePoints[triangle.value.c],
+                        this,
+                        0.5,
+                        0.5));
 
-                if (!CheckDuplicate(triangle.i, triangle.value.b, triangle.value.c))
+                if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)))
                     SoftConstraint.Add(new SoftBodyConstraint(
-                    ShapePoints[triangle.value.b],
-                    ShapePoints[triangle.value.c],
-                    this,
-                    0.5,
-                    0.5));
+                        ShapePoints[triangle.value.b],
+                        ShapePoints[triangle.value.c],
+                        this,
+                        0.5,
+                        0.5));
             }
-        }
-
-        private bool CheckDuplicate(
-            int index,
-            int vertexA,
-            int vertexB)
-        {
-            for (int i = index - 1; i >= 0; i--)
-            {
-                if (Triangle[i].Contains(vertexA) &&
-                    Triangle[i].Contains(vertexB))
-                    return true;
-            }
-
-            return false;
         }
 
         #endregion

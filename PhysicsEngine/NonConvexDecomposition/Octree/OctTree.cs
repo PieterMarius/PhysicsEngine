@@ -11,7 +11,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         /// <summary>
         /// The minumum size for enclosing region is a 1x1x1 cube.
         /// </summary>
-        private const int MIN_SIZE = 1;
+        private const double MIN_SIZE = 0.01;
 
         private AABB region;
 
@@ -19,7 +19,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 
         private readonly Vector3[] VertexPosition;
 
-        private readonly List<TriangleIndexes> triangles;
+        private readonly List<TriangleIndexes> baseTriangles;
+
+        private List<TriangleIndexes> triangles;
 
         private OctTree parent;
 
@@ -37,7 +39,8 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             Vector3[] vertexPosition)
         {
             this.region = region;
-            this.triangles = triangles;
+            baseTriangles = triangles;
+            this.triangles = new List<TriangleIndexes>(triangles);
             VertexPosition = vertexPosition;
         }
 
@@ -121,6 +124,11 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         {
             if (!treeBuilt)
                 BuildTree();
+            else
+            {
+                triangles = new List<TriangleIndexes>(triangles);
+                BuildTree();
+            }
         }
 
         #endregion

@@ -11,6 +11,7 @@ using SharpPhysicsEngine;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.NonConvexDecomposition.Octree;
+using SharpEngineMathUtility;
 
 namespace TestPhysics
 {
@@ -95,8 +96,8 @@ namespace TestPhysics
 
         NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
 
-       
 
+        List<Line> octTreeLine = new List<Line>();
         void initProgram()
 		{
 			try
@@ -138,8 +139,8 @@ namespace TestPhysics
                 textureID = env.LoadTexture();
 
                 AABB region = new AABB(
-                    new SharpEngineMathUtility.Vector3(-2.0, -2.0, -2.0),
-                    new SharpEngineMathUtility.Vector3(2.0, 2.0, 2.0));
+                    new SharpEngineMathUtility.Vector3(-1.5, -1.5, -1.5),
+                    new SharpEngineMathUtility.Vector3(1.5, 1.5, 1.5));
 
                 ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
 
@@ -149,6 +150,10 @@ namespace TestPhysics
                     Array.ConvertAll(softShape.ShapePoints, item => item.Position));
 
                 octTree.BuildOctree();
+
+                octTree.Render(ref octTreeLine);
+
+                //TODO provare a spostare vertici
 
                 //physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
 
@@ -231,6 +236,8 @@ namespace TestPhysics
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)
                 SetOpenGLObjectMatrixAndDisplayObject(i);
+
+            displayOctree();
 
             GL.Flush ();
 			SwapBuffers ();
@@ -470,7 +477,7 @@ namespace TestPhysics
             // TODO parte da modificare
             //Matrice da utilizzare come costante
             IShape shape = physicsEngine.GetShapes()[id];
-                        
+
             ISoftShape softShape = shape as ISoftShape;
             if (softShape != null)
                 DisplaySoftPoint(softShape);
@@ -549,30 +556,38 @@ namespace TestPhysics
 
         private void DisplaySoftPoint(ISoftShape softShape)
         {
-            foreach(var item in softShape.ShapePoints)
-            {
-                SharpEngineMathUtility.Vector3 relativePosition = item.Position;
+            //GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
-                GL.PushMatrix();
+            //GL.CallList(displayList[3][0]);
+            //GL.Disable(EnableCap.Texture2D);
 
-                Matrix4 mView = Matrix4.CreateTranslation(
-                    Convert.ToSingle(relativePosition.x),
-                    Convert.ToSingle(relativePosition.y),
-                    Convert.ToSingle(relativePosition.z));
+            //GL.PopMatrix();
 
-                var dmviewData = new float[] {
-                    mView.M11, mView.M12, mView.M13, mView.M14,
-                    mView.M21, mView.M22, mView.M23, mView.M24,
-                    mView.M31, mView.M32, mView.M33, mView.M34,
-                    mView.M41, mView.M42, mView.M43, mView.M44
-                };
+            //foreach (var item in softShape.ShapePoints)
+            //{
+            //    SharpEngineMathUtility.Vector3 relativePosition = item.Position;
 
-                GL.MultMatrix(dmviewData);
+            //    GL.PushMatrix();
 
-                OpenGLUtilities.drawSolidCube(0.04f);
+            //    Matrix4 mView = Matrix4.CreateTranslation(
+            //        Convert.ToSingle(relativePosition.x),
+            //        Convert.ToSingle(relativePosition.y),
+            //        Convert.ToSingle(relativePosition.z));
 
-                GL.PopMatrix();
-            }
+            //    var dmviewData = new float[] {
+            //        mView.M11, mView.M12, mView.M13, mView.M14,
+            //        mView.M21, mView.M22, mView.M23, mView.M24,
+            //        mView.M31, mView.M32, mView.M33, mView.M34,
+            //        mView.M41, mView.M42, mView.M43, mView.M44
+            //    };
+
+            //    GL.MultMatrix(dmviewData);
+
+               
+            //    OpenGLUtilities.drawSolidCube(0.04f);
+
+            //    GL.PopMatrix();
+            //}
         }
 
 		private void displayContact()
@@ -876,6 +891,12 @@ namespace TestPhysics
                 GL.PopMatrix();
 
             }
+        }
+
+        private void displayOctree()
+        {
+            foreach (var item in octTreeLine)
+                OpenGLUtilities.DrawLine(item.a, item.b);
         }
 
         private void displayOrigin()
