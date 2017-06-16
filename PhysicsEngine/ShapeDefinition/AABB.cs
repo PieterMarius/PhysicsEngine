@@ -53,6 +53,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 Min.z <= box.Min.z && Max.z >= box.Max.z;
         }
 
+        public bool Contains(Vector3 point)
+        {
+            return point.x >= Min.x && point.x <= Max.x &&
+                   point.y >= Min.y && point.y <= Max.y &&
+                   point.z >= Min.z && point.z <= Max.z;
+        }
+
         public bool Intersect(AABB box)
         {
             return Min.x > box.Max.x || Max.x < box.Min.x ||
@@ -131,6 +138,39 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public static AABB GetTriangleAABB(Vector3[] triangle)
+        {
+            Vector3 vertexPos = triangle[0];
+            double xMax = vertexPos.x;
+            double xMin = vertexPos.x;
+            double yMax = vertexPos.y;
+            double yMin = vertexPos.y;
+            double zMax = vertexPos.z;
+            double zMin = vertexPos.z;
+
+            for (int i = 1; i < triangle.Length; i++)
+            {
+                Vector3 vertex = triangle[i];
+
+                if (vertex.x < xMin)
+                    xMin = vertex.x;
+                else if (vertex.x > xMax)
+                    xMax = vertex.x;
+
+                if (vertex.y < yMin)
+                    yMin = vertex.y;
+                else if (vertex.y > yMax)
+                    yMax = vertex.y;
+
+                if (vertex.z < zMin)
+                    zMin = vertex.z;
+                else if (vertex.z > zMax)
+                    zMax = vertex.z;
+            }
+
+            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+        }
+
+        public static AABB GetPointAABB(Vector3[] triangle)
         {
             Vector3 vertexPos = triangle[0];
             double xMax = vertexPos.x;

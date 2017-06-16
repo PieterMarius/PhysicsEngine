@@ -105,7 +105,7 @@ namespace SharpPhysicsEngine
 			CollisionEngineParameters collisionEngineParameters,
 			SolverParameters solverParameters)
 		{
-			SolverParameters = solverParameters;
+            SolverParameters = solverParameters;
 
 			SetSolver(SolverType.NonLinearConjugateGradient);
 

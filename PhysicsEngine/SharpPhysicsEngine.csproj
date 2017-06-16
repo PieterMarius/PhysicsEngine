@@ -74,6 +74,22 @@
     <Compile Include="CollisionEngine\SoftBody\SoftBodyCollisionDetection.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
+    <Compile Include="ConvexHull\Constants.cs" />
+    <Compile Include="ConvexHull\ConvexHull.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\Collections.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\ConvexFace.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\ConvexHullAlgorithm.Initialize.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\ConvexHullAlgorithm.MainLoop.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\DataModel.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\MathHelper.cs" />
+    <Compile Include="ConvexHull\ConvexHullManager\ObjectManager.cs" />
+    <Compile Include="ConvexHull\IVertex.cs" />
+    <Compile Include="ConvexHull\Triangulation.cs" />
+    <Compile Include="ConvexHull\Triangulation\DelaunayTrianglationInternal.cs" />
+    <Compile Include="ConvexHull\Triangulation\DelaunayTriangulation.cs" />
+    <Compile Include="ConvexHull\Triangulation\TriangulationCell.cs" />
+    <Compile Include="ConvexHull\Triangulation\VoronoiEdge.cs" />
+    <Compile Include="ConvexHull\Triangulation\VoronoiMesh.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />
@@ -91,6 +107,8 @@
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
     <Compile Include="NonConvexDecomposition\Octree\OctTree.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintIndex.cs" />
@@ -114,6 +132,7 @@
     <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
     <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
     <Compile Include="ShapeDefinition\TriangleIndexes.cs" />
+    <Compile Include="ShapeDefinition\VertexAdjacency.cs" />
     <Compile Include="SimulationParameters.cs" />
     <Compile Include="SharpEngine.cs" />
     <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />
@@ -135,6 +154,9 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
 </Project>

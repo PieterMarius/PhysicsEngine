@@ -549,8 +549,113 @@ namespace Utility
 			GL.End ();
 		}
 
-		#endregion
-			
-	}
+        /// <summary>
+		/// GL draw solid.
+		/// </summary>
+		/// <param name="solid">Solid.</param>
+		/// <param name="GLM_TEXTURE">If set to <c>true</c> GL add texture coordinates.</param>
+		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
+		public static void GLDrawSolid(
+            SharpEngineMathUtility.Vector3[][] faces,
+            SharpEngineMathUtility.Vector3 translate,
+            bool GLM_TEXTURE,
+            bool GLM_FLAT,
+            bool GLM_SMOOTH)
+        {
+            //int[] indicedata = new int[triIndexes.Length];
+            //int[] textureData = new int[triIndexes.Length];
+            //int[] normalData = new int[triIndexes.Length];
+
+            GL.Begin(PrimitiveType.Triangles);
+
+            int nTriangle = faces.Length;
+
+            for (int i = 0; i < nTriangle; i++)
+            {
+                //indicedata[index] = triIndexes;
+                //indicedata[index + 1] = (int)solid.faceData[(i * 3) + 1].x - 1;
+                //indicedata[index + 2] = (int)solid.faceData[(i * 3) + 2].x - 1;
+
+
+               
+                //if (GLM_FLAT)
+                //{
+                //    var a = new SharpEngineMathUtility.Vector3(
+                //        solid.vertices[indicedata[index]].x,
+                //        solid.vertices[indicedata[index]].y,
+                //        solid.vertices[indicedata[index]].z);
+
+                //    var b = new SharpEngineMathUtility.Vector3(
+                //        solid.vertices[indicedata[index + 1]].x,
+                //        solid.vertices[indicedata[index + 1]].y,
+                //        solid.vertices[indicedata[index + 1]].z);
+
+                //    var c = new SharpEngineMathUtility.Vector3(
+                //        solid.vertices[indicedata[index + 2]].x,
+                //        solid.vertices[indicedata[index + 2]].y,
+                //        solid.vertices[indicedata[index + 2]].z);
+
+                //    SharpEngineMathUtility.Vector3 normal =
+                //        SharpEngineMathUtility.GeometryUtilities.CalculateNormal(a, b, c);
+
+                //    GL.Normal3(normal.x, normal.y, normal.z);
+                //}
+
+                //if (GLM_SMOOTH)
+                //    GL.Normal3(
+                //        solid.normals[normalData[index]].x,
+                //        solid.normals[normalData[index]].y,
+                //        solid.normals[normalData[index]].z);
+
+                //if (GLM_TEXTURE && solid.uv.Length > 0)
+                //    GL.TexCoord2(
+                //        solid.uv[textureData[index]].x,
+                //        solid.uv[textureData[index]].y);
+
+                GL.Vertex3(
+                    faces[i][0].x - translate.x,
+                    faces[i][0].y - translate.y,
+                    faces[i][0].z - translate.z);
+
+                //if (GLM_SMOOTH)
+                //    GL.Normal3(
+                //        solid.normals[normalData[index + 1]].x,
+                //        solid.normals[normalData[index + 1]].y,
+                //        solid.normals[normalData[index + 1]].z);
+
+                //if (GLM_TEXTURE && solid.uv.Length > 0)
+                //    GL.TexCoord2(
+                //        solid.uv[textureData[index + 1]].x,
+                //        solid.uv[textureData[index + 1]].y);
+
+                GL.Vertex3(
+                    faces[i][1].x - translate.x,
+                    faces[i][1].y - translate.y,
+                    faces[i][1].z - translate.z);
+
+                //if (GLM_SMOOTH)
+                //    GL.Normal3(
+                //        solid.normals[normalData[index + 2]].x,
+                //        solid.normals[normalData[index + 2]].y,
+                //        solid.normals[normalData[index + 2]].z);
+
+                //if (GLM_TEXTURE && solid.uv.Length > 0)
+                //    GL.TexCoord2(
+                //        solid.uv[textureData[index + 2]].x,
+                //        solid.uv[textureData[index + 2]].y);
+
+                GL.Vertex3(
+                    faces[i][2].x - translate.x,
+                    faces[i][2].y - translate.y,
+                    faces[i][2].z - translate.z);
+
+            }
+
+            GL.End();
+        }
+
+        #endregion
+
+    }
 }
 

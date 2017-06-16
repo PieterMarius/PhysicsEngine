@@ -12,6 +12,8 @@ using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 using SharpEngineMathUtility;
+using ConvexHullGenerator;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace TestPhysics
 {
@@ -58,49 +60,85 @@ namespace TestPhysics
 
         #endregion
 
-        //void TestNumeric()
-        //{
-        //    int nvalue = 10000000;
-        //    stopwatch.Reset();
-        //    stopwatch.Start();
-        //    System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
+        void TestNumeric()
+        {
+            int nvalue = 30000000;
+            stopwatch.Reset();
+            stopwatch.Start();
+            
+            System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
 
-        //    //double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
-        //    for (int i = 0; i < nvalue; i++)
-        //        testVector[i] = new System.Numerics.Vector3(0, 0, 0);
+            //double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
+            for (int i = 0; i < nvalue; i++)
+                testVector[i] = new System.Numerics.Vector3(2, 3, 5);
 
-        //    System.Numerics.Vector3 test;
-        //    for (int i = 0; i < nvalue; i++)
-        //        test = testVector[i] * 1.0f;
+            System.Numerics.Vector3 test;
+            for (int i = 0; i < nvalue; i++)
+                test = testVector[i] * 2.0f;
 
-        //    stopwatch.Stop();
-        //    Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-        //    stopwatch.Reset();
-        //    stopwatch.Start();
+            stopwatch.Reset();
+            stopwatch.Start();
 
-        //    PhysicsEngineMathUtility.Vector3[] testVector1 = new PhysicsEngineMathUtility.Vector3[nvalue];
+            SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
 
-        //    for (int i = 0; i < nvalue; i++)
-        //        testVector1[i] = new PhysicsEngineMathUtility.Vector3(0.0, 0.0, 0.0);
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
 
-        //    PhysicsEngineMathUtility.Vector3 test1;
-        //    for (int i = 0; i < nvalue; i++)
-        //        test1 = testVector1[i] * 1.0;
+            SharpEngineMathUtility.Vector3 test1;
+            for (int i = 0; i < nvalue; i++)
+                test1 = testVector1[i] * 2.0;
 
-        //    stopwatch.Stop();
-        //    Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
+            stopwatch.Start();
+
+            //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
+
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+
+            //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
+
+            double[] test2;
+            //System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
+            List<double> test3 = new List<double>();
+            //double[] test4 = new double[nvalue * 3];
+
+            for (int i = 0; i < nvalue; i++)
+            {
+               // int index = (i * 3);
+                test3.AddRange(testVector1[i].ToList);
+                //test4[index] = testVector1[i].x;
+                //test4[index +1] = testVector1[i].y;
+                //test4[index +2] = testVector1[i].z;
+
+                //test3.AddRange(testVector1[i].Array);
+                //test3.Add(0);
 
 
-        //}
+            }
+
+            test2 = SIMDMathUtility.SIMDArrayProductScalar(test3.ToArray(), 2.0);
+
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+
+        }
 
         NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
-
+        List<IGeometry> convexShape = new List<IGeometry>();
 
         List<Line> octTreeLine = new List<Line>();
         void initProgram()
 		{
-			try
+            //TestNumeric();
+            try
 			{
 
                 //testConvexDecomp.Decompose(0.08);
@@ -144,14 +182,28 @@ namespace TestPhysics
 
                 ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
 
-                OctTree octTree = new OctTree(
+                stopwatch.Reset();
+                stopwatch.Start();
+
+                ShapeConvexDecomposition shapeConvexDec = new ShapeConvexDecomposition(
                     region,
-                    softShape.Triangle.ToList(),
-                    Array.ConvertAll(softShape.ShapePoints, item => item.Position));
+                    Array.ConvertAll(softShape.ShapePoints, item => new Vertex3wIndex(item.Position, 0)).ToList());
 
-                octTree.BuildOctree();
+                //OctTree octTree = new OctTree(
+                //    region,
+                //    softShape.Triangle.ToList(),
+                //    Array.ConvertAll(softShape.ShapePoints, item => item.Position).ToList(),
+                //    Array.ConvertAll(softShape.ShapePoints, item => item.Position));
 
-                octTree.Render(ref octTreeLine);
+                //octTree.BuildOctree();
+                shapeConvexDec.BuildOctree();
+
+                stopwatch.Stop();
+                Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+                //octTree.Render(ref octTreeLine);
+                shapeConvexDec.GetConvexShapeList((IShape)softShape, ref convexShape);
+               
 
                 //TODO provare a spostare vertici
 
@@ -224,7 +276,7 @@ namespace TestPhysics
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
-            //displayPartitionedContact();
+            displayPartitionedContact();
 
             //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
             //    displayVertex(i);
@@ -238,6 +290,7 @@ namespace TestPhysics
                 SetOpenGLObjectMatrixAndDisplayObject(i);
 
             displayOctree();
+            displayConvexDecomposition();
 
             GL.Flush ();
 			SwapBuffers ();
@@ -897,6 +950,36 @@ namespace TestPhysics
         {
             foreach (var item in octTreeLine)
                 OpenGLUtilities.DrawLine(item.a, item.b);
+        }
+
+        private void displayConvexDecomposition()
+        {
+            foreach(var shape in convexShape)
+            {
+                var test = false;
+                if (shape.VertexPosition.Length <= 3)
+                    test = true;
+
+                //List<IVertex> vtx = new List<IVertex>();
+                //foreach (var item in shape.VertexPosition)
+                //    vtx.Add(new DefaultVertex() { Position = item.Vertex.Array});
+
+                IVertex[] vtx = Array.ConvertAll(shape.VertexPosition, x => new DefaultVertex() { Position = x.Vertex.Array });
+                
+                ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx.ToList());
+                
+                var cv = Array.ConvertAll(cHull.Faces.ToArray(), x => 
+                    new SharpEngineMathUtility.Vector3[] {
+                        new SharpEngineMathUtility.Vector3(x.Vertices[0].Position[0], x.Vertices[0].Position[1], x.Vertices[0].Position[2]),
+                        new SharpEngineMathUtility.Vector3(x.Vertices[1].Position[0], x.Vertices[1].Position[1], x.Vertices[1].Position[2]),
+                        new SharpEngineMathUtility.Vector3(x.Vertices[2].Position[0], x.Vertices[2].Position[1], x.Vertices[2].Position[2])});
+
+                GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
+                               
+                OpenGLUtilities.GLDrawSolid(cv, new SharpEngineMathUtility.Vector3(1.0,1.0,1.0), false, false, false);
+
+                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+            }
         }
 
         private void displayOrigin()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SharpEngineMathUtility
 {
@@ -125,6 +126,14 @@ namespace SharpEngineMathUtility
 				}
 			}
 		}
+
+        public List<double> ToList
+        {
+            get
+            {
+                return new List<double>() { x, y, z };
+            }
+        }
 
 		public static bool operator>(Vector3 a, Vector3 b)
 		{

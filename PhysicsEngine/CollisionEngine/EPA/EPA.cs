@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -41,17 +40,17 @@ namespace SharpPhysicsEngine.CollisionEngine
             		       
 		private void GetEpaVertexFromMinkowsky(
 			SupportTriangle triangle,
-            IGeometry shape1,
-            IGeometry shape2,
+            Vector3[] vertexShape1,
+            Vector3[] vertexShape2,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = Helper.GetVertexPosition(shape1, triangle.a.a);
-			Vector3 ba1 = Helper.GetVertexPosition(shape1, triangle.b.a) - a1;
-			Vector3 ca1 = Helper.GetVertexPosition(shape1, triangle.c.a) - a1;
+			Vector3 a1 = vertexShape1[triangle.a.a];
+            Vector3 ba1 = vertexShape1[triangle.b.a] - a1;
+			Vector3 ca1 = vertexShape1[triangle.c.a] - a1;
 
-			Vector3 a2 = Helper.GetVertexPosition(shape2, triangle.a.b);
-			Vector3 ba2 = Helper.GetVertexPosition(shape2, triangle.b.b) - a2;
-			Vector3 ca2 = Helper.GetVertexPosition(shape2, triangle.c.b) - a2;
+			Vector3 a2 = vertexShape2[triangle.a.b];
+			Vector3 ba2 = vertexShape2[triangle.b.b] - a2;
+			Vector3 ca2 = vertexShape2[triangle.c.b] - a2;
 
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
@@ -66,6 +65,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private EngineCollisionPoint ExecuteEngine(
             IGeometry shape1,
             IGeometry shape2,
+            Vector3[] vertexShape1,
+            Vector3[] vertexShape2,
             List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
@@ -125,9 +126,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 							GetEpaVertexFromMinkowsky(
 								triangles[i],
-								shape1,
-								shape2,
-								ref epaCollisionPoint);
+                                vertexShape1,
+                                vertexShape2,
+                                ref epaCollisionPoint);
 						}
 					}
 
@@ -143,6 +144,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                     Support vt = Helper.GetMinkowskiFarthestPoint(
                              shape1,
                              shape2,
+                             vertexShape1,
+                             vertexShape2,
                              direction.Normalize());
 
                     triangles = Helper.AddPointToConvexPolygon (
@@ -175,9 +178,14 @@ namespace SharpPhysicsEngine.CollisionEngine
             List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{
-			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
+            Vector3[] vertexObjA = Helper.SetVertexPosition(objectA);
+            Vector3[] vertexObjB = Helper.SetVertexPosition(objectB);
+
+            EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
 				                                      objectA,
 				                                      objectB,
+                                                      vertexObjA,
+                                                      vertexObjB,
 				                                      startTriangles,
 													  centroid);
 

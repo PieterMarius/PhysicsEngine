@@ -7,21 +7,21 @@ namespace SharpPhysicsEngine.CollisionEngine
 	public class GJK
 	{
 
-		#region Settings Variable
+		#region Settings Variables
 
 		public int MaxIterations { get; private set; }
 		public double Precision { get; private set; }
 		public double GJKManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		readonly Vector3 origin = new Vector3();
-		readonly double constTolerance = 0.0000001;
+		private readonly Vector3 origin = new Vector3();
+		private readonly double constTolerance = 0.0000001;
         
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public GJK (
+        public GJK (
 			int maxIterations,
 			double precision,
 			double gjkTolerance,
@@ -35,23 +35,24 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#endregion
 
-		#region "Private Methods"
+		#region Private Methods
 
-		/// <summary>
+        /// <summary>
 		/// Gets the farthest vertex point between two input objects.
 		/// </summary>
 		/// <returns>The farthest point.</returns>
 		/// <param name="objA">Object a.</param>
 		/// <param name="objB">Object b.</param>
 		private Support GetFarthestPoint(
-			IGeometry objA,
-            IGeometry objB)
+			Vector3[] vertexObjA,
+            Vector3[] vertexObjB,
+            int startIndex)
 		{
 			int indexA = 0;
-			int indexB = objB.RelativePosition.Length / 2;
-
+            int indexB = startIndex;
+            
             return new Support(
-                Helper.GetVertexPosition(objA, indexA) - Helper.GetVertexPosition(objB, indexB),
+                vertexObjA[indexA] - vertexObjB[indexB],
                 indexA,
                 indexB);
 		}
@@ -131,6 +132,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private double ExecuteGJKAlgorithm(
 			IGeometry shape1,
             IGeometry shape2,
+            Vector3[] vertexShape1,
+            Vector3[] vertexShape2,
 			ref Vector3 collisionNormal,
 			ref CollisionPoint cp,
 			ref List<SupportTriangle> triangles,
@@ -144,16 +147,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 			var simplex = new Simplex();
 
             //Primo punto del simplex
-            simplex.Support.Add(GetFarthestPoint(shape1, shape2));
+            simplex.Support.Add(GetFarthestPoint(vertexShape1, vertexShape2, shape2.RelativePosition.Length / 2));
 
 			//Secondo punto del simplex
 			Vector3 direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
-            if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+            if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, direction)))
                 return -1.0;
 
 			//Terzo punto del simplex
 			direction = Vector3.Normalize(GetDirectionOnSimplex2(simplex));
-			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, direction)))
                 return -1.0;
 
             	//Quarto punto del simplex
@@ -162,8 +165,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 				simplex.Support[1].s,
 				simplex.Support[2].s));
 
-			if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
-				simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, -1.0 * direction));
+			if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, direction)))
+				simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, -1.0 * direction));
 
 			//Costruisco il poliedro
 			centroid = Helper.SetStartTriangle(
@@ -181,7 +184,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			result.SetDist(triangleDistance);
 			result.SetNormal(Vector3.Normalize(triangleDistance));
-			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
+			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
 
 			minDistance = triangleDistance.Length();
 
@@ -199,14 +202,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 				oldDirection = direction;
 
-				if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+				if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, direction)))
 				{
 					for (int j = 0; j < triangles.Count; j++)
 					{
 						direction = triangles[j].normal;
-						if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, direction)))
+						if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, direction)))
 						{
-							if (simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, -1.0 * direction)))
+							if (simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(shape1, shape2, vertexShape1, vertexShape2, -1.0 * direction)))
 							   break;
 							
 							continue;
@@ -232,7 +235,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				{
 					result.SetDist(triangleDistance);
 					result.SetNormal(Vector3.Normalize(triangleDistance));
-					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], shape1, shape2, ref result);
+					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
 
 					minDistance = mod;
 				}
@@ -247,7 +250,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			
 			return minDistance;
 		}
-			
+        			
 		#endregion
 
 		#region Public Methods
@@ -268,9 +271,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			var centroid = new Vector3();
 			bool isIntersection = false;
 
-			double collisionDistance = ExecuteGJKAlgorithm (
+            Vector3[] vertexObjA = Helper.SetVertexPosition(objectA);
+            Vector3[] vertexObjB = Helper.SetVertexPosition(objectB);
+
+            //TODO refactoring
+            double collisionDistance = ExecuteGJKAlgorithm (
 				                          objectA,
 				                          objectB,
+                                          vertexObjA,
+                                          vertexObjB,
 				                          ref collisionNormal,
 				                          ref collisionPoint,
 				                          ref supportTriangles,

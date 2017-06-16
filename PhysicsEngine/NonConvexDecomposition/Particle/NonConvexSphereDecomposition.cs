@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace TestPhysics
 {
+    [Obsolete]
     public class NonConvexSphereDecomposition
     {
         #region Fields

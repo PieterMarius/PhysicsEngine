@@ -1,6 +1,7 @@
 ﻿using SharpEngineMathUtility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -12,28 +13,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// Vertex Position
         /// </summary>
 		public VertexAdjacency[] VertexPosition { get; private set; }
-        
         /// <summary>
         /// Triangle Index
         /// </summary>
         public TriangleIndexes[] Triangle { get; private set; }
-        
         /// <summary>
         /// Bounding Box
         /// </summary>
         public AABB AABBox { get; private set; }
-        
         /// <summary>
         /// Get the geometry property of object
         /// </summary>
         public ObjectGeometryType GeometryType { get; private set; }
         /// <summary>
-        /// 
+        /// Relative position respect mass center
         /// </summary>
         public Vector3[] RelativePosition { get; private set; }
-
         /// <summary>
-        /// 
+        /// Pointer to belonging shape 
         /// </summary>
         public IShape Shape { get; private set; }
 
@@ -56,7 +53,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 Triangle = inputTriangle;
                 
                 SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
-                
             }
             else
             {
@@ -125,76 +121,32 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     if (Triangle != null && 
                         getAdjacencyList)
                     {
-                        List<int> adjacencyList = new List<int>();
+                        HashSet<int> adjacencyList = new HashSet<int>();
 
                         for (int j = 0; j < Triangle.Length; j++)
                         {
                             if (Triangle[j].a == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].b);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].c);
+                                adjacencyList.Add(Triangle[j].b);
+                                adjacencyList.Add(Triangle[j].c);
                                 continue;
                             }
                             if (Triangle[j].b == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].a);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].c);
+                                adjacencyList.Add(Triangle[j].a);
+                                adjacencyList.Add(Triangle[j].c);
                                 continue;
                             }
                             if (Triangle[j].c == i)
                             {
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].a);
-                                AddAdjacencyItem(ref adjacencyList, Triangle[j].b);
+                                adjacencyList.Add(Triangle[j].a);
+                                adjacencyList.Add(Triangle[j].b);
                                 continue;
                             }
                         }
-                        VertexPosition[i].SetAdjacencyList(adjacencyList);
+                        VertexPosition[i].SetAdjacencyList(adjacencyList.ToList());
                     }
                 });
-        }
-
-        private void AddAdjacencyItem(
-            ref List<int> adjacencyList,
-            int itemIndex)
-        {
-            if (!adjacencyList.Contains(itemIndex))
-                adjacencyList.Add(itemIndex);
-        }
-
-        #endregion
-    }
-
-    public class VertexAdjacency
-    {
-        #region Fields
-
-        public Vector3 Vertex { get; private set; }
-        public List<int> Adjacency { get; private set; }
-
-        #endregion
-
-        #region Constructor
-
-        public VertexAdjacency(
-            Vector3 vertex,
-            List<int> adjacency)
-        {
-            Vertex = vertex;
-            Adjacency = adjacency;
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public void SetVertexPosition(Vector3 position)
-        {
-            Vertex = position;
-        }
-
-        public void SetAdjacencyList(List<int> adjacencyList)
-        {
-            Adjacency = adjacencyList;
         }
 
         #endregion

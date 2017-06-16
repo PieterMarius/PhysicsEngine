@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
-using System;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -12,22 +11,24 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public static Support GetMinkowskiFarthestPoint(
             IGeometry objA,
             IGeometry objB,
+            Vector3[] vertexObjA,
+            Vector3[] vertexObjB,
             Vector3 direction)
 		{
             int a = 0;
             int b = 0;
             if (objA.GeometryType == ObjectGeometryType.ConvexBody)
-                a = GetFarthestPoint(objA, direction);
+                a = GetFarthestPoint(objA, vertexObjA, direction);
             else
-                a = GetNonConvexFarthestPoint(objA, direction);
+                a = GetNonConvexFarthestPoint(objA, vertexObjA, direction);
 
             if (objB.GeometryType == ObjectGeometryType.ConvexBody)
-                b = GetFarthestPoint(objB, direction * -1.0);
+                b = GetFarthestPoint(objB, vertexObjB, direction * -1.0);
             else
-                b = GetNonConvexFarthestPoint(objB, direction * -1.0);
+                b = GetNonConvexFarthestPoint(objB, vertexObjB, direction * -1.0);
             
             	var sp = new Support(
-                GetVertexPosition(objA, a) - GetVertexPosition(objB, b),
+                vertexObjA[a] - vertexObjB[b],
 				a,
 				b);
 
@@ -36,11 +37,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static int GetFarthestPoint(
 			IGeometry obj,
+            Vector3[] vertexObj,
 			Vector3 direction)
 		{
 			int index = 0;
             bool check = true;
-            double maxDot = Vector3.Dot(GetVertexPosition(obj, index), direction);
+            double maxDot = Vector3.Dot(vertexObj[index], direction);
             
             while(check)
             {
@@ -49,7 +51,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                 for (int i = 0; i < obj.VertexPosition[index].Adjacency.Count; i++)
                 {
-                    double dot = Vector3.Dot(GetVertexPosition(obj, obj.VertexPosition[index].Adjacency[i]), direction);
+                    double dot = Vector3.Dot(vertexObj[obj.VertexPosition[index].Adjacency[i]], direction);
                     if (dot > maxDot)
                     {
                         maxDot = dot;
@@ -76,14 +78,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public static int GetNonConvexFarthestPoint(
             IGeometry obj,
+            Vector3[] vertexObj,
             Vector3 direction)
         {
             int index = 0;
-            double maxDot = Vector3.Dot(GetVertexPosition(obj, index), direction);
+            double maxDot = Vector3.Dot(vertexObj[index], direction);
 
             for (int i = 1; i < obj.VertexPosition.Length; i++)
             {
-                Vector3 vertex = GetVertexPosition(obj, i);
+                Vector3 vertex = vertexObj[i];
                 double dot = Vector3.Dot(vertex, direction);
 
                 if (dot > maxDot)
@@ -266,27 +269,37 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static void GetVertexFromMinkowsky(
 			SupportTriangle triangle,
-			IGeometry shape1,
-			IGeometry shape2,
+            Vector3[] vertexShape1,
+            Vector3[] vertexShape2,
             ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = GetVertexPosition(shape1, triangle.a.a);
-			Vector3 ba1 = GetVertexPosition(shape1, triangle.b.a) - a1;
-			Vector3 ca1 = GetVertexPosition(shape1, triangle.c.a) - a1;
+			Vector3 a1 = vertexShape1[triangle.a.a];
+			Vector3 ba1 = vertexShape1[triangle.b.a] - a1;
+			Vector3 ca1 = vertexShape1[triangle.c.a] - a1;
 
-			Vector3 a2 = GetVertexPosition(shape2, triangle.a.b);
-            Vector3 ba2 = GetVertexPosition(shape2, triangle.b.b) - a2;
-			Vector3 ca2 = GetVertexPosition(shape2, triangle.c.b) - a2;
+			Vector3 a2 = vertexShape2[triangle.a.b];
+            Vector3 ba2 = vertexShape2[triangle.b.b] - a2;
+			Vector3 ca2 = vertexShape2[triangle.c.b] - a2;
 
 			collisionPoint.SetA(a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			collisionPoint.SetB(a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}
 
-		#endregion
+        public static Vector3[] SetVertexPosition(IGeometry obj)
+        {
+            Vector3[] vertexPosition = new Vector3[obj.VertexPosition.Length];
 
-		#region Private Methods
+            for (int i = 0; i < obj.VertexPosition.Length; i++)
+                vertexPosition[i] = GetVertexPosition(obj, i);
 
-		private static List<SupportTriangle> AddTriangle(
+            return vertexPosition;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static List<SupportTriangle> AddTriangle(
 			List<Edge> edge,
 			List<SupportTriangle> triangles,
 			Support p,
