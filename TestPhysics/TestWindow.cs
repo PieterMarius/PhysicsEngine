@@ -132,7 +132,7 @@ namespace TestPhysics
         }
 
         NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
-        List<IGeometry> convexShape = new List<IGeometry>();
+        List<List<Vertex3Index>> convexShape = new List<List<Vertex3Index>>();
 
         List<Line> octTreeLine = new List<Line>();
         void initProgram()
@@ -187,12 +187,12 @@ namespace TestPhysics
 
                 ShapeConvexDecomposition shapeConvexDec = new ShapeConvexDecomposition(
                     region,
-                    Array.ConvertAll(softShape.ShapePoints, item => new Vertex3wIndex(item.Position, 0)).ToList());
+                    Array.ConvertAll(softShape.ShapePoints, item => item.Position),
+                    softShape.Triangle);
 
                 //OctTree octTree = new OctTree(
                 //    region,
                 //    softShape.Triangle.ToList(),
-                //    Array.ConvertAll(softShape.ShapePoints, item => item.Position).ToList(),
                 //    Array.ConvertAll(softShape.ShapePoints, item => item.Position));
 
                 //octTree.BuildOctree();
@@ -202,8 +202,8 @@ namespace TestPhysics
                 Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
                 //octTree.Render(ref octTreeLine);
-                shapeConvexDec.GetConvexShapeList((IShape)softShape, ref convexShape);
-               
+                convexShape = shapeConvexDec.GetConvexShapeList();
+               // octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
 
                 //TODO provare a spostare vertici
 
@@ -239,6 +239,8 @@ namespace TestPhysics
 				throw new Exception (e.StackTrace);
 			}
 		}
+
+        
 			
 		#region OpenGL Windows Settings
 
@@ -252,10 +254,8 @@ namespace TestPhysics
 
 			//OpenGL Windows properties settings
 			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
 		}
 			
-
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
 			base.OnRenderFrame (e);
@@ -954,28 +954,79 @@ namespace TestPhysics
 
         private void displayConvexDecomposition()
         {
-            foreach(var shape in convexShape)
+            ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+
+            foreach (var shape in convexShape)
             {
                 var test = false;
-                if (shape.VertexPosition.Length <= 3)
-                    test = true;
+                //if (shape.Count <= 4)
+                //    continue;
 
+                List<IVertex> vtx = new List<IVertex>(shape);
                 //List<IVertex> vtx = new List<IVertex>();
-                //foreach (var item in shape.VertexPosition)
-                //    vtx.Add(new DefaultVertex() { Position = item.Vertex.Array});
 
-                IVertex[] vtx = Array.ConvertAll(shape.VertexPosition, x => new DefaultVertex() { Position = x.Vertex.Array });
+                HashSet<int> triIdx = new HashSet<int>();
+                foreach (var item in shape)
+                {
+                    for (int i = 0; i < item.Indexes.Length; i++)
+                    {
+                        if(triIdx.Add(softShape.Triangle[item.Indexes[i]].a))
+                            vtx.Add(new Vertex3Index(softShape.ShapePoints[softShape.Triangle[item.Indexes[i]].a].Position, null));
+
+                        if (triIdx.Add(softShape.Triangle[item.Indexes[i]].b))
+                            vtx.Add(new Vertex3Index(softShape.ShapePoints[softShape.Triangle[item.Indexes[i]].b].Position, null));
+
+                        if (triIdx.Add(softShape.Triangle[item.Indexes[i]].c))
+                            vtx.Add(new Vertex3Index(softShape.ShapePoints[softShape.Triangle[item.Indexes[i]].c].Position, null));
+                    }
+                }
+
                 
-                ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx.ToList());
                 
-                var cv = Array.ConvertAll(cHull.Faces.ToArray(), x => 
+                SharpEngineMathUtility.Vector3[] alignedPoint = new SharpEngineMathUtility.Vector3[4]
+                {
+                    ((Vertex3Index)vtx[0]).Vector3,
+                    ((Vertex3Index)vtx[1]).Vector3,
+                    ((Vertex3Index)vtx[2]).Vector3,
+                    ((Vertex3Index)vtx[3]).Vector3
+                };
+
+                bool isAligned = GeometryUtilities.TestAlignedPlanePoints(alignedPoint);
+
+                //Console.WriteLine("n vertex " + vtx.Count);
+
+                ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = null;
+                if(!isAligned)
+                {
+                    cHull = ConvexHull.Create(vtx.ToList());
+                }
+                else 
+                {
+                    SharpEngineMathUtility.Vector3 vt = new SharpEngineMathUtility.Vector3(vtx[0].Position[0] + GetRandomNumber(-0.01, 0.01),
+                                                                                           vtx[0].Position[1] + GetRandomNumber(-0.01, 0.01),
+                                                                                           vtx[0].Position[2] + GetRandomNumber(-0.01, 0.01));
+                    vtx[0] = new Vertex3Index(vt, ((Vertex3Index)vtx[0]).Indexes);
+                    cHull = ConvexHull.Create(vtx.ToList());
+                }
+
+
+
+
+                var cv = Array.ConvertAll(cHull.Faces.ToArray(), x =>
                     new SharpEngineMathUtility.Vector3[] {
                         new SharpEngineMathUtility.Vector3(x.Vertices[0].Position[0], x.Vertices[0].Position[1], x.Vertices[0].Position[2]),
                         new SharpEngineMathUtility.Vector3(x.Vertices[1].Position[0], x.Vertices[1].Position[1], x.Vertices[1].Position[2]),
                         new SharpEngineMathUtility.Vector3(x.Vertices[2].Position[0], x.Vertices[2].Position[1], x.Vertices[2].Position[2])});
 
+                //var cv = Array.ConvertAll(shape.Triangle, x => new SharpEngineMathUtility.Vector3[] {
+                //    new SharpEngineMathUtility.Vector3(shape.VertexPosition[x.a].Vertex.x, shape.VertexPosition[x.a].Vertex.y, shape.VertexPosition[x.a].Vertex.z),
+                //    new SharpEngineMathUtility.Vector3(shape.VertexPosition[x.b].Vertex.x, shape.VertexPosition[x.b].Vertex.y, shape.VertexPosition[x.b].Vertex.z),
+                //    new SharpEngineMathUtility.Vector3(shape.VertexPosition[x.c].Vertex.x, shape.VertexPosition[x.c].Vertex.y, shape.VertexPosition[x.c].Vertex.z)
+                //});
+
                 GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
                                
+
                 OpenGLUtilities.GLDrawSolid(cv, new SharpEngineMathUtility.Vector3(1.0,1.0,1.0), false, false, false);
 
                 GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);

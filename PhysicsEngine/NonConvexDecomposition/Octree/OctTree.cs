@@ -12,7 +12,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         /// <summary>
         /// The minumum size for enclosing region is a 1x1x1 cube.
         /// </summary>
-        private const double MIN_SIZE = 0.01;
+        private const double MIN_SIZE = 0.005;
 
         private AABB region;
 
@@ -90,17 +90,20 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         public void GetConvexShapeList(IShape shape, ref List<IGeometry> geometry)
         {
             HashSet<Vector3> convexPoint = new HashSet<Vector3>();
+            List<TriangleIndexes> inputTriangle = new List<TriangleIndexes>();
 
             foreach (var triangle in triangles)
             {
                 convexPoint.Add(VertexPosition[triangle.a]);
                 convexPoint.Add(VertexPosition[triangle.b]);
                 convexPoint.Add(VertexPosition[triangle.c]);
+
+                inputTriangle.Add(new TriangleIndexes(triangle.a, triangle.b, triangle.c));
             }
 
-            if (convexPoint.Count > 3)
+            if (inputTriangle.Count > 0)
             {
-                geometry.Add(new Geometry(shape, convexPoint.ToArray(), null, ObjectGeometryType.ConvexBody, false));
+                geometry.Add(new Geometry(shape, convexPoint.ToArray(), inputTriangle.ToArray(), ObjectGeometryType.ConvexBody, false));
             }
 
             for (int a = 0; a < 8; a++)
@@ -163,7 +166,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         private void BuildTree()
         {
             //terminate the recursion if we're a leaf node
-            if (triangles.Count <= 1)
+            if (triangles.Count <= 4)
                 return;
 
             Vector3 dimensions = region.Max - region.Min;
@@ -196,12 +199,12 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 
             //This will contain all of our objects which fit within each respective octant.
             List<TriangleIndexes>[] octList = new List<TriangleIndexes>[8];
-            List<TriangleIndexes>[] delist = new List<TriangleIndexes>[8];
+            HashSet<TriangleIndexes> delist = new HashSet<TriangleIndexes>();
 
             for (int i = 0; i < 8; i++)
             {
                 octList[i] = new List<TriangleIndexes>();
-                delist[i] = new List<TriangleIndexes>();
+                
              }
 
             //this list contains all of the objects which got moved down the tree and can be delisted from this node.
@@ -218,29 +221,50 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
                 {
                     for (int a = 0; a < 8; a++)
                     {
-                        if (octant[a].Contains(boundingBox))
+                        if (octant[a].Contains(boundingBox) )
                         {
                             octList[a].Add(triangle);
-                            delist[a].Add(triangle);
+                            delist.Add(triangle);
+                            break;
+                        }
+                    }
+                }
+            }
+                        
+
+            //delist every moved object from this node.
+            foreach (TriangleIndexes obj in delist)
+                triangles.Remove(obj);
+
+            foreach (TriangleIndexes triangle in triangles)
+            {
+                AABB boundingBox = AABB.GetTriangleAABB(new Vector3[3] {
+                    VertexPosition[triangle.a],
+                    VertexPosition[triangle.b],
+                    VertexPosition[triangle.c] });
+
+                if (boundingBox.Min != boundingBox.Max)
+                {
+                    for (int a = 0; a < 8; a++)
+                    {
+                        if (octant[a].Intersect(boundingBox))
+                        {
+                            octList[a].Add(triangle);
+                            delist.Add(triangle);
                             break;
                         }
                     }
                 }
             }
 
-            //delist every moved object from this node.
-            //foreach (TriangleIndexes obj in delist)
-            //    triangles.Remove(obj);
+            foreach (TriangleIndexes obj in delist)
+                triangles.Remove(obj);
 
             //Create child nodes where there are items contained in the bounding region
             for (int a = 0; a < 8; a++)
             {
-                if (octList[a].Count > 3)
+                if (octList[a].Count > 0)
                 {
-                    //delist every moved object from this node.
-                    foreach (TriangleIndexes obj in delist[a])
-                        triangles.Remove(obj);
-
                     childNode[a] = CreateNode(octant[a], octList[a]);
                     m_activeNodes |= (byte)(1 << a);
                     childNode[a].BuildTree();

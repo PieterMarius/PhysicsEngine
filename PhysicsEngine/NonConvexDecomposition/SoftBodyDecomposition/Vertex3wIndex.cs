@@ -1,16 +1,26 @@
-﻿using SharpEngineMathUtility;
+﻿using ConvexHullGenerator;
+using SharpEngineMathUtility;
+using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public struct Vertex3wIndex 
+    public class Vertex3Index : IVertex
     {
-        public Vertex3wIndex(Vector3 v, int i)
+        public Vertex3Index(Vector3 v, int[] indexes)
         {
-            vector3 = v;
-            index = i;
+            Vector3 = v;
+            Indexes = indexes;
         }
 
-        public Vector3 vector3;
-        public int index;
+        public Vector3 Vector3;
+        public int[] Indexes;
+
+        public double[] Position
+        {
+            get
+            {
+                return Vector3.Array;
+            }
+        }
     }
 }
