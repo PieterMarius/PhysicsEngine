@@ -1,6 +1,6 @@
 ﻿using ConvexHullGenerator;
 using SharpEngineMathUtility;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
@@ -12,8 +12,8 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             Indexes = indexes;
         }
 
-        public Vector3 Vector3;
-        public int[] Indexes;
+        public Vector3 Vector3 { get; private set; }
+        public int[] Indexes { get; private set; }
 
         public double[] Position
         {
