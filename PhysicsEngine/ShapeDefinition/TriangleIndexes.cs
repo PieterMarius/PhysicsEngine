@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public sealed class TriangleIndexes
+    public sealed class TriangleIndexes : IEquatable<TriangleIndexes>
     {
         #region Fields
 
@@ -54,6 +54,30 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             return result;
         }
+
+        #region IEquatable
+
+        public override int GetHashCode()
+        {
+            return a.GetHashCode() ^
+                   b.GetHashCode() ^
+                   c.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as TriangleIndexes);
+        }
+
+        public bool Equals(TriangleIndexes triangleIndexes)
+        {
+            return triangleIndexes != null &&
+                   triangleIndexes.a == a &&
+                   triangleIndexes.b == b &&
+                   triangleIndexes.c == c;
+        }
+
+        #endregion
 
         #endregion
 

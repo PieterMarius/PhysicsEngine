@@ -81,3 +81,6 @@ packages/System.Numerics.Vectors.4.3.0/ref/net46/System.Numerics.Vectors.xml
 packages/System.Numerics.Vectors.4.3.0/ref/netstandard1.0/System.Numerics.Vectors.xml
 *.suo
 .vs/*
+ConvexHullUtilities/bin/*
+ConvexHullUtilities/obj/*
+TestPhysics/bin/*

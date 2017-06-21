@@ -176,7 +176,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             InertiaTensor = Matrix3x3.IdentityMatrix();
             SoftConstraint = softConstraint;
             SleepingFrameCount = 0;
-            SetTriangleIndexes();
         }
 
         public SoftShape(
@@ -200,7 +199,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SleepingFrameCount = 0;
 
             SetAABB();
-            SetTriangleIndexes();
         }
 
         #endregion
@@ -394,23 +392,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         this,
                         0.5,
                         0.5));
-            }
-        }
 
-        private void SetTriangleIndexes()
-        {
-            for (int i = 0; i < ShapePoints.Length; i++)
-            {
-                HashSet<int> lstIdx = new HashSet<int>();
-                for (int j = 0; j < Triangle.Length; j++)
-                {
-                    if (Triangle[j].Contains(i))
-                    {
-                        lstIdx.Add(j);
-                    }
-                }
-
-                ShapePoints[i].SetTrianglesIndex(lstIdx.ToArray());
+                //Add triangle index to shape points
+                ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.i);
+                ShapePoints[triangle.value.b].AddTrianglesIndex(triangle.i);
+                ShapePoints[triangle.value.c].AddTrianglesIndex(triangle.i);
             }
         }
 

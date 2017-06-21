@@ -108,9 +108,9 @@ namespace SharpEngineMathUtility
 		public static Vector3 operator*(Matrix3x3 a, Vector3 v)
 		{
 			var result = new Vector3 (
-				                 a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
-				                 a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
-				                 a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
+								 a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
+								 a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
+								 a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
 			return result;
 		}
 
@@ -134,31 +134,31 @@ namespace SharpEngineMathUtility
 				r3x, r3y, r3z);
 		}
 
-        public static Matrix3x3 operator -(Matrix3x3 a, Matrix3x3 b)
-        {
-            double r1x = a.r1c1 - b.r1c1;
-            double r1y = a.r1c2 - b.r1c2;
-            double r1z = a.r1c3 - b.r1c3;
+		public static Matrix3x3 operator -(Matrix3x3 a, Matrix3x3 b)
+		{
+			double r1x = a.r1c1 - b.r1c1;
+			double r1y = a.r1c2 - b.r1c2;
+			double r1z = a.r1c3 - b.r1c3;
 
-            double r2x = a.r2c1 - b.r2c1;
-            double r2y = a.r2c2 - b.r2c2;
-            double r2z = a.r2c3 - b.r2c3;
+			double r2x = a.r2c1 - b.r2c1;
+			double r2y = a.r2c2 - b.r2c2;
+			double r2z = a.r2c3 - b.r2c3;
 
-            double r3x = a.r3c1 - b.r3c1;
-            double r3y = a.r3c2 - b.r3c2;
-            double r3z = a.r3c3 - b.r3c3;
+			double r3x = a.r3c1 - b.r3c1;
+			double r3y = a.r3c2 - b.r3c2;
+			double r3z = a.r3c3 - b.r3c3;
 
-            return new Matrix3x3(
-                r1x, r1y, r1z,
-                r2x, r2y, r2z,
-                r3x, r3y, r3z);
-        }
+			return new Matrix3x3(
+				r1x, r1y, r1z,
+				r2x, r2y, r2z,
+				r3x, r3y, r3z);
+		}
 
-        /// <summary>
-        /// Transpose the specified matrix.
-        /// </summary>
-        /// <param name="a">The alpha component.</param>
-        public static Matrix3x3 Transpose(Matrix3x3 a)
+		/// <summary>
+		/// Transpose the specified matrix.
+		/// </summary>
+		/// <param name="a">The alpha component.</param>
+		public static Matrix3x3 Transpose(Matrix3x3 a)
 		{
 
 			double r1x = a.r1c1;
@@ -302,13 +302,13 @@ namespace SharpEngineMathUtility
 			return new Matrix3x3 ();
 		}
 
-        public static Matrix3x3 OuterProduct(Vector3 a, Vector3 b)
-        {
-            return new Matrix3x3(
-                a.x * b.x, a.x * b.y, a.x * b.z,
-                a.y * b.x, a.y * b.y, a.y * b.z,
-                a.z * b.x, a.z * b.y, a.z * b.z);
-        }
+		public static Matrix3x3 OuterProduct(Vector3 a, Vector3 b)
+		{
+			return new Matrix3x3(
+				a.x * b.x, a.x * b.y, a.x * b.z,
+				a.y * b.x, a.y * b.y, a.y * b.z,
+				a.z * b.x, a.z * b.y, a.z * b.z);
+		}
 
 		#endregion
 

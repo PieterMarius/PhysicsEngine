@@ -76,17 +76,17 @@ namespace SharpEngineMathUtility
 			return new Quaternion (ra, rb, rc, rd);
 		}
 
-        public static Quaternion operator *(double w, Quaternion q2)
-        {
-            double ra = q2.a * w;
-            double rb = q2.b * w;
-            double rc = q2.c * w;
-            double rd = q2.d * w;
+		public static Quaternion operator *(double w, Quaternion q2)
+		{
+			double ra = q2.a * w;
+			double rb = q2.b * w;
+			double rc = q2.c * w;
+			double rd = q2.d * w;
 
-            return new Quaternion(ra, rb, rc, rd);
-        }
+			return new Quaternion(ra, rb, rc, rd);
+		}
 
-        public static Quaternion operator+(Quaternion q1, Quaternion q2)
+		public static Quaternion operator+(Quaternion q1, Quaternion q2)
 		{
 			double ra = q1.a + q2.a;
 			double rb = q1.b + q2.b;
@@ -339,19 +339,19 @@ namespace SharpEngineMathUtility
 			return new Vector3 (bank, heading, attitude);
 		}
 
-        public static double GetAngle(Quaternion q)
-        {
-            return 2.0 * Math.Acos(q.a);
-        }
+		public static double GetAngle(Quaternion q)
+		{
+			return 2.0 * Math.Acos(q.a);
+		}
 
-        public static Vector3 GetVector(Quaternion q)
-        {
-            double s = Math.Sqrt(1 - q.a * q.a);
-            if (s < 0.00001)
-                return new Vector3(q.b, q.c, q.d);
-            else
-                return new Vector3(q.b / s, q.c / s, q.d / s);
-        }
+		public static Vector3 GetVector(Quaternion q)
+		{
+			double s = Math.Sqrt(1 - q.a * q.a);
+			if (s < 0.00001)
+				return new Vector3(q.b, q.c, q.d);
+			else
+				return new Vector3(q.b / s, q.c / s, q.d / s);
+		}
 
 		#endregion
 

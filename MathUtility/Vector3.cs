@@ -127,13 +127,13 @@ namespace SharpEngineMathUtility
 			}
 		}
 
-        public List<double> ToList
-        {
-            get
-            {
-                return new List<double>() { x, y, z };
-            }
-        }
+		public List<double> ToList
+		{
+			get
+			{
+				return new List<double>() { x, y, z };
+			}
+		}
 
 		public static bool operator>(Vector3 a, Vector3 b)
 		{
@@ -146,8 +146,8 @@ namespace SharpEngineMathUtility
 		public static bool operator==(Vector3 a, Vector3 b)
 		{
 			if (Math.Abs (a.x - b.x) < ConstValues.precision &&
-			    Math.Abs (a.y - b.y) < ConstValues.precision &&
-			    Math.Abs (a.z - b.z) < ConstValues.precision)
+				Math.Abs (a.y - b.y) < ConstValues.precision &&
+				Math.Abs (a.z - b.z) < ConstValues.precision)
 				return true;
 			
 			return false;
@@ -231,10 +231,10 @@ namespace SharpEngineMathUtility
 			return Normalize (this);
 		}
 
-        public static Vector3 Zero()
-        {
-            return new Vector3(0.0, 0.0, 0.0);
-        }
+		public static Vector3 Zero()
+		{
+			return new Vector3(0.0, 0.0, 0.0);
+		}
 
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{

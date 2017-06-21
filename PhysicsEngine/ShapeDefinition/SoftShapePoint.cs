@@ -1,6 +1,7 @@
 ﻿using System;
 using SharpEngineMathUtility;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -24,7 +25,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public Vector3 TempLinearVelocity { get; private set; }
         public Matrix3x3 BaseInertiaTensor { get; private set; }
         public Vector3 ForceValue { get; private set; }
-        public int[] TriangleIndex { get; private set; }
+        public HashSet<int> TriangleIndex { get; private set; }
 
         #endregion
 
@@ -34,6 +35,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             Diameter = diameter;
             RotationMatrix = Matrix3x3.IdentityMatrix();
+            TriangleIndex = new HashSet<int>();
         }
 
         #endregion
@@ -95,9 +97,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ForceValue = force;
         }
 
-        public void SetTrianglesIndex(int[] triangleIndexes)
+        public void AddTrianglesIndex(int triangleIndexes)
         {
-            TriangleIndex = triangleIndexes;
+            TriangleIndex.Add(triangleIndexes);
         }
 
         #endregion

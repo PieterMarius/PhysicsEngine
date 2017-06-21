@@ -13,7 +13,7 @@ namespace SharpEngineMathUtility
 		#endregion
 
 		#region Public Static Methods
-        
+		
 		/// <summary>
 		/// Gets the projected point on line.
 		/// </summary>
@@ -457,8 +457,8 @@ namespace SharpEngineMathUtility
 
 			Vector3 f = Vector3.Cross (d, e);
 			if (Math.Abs (f.x) < ConstValues.collinearityTolerance &&
-			    Math.Abs (f.y) < ConstValues.collinearityTolerance &&
-			    Math.Abs (f.z) < ConstValues.collinearityTolerance)
+				Math.Abs (f.y) < ConstValues.collinearityTolerance &&
+				Math.Abs (f.z) < ConstValues.collinearityTolerance)
 				return true;
 
 			return false;
@@ -633,9 +633,9 @@ namespace SharpEngineMathUtility
 			t [23] = vt [1].x * vt [2].y * vt [3].z;
 
 			double d0 = -t [0] + t [1] + t [2] - t [3] - t [4] + t [5] +
-			           t [6] - t [7] - t [8] + t [9] + t [10] - t [11] -
-			           t [12] + t [13] + t [14] - t [15] - t [16] + t [17] +
-			           t [18] - t [19] - t [20] + t [21] + t [22] - t [23];
+					   t [6] - t [7] - t [8] + t [9] + t [10] - t [11] -
+					   t [12] + t [13] + t [14] - t [15] - t [16] + t [17] +
+					   t [18] - t [19] - t [20] + t [21] + t [22] - t [23];
 
 			if (Math.Abs (d0) < ConstValues.precision)
 				return true;
@@ -656,7 +656,7 @@ namespace SharpEngineMathUtility
 			if (a.Equals(0.0) || b.Equals(0.0))
 				return true;
 
- 			if (Math.Sign (a) == Math.Sign (b))
+			if (Math.Sign (a) == Math.Sign (b))
 				return true;
 
 			return false;
@@ -665,8 +665,8 @@ namespace SharpEngineMathUtility
 		public static Vector3 GetPerpendicularVector(Vector3 a)
 		{
 			if (a.x.Equals(0.0) && 
-			    a.y.Equals(0.0) && 
-			    a.z.Equals(0.0)) 
+				a.y.Equals(0.0) && 
+				a.z.Equals(0.0)) 
 			{
 				throw new Exception ("Zero Vector");
 			}
@@ -681,65 +681,65 @@ namespace SharpEngineMathUtility
 			return new Vector3 (1.0, 1.0, -1.0 * (a.x + a.y) / a.z);
 		}
 
-        public static Vector3 TurnOutVNormal(
-            Vector3 normal,
-            Vector3 v)
-        {
-            Vector3 resNormal = normal;
-            if (Vector3.Dot(normal, v) < 0.0)
-                resNormal = normal * -1.0;
-                        
-            return resNormal;
-        }
+		public static Vector3 TurnOutVNormal(
+			Vector3 normal,
+			Vector3 v)
+		{
+			Vector3 resNormal = normal;
+			if (Vector3.Dot(normal, v) < 0.0)
+				resNormal = normal * -1.0;
+						
+			return resNormal;
+		}
 
-        public static Vector3? RayTriangleIntersection(
-            Vector3 v0,
-            Vector3 v1,
-            Vector3 v2,
-            Vector3 point,
-            Vector3 direction,
-            bool bothDirection = false)
-        {
-            Vector3 e1 = v1 - v0;
-            Vector3 e2 = v2 - v0;
+		public static Vector3? RayTriangleIntersection(
+			Vector3 v0,
+			Vector3 v1,
+			Vector3 v2,
+			Vector3 point,
+			Vector3 direction,
+			bool bothDirection = false)
+		{
+			Vector3 e1 = v1 - v0;
+			Vector3 e2 = v2 - v0;
 
-            Vector3 h = Vector3.Cross(direction, e2);
+			Vector3 h = Vector3.Cross(direction, e2);
 
-            double a = Vector3.Dot(e1, h);
+			double a = Vector3.Dot(e1, h);
 
-            if (a > -0.000001 &&
-                a < 0.000001)
-                return null;
+			if (a > -0.000001 &&
+				a < 0.000001)
+				return null;
 
-            double f = 1.0 / a;
+			double f = 1.0 / a;
 
-            Vector3 s = point - v0;
+			Vector3 s = point - v0;
 
-            double u = f * Vector3.Dot(s, h);
+			double u = f * Vector3.Dot(s, h);
 
-            if (u < 0.0 || u > 1.0)
-                return null;
+			if (u < 0.0 || u > 1.0)
+				return null;
 
-            Vector3 q = Vector3.Cross(s, e1);
-            double v = f * Vector3.Dot(direction, q);
+			Vector3 q = Vector3.Cross(s, e1);
+			double v = f * Vector3.Dot(direction, q);
 
-            if (v < 0.0 || u + v > 1.0)
-                return null;
+			if (v < 0.0 || u + v > 1.0)
+				return null;
 
-            double t = f * Vector3.Dot(e2, q);
+			double t = f * Vector3.Dot(e2, q);
 
-            if (t > 0.000001 || 
-                (bothDirection && t < -0.000001))
-            {
-                
-                return point + t * direction;
-            }
-            else
-                return null;
-        }
+			if (t > 0.000001 || 
+				(bothDirection && t < -0.000001))
+			{
+				
+				return point + t * direction;
+			}
+			else
+				return null;
+		}
 
-        #endregion
+		#endregion
 
-    }
+	}
 }
 

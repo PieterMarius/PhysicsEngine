@@ -1,9 +1,9 @@
-﻿using ConvexHullGenerator;
-using SharpEngineMathUtility;
+﻿using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
@@ -11,7 +11,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
     {
         #region Fields
 
-        private double MIN_SIZE = 0.5;
+        private double DecompositionValue;
 
         private AABB region;
 
@@ -20,8 +20,6 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         private List<Vertex3Index> VertexPosition;
 
         private ShapeConvexDecomposition parent;
-
-        private byte m_activeNodes = 0;
 
         private readonly TriangleIndexes[] triangleIndexes;
 
@@ -37,7 +35,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             TriangleIndexes[] triangleIndexes,
             double precisionSize)
         {
-            MIN_SIZE = precisionSize;
+            DecompositionValue = precisionSize;
             this.region = region;
             this.triangleIndexes = triangleIndexes;
             VertexPosition = vertexPosition;
@@ -52,6 +50,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             this.triangleIndexes = triangleIndexes;
             VertexPosition = vertexPosition.ToList();
             BaseVertexPosition = new List<Vertex3Index>(vertexPosition).ToArray();
+            
         }
 
         #endregion
@@ -96,9 +95,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             return new AABB(region.Min, region.Max);
         }
         
-        public Vertex3Index[][][] GetConvexShapeList(double precisionSize)
+        public List<List<Vertex3Index>> GetConvexShapeList(double precisionSize)
         {
-            MIN_SIZE = precisionSize;
+
+            DecompositionValue = precisionSize;
 
             BuildTree();
 
@@ -106,7 +106,13 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             GenerateConvexShapeList(ref convexShapes);
 
-            return FinalizeShape(convexShapes);
+            if (convexShapes.Count > 0)
+            {
+                FinalizeShape(convexShapes);
+                return convexShapes;
+            }
+
+            throw new Exception("Convex Decomposition Failed.");
         }
         
         #endregion
@@ -128,12 +134,12 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
 
             //Check to see if the dimensions of the box are greater than the minimum dimensions
-            if (dimensions.x <= MIN_SIZE && dimensions.y <= MIN_SIZE && dimensions.z <= MIN_SIZE)
+            if (dimensions.x <= DecompositionValue && dimensions.y <= DecompositionValue && dimensions.z <= DecompositionValue)
             {
                 return;
             }
 
-            Vector3 half = dimensions / 2.0f;
+            Vector3 half = dimensions * 0.5;
             Vector3 center = region.Min + half;
 
             //Create subdivided regions for each octant
@@ -178,11 +184,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                 {
                     //delist every moved object from this node.
                     childNode[a] = CreateNode(octant[a], octList[a]);
-                    m_activeNodes |= (byte)(1 << a);
                     childNode[a].BuildTree();
                 }
             }
-
         }
                 
         private ShapeConvexDecomposition CreateNode(AABB region, List<Vertex3Index> objList)
@@ -190,7 +194,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             if (objList.Count == 0)
                 return null;
 
-            ShapeConvexDecomposition ret = new ShapeConvexDecomposition(region, objList, triangleIndexes, MIN_SIZE);
+            ShapeConvexDecomposition ret = new ShapeConvexDecomposition(region, objList, triangleIndexes, DecompositionValue);
             ret.parent = this;
 
             return ret;
@@ -208,41 +212,32 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
         }
 
-        private Vertex3Index[][][] FinalizeShape(List<List<Vertex3Index>> convexShapes)
+        private void FinalizeShape(List<List<Vertex3Index>> convexShapes)
         {
             var convexHullShape = new Vertex3Index[convexShapes.Count][][];
 
-            foreach (var shape in convexShapes.Select((value, i) => new { value, i }))
-            {
-                List<Vertex3Index> bufVertex = new List<Vertex3Index>();
-                HashSet<int> triIdx = new HashSet<int>();
+            Parallel.ForEach(convexShapes.Select((value, i) => new { value, i }),
+                new ParallelOptions { MaxDegreeOfParallelism = 2 },
+                shape =>
+             {
+                 List<Vertex3Index> bufVertex = new List<Vertex3Index>();
+                 HashSet<int> triIdx = new HashSet<int>();
 
-                foreach (var item in shape.value)
-                {
-                    for (int i = 0; i < item.Indexes.Length; i++)
-                    {
-                        if (triIdx.Add(triangleIndexes[item.Indexes[i]].a))
-                            bufVertex.Add(BaseVertexPosition[triangleIndexes[item.Indexes[i]].a]);
-                        if (triIdx.Add(triangleIndexes[item.Indexes[i]].b))
-                            bufVertex.Add(BaseVertexPosition[triangleIndexes[item.Indexes[i]].b]);
-                        if (triIdx.Add(triangleIndexes[item.Indexes[i]].c))
-                            bufVertex.Add(BaseVertexPosition[triangleIndexes[item.Indexes[i]].c]);
-                    }
-                }
-                shape.value.AddRange(bufVertex);
-
-                List<IVertex> vtx = new List<IVertex>(shape.value);
-
-                ConvexHull<IVertex, DefaultConvexFace<IVertex>>  cHull = ConvexHull.Create(vtx.ToList());
-                                
-                convexHullShape[shape.i] = Array.ConvertAll(cHull.Faces.ToArray(), x =>
-                    new Vertex3Index[] {
-                        (Vertex3Index)x.Vertices[0],
-                        (Vertex3Index)x.Vertices[1],
-                        (Vertex3Index)x.Vertices[2] });
-            }
-
-            return convexHullShape;
+                 foreach (var vertex in shape.value)
+                 {
+                     foreach (var idx in vertex.Indexes)
+                     {
+                         if (triIdx.Add(triangleIndexes[idx].a))
+                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].a]);
+                         if (triIdx.Add(triangleIndexes[idx].b))
+                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].b]);
+                         if (triIdx.Add(triangleIndexes[idx].c))
+                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].c]);
+                     }
+                 }
+                 shape.value.AddRange(bufVertex);
+                                  
+             });
         }
 
         #endregion
