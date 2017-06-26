@@ -2,6 +2,7 @@
 using SharpEngineMathUtility;
 using System.Collections.Generic;
 using System.Linq;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -162,6 +163,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public List<SoftBodyConstraint> SoftConstraint { get; private set; }
 
+        public IShapeConvexDecomposition ConvexDecomposition { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -176,6 +179,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             InertiaTensor = Matrix3x3.IdentityMatrix();
             SoftConstraint = softConstraint;
             SleepingFrameCount = 0;
+            ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
 
         public SoftShape(
@@ -194,11 +198,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
             AddSoftShapePoint(shapePoint, diameter);
             BuildSoftConstraint();
 
+            //TODO modificare
             StaticFrictionCoeff = 0.5;
             DynamicFrictionCoeff = 0.5;
             SleepingFrameCount = 0;
 
             SetAABB();
+
+            ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
 
         #endregion

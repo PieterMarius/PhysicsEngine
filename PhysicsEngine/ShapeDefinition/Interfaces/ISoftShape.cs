@@ -1,5 +1,4 @@
-﻿
-using SharpPhysicsEngine;
+﻿using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.ShapeDefinition
@@ -11,6 +10,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
         List<SoftBodyConstraint> SoftConstraint { get; }
+        IShapeConvexDecomposition ConvexDecomposition { get; }
+
 
         void SetPointsMass(double mass);
         void SetShapePoint(SoftShapePoint[] shapePoint);
@@ -18,6 +19,5 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetGeometrySphere(SoftPoint[] geometrySphere);
         void AddConstraint(SoftBodyConstraint constraint);
         void RemoveConstraint(int index);
-
     }
 }

@@ -36,30 +36,30 @@ namespace SharpPhysicsEngine.CollisionEngine
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				i => {
 
-                    for (int k = 0; k < boxs[i].Length; k++)
-                    {
-                        AABB box1 = boxs[i][k];
+					for (int k = 0; k < boxs[i].Length; k++)
+					{
+						AABB box1 = boxs[i][k];
 
-                        for (int j = i + 1; j < boxs.Length; j++)
-                        {
-                            for (int w = 0; w < boxs[j].Length; w++)
-                            {
-                                AABB box2 = boxs[j][w];
+						for (int j = i + 1; j < boxs.Length; j++)
+						{
+							for (int w = 0; w < boxs[j].Length; w++)
+							{
+								AABB box2 = boxs[j][w];
 
-                                if (boxs[i] != null && boxs[j] != null &&
-                                    testAABBAABB(box1, box2, 0, distanceTolerance) &&
-                                    testAABBAABB(box1, box2, 1, distanceTolerance) &&
-                                    testAABBAABB(box1, box2, 2, distanceTolerance))
-                                {
-                                    lock (lockMe)
-                                    {
-                                        collisionPairs.Add(new CollisionPair(i, j));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
+								if (boxs[i] != null && boxs[j] != null &&
+									testAABBAABB(box1, box2, 0, distanceTolerance) &&
+									testAABBAABB(box1, box2, 1, distanceTolerance) &&
+									testAABBAABB(box1, box2, 2, distanceTolerance))
+								{
+									lock (lockMe)
+									{
+										collisionPairs.Add(new CollisionPair(i, j));
+									}
+								}
+							}
+						}
+					}
+					
 				});
 
 			return collisionPairs;

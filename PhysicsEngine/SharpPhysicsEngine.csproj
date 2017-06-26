@@ -91,6 +91,7 @@
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
     <Compile Include="NonConvexDecomposition\Octree\OctTree.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />

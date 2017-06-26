@@ -236,29 +236,29 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             foreach (TriangleIndexes obj in delist)
                 triangles.Remove(obj);
 
-            foreach (TriangleIndexes triangle in triangles)
-            {
-                AABB boundingBox = AABB.GetTriangleAABB(new Vector3[3] {
-                    VertexPosition[triangle.a],
-                    VertexPosition[triangle.b],
-                    VertexPosition[triangle.c] });
+            //foreach (TriangleIndexes triangle in triangles)
+            //{
+            //    AABB boundingBox = AABB.GetTriangleAABB(new Vector3[3] {
+            //        VertexPosition[triangle.a],
+            //        VertexPosition[triangle.b],
+            //        VertexPosition[triangle.c] });
 
-                if (boundingBox.Min != boundingBox.Max)
-                {
-                    for (int a = 0; a < 8; a++)
-                    {
-                        if (octant[a].Intersect(boundingBox))
-                        {
-                            octList[a].Add(triangle);
-                            delist.Add(triangle);
-                            break;
-                        }
-                    }
-                }
-            }
+            //    if (boundingBox.Min != boundingBox.Max)
+            //    {
+            //        for (int a = 0; a < 8; a++)
+            //        {
+            //            if (octant[a].Intersect(boundingBox))
+            //            {
+            //                octList[a].Add(triangle);
+            //                delist.Add(triangle);
+            //                break;
+            //            }
+            //        }
+            //    }
+            //}
 
-            foreach (TriangleIndexes obj in delist)
-                triangles.Remove(obj);
+            //foreach (TriangleIndexes obj in delist)
+            //    triangles.Remove(obj);
 
             //Create child nodes where there are items contained in the bounding region
             for (int a = 0; a < 8; a++)

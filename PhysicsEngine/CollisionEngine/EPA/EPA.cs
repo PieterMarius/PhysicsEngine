@@ -37,20 +37,20 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#endregion
 
 		#region Private Methods
-            		       
+						   
 		private void GetEpaVertexFromMinkowsky(
 			SupportTriangle triangle,
-            Vector3[] vertexShape1,
-            Vector3[] vertexShape2,
+			VertexAdjacency[] vertexShape1,
+			VertexAdjacency[] vertexShape2,
 			ref EngineCollisionPoint epaCollisionPoint)
 		{
-			Vector3 a1 = vertexShape1[triangle.a.a];
-            Vector3 ba1 = vertexShape1[triangle.b.a] - a1;
-			Vector3 ca1 = vertexShape1[triangle.c.a] - a1;
+			Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
+			Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
+			Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
 
-			Vector3 a2 = vertexShape2[triangle.a.b];
-			Vector3 ba2 = vertexShape2[triangle.b.b] - a2;
-			Vector3 ca2 = vertexShape2[triangle.c.b] - a2;
+			Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
+			Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
+			Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
 
 			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
@@ -63,11 +63,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
 		private EngineCollisionPoint ExecuteEngine(
-            IGeometry shape1,
-            IGeometry shape2,
-            Vector3[] vertexShape1,
-            Vector3[] vertexShape2,
-            List<SupportTriangle> triangles,
+			VertexAdjacency[] vertexShape1,
+			VertexAdjacency[] vertexShape2,
+			List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
 			var epaCollisionPoint = new EngineCollisionPoint();
@@ -92,9 +90,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 						epaBuffer = triangles [i];
 
 						if (!GeometryUtilities.TestCollinearity (
-							    epaBuffer.a.s,
-							    epaBuffer.b.s,
-							    epaBuffer.c.s)) 
+								epaBuffer.a.s,
+								epaBuffer.b.s,
+								epaBuffer.c.s)) 
 						{
 							vDistance = GeometryUtilities.GetPointTriangleIntersection (
 								epaBuffer.a.s,
@@ -126,9 +124,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 							GetEpaVertexFromMinkowsky(
 								triangles[i],
-                                vertexShape1,
-                                vertexShape2,
-                                ref epaCollisionPoint);
+								vertexShape1,
+								vertexShape2,
+								ref epaCollisionPoint);
 						}
 					}
 
@@ -141,16 +139,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 					if (direction == oldDirection)
 						break;
 
-                    Support vt = Helper.GetMinkowskiFarthestPoint(
-                             shape1,
-                             shape2,
-                             vertexShape1,
-                             vertexShape2,
-                             direction.Normalize());
+					Support vt = Helper.GetMinkowskiFarthestPoint(
+							 vertexShape1,
+							 vertexShape2,
+							 direction.Normalize());
 
-                    triangles = Helper.AddPointToConvexPolygon (
+					triangles = Helper.AddPointToConvexPolygon (
 						triangles,
-                        vt,
+						vt,
 						centroid);
 
 					oldDirection = direction;
@@ -173,20 +169,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="objectB">Object b.</param>
 		/// <param name="startTriangles">Start triangles.</param>
 		public EPAOutput Execute(
-			IGeometry objectA,
-            IGeometry objectB,
-            List<SupportTriangle> startTriangles,
+			VertexAdjacency[] vertexObjA,
+			VertexAdjacency[] vertexObjB,
+			List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{
-            Vector3[] vertexObjA = Helper.SetVertexPosition(objectA);
-            Vector3[] vertexObjB = Helper.SetVertexPosition(objectB);
+			//VertexAdjacency[] vertexObjA = Helper.SetVertexPosition(objectA);
+			//VertexAdjacency[] vertexObjB = Helper.SetVertexPosition(objectB);
 
-            EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
-				                                      objectA,
-				                                      objectB,
-                                                      vertexObjA,
-                                                      vertexObjB,
-				                                      startTriangles,
+			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
+													  vertexObjA,
+													  vertexObjB,
+													  startTriangles,
 													  centroid);
 
 			var collisionPoint = new CollisionPoint (

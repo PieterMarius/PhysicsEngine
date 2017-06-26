@@ -134,6 +134,12 @@ namespace TestPhysics
 		NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
 		List<List<Vertex3Index>> convexShape = null;
 
+		AABB region = null;
+
+
+		ShapeConvexDecomposition shapeConvexDec = null;
+
+
 		List<Line> octTreeLine = new List<Line>();
 		void initProgram()
 		{
@@ -182,21 +188,36 @@ namespace TestPhysics
 				stopwatch.Reset();
 				stopwatch.Start();
 
-				AABB region = softShape.AABBox;
+				region = softShape.AABBox;
 
-				ShapeConvexDecomposition shapeConvexDec = new ShapeConvexDecomposition(
-					region,
+				
+
+				shapeConvexDec = new ShapeConvexDecomposition(
+				region,
+				softShape.Triangle);
+
+				convexShape = shapeConvexDec.GetConvexShapeList(
 					Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray())),
-					softShape.Triangle);
+					0.2);
 
-				convexShape = shapeConvexDec.GetConvexShapeList(0.2);
+				AABB testRegion = new AABB(
+				new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
+				new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
+
+				convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
+					Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+							item.TriangleIndex.ToArray())),
+						0.2);
 
 				stopwatch.Stop();
 				Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-				//octTree.Render(ref octTreeLine);
-				
-			   // octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
+
+				OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
+				octTree.BuildOctree();
+				octTree.Render(ref octTreeLine);
+
+				// octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
 
 				//TODO provare a spostare vertici
 
@@ -949,6 +970,34 @@ namespace TestPhysics
 		{
 			ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
 
+			//region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
+			//region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);
+
+			//List<List<Vertex3Index>>  convexShape1 = shapeConvexDec.GetConvexShapeList(
+			//		Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+			//			item.TriangleIndex.ToArray())),
+			//		0.2);
+
+
+			AABB testRegion = new AABB(
+				new SharpEngineMathUtility.Vector3(-0.5,-0.3,-0.8),
+				new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
+
+			convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
+				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+						item.TriangleIndex.ToArray())),
+					0.2);
+
+			List<Line> ll = OpenGLUtilities.BuildBoxLine(testRegion.Max, testRegion.Min);
+
+			foreach (var item in ll)
+			{
+				GL.Color3(System.Drawing.Color.Red);
+				OpenGLUtilities.DrawLine(item.a, item.b);
+				GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+			}
+
+
 			foreach (var shape in convexShape)
 			{
 				GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
@@ -961,7 +1010,7 @@ namespace TestPhysics
 
 				var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));               
 
-				OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(1.0,1.0,1.0), false, false, false);
+				OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0,0.0,0.0), false, false, false);
 
 				GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 			}

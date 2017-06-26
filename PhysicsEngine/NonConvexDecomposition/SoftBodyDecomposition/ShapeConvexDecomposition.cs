@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public sealed class ShapeConvexDecomposition
+    public sealed class ShapeConvexDecomposition : IShapeConvexDecomposition
     {
         #region Fields
 
@@ -21,10 +21,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         private ShapeConvexDecomposition parent;
 
+        private Vertex3Index[] BaseVertexPosition;
+
         private readonly TriangleIndexes[] triangleIndexes;
-
-        private readonly Vertex3Index[] BaseVertexPosition;
-
+        
         #endregion
 
         #region Constructor
@@ -43,14 +43,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         public ShapeConvexDecomposition(
             AABB region,
-            Vertex3Index[] vertexPosition,
             TriangleIndexes[] triangleIndexes)
         {
             this.region = region;
-            this.triangleIndexes = triangleIndexes;
-            VertexPosition = vertexPosition.ToList();
-            BaseVertexPosition = new List<Vertex3Index>(vertexPosition).ToArray();
-            
+            this.triangleIndexes = triangleIndexes;            
         }
 
         #endregion
@@ -68,7 +64,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             //A 3D rectangle has a length, height, and width. Of those three dimensions, we want to find the largest dimension.
             //the largest dimension will be the minimum dimensions of the cube we're creating.
-            int highX = (int)System.Math.Ceiling(System.Math.Max(System.Math.Max(region.Max.x, region.Max.y), region.Max.z));
+            int highX = (int)Math.Ceiling(Math.Max(Math.Max(region.Max.x, region.Max.y), region.Max.z));
 
             //see if our cube dimension is already at a power of 2. If it is, we don't have to do any work.
             for (int bit = 0; bit < 32; bit++)
@@ -95,11 +91,15 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             return new AABB(region.Min, region.Max);
         }
         
-        public List<List<Vertex3Index>> GetConvexShapeList(double precisionSize)
+        public List<List<Vertex3Index>> GetConvexShapeList(
+            Vertex3Index[] vertexPosition,
+            double precisionSize)
         {
+            VertexPosition = vertexPosition.ToList();
+            BaseVertexPosition = vertexPosition;
 
             DecompositionValue = precisionSize;
-
+            
             BuildTree();
 
             List<List<Vertex3Index>> convexShapes = new List<List<Vertex3Index>>();
@@ -113,6 +113,31 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
 
             throw new Exception("Convex Decomposition Failed.");
+        }
+
+        public List<List<Vertex3Index>> GetIntersectedShape(
+            AABB box,
+            Vertex3Index[] vertexPosition,
+            double precisionSize)
+        {
+            VertexPosition = vertexPosition.ToList();
+            BaseVertexPosition = vertexPosition;
+
+            DecompositionValue = precisionSize;
+            
+            BuildTree();
+
+            List<List<Vertex3Index>> convexShapes = new List<List<Vertex3Index>>();
+
+            FindIntersectedConvexShape(box, ref convexShapes);
+
+            if (convexShapes.Count > 0)
+            {
+                FinalizeShape(convexShapes);
+                return convexShapes;
+            }
+
+            return null;
         }
         
         #endregion
@@ -209,6 +234,21 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             {
                 if (childNode[a] != null)
                     childNode[a].GenerateConvexShapeList(ref geometry);
+            }
+        }
+
+        private void FindIntersectedConvexShape(AABB box, ref List<List<Vertex3Index>> geometry)
+        {
+            if (region.Intersect(box))
+            {
+                if (VertexPosition.Count > 0)
+                    geometry.Add(new List<Vertex3Index>(VertexPosition));
+
+                for (int a = 0; a < 8; a++)
+                {
+                    if (childNode[a] != null)
+                        childNode[a].FindIntersectedConvexShape(box, ref geometry);
+                }
             }
         }
 

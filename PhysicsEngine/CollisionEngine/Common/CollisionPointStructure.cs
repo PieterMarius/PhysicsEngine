@@ -15,15 +15,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// </summary>
 		public readonly int ObjectB;
 
-        /// <summary>
-        /// Collision Points Base Structure
-        /// </summary>
-        public CollisionPointBaseStructure[] CollisionPointBase { get; private set; }
+		/// <summary>
+		/// Collision Points Base Structure
+		/// </summary>
+		public CollisionPointBaseStructure[] CollisionPointBase { get; private set; }
 
-        /// <summary>
-        /// Persistent contact time counter
-        /// </summary>
-        public int FrameCount { get; private set; }
+		/// <summary>
+		/// Persistent contact time counter
+		/// </summary>
+		public int FrameCount { get; private set; }
 
 		#endregion
 
@@ -32,96 +32,96 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public CollisionPointStructure (
 			int objectA,
 			int objectB,
-            CollisionPointBaseStructure[] collisionPointBase)
+			CollisionPointBaseStructure[] collisionPointBase)
 		{
 			ObjectA = objectA;
 			ObjectB = objectB;
-            CollisionPointBase = collisionPointBase;
-            FrameCount = 0;
+			CollisionPointBase = collisionPointBase;
+			FrameCount = 0;
 		}
 
-        public CollisionPointStructure(
-            int objectA,
-            int objectB,
-            CollisionPointBaseStructure collisionPointBase)
-            : this(objectA, objectB, new CollisionPointBaseStructure[] { collisionPointBase })
-        { }
+		public CollisionPointStructure(
+			int objectA,
+			int objectB,
+			CollisionPointBaseStructure collisionPointBase)
+			: this(objectA, objectB, new CollisionPointBaseStructure[] { collisionPointBase })
+		{ }
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public void SetFrameCount(int count)
-        {
-            FrameCount = count;
-        }
+		public void SetFrameCount(int count)
+		{
+			FrameCount = count;
+		}
 
-        public void SetBaseCollisionPoint(
-            CollisionPointBaseStructure[] collisionPointBase)
-        {
-            CollisionPointBase = collisionPointBase;
-        }
+		public void SetBaseCollisionPoint(
+			CollisionPointBaseStructure[] collisionPointBase)
+		{
+			CollisionPointBase = collisionPointBase;
+		}
 
 		#endregion
 
 	}
 
-    public class CollisionPointBaseStructure
-    {
-        #region Fields
+	public class CollisionPointBaseStructure
+	{
+		#region Fields
 
-        /// <summary>
-        /// The object distance.
-        /// </summary>
-        public double ObjectDistance { get; private set; }
+		/// <summary>
+		/// The object distance.
+		/// </summary>
+		public double ObjectDistance { get; private set; }
 
-        /// <summary>
-        /// Check intersection.
-        /// </summary>
-        public bool Intersection { get; private set; }
+		/// <summary>
+		/// Check intersection.
+		/// </summary>
+		public bool Intersection { get; private set; }
 
-        /// <summary>
-        /// The collision point.
-        /// </summary>
-        public CollisionPoint CollisionPoint;
+		/// <summary>
+		/// The collision point.
+		/// </summary>
+		public CollisionPoint CollisionPoint;
 
-        /// <summary>
-        /// The collision points.
-        /// </summary>
-        public CollisionPoint[] CollisionPoints;
+		/// <summary>
+		/// The collision points.
+		/// </summary>
+		public CollisionPoint[] CollisionPoints;
 
-        #endregion
+		#endregion
 
-        #region Constructor
+		#region Constructor
 
-        public CollisionPointBaseStructure(
-            double objectDistance,
-            bool intersection,
-            CollisionPoint collisionPoint,
-            CollisionPoint[] collisionPoints)
-        {
-            ObjectDistance = objectDistance;
-            Intersection = intersection;
-            CollisionPoint = collisionPoint;
-            CollisionPoints = collisionPoints;
-        }
+		public CollisionPointBaseStructure(
+			double objectDistance,
+			bool intersection,
+			CollisionPoint collisionPoint,
+			CollisionPoint[] collisionPoints)
+		{
+			ObjectDistance = objectDistance;
+			Intersection = intersection;
+			CollisionPoint = collisionPoint;
+			CollisionPoints = collisionPoints;
+		}
 
-        #endregion
+		#endregion
 
-        #region Public Methods
+		#region Public Methods
 
-        public void SetIntersection(bool value)
-        {
-            Intersection = value;
-        }
+		public void SetIntersection(bool value)
+		{
+			Intersection = value;
+		}
 
-        public void SetObjectDistance(double value)
-        {
-            ObjectDistance = value;
-        }
+		public void SetObjectDistance(double value)
+		{
+			ObjectDistance = value;
+		}
 
-        #endregion
+		#endregion
 
-    }
+	}
 }
 

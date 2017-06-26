@@ -20,7 +20,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			CollisionPointA = collisionPointA;
 			CollisionPointB = collisionPointB;
-            CollisionNormal = collisionNormal;
+			CollisionNormal = collisionNormal;
 
 			//Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
 			StartImpulseValue = new List<StartImpulseProperties>()

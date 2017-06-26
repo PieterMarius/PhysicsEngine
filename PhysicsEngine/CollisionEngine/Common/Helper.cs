@@ -9,96 +9,94 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public static Support GetMinkowskiFarthestPoint(
-            IGeometry objA,
-            IGeometry objB,
-            Vector3[] vertexObjA,
-            Vector3[] vertexObjB,
-            Vector3 direction)
+			VertexAdjacency[] vertexObjA,
+			VertexAdjacency[] vertexObjB,
+			Vector3 direction)
 		{
-            int a = 0;
-            int b = 0;
-            if (objA.GeometryType == ObjectGeometryType.ConvexBody)
-                a = GetFarthestPoint(objA, vertexObjA, direction);
-            else
-                a = GetNonConvexFarthestPoint(objA, vertexObjA, direction);
+			int a = GetFarthestPoint(vertexObjA, direction);
+			int b = GetFarthestPoint(vertexObjB, direction * -1.0);
 
-            if (objB.GeometryType == ObjectGeometryType.ConvexBody)
-                b = GetFarthestPoint(objB, vertexObjB, direction * -1.0);
-            else
-                b = GetNonConvexFarthestPoint(objB, vertexObjB, direction * -1.0);
-            
-            	var sp = new Support(
-                vertexObjA[a] - vertexObjB[b],
-				a,
-				b);
+			var sp = new Support(
+								vertexObjA[a].Vertex - vertexObjB[b].Vertex,
+								a,
+								b);
 
 			return sp;
 		}
 
 		public static int GetFarthestPoint(
+			VertexAdjacency[] vertexObj,
+			Vector3 direction)
+		{
+			if (vertexObj[0].Adjacency != null)
+				return GetFarthestPointWithAdj(vertexObj, direction);
+			else
+				return GetFarthestPointWithOutAdj(vertexObj, direction);
+		}
+
+		public static VertexAdjacency GetVertexPosition(
 			IGeometry obj,
-            Vector3[] vertexObj,
+			int vertexIndex)
+		{
+			return new VertexAdjacency(
+				obj.Shape.Position +
+				(obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]),
+				obj.VertexPosition[vertexIndex].Adjacency);
+		}
+
+		public static int GetFarthestPointWithOutAdj(
+			VertexAdjacency[] vertexObj,
 			Vector3 direction)
 		{
 			int index = 0;
-            bool check = true;
-            double maxDot = Vector3.Dot(vertexObj[index], direction);
-            
-            while(check)
-            {
-                check = false;
-                int maxIndex = -1;
+			double maxDot = Vector3.Dot(vertexObj[index].Vertex, direction);
 
-                for (int i = 0; i < obj.VertexPosition[index].Adjacency.Count; i++)
-                {
-                    double dot = Vector3.Dot(vertexObj[obj.VertexPosition[index].Adjacency[i]], direction);
-                    if (dot > maxDot)
-                    {
-                        maxDot = dot;
-                        maxIndex = obj.VertexPosition[index].Adjacency[i];
-                        check = true;
-                    }
-                }
+			for (int i = 1; i < vertexObj.Length; i++)
+			{
+				Vector3 vertex = vertexObj[i].Vertex;
+				double dot = Vector3.Dot(vertex, direction);
 
-                if(maxIndex >= 0)
-                    index = maxIndex;
-            }
+				if (dot > maxDot)
+				{
+					maxDot = dot;
+					index = i;
+				}
+			}
+			return index;
+		}
 
-            return index;
-        }
+		public static int GetFarthestPointWithAdj(
+			VertexAdjacency[] vertexObj,
+			Vector3 direction)
+		{
+			int index = 0;
+			bool check = true;
+			double maxDot = Vector3.Dot(vertexObj[index].Vertex, direction);
 
-        public static Vector3 GetVertexPosition(
-            IGeometry obj,
-            int vertexIndex)
-        {
-            return
-                obj.Shape.Position +
-                (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]);
-        }
+			while (check)
+			{
+				check = false;
+				int maxIndex = -1;
 
-        public static int GetNonConvexFarthestPoint(
-            IGeometry obj,
-            Vector3[] vertexObj,
-            Vector3 direction)
-        {
-            int index = 0;
-            double maxDot = Vector3.Dot(vertexObj[index], direction);
+				for (int i = 0; i < vertexObj[index].Adjacency.Count; i++)
+				{
+					double dot = Vector3.Dot(vertexObj[vertexObj[index].Adjacency[i]].Vertex, direction);
+					if (dot > maxDot)
+					{
+						maxDot = dot;
+						maxIndex = vertexObj[index].Adjacency[i];
+						check = true;
+					}
+				}
 
-            for (int i = 1; i < obj.VertexPosition.Length; i++)
-            {
-                Vector3 vertex = vertexObj[i];
-                double dot = Vector3.Dot(vertex, direction);
+				if (maxIndex >= 0)
+					index = maxIndex;
+			}
 
-                if (dot > maxDot)
-                {
-                    maxDot = dot;
-                    index = i;
-                }
-            }
-            return index;
-        }
+			return index;
+		}
 
-        public static List<SupportTriangle> AddPointToConvexPolygon(
+		public static List<SupportTriangle> AddPointToConvexPolygon(
 			List<SupportTriangle> triangles,
 			Support vt,
 			Vector3 centroid)
@@ -249,57 +247,57 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return centroid;
 		}
 
-        public static bool IsInConvexPoly(
-            Vector3 p,
-            List<SupportTriangle> triangles)
-        {
-            foreach (SupportTriangle spt in triangles)
-            {
-                Vector3 p2f = spt.a.s - p;         // f.v[0] is an arbitrary point on f
-                double d = p2f.Dot(spt.normal);
-                d /= p2f.Length();                 // for numeric stability
+		public static bool IsInConvexPoly(
+			Vector3 p,
+			List<SupportTriangle> triangles)
+		{
+			foreach (SupportTriangle spt in triangles)
+			{
+				Vector3 p2f = spt.a.s - p;         // f.v[0] is an arbitrary point on f
+				double d = p2f.Dot(spt.normal);
+				d /= p2f.Length();                 // for numeric stability
 
-                double bound = -1e-15; // use 1e15 to exclude boundaries
-                if (d < bound)
-                    return false;
-            }
+				double bound = -1e-15; // use 1e15 to exclude boundaries
+				if (d < bound)
+					return false;
+			}
 
-            return true;
-        }
+			return true;
+		}
 
 		public static void GetVertexFromMinkowsky(
 			SupportTriangle triangle,
-            Vector3[] vertexShape1,
-            Vector3[] vertexShape2,
-            ref EngineCollisionPoint collisionPoint)
+			VertexAdjacency[] vertexShape1,
+			VertexAdjacency[] vertexShape2,
+			ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = vertexShape1[triangle.a.a];
-			Vector3 ba1 = vertexShape1[triangle.b.a] - a1;
-			Vector3 ca1 = vertexShape1[triangle.c.a] - a1;
+			Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
+			Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
+			Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
 
-			Vector3 a2 = vertexShape2[triangle.a.b];
-            Vector3 ba2 = vertexShape2[triangle.b.b] - a2;
-			Vector3 ca2 = vertexShape2[triangle.c.b] - a2;
+			Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
+			Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
+			Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
 
 			collisionPoint.SetA(a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
 			collisionPoint.SetB(a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
 		}
 
-        public static Vector3[] SetVertexPosition(IGeometry obj)
-        {
-            Vector3[] vertexPosition = new Vector3[obj.VertexPosition.Length];
+		public static VertexAdjacency[] SetVertexPosition(IGeometry obj)
+		{
+			VertexAdjacency[] vertexPosition = new VertexAdjacency[obj.VertexPosition.Length];
 
-            for (int i = 0; i < obj.VertexPosition.Length; i++)
-                vertexPosition[i] = GetVertexPosition(obj, i);
+			for (int i = 0; i < obj.VertexPosition.Length; i++)
+				vertexPosition[i] = GetVertexPosition(obj, i);
 
-            return vertexPosition;
-        }
+			return vertexPosition;
+		}
 
-        #endregion
+		#endregion
 
-        #region Private Methods
+		#region Private Methods
 
-        private static List<SupportTriangle> AddTriangle(
+		private static List<SupportTriangle> AddTriangle(
 			List<Edge> edge,
 			List<SupportTriangle> triangles,
 			Support p,
