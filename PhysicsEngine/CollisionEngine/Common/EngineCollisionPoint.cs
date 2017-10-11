@@ -1,4 +1,5 @@
 ﻿using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -7,18 +8,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Properties
 
 		public Vector3 dist { get; private set; }
-		public Vector3 a { get; private set; }
-		public Vector3 b { get; private set; }
+		public VertexProperties a { get; private set; }
+		public VertexProperties b { get; private set; }
 		public Vector3 normal { get; private set; }
-
+		
 		#endregion
 
 		#region Constructor
 
 		public EngineCollisionPoint (
 			Vector3 dist,
-			Vector3 a,
-			Vector3 b,
+			VertexProperties a,
+			VertexProperties b,
 			Vector3 normal)
 		{
 			this.dist = dist;
@@ -34,12 +35,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#region Public Methods
 
-		public void SetA(Vector3 a)
+		public void SetA(VertexProperties a)
 		{
 			this.a = a;
 		}
 
-		public void SetB(Vector3 b)
+		public void SetB(VertexProperties b)
 		{
 			this.b = b;
 		}

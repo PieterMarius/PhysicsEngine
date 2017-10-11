@@ -62,13 +62,26 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		public bool Intersect(AABB box)
 		{
-            return Max.x > box.Min.x &&
-                   Min.x < box.Max.x &&
-                   Max.y > box.Min.y &&
-                   Min.y < box.Max.y &&
-                   Max.z > box.Min.z &&
-                   Min.z < box.Max.z;
-        }
+			return Max.x > box.Min.x &&
+				   Min.x < box.Max.x &&
+				   Max.y > box.Min.y &&
+				   Min.y < box.Max.y &&
+				   Max.z > box.Min.z &&
+				   Min.z < box.Max.z;
+		}
+
+		public static bool Intersect(
+			AABB a,
+			AABB b,
+			double distanceTolerance)
+		{
+			return a.Min[0] - b.Max[0] <= distanceTolerance &&
+				   a.Max[0] - b.Min[0] >= -distanceTolerance &&
+				   a.Min[1] - b.Max[1] <= distanceTolerance &&
+				   a.Max[1] - b.Min[1] >= -distanceTolerance &&
+				   a.Min[2] - b.Max[2] <= distanceTolerance &&
+				   a.Max[2] - b.Min[2] >= -distanceTolerance;
+		}
 
 		#endregion
 
@@ -172,40 +185,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
 		}
-
-		public static AABB GetPointAABB(Vector3[] triangle)
-		{
-			Vector3 vertexPos = triangle[0];
-			double xMax = vertexPos.x;
-			double xMin = vertexPos.x;
-			double yMax = vertexPos.y;
-			double yMin = vertexPos.y;
-			double zMax = vertexPos.z;
-			double zMin = vertexPos.z;
-
-			for (int i = 1; i < triangle.Length; i++)
-			{
-				Vector3 vertex = triangle[i];
-
-				if (vertex.x < xMin)
-					xMin = vertex.x;
-				else if (vertex.x > xMax)
-					xMax = vertex.x;
-
-				if (vertex.y < yMin)
-					yMin = vertex.y;
-				else if (vertex.y > yMax)
-					yMax = vertex.y;
-
-				if (vertex.z < zMin)
-					zMin = vertex.z;
-				else if (vertex.z > zMax)
-					zMax = vertex.z;
-			}
-
-			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
-		}
-
+		
 		#endregion
 	}
 }

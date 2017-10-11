@@ -91,7 +91,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             return new AABB(region.Min, region.Max);
         }
         
-        public List<List<Vertex3Index>> GetConvexShapeList(
+        public List<ShapeDecompositionOutput> GetConvexShapeList(
             Vertex3Index[] vertexPosition,
             double precisionSize)
         {
@@ -102,38 +102,41 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             
             BuildTree();
 
-            List<List<Vertex3Index>> convexShapes = new List<List<Vertex3Index>>();
+            List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
 
             GenerateConvexShapeList(ref convexShapes);
 
             if (convexShapes.Count > 0)
             {
-                FinalizeShape(convexShapes);
+                FinalizeShape(ref convexShapes);
                 return convexShapes;
             }
 
             throw new Exception("Convex Decomposition Failed.");
         }
 
-        public List<List<Vertex3Index>> GetIntersectedShape(
+        public List<ShapeDecompositionOutput> GetIntersectedShape(
             AABB box,
+            AABB region,
             Vertex3Index[] vertexPosition,
             double precisionSize)
         {
             VertexPosition = vertexPosition.ToList();
             BaseVertexPosition = vertexPosition;
 
+            this.region = region;
+
             DecompositionValue = precisionSize;
             
             BuildTree();
 
-            List<List<Vertex3Index>> convexShapes = new List<List<Vertex3Index>>();
+            List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
 
             FindIntersectedConvexShape(box, ref convexShapes);
 
             if (convexShapes.Count > 0)
             {
-                FinalizeShape(convexShapes);
+                FinalizeShape(ref convexShapes);
                 return convexShapes;
             }
 
@@ -225,10 +228,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             return ret;
         }
 
-        private void GenerateConvexShapeList(ref List<List<Vertex3Index>> geometry)
+        private void GenerateConvexShapeList(ref List<ShapeDecompositionOutput> geometry)
         {
             if (VertexPosition.Count > 0)
-                geometry.Add(new List<Vertex3Index>(VertexPosition));
+                geometry.Add(new ShapeDecompositionOutput(new List<Vertex3Index>(VertexPosition), region));
 
             for (int a = 0; a < 8; a++)
             {
@@ -237,12 +240,12 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
         }
 
-        private void FindIntersectedConvexShape(AABB box, ref List<List<Vertex3Index>> geometry)
+        private void FindIntersectedConvexShape(AABB box, ref List<ShapeDecompositionOutput> geometry)
         {
             if (region.Intersect(box))
             {
                 if (VertexPosition.Count > 0)
-                    geometry.Add(new List<Vertex3Index>(VertexPosition));
+                    geometry.Add(new ShapeDecompositionOutput(new List<Vertex3Index>(VertexPosition), region));
 
                 for (int a = 0; a < 8; a++)
                 {
@@ -252,7 +255,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
         }
 
-        private void FinalizeShape(List<List<Vertex3Index>> convexShapes)
+        private void FinalizeShape(ref List<ShapeDecompositionOutput> convexShapes)
         {
             var convexHullShape = new Vertex3Index[convexShapes.Count][][];
 
@@ -263,7 +266,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                  List<Vertex3Index> bufVertex = new List<Vertex3Index>();
                  HashSet<int> triIdx = new HashSet<int>();
 
-                 foreach (var vertex in shape.value)
+                 foreach (var vertex in shape.value.Vertex3Idx)
                  {
                      foreach (var idx in vertex.Indexes)
                      {
@@ -275,7 +278,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                              bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].c]);
                      }
                  }
-                 shape.value.AddRange(bufVertex);
+                 shape.value.AddVertex3Index(bufVertex);
                                   
              });
         }

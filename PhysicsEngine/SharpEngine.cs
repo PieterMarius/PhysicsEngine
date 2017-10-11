@@ -1121,6 +1121,7 @@ namespace SharpPhysicsEngine
 										  (simObj.InertiaTensor *
 										  angularImpuse);
 
+                //TODO implementare x Soft Body
 				simObj.SetLinearVelocity (linearVelocity);
 				simObj.SetAngularVelocity (angularVelocity);
 			}

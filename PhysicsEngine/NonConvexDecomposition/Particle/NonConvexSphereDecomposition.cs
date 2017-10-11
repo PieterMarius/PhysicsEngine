@@ -16,7 +16,7 @@ namespace TestPhysics
         public struct NonConvexPoint
         {
             public Vector3 IntersectionPoint; //Max => 8 index points
-            public VertexAdjacency[] Triangle;
+            public VertexProperties[] Triangle;
         };
 
         public List<NonConvexPoint> basePoint = new List<NonConvexPoint>();
@@ -95,7 +95,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexProperties[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }
@@ -112,7 +112,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexProperties[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }
@@ -129,7 +129,7 @@ namespace TestPhysics
                             {
                                 lock (sync)
                                 {
-                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexAdjacency[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
+                                    basePoint.Add(new NonConvexPoint() { IntersectionPoint = intersection.Value, Triangle = new VertexProperties[3] { obj.VertexPosition[triangle.a], obj.VertexPosition[triangle.b], obj.VertexPosition[triangle.c] } });
                                 }
                                 continue;
                             }

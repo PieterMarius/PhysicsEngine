@@ -38,23 +38,23 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#region Private Methods
 						   
-		private void GetEpaVertexFromMinkowsky(
-			SupportTriangle triangle,
-			VertexAdjacency[] vertexShape1,
-			VertexAdjacency[] vertexShape2,
-			ref EngineCollisionPoint epaCollisionPoint)
-		{
-			Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
-			Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
-			Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
+		//private void GetEpaVertexFromMinkowsky(
+		//	SupportTriangle triangle,
+		//	VertexProperties[] vertexShape1,
+		//	VertexProperties[] vertexShape2,
+		//	ref EngineCollisionPoint epaCollisionPoint)
+		//{
+		//	Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
+		//	Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
+		//	Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
 
-			Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
-			Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
-			Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
+		//	Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
+		//	Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
+		//	Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
 
-			epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
-			epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
-		}
+		//	epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
+		//	epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
+		//}
 
 		/// <summary>
 		/// Executes the EPA engine.
@@ -63,8 +63,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
 		private EngineCollisionPoint ExecuteEngine(
-			VertexAdjacency[] vertexShape1,
-			VertexAdjacency[] vertexShape2,
+			VertexProperties[] vertexShape1,
+			VertexProperties[] vertexShape2,
 			List<SupportTriangle> triangles,
 			Vector3 centroid)
 		{
@@ -122,7 +122,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							epaCollisionPoint.SetDist (vDistance);
 							epaCollisionPoint.SetNormal (Vector3.Normalize (vDistance));
 
-							GetEpaVertexFromMinkowsky(
+							Helper.GetVertexFromMinkowsky(
 								triangles[i],
 								vertexShape1,
 								vertexShape2,
@@ -169,14 +169,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="objectB">Object b.</param>
 		/// <param name="startTriangles">Start triangles.</param>
 		public EPAOutput Execute(
-			VertexAdjacency[] vertexObjA,
-			VertexAdjacency[] vertexObjB,
+			VertexProperties[] vertexObjA,
+			VertexProperties[] vertexObjB,
 			List<SupportTriangle> startTriangles,
 			Vector3 centroid)
 		{
-			//VertexAdjacency[] vertexObjA = Helper.SetVertexPosition(objectA);
-			//VertexAdjacency[] vertexObjB = Helper.SetVertexPosition(objectB);
-
 			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
 													  vertexObjA,
 													  vertexObjB,

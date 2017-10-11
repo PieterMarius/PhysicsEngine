@@ -8,7 +8,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
         TriangleIndexes[] Triangle { get; }
-        VertexAdjacency[] VertexPosition { get; }
+        VertexProperties[] VertexPosition { get; }
         Vector3[] RelativePosition { get; }
 
         void SetAABB(AABB box);

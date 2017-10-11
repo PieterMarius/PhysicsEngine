@@ -93,6 +93,7 @@
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\CompoundShape.cs" />
@@ -117,7 +118,7 @@
     <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
     <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
     <Compile Include="ShapeDefinition\TriangleIndexes.cs" />
-    <Compile Include="ShapeDefinition\VertexAdjacency.cs" />
+    <Compile Include="ShapeDefinition\VertexProperties.cs" />
     <Compile Include="SimulationParameters.cs" />
     <Compile Include="SharpEngine.cs" />
     <Compile Include="ContactPartitioning\ContactPartitioningEngine.cs" />

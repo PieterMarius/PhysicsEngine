@@ -44,8 +44,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="objA">Object a.</param>
 		/// <param name="objB">Object b.</param>
 		private Support GetFarthestPoint(
-			VertexAdjacency[] vertexObjA,
-			VertexAdjacency[] vertexObjB,
+			VertexProperties[] vertexObjA,
+			VertexProperties[] vertexObjB,
 			int startIndex)
 		{
 			int indexA = 0;
@@ -130,8 +130,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="cp">Cp.</param>
 		/// <param name="isIntersection">If set to <c>true</c> is itersection.</param>
 		private double ExecuteGJKAlgorithm(
-			VertexAdjacency[] vertexShape1,
-			VertexAdjacency[] vertexShape2,
+			VertexProperties[] vertexShape1,
+			VertexProperties[] vertexShape2,
 			ref Vector3 collisionNormal,
 			ref CollisionPoint cp,
 			ref List<SupportTriangle> triangles,
@@ -260,8 +260,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="objectA">Object a.</param>
 		/// <param name="objectB">Object b.</param>
 		public GJKOutput Execute(
-			VertexAdjacency[] vertexObjA,
-			VertexAdjacency[] vertexObjB)
+			VertexProperties[] vertexObjA,
+			VertexProperties[] vertexObjB)
 		{
 			var collisionPoint = new CollisionPoint();
 			var collisionNormal = new Vector3();

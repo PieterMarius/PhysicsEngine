@@ -32,18 +32,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public List<CollisionPoint> GetManifoldPoints(
-			VertexAdjacency[] vertexObjA,
-			VertexAdjacency[] vertexObjB,
+			Vector3[] vertexObjA,
+			Vector3[] vertexObjB,
 			CollisionPoint collisionPoint)
 		{
 			List<Vector3> collisionA = getNearestPoint (
 				vertexObjA,
-				collisionPoint.CollisionPointA,
+				collisionPoint.CollisionPointA.Vertex,
 				collisionPoint.CollisionNormal);
 
 			List<Vector3> collisionB = getNearestPoint (
 				vertexObjB,
-				collisionPoint.CollisionPointB,
+				collisionPoint.CollisionPointB.Vertex,
 				collisionPoint.CollisionNormal);
 
 			List<CollisionPoint> collisionPointsList = findCollisionPoints (
@@ -69,7 +69,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>
 		private List<Vector3> getNearestPoint(
-			VertexAdjacency[] vertexObj,
+			Vector3[] vertexObj,
 			Vector3 collisionPoint,
 			Vector3 planeNormal)
 		{
@@ -78,9 +78,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3 normal = Vector3.Normalize(planeNormal);
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
-				Vector3 nt = Vector3.Normalize(vertexObj[i].Vertex - collisionPoint);
+				Vector3 nt = Vector3.Normalize(vertexObj[i] - collisionPoint);
 				if (Math.Abs(Vector3.Dot(nt, normal)) < ManifoldPlaneTolerance)
-					collisionPoints.Add(vertexObj[i].Vertex);
+					collisionPoints.Add(vertexObj[i]);
 			}
 
 			return collisionPoints;
@@ -223,20 +223,20 @@ namespace SharpPhysicsEngine.CollisionEngine
 				{
 					Vector3 project = ca[i] -
 						(na * (Vector3.Dot(na, ca[i]) +
-							Vector3.Dot(na * -1.0, initPoint.CollisionPointB)));
+							Vector3.Dot(na * -1.0, initPoint.CollisionPointB.Vertex)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon(
 						cb,
 						project,
 						na,
-						initPoint.CollisionPointB);
+						initPoint.CollisionPointB.Vertex);
 
 					//Inserito il minore per gestire problemi di approssimazione
 					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
 					{
 						var cp = new CollisionPoint(
-							ca[i],
-							project,
+							new VertexProperties(ca[i]),
+							new VertexProperties(project),
 							na);
 						result.Add(cp);
 					}
@@ -249,19 +249,19 @@ namespace SharpPhysicsEngine.CollisionEngine
 				{
 					Vector3 project = cb[i] -
 						(na * (Vector3.Dot(na, cb[i]) +
-							Vector3.Dot(na * -1.0, initPoint.CollisionPointA)));
+							Vector3.Dot(na * -1.0, initPoint.CollisionPointA.Vertex)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon(
 						ca,
 						project,
 						na,
-						initPoint.CollisionPointA);
+						initPoint.CollisionPointA.Vertex);
 
 					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
 					{
 						var cp = new CollisionPoint(
-							project,
-							cb[i],
+							new VertexProperties(project),
+							new VertexProperties(cb[i]),
 							na);
 						result.Add(cp);
 					}
@@ -280,17 +280,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				var center = new Vector3();
 				for (int i = 0; i < cpList.Count; i++)
-					center = center + cpList [i].CollisionPointA;
+					center = center + cpList [i].CollisionPointA.Vertex;
 
 				center = center / Convert.ToDouble(cpList.Count);
 
 				while (cpList.Count > ManifoldPointNumber) 
 				{
 					int index = 0;
-					double min = Vector3.Length (cpList [0].CollisionPointA - center);
+					double min = Vector3.Length (cpList [0].CollisionPointA.Vertex - center);
 					for (int i = 1; i < cpList.Count; i++) 
 					{
-						double minx = Vector3.Length (cpList [i].CollisionPointA - center);
+						double minx = Vector3.Length (cpList [i].CollisionPointA.Vertex - center);
 						if (minx < min) 
 						{
 							min = minx;
@@ -327,7 +327,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 				ref mub)) 
 			{
 				if (!(mua < 0.0 || mua > 1.0 || mub < 0.0 || mub > 1.0))
-					return new CollisionPoint (a, b, normal);
+					return new CollisionPoint (
+						new VertexProperties(a),
+						new VertexProperties(b),
+						normal);
 			}
 
 			return null;

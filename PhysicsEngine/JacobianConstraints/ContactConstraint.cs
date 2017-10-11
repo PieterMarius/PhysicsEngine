@@ -33,92 +33,92 @@ namespace SharpPhysicsEngine
 					(objectA.RestoreCoeff +
 					 objectB.RestoreCoeff) * 0.5;
 
-                for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
-                {
-                    for (int k = 0; k < collisionPointStr.CollisionPointBase[h].CollisionPoints.Length; k++)
-                    {
-                        Vector3 ra = collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionPointA - objectA.Position;
-                        Vector3 rb = collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionPointB - objectB.Position;
+				for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
+				{
+					for (int k = 0; k < collisionPointStr.CollisionPointBase[h].CollisionPoints.Length; k++)
+					{
+						Vector3 ra = collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionPointA.Vertex - objectA.Position;
+						Vector3 rb = collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionPointB.Vertex - objectB.Position;
 
-                        Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionNormal).Normalize();
-                        Vector3 linearComponentB = -1.0 * linearComponentA;
+						Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoints[k].CollisionNormal).Normalize();
+						Vector3 linearComponentB = -1.0 * linearComponentA;
 
-                        Vector3 angularComponentA = ra.Cross(linearComponentA);
-                        Vector3 angularComponentB = -1.0 * rb.Cross(linearComponentA);
+						Vector3 angularComponentA = ra.Cross(linearComponentA);
+						Vector3 angularComponentB = -1.0 * rb.Cross(linearComponentA);
 
-                        Vector3 velocityA = objectA.LinearVelocity +
-                                            objectA.AngularVelocity.Cross(ra);
+						Vector3 velocityA = objectA.LinearVelocity +
+											objectA.AngularVelocity.Cross(ra);
 
-                        Vector3 velocityB = objectB.LinearVelocity +
-                                            objectB.AngularVelocity.Cross(rb);
+						Vector3 velocityB = objectB.LinearVelocity +
+											objectB.AngularVelocity.Cross(rb);
 
-                        Vector3 relativeVelocity = velocityB - velocityA;
+						Vector3 relativeVelocity = velocityB - velocityA;
 
-                        if (relativeVelocity.Length() < 1E-12 &&
-                            collisionPointStr.CollisionPointBase[h].Intersection &&
-                            collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
-                            continue;
+						if (relativeVelocity.Length() < 1E-12 &&
+							collisionPointStr.CollisionPointBase[h].Intersection &&
+							collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
+							continue;
 
-                        #region Normal direction contact
+						#region Normal direction contact
 
-                        double linearComponent = linearComponentA.Dot(relativeVelocity);
+						double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-                        double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+						double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
 
-                        double correctionParameter = 0.0;
+						double correctionParameter = 0.0;
 
-                        // Console.WriteLine("coll " + linearComponent);
-                        if (collisionPointStr.CollisionPointBase[h].Intersection)
-                        {
-                            //Limit the Baum stabilization jitter effect 
-                            correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-                                                    baumgarteStabilizationValue - uCollision, 0.0);
-                        }
-                        
-                        double correctedBounce = uCollision;
+						// Console.WriteLine("coll " + linearComponent);
+						if (collisionPointStr.CollisionPointBase[h].Intersection)
+						{
+							//Limit the Baum stabilization jitter effect 
+							correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+													baumgarteStabilizationValue - uCollision, 0.0);
+						}
+						
+						double correctedBounce = uCollision;
 
-                        JacobianConstraint normalContact = JacobianCommon.GetDOF(
-                            linearComponentA,
-                            linearComponentB,
-                            angularComponentA,
-                            angularComponentB,
-                            objectA,
-                            objectB,
-                            correctedBounce,
-                            correctionParameter,
-                            simulationParameters.NormalCFM,
-                            0.0,
-                            ConstraintType.Collision,
-                            null,
-                            collisionPointStr.CollisionPointBase[h].CollisionPoints[k].StartImpulseValue[0]);
+						JacobianConstraint normalContact = JacobianCommon.GetDOF(
+							linearComponentA,
+							linearComponentB,
+							angularComponentA,
+							angularComponentB,
+							objectA,
+							objectB,
+							correctedBounce,
+							correctionParameter,
+							simulationParameters.NormalCFM,
+							0.0,
+							ConstraintType.Collision,
+							null,
+							collisionPointStr.CollisionPointBase[h].CollisionPoints[k].StartImpulseValue[0]);
 
-                        #endregion
+						#endregion
 
-                        #region Friction Contact
+						#region Friction Contact
 
-                        JacobianConstraint[] frictionContact =
-                            addFriction(
-                                objectA,
-                                objectB,
-                                simulationParameters,
-                                linearComponentA,
-                                relativeVelocity,
-                                ra,
-                                rb,
-                                collisionPointStr.CollisionPointBase[h].CollisionPoints[k].StartImpulseValue);
+						JacobianConstraint[] frictionContact =
+							addFriction(
+								objectA,
+								objectB,
+								simulationParameters,
+								linearComponentA,
+								relativeVelocity,
+								ra,
+								rb,
+								collisionPointStr.CollisionPointBase[h].CollisionPoints[k].StartImpulseValue);
 
-                        #endregion
+						#endregion
 
-                        contactConstraints.Add(normalContact);
+						contactConstraints.Add(normalContact);
 
-                        int normalIndex = contactConstraints.Count - 1;
-                        foreach (JacobianConstraint fjc in frictionContact)
-                        {
-                            fjc.SetContactReference(normalIndex);
-                            contactConstraints.Add(fjc);
-                        }
-                    }
-                }
+						int normalIndex = contactConstraints.Count - 1;
+						foreach (JacobianConstraint fjc in frictionContact)
+						{
+							fjc.SetContactReference(normalIndex);
+							contactConstraints.Add(fjc);
+						}
+					}
+				}
 				
 			}
 			return contactConstraints;
@@ -150,13 +150,13 @@ namespace SharpPhysicsEngine
 
 			double constraintLimit = 0.0;
 
-            Vector3 tangentialVelocity = relativeVelocity -
-                                         normal.Dot(relativeVelocity) *
-                                         normal;
+			Vector3 tangentialVelocity = relativeVelocity -
+										 normal.Dot(relativeVelocity) *
+										 normal;
 
-            #region Get start friction direction
+			#region Get start friction direction
 
-            if (Vector3.Length (tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance) 
+			if (Vector3.Length (tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance) 
 				constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
 			else 
 				constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
@@ -183,7 +183,7 @@ namespace SharpPhysicsEngine
 				simulationParameters.FrictionCFM,
 				constraintLimit,
 				ConstraintType.Friction,
-                	null,
+					null,
 				startImpulseProperties[1]);
 
 			#endregion
@@ -208,7 +208,7 @@ namespace SharpPhysicsEngine
 				simulationParameters.FrictionCFM,
 				constraintLimit,
 				ConstraintType.Friction,
-                null,
+				null,
 				startImpulseProperties[2]);
 
 			#endregion

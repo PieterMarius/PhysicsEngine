@@ -6,16 +6,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 {
 	public struct CollisionPoint
 	{
-		public readonly Vector3 CollisionPointA;
-		public readonly Vector3 CollisionPointB;
+		public readonly VertexProperties CollisionPointA;
+		public readonly VertexProperties CollisionPointB;
 		public readonly Vector3 CollisionNormal;
 		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
 		#region "Constructors"
 
 		public CollisionPoint (
-			Vector3 collisionPointA,
-			Vector3 collisionPointB,
+			VertexProperties collisionPointA,
+			VertexProperties collisionPointB,
 			Vector3 collisionNormal)
 		{
 			CollisionPointA = collisionPointA;

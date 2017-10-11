@@ -132,7 +132,7 @@ namespace TestPhysics
 		}
 
 		NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
-		List<List<Vertex3Index>> convexShape = null;
+		List<ShapeDecompositionOutput> convexShape = null;
 
 		AABB region = null;
 
@@ -183,39 +183,39 @@ namespace TestPhysics
 				textureID = env.LoadTexture();
 
 				
-				ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+				//ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
 
-				stopwatch.Reset();
-				stopwatch.Start();
+				//stopwatch.Reset();
+				//stopwatch.Start();
 
-				region = softShape.AABBox;
+				//region = softShape.AABBox;
 
 				
 
-				shapeConvexDec = new ShapeConvexDecomposition(
-				region,
-				softShape.Triangle);
+				//shapeConvexDec = new ShapeConvexDecomposition(
+				//region,
+				//softShape.Triangle);
 
-				convexShape = shapeConvexDec.GetConvexShapeList(
-					Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray())),
-					0.2);
+				//convexShape = shapeConvexDec.GetConvexShapeList(
+				//	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(),0)),
+				//	0.2);
 
-				AABB testRegion = new AABB(
-				new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
-				new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
+				//AABB testRegion = new AABB(
+				//new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
+				//new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
 
-				convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
-					Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-							item.TriangleIndex.ToArray())),
-						0.2);
+				//convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
+				//	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+				//			item.TriangleIndex.ToArray(),0)),
+				//		0.2);
 
-				stopwatch.Stop();
-				Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+				//stopwatch.Stop();
+				//Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
 
-				OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
-				octTree.BuildOctree();
-				octTree.Render(ref octTreeLine);
+				//OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
+				//octTree.BuildOctree();
+				//octTree.Render(ref octTreeLine);
 
 				// octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
 
@@ -303,8 +303,8 @@ namespace TestPhysics
 			for (int i = 0; i < physicsEngine.ShapesCount(); i++)
 				SetOpenGLObjectMatrixAndDisplayObject(i);
 
-			displayOctree();
-			displayConvexDecomposition();
+			//displayOctree();
+			//displayConvexDecomposition();
 
 			GL.Flush ();
 			SwapBuffers ();
@@ -623,39 +623,39 @@ namespace TestPhysics
 
 		private void DisplaySoftPoint(ISoftShape softShape)
 		{
-			//GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
+            GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
-			//GL.CallList(displayList[3][0]);
-			//GL.Disable(EnableCap.Texture2D);
+            GL.CallList(displayList[3][0]);
+            GL.Disable(EnableCap.Texture2D);
 
-			//GL.PopMatrix();
+            GL.PopMatrix();
 
-			//foreach (var item in softShape.ShapePoints)
-			//{
-			//    SharpEngineMathUtility.Vector3 relativePosition = item.Position;
+            foreach (var item in softShape.ShapePoints)
+            {
+                SharpEngineMathUtility.Vector3 relativePosition = item.Position;
 
-			//    GL.PushMatrix();
+                GL.PushMatrix();
 
-			//    Matrix4 mView = Matrix4.CreateTranslation(
-			//        Convert.ToSingle(relativePosition.x),
-			//        Convert.ToSingle(relativePosition.y),
-			//        Convert.ToSingle(relativePosition.z));
+                Matrix4 mView = Matrix4.CreateTranslation(
+                    Convert.ToSingle(relativePosition.x),
+                    Convert.ToSingle(relativePosition.y),
+                    Convert.ToSingle(relativePosition.z));
 
-			//    var dmviewData = new float[] {
-			//        mView.M11, mView.M12, mView.M13, mView.M14,
-			//        mView.M21, mView.M22, mView.M23, mView.M24,
-			//        mView.M31, mView.M32, mView.M33, mView.M34,
-			//        mView.M41, mView.M42, mView.M43, mView.M44
-			//    };
+                var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
 
-			//    GL.MultMatrix(dmviewData);
+                GL.MultMatrix(dmviewData);
 
-			   
-			//    OpenGLUtilities.drawSolidCube(0.04f);
 
-			//    GL.PopMatrix();
-			//}
-		}
+                OpenGLUtilities.drawSolidCube(0.04f);
+
+                GL.PopMatrix();
+            }
+        }
 
 		private void displayContact()
 		{
@@ -669,9 +669,9 @@ namespace TestPhysics
 						GL.PushMatrix();
 
 						Matrix4 mView = Matrix4.CreateTranslation(
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.x),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.y),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.z));
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.x),
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.y),
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.z));
 
 						var dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,
@@ -690,9 +690,9 @@ namespace TestPhysics
 						GL.PushMatrix();
 
 						Matrix4 mView1 = Matrix4.CreateTranslation(
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.x),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.y),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.z));
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.x),
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.y),
+							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.z));
 
 						var dmviewData1 = new float[] {
 						mView1.M11, mView1.M12, mView1.M13, mView1.M14,
@@ -745,9 +745,9 @@ namespace TestPhysics
 								GL.PushMatrix();
 
 								Matrix4 mView = Matrix4.CreateTranslation(
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.x),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.y),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.z));
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.x),
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.y),
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.z));
 
 								var dmviewData = new float[] {
 									mView.M11, mView.M12, mView.M13, mView.M14,
@@ -767,9 +767,9 @@ namespace TestPhysics
 								GL.PushMatrix();
 
 								Matrix4 mView1 = Matrix4.CreateTranslation(
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.x),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.y),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.z));
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.x),
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.y),
+									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.z));
 
 								var dmviewData1 = new float[] {
 									mView1.M11, mView1.M12, mView1.M13, mView1.M14,
@@ -803,9 +803,9 @@ namespace TestPhysics
 					GL.PushMatrix();
 
 					Matrix4 mView = Matrix4.CreateTranslation(
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.x),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.y),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.z));
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.x),
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.y),
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.z));
 
 					var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
@@ -824,9 +824,9 @@ namespace TestPhysics
 					GL.PushMatrix();
 
 					Matrix4 mView1 = Matrix4.CreateTranslation(
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.x),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.y),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.z));
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.x),
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.y),
+						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.z));
 
 					var dmviewData1 = new float[] {
 					mView1.M11, mView1.M12, mView1.M13, mView1.M14,
@@ -984,8 +984,9 @@ namespace TestPhysics
 				new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
 
 			convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
+				testRegion,
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-						item.TriangleIndex.ToArray())),
+						item.TriangleIndex.ToArray(),0)),
 					0.2);
 
 			List<Line> ll = OpenGLUtilities.BuildBoxLine(testRegion.Max, testRegion.Min);
@@ -1002,7 +1003,7 @@ namespace TestPhysics
 			{
 				GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
 
-				IVertex[] vtx = Array.ConvertAll(shape.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
+				IVertex[] vtx = Array.ConvertAll(shape.Vertex3Idx.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
 
 				ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx);
 

@@ -9,8 +9,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public static Support GetMinkowskiFarthestPoint(
-			VertexAdjacency[] vertexObjA,
-			VertexAdjacency[] vertexObjB,
+			VertexProperties[] vertexObjA,
+			VertexProperties[] vertexObjB,
 			Vector3 direction)
 		{
 			int a = GetFarthestPoint(vertexObjA, direction);
@@ -25,7 +25,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		public static int GetFarthestPoint(
-			VertexAdjacency[] vertexObj,
+			VertexProperties[] vertexObj,
 			Vector3 direction)
 		{
 			if (vertexObj[0].Adjacency != null)
@@ -34,18 +34,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return GetFarthestPointWithOutAdj(vertexObj, direction);
 		}
 
-		public static VertexAdjacency GetVertexPosition(
+		public static VertexProperties GetVertexPosition(
 			IGeometry obj,
 			int vertexIndex)
 		{
-			return new VertexAdjacency(
+			return new VertexProperties(
 				obj.Shape.Position +
 				(obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]),
 				obj.VertexPosition[vertexIndex].Adjacency);
 		}
 
 		public static int GetFarthestPointWithOutAdj(
-			VertexAdjacency[] vertexObj,
+			VertexProperties[] vertexObj,
 			Vector3 direction)
 		{
 			int index = 0;
@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		public static int GetFarthestPointWithAdj(
-			VertexAdjacency[] vertexObj,
+			VertexProperties[] vertexObj,
 			Vector3 direction)
 		{
 			int index = 0;
@@ -267,8 +267,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static void GetVertexFromMinkowsky(
 			SupportTriangle triangle,
-			VertexAdjacency[] vertexShape1,
-			VertexAdjacency[] vertexShape2,
+			VertexProperties[] vertexShape1,
+			VertexProperties[] vertexShape2,
 			ref EngineCollisionPoint collisionPoint)
 		{
 			Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
@@ -279,13 +279,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
 			Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
 
-			collisionPoint.SetA(a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
-			collisionPoint.SetB(a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
+			collisionPoint.SetA(
+				new VertexProperties(a1 + (ba1 * triangle.s) + (ca1 * triangle.t),
+				new int?[] { vertexShape1[triangle.a.a].ID, vertexShape1[triangle.b.a].ID, vertexShape1[triangle.c.a].ID }));
+			collisionPoint.SetB(
+				new VertexProperties(a2 + (ba2 * triangle.s) + (ca2 * triangle.t),
+				new int?[] { vertexShape2[triangle.a.b].ID, vertexShape2[triangle.b.b].ID, vertexShape2[triangle.c.b].ID }));
 		}
 
-		public static VertexAdjacency[] SetVertexPosition(IGeometry obj)
+		public static VertexProperties[] SetVertexPosition(IGeometry obj)
 		{
-			VertexAdjacency[] vertexPosition = new VertexAdjacency[obj.VertexPosition.Length];
+			VertexProperties[] vertexPosition = new VertexProperties[obj.VertexPosition.Length];
 
 			for (int i = 0; i < obj.VertexPosition.Length; i++)
 				vertexPosition[i] = GetVertexPosition(obj, i);
