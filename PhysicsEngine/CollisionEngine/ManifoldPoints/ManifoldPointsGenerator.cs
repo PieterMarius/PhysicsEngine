@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class ManifoldPointsGenerator
+	public sealed class ManifoldPointsGenerator
 	{
 		#region Properties
 

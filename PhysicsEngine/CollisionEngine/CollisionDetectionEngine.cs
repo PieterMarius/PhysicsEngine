@@ -18,8 +18,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private EPA compenetrationCollisionEngine;
 		private readonly CollisionEngineParameters collisionEngineParameters;
 		private readonly SweepAndPruneEngine sweepAndPruneEngine;
-		//TODO eliminare
-		private readonly SoftBodyCollisionDetection softBodyCollisionDetection;
+		private readonly ManifoldPointsGenerator manifoldGJKPointsGenerator;
+        private readonly ManifoldPointsGenerator manifoldEPAPointsGenerator;
+        //TODO eliminare
+        private readonly SoftBodyCollisionDetection softBodyCollisionDetection;
 
 		private double CollisionDistance;
 
@@ -45,7 +47,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 				collisionEngineParameters.EPAManifoldTolerance,
 				collisionEngineParameters.ManifoldPointNumber);
 
-			sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
+            manifoldGJKPointsGenerator = new ManifoldPointsGenerator(
+                collisionEngineParameters.ManifoldPointNumber,
+                collisionEngineParameters.GJKManifoldTolerance,
+                collisionEngineParameters.ManifoldProjectionTolerance);
+
+            manifoldEPAPointsGenerator = new ManifoldPointsGenerator(
+                collisionEngineParameters.ManifoldPointNumber,
+				collisionEngineParameters.EPAManifoldTolerance,
+				collisionEngineParameters.ManifoldProjectionTolerance);
+
+            sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
 			softBodyCollisionDetection = new SoftBodyCollisionDetection();
 
 			CollisionDistance = collisionDistance;
@@ -89,74 +101,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#endregion
 
 		#region Private Methods
-
-		private CollisionPointStructure NarrowPhaseCollisionDetection(
-			GJKOutput gjkOutput,
-			VertexProperties[] vertexObjA,
-			VertexProperties[] vertexObjB,
-			int ID_A,
-			int ID_B)
-		{
-			
-			if (!gjkOutput.Intersection &&
-				gjkOutput.CollisionDistance <= CollisionDistance)
-			{
-				var mpg = new ManifoldPointsGenerator(
-												collisionEngineParameters.ManifoldPointNumber,
-												collisionEngineParameters.GJKManifoldTolerance,
-												collisionEngineParameters.ManifoldProjectionTolerance);
-
-				if (gjkOutput.CollisionNormal.Length() < normalTolerance)
-					return null;
-
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-					Array.ConvertAll(vertexObjA, x => x.Vertex),
-					Array.ConvertAll(vertexObjB, x => x.Vertex),
-					gjkOutput.CollisionPoint);
-
-				return new CollisionPointStructure(
-					ID_A,
-					ID_B,
-					new CollisionPointBaseStructure(
-						gjkOutput.CollisionDistance,
-						gjkOutput.Intersection,
-						gjkOutput.CollisionPoint,
-						collisionPointsList.ToArray()));
-			}
-
-			if (gjkOutput.Intersection)
-			{
-				EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
-												vertexObjA,
-												vertexObjB,
-												gjkOutput.SupportTriangles,
-												gjkOutput.Centroid);
-
-				if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
-					return null;
-
-				var mpg = new ManifoldPointsGenerator(
-												  collisionEngineParameters.ManifoldPointNumber,
-												  collisionEngineParameters.EPAManifoldTolerance,
-												  collisionEngineParameters.ManifoldProjectionTolerance);
-
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-															   Array.ConvertAll(vertexObjA, x => x.Vertex),
-															   Array.ConvertAll(vertexObjB, x => x.Vertex),
-															   epaOutput.CollisionPoint);
-
-				return new CollisionPointStructure(
-					ID_A,
-					ID_B,
-					new CollisionPointBaseStructure(
-						epaOutput.CompenetrationDistance,
-						gjkOutput.Intersection,
-						epaOutput.CollisionPoint,
-						collisionPointsList.ToArray()));
-			}
-
-			return null;
-		}
 
 		private CollisionPointStructure NarrowPhase(
 			IShape A,
@@ -311,13 +255,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 					 softShapeA == null)
 			{
 				//Manca gestione compuondShape
-				collisionPointStructure.AddRange(RigidVSSoftBodyCollisionDetection((IConvexShape)A, softShapeB));
+				collisionPointStructure.AddRange(RigidSoftBodyCollisionDetection((IConvexShape)A, softShapeB));
 			}
 			else if (softShapeA != null && 
 					 softShapeB == null)
 			{
 				///Manca gestione compuondShape
-				collisionPointStructure.AddRange(RigidVSSoftBodyCollisionDetection((IConvexShape)B, softShapeA));
+				collisionPointStructure.AddRange(RigidSoftBodyCollisionDetection((IConvexShape)B, softShapeA));
 			}
 
 			//Self collision detection
@@ -338,11 +282,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		//Manca gestione compuondShape
-		private List<CollisionPointStructure> RigidVSSoftBodyCollisionDetection(
+		private List<CollisionPointStructure> RigidSoftBodyCollisionDetection(
 			IConvexShape convexShape,
 			ISoftShape softShape)
 		{
-			List<CollisionPointStructure> result = new List<CollisionPointStructure>();
+			List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 						
 			List<ShapeDecompositionOutput> shapeOutput = softShape.ConvexDecomposition.GetIntersectedShape(
 				convexShape.ObjectGeometry.AABBox,
@@ -350,73 +294,29 @@ namespace SharpPhysicsEngine.CollisionEngine
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
 				0.2);
 
-			VertexProperties[] vertexObjConvexShape = Helper.SetVertexPosition(convexShape.ObjectGeometry);
+            IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry((IShape)convexShape);
+                        
+            var ID_A = ((IShape)convexShape).GetID();
+            var ID_B = ((IShape)softShape).GetID();
 
-			for (int i = 0; i < shapeOutput.Count; i++)
-			{
-				VertexProperties[] vertexObjSoftShape = Array.ConvertAll(shapeOutput[i].Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
+            foreach (var convexGeometry in convexShapeGeometry)
+            {
+                VertexProperties[] convexVertexObj = Helper.SetVertexPosition(convexGeometry);
+                
+                foreach (var softConvexShape in shapeOutput)
+                {
+                    VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
-				GJKOutput gjkOutput = collisionEngine.Execute(vertexObjConvexShape, vertexObjSoftShape);
+                    GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
 
-				if (!gjkOutput.Intersection &&
-					gjkOutput.CollisionDistance <= CollisionDistance)
-				{
-					var mpg = new ManifoldPointsGenerator(
-													collisionEngineParameters.ManifoldPointNumber,
-													collisionEngineParameters.GJKManifoldTolerance,
-													collisionEngineParameters.ManifoldProjectionTolerance);
+                    var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);
 
-					if (gjkOutput.CollisionNormal.Length() < normalTolerance)
-						return null;
-
-					List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-						Array.ConvertAll(vertexObjConvexShape, x => x.Vertex),
-						Array.ConvertAll(vertexObjSoftShape, x => x.Vertex),
-						gjkOutput.CollisionPoint);
-
-					result.Add(new CollisionPointStructure(
-						((IShape)convexShape).GetID(),
-						((IShape)softShape).GetID(),
-						new CollisionPointBaseStructure(
-							gjkOutput.CollisionDistance,
-							gjkOutput.Intersection,
-							gjkOutput.CollisionPoint,
-							collisionPointsList.ToArray())));
-				}
-
-				if (gjkOutput.Intersection)
-				{
-					EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
-													vertexObjConvexShape,
-													vertexObjSoftShape,
-													gjkOutput.SupportTriangles,
-													gjkOutput.Centroid);
-
-					if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
-						return null;
-
-					var mpg = new ManifoldPointsGenerator(
-													  collisionEngineParameters.ManifoldPointNumber,
-													  collisionEngineParameters.EPAManifoldTolerance,
-													  collisionEngineParameters.ManifoldProjectionTolerance);
-
-					List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
-																   Array.ConvertAll(vertexObjConvexShape, x => x.Vertex),
-																   Array.ConvertAll(vertexObjSoftShape, x => x.Vertex),
-																   epaOutput.CollisionPoint);
-
-					result.Add(new CollisionPointStructure(
-						((IShape)convexShape).GetID(),
-						((IShape)softShape).GetID(),
-						new CollisionPointBaseStructure(
-							epaOutput.CompenetrationDistance,
-							gjkOutput.Intersection,
-							epaOutput.CollisionPoint,
-							collisionPointsList.ToArray())));
-				}
-			}
-
-			return result;
+                    if (cps != null)
+                        collisionPointStructure.Add(cps);
+                }
+            }
+            
+			return collisionPointStructure;
 		}
 
 
@@ -522,7 +422,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			int ID_A,
 			int ID_B)
 		{
-			List<CollisionPointStructure> collisionPointStructure = RigidBodyCollisionStep(A, B, ID_A, ID_B);
+			List<CollisionPointStructure> collisionPointStructure = ConvexCollisionStep(A, B, ID_A, ID_B);
 			
 			if (collisionPointStructure.Count > 1)
 			{
@@ -543,45 +443,59 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return null;
 		}
 
-		private List<CollisionPointStructure> RigidBodyCollisionStep(
+		private List<CollisionPointStructure> ConvexCollisionStep(
 			ShapeDecompositionOutput A,
 			ShapeDecompositionOutput B,
 			int ID_A,
 			int ID_B)
 		{
-			List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
-
 			VertexProperties[] vertexObjA = Array.ConvertAll(A.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 			VertexProperties[] vertexObjB = Array.ConvertAll(B.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
 			GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
 
-			#region Narrow Phase
+            #region Narrow Phase
+
+            List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
+
+            var cps = NarrowPhaseCollisionDetection(gjkOutput, vertexObjA, vertexObjB, ID_A, ID_B);
+
+            if (cps != null)
+                collisionPointStructure.Add(cps);
+            
+            #endregion
+			
+			return collisionPointStructure;
+
+		}
+
+		private CollisionPointStructure NarrowPhaseCollisionDetection(
+			GJKOutput gjkOutput,
+			VertexProperties[] vertexObjA,
+			VertexProperties[] vertexObjB,
+			int ID_A,
+			int ID_B)
+		{
 
 			if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= CollisionDistance)
 			{
-				var mpg = new ManifoldPointsGenerator(
-												collisionEngineParameters.ManifoldPointNumber,
-												collisionEngineParameters.GJKManifoldTolerance,
-												collisionEngineParameters.ManifoldProjectionTolerance);
-
 				if (gjkOutput.CollisionNormal.Length() < normalTolerance)
 					return null;
 
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+				List<CollisionPoint> collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
 					Array.ConvertAll(vertexObjA, x => x.Vertex),
 					Array.ConvertAll(vertexObjB, x => x.Vertex),
 					gjkOutput.CollisionPoint);
 
-				collisionPointStructure.Add(new CollisionPointStructure(
+				return new CollisionPointStructure(
 					ID_A,
 					ID_B,
 					new CollisionPointBaseStructure(
 						gjkOutput.CollisionDistance,
 						gjkOutput.Intersection,
 						gjkOutput.CollisionPoint,
-						collisionPointsList.ToArray())));
+						collisionPointsList.ToArray()));
 			}
 
 			if (gjkOutput.Intersection)
@@ -595,30 +509,22 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
 					return null;
 
-				var mpg = new ManifoldPointsGenerator(
-												  collisionEngineParameters.ManifoldPointNumber,
-												  collisionEngineParameters.EPAManifoldTolerance,
-												  collisionEngineParameters.ManifoldProjectionTolerance);
-
-				List<CollisionPoint> collisionPointsList = mpg.GetManifoldPoints(
+				List<CollisionPoint> collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(
 															   Array.ConvertAll(vertexObjA, x => x.Vertex),
 															   Array.ConvertAll(vertexObjB, x => x.Vertex),
 															   epaOutput.CollisionPoint);
 
-				collisionPointStructure.Add(new CollisionPointStructure(
+				return new CollisionPointStructure(
 					ID_A,
 					ID_B,
 					new CollisionPointBaseStructure(
 						epaOutput.CompenetrationDistance,
 						gjkOutput.Intersection,
 						epaOutput.CollisionPoint,
-						collisionPointsList.ToArray())));
+						collisionPointsList.ToArray()));
 			}
 
-			#endregion
-			
-			return collisionPointStructure;
-
+			return null;
 		}
 
 		#endregion

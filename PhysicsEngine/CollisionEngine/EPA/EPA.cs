@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class EPA
+	public sealed class EPA
 	{
 		#region Settings Variable
 

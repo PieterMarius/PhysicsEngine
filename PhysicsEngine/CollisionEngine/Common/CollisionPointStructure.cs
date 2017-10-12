@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class CollisionPointStructure
+	public sealed class CollisionPointStructure
 	{
 		#region Public Properties
 

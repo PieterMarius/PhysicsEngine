@@ -4,7 +4,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class GJK
+	public sealed class GJK
 	{
 
 		#region Settings Variables
@@ -157,7 +157,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(vertexShape1, vertexShape2, direction)))
 				return -1.0;
 
-				//Quarto punto del simplex
+			//Quarto punto del simplex
 			direction = Vector3.Normalize(GeometryUtilities.CalculateNormal(
 				simplex.Support[0].s,
 				simplex.Support[1].s,

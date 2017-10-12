@@ -205,7 +205,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             {
                 octList[i] = new List<TriangleIndexes>();
                 
-             }
+            }
 
             //this list contains all of the objects which got moved down the tree and can be delisted from this node.
             //TODO da modificare per gestire il numero max di oggetti in ogni bounding box
