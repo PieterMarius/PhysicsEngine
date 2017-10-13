@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
+using System.Linq;
 
 namespace SharpPhysicsEngine
 {
@@ -44,7 +45,9 @@ namespace SharpPhysicsEngine
 						smj.GetKeyIndex()));
 				}
 
-				while (contactIndex.Count != 0) {
+                Dictionary<int, ObjectType> objectsTypeDic = simulationObjects.ToDictionary(x => x.GetID(), x => x.ObjectType);
+                
+                while (contactIndex.Count != 0) {
 					var partition = new List<ContactIndex> ();
 
 					partition.Add (contactIndex [0]);
@@ -52,7 +55,7 @@ namespace SharpPhysicsEngine
 						contactIndex [0],
 						contactIndex,
 						partition,
-						simulationObjects);
+                        objectsTypeDic);
 
 					foreach(ContactIndex cIndex in partition)
 					{
@@ -93,7 +96,7 @@ namespace SharpPhysicsEngine
 			ContactIndex searchPoint,
 			List<ContactIndex> readList,
 			List<ContactIndex> partition,
-			IShape[] simulationObjects)
+            Dictionary<int, ObjectType> objectsTypeDic)
 		{
 			for (int i = 0; i < readList.Count; i++) 
 			{
@@ -104,11 +107,11 @@ namespace SharpPhysicsEngine
 				    searchPoint.KeyIndex == collisionValue.KeyIndex)
 					continue;
 
-				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticBody &&
-				    simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticBody)
+				if (objectsTypeDic[searchPoint.IndexA] == ObjectType.StaticBody &&
+                    objectsTypeDic[searchPoint.IndexB] == ObjectType.StaticBody)
 					break;
 
-				if (simulationObjects [searchPoint.IndexA].ObjectType == ObjectType.StaticBody &&
+				if (objectsTypeDic[searchPoint.IndexA] == ObjectType.StaticBody &&
 				           (searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexB == collisionValue.IndexB)) {
 
@@ -120,10 +123,10 @@ namespace SharpPhysicsEngine
 							collisionValue,
 							readList, 
 							partition,
-							simulationObjects);
+                            objectsTypeDic);
 					}
 
-				} else if (simulationObjects [searchPoint.IndexB].ObjectType == ObjectType.StaticBody &&
+				} else if (objectsTypeDic[searchPoint.IndexB] == ObjectType.StaticBody &&
 				           (searchPoint.IndexA == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexB)) {
 
@@ -135,11 +138,11 @@ namespace SharpPhysicsEngine
 							collisionValue,
 							readList, 
 							partition,
-							simulationObjects);
+                            objectsTypeDic);
 					}
 
-				} else if ((simulationObjects[searchPoint.IndexA].ObjectType == ObjectType.RigidBody &&
-						   simulationObjects[searchPoint.IndexB].ObjectType == ObjectType.RigidBody) &&
+				} else if ((objectsTypeDic[searchPoint.IndexA] == ObjectType.RigidBody &&
+                           objectsTypeDic[searchPoint.IndexB] == ObjectType.RigidBody) &&
 						   (searchPoint.IndexA == collisionValue.IndexB ||
 				           searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexA ||
@@ -153,7 +156,7 @@ namespace SharpPhysicsEngine
 							collisionValue,
 							readList, 
 							partition,
-							simulationObjects);
+                            objectsTypeDic);
 					}
 				}
 			}	

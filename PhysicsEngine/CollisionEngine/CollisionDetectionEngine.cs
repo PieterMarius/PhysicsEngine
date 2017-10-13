@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpPhysicsEngine.ShapeDefinition;
-using SharpPhysicsEngine.CollisionEngine.SoftBody;
 using System.Linq;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
@@ -20,9 +19,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private readonly SweepAndPruneEngine sweepAndPruneEngine;
 		private readonly ManifoldPointsGenerator manifoldGJKPointsGenerator;
         private readonly ManifoldPointsGenerator manifoldEPAPointsGenerator;
-        //TODO eliminare
-        private readonly SoftBodyCollisionDetection softBodyCollisionDetection;
-
+        
 		private double CollisionDistance;
 
 		#endregion
@@ -58,8 +55,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				collisionEngineParameters.ManifoldProjectionTolerance);
 
             sweepAndPruneEngine = new SweepAndPruneEngine (collisionEngineParameters);
-			softBodyCollisionDetection = new SoftBodyCollisionDetection();
-
+			
 			CollisionDistance = collisionDistance;
 		}
 
@@ -335,27 +331,30 @@ namespace SharpPhysicsEngine.CollisionEngine
 			IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
 			IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
 
-			for (int geometryIndexA = 0; geometryIndexA < geometryA.Length; geometryIndexA++)
-			{
-				for (int geometryIndexB = 0; geometryIndexB < geometryB.Length; geometryIndexB++)
-				{
-					VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[geometryIndexA]);
-					VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[geometryIndexB]);
+            int ID_A = A.GetID();
+            int ID_B = B.GetID();
 
-					GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
+            foreach (var shapeA in geometryA)
+            {
+                foreach (var shapeB in geometryB)
+                {
+                    VertexProperties[] vertexObjA = Helper.SetVertexPosition(shapeA);
+                    VertexProperties[] vertexObjB = Helper.SetVertexPosition(shapeB);
 
-					CollisionPointStructure collision = NarrowPhaseCollisionDetection(
-						gjkOutput,
-						vertexObjA,
-						vertexObjB,
-						A.GetID(),
-						B.GetID());
+                    GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
 
-					if (collision != null)
-						collisionPointStructure.Add(collision);
-				}
-			}
+                    CollisionPointStructure collision = NarrowPhaseCollisionDetection(
+                        gjkOutput,
+                        vertexObjA,
+                        vertexObjB,
+                        ID_A,
+                        ID_B);
 
+                    if (collision != null)
+                        collisionPointStructure.Add(collision);
+                }
+            }
+            
 			return collisionPointStructure;
 		}
 
@@ -382,7 +381,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			List<CollisionPair> collisionPair = new List<CollisionPair>();
 
-			for (int i = 0; i < boxCollision[0].Length; i++)
+            //TODO Utilizzare la funzione qui descritta
+            //List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute(boxCollision, CollisionDistance);
+
+            for (int i = 0; i < boxCollision[0].Length; i++)
 			{
 				for (int j = 0; j < boxCollision[1].Length; j++)
 				{
@@ -393,7 +395,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			var lockMe = new object();
 
-			Parallel.ForEach(
+            int ID_A = ((IShape)softShapeA).GetID();
+            int ID_B = ((IShape)softShapeB).GetID();
+
+
+            Parallel.ForEach(
 				collisionPair,
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
 				pair =>
@@ -401,8 +407,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 					CollisionPointStructure collisionPointStruct = SoftBodyNarrowPhase(
 						convexShapeA[pair.objectIndexA],
 						convexShapeB[pair.objectIndexB],
-						((IShape)softShapeA).GetID(),
-						((IShape)softShapeA).GetID());
+						ID_A,
+						ID_B);
 
 					if (collisionPointStruct != null)
 					{

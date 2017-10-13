@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
+	public sealed class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
     {
 
         #region Object status properties

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public class LinearProblemProperties
+	public sealed class LinearProblemProperties
 	{
 		#region Properties
 

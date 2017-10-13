@@ -4,7 +4,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public class ProjectedGaussSeidel : ISolver
+    public sealed class ProjectedGaussSeidel : ISolver
     {
 		#region Fields
 

@@ -71,9 +71,9 @@
     <Compile Include="CollisionEngine\GJK\GJKOutput.cs" />
     <Compile Include="CollisionEngine\GJK\Simplex.cs" />
     <Compile Include="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" />
-    <Compile Include="CollisionEngine\SoftBody\SoftBodyCollisionDetection.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
+    <Compile Include="ContactPartitioning\Partition.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />

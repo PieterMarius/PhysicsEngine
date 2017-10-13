@@ -6,7 +6,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public class SoftShape : IShape, ISoftShape, Identity
+    public sealed class SoftShape : IShape, ISoftShape, Identity
     {
         #region Object status properties
 

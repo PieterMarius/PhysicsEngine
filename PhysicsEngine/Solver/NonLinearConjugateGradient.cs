@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public class NonLinearConjugateGradient : ISolver
+	public sealed class NonLinearConjugateGradient : ISolver
     {
 		#region Private Fields
 

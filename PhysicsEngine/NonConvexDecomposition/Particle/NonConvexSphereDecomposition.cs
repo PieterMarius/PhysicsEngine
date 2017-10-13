@@ -2,14 +2,13 @@
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace TestPhysics
 {
     [Obsolete]
-    public class NonConvexSphereDecomposition
+    public sealed class NonConvexSphereDecomposition
     {
         #region Fields
 
@@ -34,8 +33,6 @@ namespace TestPhysics
             //IGeometry obj = LoadObject.GetObjectGeometry(null, "teapot.obj", 1.0f, ObjectGeometryType.NonConvexBody);
             //Geometry obj = LoadObject.GetObjectGeometry(null, "chair.obj", 1.0f);
 
-            Stopwatch stopwatch = new Stopwatch();
-
             //Suddivido il volume in parti
             int nSphere = Convert.ToInt32(2.1 / diameter);
 
@@ -56,9 +53,7 @@ namespace TestPhysics
             Vector3 startPoint2 = new Vector3(-1.05, 0.0, -1.05);
             Vector3 startPoint3 = new Vector3(0.0, -1.05, -1.05);
             
-            stopwatch.Reset();
-            stopwatch.Start();
-
+           
             var sync = new object();
 
             Parallel.For(0,
@@ -152,9 +147,6 @@ namespace TestPhysics
             //    }
             //    totalCount += index[i].Count;
             //}
-
-            stopwatch.Stop();
-            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
         }
 
         #endregion

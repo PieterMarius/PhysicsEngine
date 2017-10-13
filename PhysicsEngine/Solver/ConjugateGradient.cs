@@ -3,7 +3,7 @@ using static SharpEngineMathUtility.GeneralMathUtilities;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public class ConjugateGradient : ISolver
+    public sealed class ConjugateGradient : ISolver
     {
         #region Fields
 
