@@ -2,73 +2,74 @@
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public sealed class LinearProblemProperties
-	{
-		#region Properties
+    public sealed class LinearProblemProperties : IEqualityComparer<LinearProblemProperties>
+    {
+        #region Properties
 
         //y = Ax + B 
 
-		//Matrix A (N*N)
-		public readonly SparseElement[] M;
+        //Matrix A (N*N)
+        public readonly SparseElement[] M;
 
-		//Vector B (N)
-		public readonly double[] B;
+        //Vector B (N)
+        public readonly double[] B;
 
-		//Diagonal of matrix A (N)
-		public readonly double[] D;
+        //Diagonal of matrix A (N)
+        public readonly double[] D;
 
-		//Constraint
-		public readonly double[] ConstraintLimit;
+        //Constraint
+        public readonly double[] ConstraintLimit;
 
-		//Contraint type
-		public ConstraintType[] ConstraintType { get; private set; }
+        //Contraint type
+        public ConstraintType[] ConstraintType { get; private set; }
 
-		//Constraint joint
-		public readonly int?[][] Constraints;
+        //Constraint joint
+        public readonly int?[][] Constraints;
 
-		//Size of the system
-		public readonly int Count;
+        //Size of the system
+        public readonly int Count;
 
-        	#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public LinearProblemProperties (
-			SparseElement[] M,
-			double[] B,
-			double[] D,
-			double[] constraintLimit,
-			ConstraintType[] constraintType,
-			int?[][] constraints)
-		{
-			this.M = M;
-			this.B = B;
-			this.D = D;
-			ConstraintLimit = constraintLimit;
-			ConstraintType = constraintType;
-			Constraints = constraints;
-			Count = B.Length;
-		}
+        public LinearProblemProperties(
+            SparseElement[] M,
+            double[] B,
+            double[] D,
+            double[] constraintLimit,
+            ConstraintType[] constraintType,
+            int?[][] constraints)
+        {
+            this.M = M;
+            this.B = B;
+            this.D = D;
+            ConstraintLimit = constraintLimit;
+            ConstraintType = constraintType;
+            Constraints = constraints;
+            Count = B.Length;
+        }
 
         #endregion
 
         #region Public Methods
 
         public double[][] GetOriginalMatrix()
-		{
-			double[][] matrix = new double[Count][];
+        {
+            double[][] matrix = new double[Count][];
 
-			for (int i = 0; i < Count; i++)
-			{
-				matrix[i] = GetOriginalRow(i);
-				matrix[i][i] = 1.0 / D[i];
-			}
+            for (int i = 0; i < Count; i++)
+            {
+                matrix[i] = GetOriginalRow(i);
+                matrix[i][i] = 1.0 / D[i];
+            }
 
-			return matrix;
-		}
+            return matrix;
+        }
 
         public List<List<double>> GetOriginalMatrixList()
         {
@@ -116,11 +117,54 @@ namespace SharpPhysicsEngine.LCPSolver
             for (int i = 0; i < Count; i++)
             {
                 double diffError = CalculateRowError(matrix[i], X, B[i]);
-                
+
                 error += diffError * diffError;
             }
 
             return error;
+        }
+
+        public bool Equals(LinearProblemProperties x, LinearProblemProperties y)
+        {
+            if (x.M.Length != y.M.Length)
+                return false;
+
+            if (x.B.Length != y.B.Length)
+                return false;
+
+            if (x.D.Length != y.D.Length)
+                return false;
+
+            for (int i = 0; i < x.B.Length; i++)
+            {
+                if (!x.B[i].Equals(y.B[i]))
+                    return false;
+            }
+
+            for (int i = 0; i < x.D.Length; i++)
+            {
+                if (!x.D[i].Equals(y.D[i]))
+                    return false;
+            }
+            
+            double[][] A = x.GetOriginalMatrix();
+            double[][] B = y.GetOriginalMatrix();
+
+            for (int i = 0; i < A.Length; i++)
+            {
+                for (int j = 0; j < A[i].Length; j++)
+                {
+                    if (Math.Abs(A[i][j]-B[i][j]) > 1E-12)
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        public int GetHashCode(LinearProblemProperties obj)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -128,16 +172,16 @@ namespace SharpPhysicsEngine.LCPSolver
         #region Private Methods
 
         private double[] GetOriginalRow(int index)
-		{
-			double[] row = new double[Count];
+        {
+            double[] row = new double[Count];
 
-			SparseElement element = M[index];
+            SparseElement element = M[index];
 
-			for (int i = 0; i < element.Count; i++)
-				row[element.Index[i]] = element.Value[i];
+            for (int i = 0; i < element.Count; i++)
+                row[element.Index[i]] = element.Value[i];
 
-			return row;
-		}
+            return row;
+        }
 
         private double CalculateRowError(
             double[] row,
@@ -147,12 +191,12 @@ namespace SharpPhysicsEngine.LCPSolver
             double bValue = 0.0;
             for (int j = 0; j < Count; j++)
                 bValue += row[j] * X[j];
-            
+
             return bValue - expected;
         }
 
-		#endregion
+        #endregion
 
-	}
+    }
 }
 

@@ -1,12 +1,9 @@
 ﻿using System.IO;
-using SharpPhysicsEngine.CollisionEngine;
-using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine;
 using ObjLoader.Loader.Loaders;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
-using System;
 
 namespace TestPhysics
 {
