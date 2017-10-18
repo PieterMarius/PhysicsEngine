@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine
 			VelocityTolerance = 0.5;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
-			MaxThreadNumber = 8;
+			MaxThreadNumber = 4;
 			MaxCorrectionValue = 20.0;
 			PositionStabilization = false;
             SleepingObject = false;
