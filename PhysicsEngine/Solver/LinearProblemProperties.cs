@@ -28,7 +28,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public ConstraintType[] ConstraintType { get; private set; }
 
         //Constraint joint
-        public readonly int?[][] Constraints;
+        public readonly int?[] Constraints;
 
         //Size of the system
         public readonly int Count;
@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] D,
             double[] constraintLimit,
             ConstraintType[] constraintType,
-            int?[][] constraints)
+            int?[] constraints)
         {
             this.M = M;
             this.B = B;
@@ -149,12 +149,12 @@ namespace SharpPhysicsEngine.LCPSolver
             
             double[][] A = x.GetOriginalMatrix();
             double[][] B = y.GetOriginalMatrix();
-
+            
             for (int i = 0; i < A.Length; i++)
             {
                 for (int j = 0; j < A[i].Length; j++)
                 {
-                    if (Math.Abs(A[i][j]-B[i][j]) > 1E-12)
+                    if (Math.Abs(A[i][j] - B[i][j]) > 1E-12)
                         return false;
                 }
             }

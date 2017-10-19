@@ -58,21 +58,23 @@ namespace SharpPhysicsEngine
 
         #region Public Methods
 
-        public LinearProblemProperties NewBuildLCPMatrix(
+        public LinearProblemProperties BuildLCPMatrix(
             JacobianConstraint[] constraint,
             bool positionStabilization = false)
         {
             if (constraint.Length > 0)
             {
+                var stopwatch = new Stopwatch();
+
                 double[] B = new double[constraint.Length];
                 double[] D = new double[constraint.Length];
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
                 double[] constraintsLimit = new double[constraint.Length];
                 SparseElement[] M = new SparseElement[constraint.Length];
-                int?[][] constraintsArray = new int?[constraint.Length][];
-
+                int?[] constraintsArray = new int?[constraint.Length];
+                                                               
                 Dictionary<HashSetStruct, Tuple<List<JacobianConstraint>, int>> constraintsDictionary = new Dictionary<HashSetStruct, Tuple<List<JacobianConstraint>, int>>();
-
+                               
                 for (int i = 0; i < constraint.Length; i++)
                 {
                     JacobianConstraint itemConstraint = constraint[i];
@@ -85,16 +87,16 @@ namespace SharpPhysicsEngine
                     {
                         jc.Item1.Add(itemConstraint);
 
-                        jc = new Tuple<List<JacobianConstraint>, int>(jc.Item1, i);                        
+                        jc = new Tuple<List<JacobianConstraint>, int>(jc.Item1, i);
                     }
                     else
                         constraintsDictionary.Add(hash, new Tuple<List<JacobianConstraint>, int>(new List<JacobianConstraint> { itemConstraint }, i));
                 }
-
+                
                 var dictionaryList = constraintsDictionary.ToArray();
 
-                var key_ID_A = dictionaryList.ToLookup(x => x.Key.ID_A);
-                var key_ID_B = dictionaryList.ToLookup(x => x.Key.ID_B);
+                var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
+                var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
 
                 Parallel.ForEach(dictionaryList, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
                     constraintList =>
@@ -108,7 +110,6 @@ namespace SharpPhysicsEngine
 
                         List<int> index = new List<int>();
                         List<double> values = new List<double>();
-                        List<int?> constraints = new List<int?>();
 
                         int indexVal = constraintList.Value.Item2 + w;
 
@@ -117,9 +118,8 @@ namespace SharpPhysicsEngine
                         else
                             B[indexVal] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
                                                                                            Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
-
-                        if (contactA.ContactReference.HasValue)
-                            constraints.Add(contactA.ContactReference);
+                        
+                        constraintsArray[indexVal] = contactA.ContactReference;
 
                         constraintsLimit[indexVal] = contactA.ConstraintLimit;
                         constraintsType[indexVal] = contactA.Type;
@@ -291,7 +291,7 @@ namespace SharpPhysicsEngine
                             index.ToArray(),
                             constraint.Length);
 
-                        constraintsArray[indexVal] = constraints.ToArray();
+                        
                     }
                 });
 
@@ -314,7 +314,7 @@ namespace SharpPhysicsEngine
         /// Builds the LCP matrix for solver.
         /// </summary>
         [Obsolete]
-        public LinearProblemProperties BuildLCPMatrix(
+        public LinearProblemProperties OldBuildLCPMatrix(
             JacobianConstraint[] constraint,
             bool positionStabilization = false)
         {
@@ -324,7 +324,7 @@ namespace SharpPhysicsEngine
                 double[] D = new double[constraint.Length];
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
                 double[] constraintsLimit = new double[constraint.Length];
-                List<int?>[] constraints = new List<int?>[constraint.Length];
+                int?[] constraints = new int?[constraint.Length];
 
                 List<int>[] index = new List<int>[constraint.Length];
                 List<double>[] value = new List<double>[constraint.Length];
@@ -333,7 +333,7 @@ namespace SharpPhysicsEngine
                 {
                     index[i] = new List<int>();
                     value[i] = new List<double>();
-                    constraints[i] = new List<int?>();
+                    
                 }
                 
                 //Critical section variable
@@ -352,8 +352,7 @@ namespace SharpPhysicsEngine
                             B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
                                                                                     Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
 
-                        if (contactA.ContactReference.HasValue)
-                            constraints[i].Add(contactA.ContactReference);
+                        constraints[i] = contactA.ContactReference;
 
                         constraintsLimit[i] = contactA.ConstraintLimit;
                         constraintsType[i] = contactA.Type;
@@ -435,15 +434,13 @@ namespace SharpPhysicsEngine
                     });
 
                 SparseElement[] M = new SparseElement[constraint.Length];
-                int?[][] constraintsArray = new int?[constraint.Length][];
+                
                 for (int i = 0; i < constraint.Length; i++)
                 {
                     M[i] = new SparseElement(
                         value[i].ToArray(),
                         index[i].ToArray(),
                         constraint.Length);
-
-                    constraintsArray[i] = constraints[i].ToArray();
                 }
 
                 return new LinearProblemProperties(
@@ -452,7 +449,7 @@ namespace SharpPhysicsEngine
                     D,
                     constraintsLimit,
                     constraintsType,
-                    constraintsArray);
+                    constraints);
             }
 
             return null;

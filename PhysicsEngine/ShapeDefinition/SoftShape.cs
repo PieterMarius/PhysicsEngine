@@ -366,6 +366,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetInverseMass(inverseMass);
                 ShapePoints[i].SetBaseInertiaTensor(inertiaTensor);
                 ShapePoints[i].SetInertiaTensor(Matrix3x3.Invert(inertiaTensor));
+                ShapePoints[i].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             }
         }
 
@@ -376,7 +377,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
             
             foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
             {
-                if(indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.b)))
+                if(indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.b)) &&
+                   triangle.value.a != triangle.value.b)
                     SoftConstraint.Add(new SoftBodyConstraint(
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.b],
@@ -384,7 +386,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         0.5,
                         0.5));
 
-                if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)))
+                if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)) &&
+                    triangle.value.a != triangle.value.c)
                     SoftConstraint.Add(new SoftBodyConstraint(
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.c],
@@ -392,7 +395,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         0.5,
                         0.5));
 
-                if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)))
+                if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
+                    triangle.value.b != triangle.value.b)
                     SoftConstraint.Add(new SoftBodyConstraint(
                         ShapePoints[triangle.value.b],
                         ShapePoints[triangle.value.c],

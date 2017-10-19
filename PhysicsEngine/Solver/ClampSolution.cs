@@ -22,7 +22,7 @@ namespace SharpPhysicsEngine.LCPSolver
                                         
 				case ConstraintType.Friction:
                     
-                    double frictionLimit = X[input.Constraints[i][0].Value].X * input.ConstraintLimit[i];
+                    double frictionLimit = X[input.Constraints[i].Value].X * input.ConstraintLimit[i];
 
                     if (X[i].X < -frictionLimit)
                         return new SolutionValues(-frictionLimit, true);
@@ -63,7 +63,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 case ConstraintType.Friction:
                    
-                    double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+                    double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
                     if (X[i] < -frictionLimit)
                         return -frictionLimit;
@@ -105,7 +105,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 case ConstraintType.Friction:
                     
-                    double frictionLimit = X[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+                    double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
                     if (Math.Abs(X[i] + frictionLimit) < 1E-50 ||
                         Math.Abs(X[i] - frictionLimit) < 1E-50)
@@ -142,7 +142,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 case ConstraintType.Friction:
 
-                    double frictionLimit = x[input.Constraints[i][0].Value] * input.ConstraintLimit[i];
+                    double frictionLimit = x[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
                     Min = -frictionLimit;
                     Max = frictionLimit;

@@ -4,6 +4,7 @@ namespace SharpEngineMathUtility
 {
     public static class SIMDMathUtility
     {
+
         public static double[] SIMDArrayAddition(double[] lhs, double[] rhs)
         {
             var simdLength = Vector<double>.Count;

@@ -602,28 +602,13 @@ namespace SharpPhysicsEngine
 
 						stopwatch.Start();
 
-						LinearProblemProperties overallLCP = linearProblemBuilder.NewBuildLCPMatrix(
+						LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
 																jacobianConstraints,
 																EngineParameters.PositionStabilization);
 
 						stopwatch.Stop();
 
 						Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-
-						stopwatch.Reset();
-
-						stopwatch.Start();
-
-						LinearProblemProperties overallLCP1 = linearProblemBuilder.BuildLCPMatrix(
-																jacobianConstraints,
-																EngineParameters.PositionStabilization);
-
-						stopwatch.Stop();
-
-						Console.WriteLine("Inner Engine Elapsed1={0}", stopwatch.ElapsedMilliseconds);
-
-						Console.WriteLine("Test equality " + overallLCP.Equals(overallLCP, overallLCP1));
-						
 
 						if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
@@ -949,7 +934,7 @@ namespace SharpPhysicsEngine
 		{
 			foreach (var shape in shapes) 
 			{
-					if (shape.ObjectType != ObjectType.StaticBody) 
+				if (shape.ObjectType != ObjectType.StaticBody) 
 				{
 					ISoftShape softShape = shape as ISoftShape;
 

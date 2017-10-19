@@ -198,7 +198,7 @@ namespace SharpPhysicsEngine
 
             //DOF 6
 
-            constraintLimit = restoreCoeff * 2.0 * angularError.z;
+            constraintLimit = restoreCoeff * angularError.z;
 
             fixedConstraints.Add(JacobianCommon.GetDOF(
                 new Vector3(0.0, 0.0, 0.0),

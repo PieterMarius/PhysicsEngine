@@ -102,6 +102,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TriangleIndex.Add(triangleIndexes);
         }
 
+        public void SetRotationStatus(Quaternion rotationStatus)
+        {
+            RotationStatus = rotationStatus;
+        }
+
         #endregion
     }
 }

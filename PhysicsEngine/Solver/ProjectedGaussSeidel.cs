@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.LCPSolver
 			{
 				double[] sum = ElaborateLowerTriangularMatrix(input, X);
 
-                	for (int i = 0; i < input.Count; i++)
+                for (int i = 0; i < input.Count; i++)
 				{
 					double sumBuffer = sum [i];
 
