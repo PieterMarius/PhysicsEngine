@@ -606,7 +606,15 @@ namespace SharpPhysicsEngine
 																jacobianConstraints,
 																EngineParameters.PositionStabilization);
 
-						stopwatch.Stop();
+                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
+                        //                                        jacobianConstraints,
+                        //                                        EngineParameters.PositionStabilization);
+
+                        //var test = overallLCP.Equals(overallLCP, old_overallLCP);
+
+                        //Console.WriteLine("Test " + test);
+
+                        stopwatch.Stop();
 
 						Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 

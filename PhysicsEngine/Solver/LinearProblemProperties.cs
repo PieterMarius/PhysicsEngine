@@ -120,7 +120,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 error += diffError * diffError;
             }
-
+      
             return error;
         }
 
@@ -146,7 +146,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 if (!x.D[i].Equals(y.D[i]))
                     return false;
             }
-            
+
             double[][] A = x.GetOriginalMatrix();
             double[][] B = y.GetOriginalMatrix();
             

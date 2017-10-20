@@ -303,8 +303,9 @@ namespace SharpPhysicsEngine.CollisionEngine
                 {
                     VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
+                    //TODO verificare output
                     GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
-
+                    
                     var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);
 
                     if (cps != null)

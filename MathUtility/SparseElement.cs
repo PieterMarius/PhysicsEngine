@@ -43,17 +43,17 @@ namespace SharpEngineMathUtility
             if (x.Value.Length != x.Value.Length)
                 return false;
 
-            for (int i = 0; i < x.Index.Length; i++)
-            {
-                if (x.Index[i] != y.Index[i])
-                    return false;
-            }
+            //for (int i = 0; i < x.Index.Length; i++)
+            //{
+            //    if (x.Index[i] != y.Index[i])
+            //        return false;
+            //}
 
-            for (int i = 0; i < x.Value.Length; i++)
-            {
-                if (!x.Value[i].Equals(y.Value[i]))
-                    return false;
-            }
+            //for (int i = 0; i < x.Value.Length; i++)
+            //{
+            //    if (!x.Value[i].Equals(y.Value[i]))
+            //        return false;
+            //}
 
             return true;
         }

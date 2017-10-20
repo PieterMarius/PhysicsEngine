@@ -188,12 +188,26 @@ namespace SharpEngineMathUtility
 
 		public static double Dot(Vector3 a, Vector3 b)
 		{
-			return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
+            return Dot(ref a, ref b);
 		}
 
-		public double Dot(Vector3 a)
+        public static double Dot(ref Vector3 a, ref Vector3 b)
+        {
+            return a.x * b.x +
+                   a.y * b.y +
+                   a.z * b.z;
+        }
+
+        public double Dot(ref Vector3 a)
+        {
+            return x * a.x +
+                   y * a.y +
+                   z * a.z;
+        }
+
+        public double Dot(Vector3 a)
 		{
-			return (x * a.x) + (y * a.y) + (z * a.z);
+			return Dot(ref a);
 		}
 
 		public static double Length(Vector3 a)
