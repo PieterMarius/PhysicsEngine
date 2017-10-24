@@ -2,14 +2,13 @@
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SharpPhysicsEngine
+namespace SharpPhysicsEngine.Helper
 {
     public sealed class LinearProblemBuilder
     {
@@ -83,8 +82,6 @@ namespace SharpPhysicsEngine
         {
             if (constraint.Length > 0)
             {
-                var stopwatch = new Stopwatch();
-
                 double[] B = new double[constraint.Length];
                 double[] D = new double[constraint.Length];
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
@@ -112,14 +109,6 @@ namespace SharpPhysicsEngine
 
                 var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
                 var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
-
-                //int minWorker, minIOC;
-                //// Get the current settings.
-                //ThreadPool.GetMinThreads(out minWorker, out minIOC);
-                //// Change the minimum number of worker threads to four, but
-                //// keep the old setting for minimum asynchronous I/O 
-                //// completion threads.
-                //ThreadPool.SetMinThreads(4, minIOC);
 
                 Parallel.ForEach(dictionaryList, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
                     constraintValues =>
@@ -345,10 +334,7 @@ namespace SharpPhysicsEngine
 
             return null;
         }
-
         
-
-
         /// <summary>
         /// Builds the LCP matrix for solver.
         /// </summary>

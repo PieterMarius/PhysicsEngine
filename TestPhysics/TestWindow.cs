@@ -212,8 +212,8 @@ namespace TestPhysics
 
                 //Exit();
 
-                //LoadEngineByXml();
-                LoadEngineByBuilder();
+                LoadEngineByXml();
+                //LoadEngineByBuilder();
 
 
             }
@@ -263,7 +263,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
+            physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
