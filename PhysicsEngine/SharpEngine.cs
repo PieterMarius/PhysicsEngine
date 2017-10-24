@@ -516,10 +516,8 @@ namespace SharpPhysicsEngine
 		private void PhysicsExecutionFlow()
 		{
 			var stopwatch = new Stopwatch();
-
-			
-
-			#region Contact and Joint elaboration
+            
+            #region Contact and Joint elaboration
 
 			solverError = 0.0;
 
@@ -602,23 +600,33 @@ namespace SharpPhysicsEngine
 
 						stopwatch.Start();
 
-						LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
-																jacobianConstraints,
-																EngineParameters.PositionStabilization);
+                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
+                                                                jacobianConstraints,
+                                                                EngineParameters.PositionStabilization);
+
+                        stopwatch.Stop();
+
+                        Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+                        //stopwatch.Reset();
+
+                        //stopwatch.Start();
 
                         //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
                         //                                        jacobianConstraints,
                         //                                        EngineParameters.PositionStabilization);
 
+                        //stopwatch.Stop();
+
+                        //Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
                         //var test = overallLCP.Equals(overallLCP, old_overallLCP);
 
                         //Console.WriteLine("Test " + test);
 
-                        stopwatch.Stop();
 
-						Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-						if (overallLCP != null &&
+                        if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
 						{
 							Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);

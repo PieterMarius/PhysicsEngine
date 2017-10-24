@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine
@@ -44,6 +45,23 @@ namespace SharpPhysicsEngine
 
         }
 
+        private struct DictionaryConstraintValue
+        {
+            private readonly JacobianConstraint constraint;
+            private readonly int startIndex;
+
+            public JacobianConstraint Constraint { get { return constraint; } }
+            public int StartIndex { get { return startIndex; } }
+
+            public DictionaryConstraintValue(
+                JacobianConstraint constraint, 
+                int startIndex)
+            {
+                this.constraint = constraint;
+                this.startIndex = startIndex;
+            }
+        }
+
         private readonly PhysicsEngineParameters EngineParameters;
 
         #endregion
@@ -74,24 +92,20 @@ namespace SharpPhysicsEngine
                 SparseElement[] M = new SparseElement[constraint.Length];
                 int?[] constraintsArray = new int?[constraint.Length];
                                                                
-                Dictionary<HashSetStruct, Tuple<List<JacobianConstraint>, int>> constraintsDictionary = new Dictionary<HashSetStruct, Tuple<List<JacobianConstraint>, int>>();
+                Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
                                
                 for (int i = 0; i < constraint.Length; i++)
                 {
                     JacobianConstraint itemConstraint = constraint[i];
 
-                    Tuple<List<JacobianConstraint>, int> jc;
+                    List<DictionaryConstraintValue> jc;
 
                     HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.GetID(), itemConstraint.ObjectB.GetID());
 
                     if (constraintsDictionary.TryGetValue(hash, out jc))
-                    {
-                        jc.Item1.Add(itemConstraint);
-
-                        jc = new Tuple<List<JacobianConstraint>, int>(jc.Item1, i);
-                    }
+                        jc.Add(new DictionaryConstraintValue(itemConstraint, i));
                     else
-                        constraintsDictionary.Add(hash, new Tuple<List<JacobianConstraint>, int>(new List<JacobianConstraint> { itemConstraint }, i));
+                        constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
                 }
                 
                 var dictionaryList = constraintsDictionary.ToArray();
@@ -99,20 +113,28 @@ namespace SharpPhysicsEngine
                 var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
                 var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
 
+                //int minWorker, minIOC;
+                //// Get the current settings.
+                //ThreadPool.GetMinThreads(out minWorker, out minIOC);
+                //// Change the minimum number of worker threads to four, but
+                //// keep the old setting for minimum asynchronous I/O 
+                //// completion threads.
+                //ThreadPool.SetMinThreads(4, minIOC);
+
                 Parallel.ForEach(dictionaryList, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                    constraintList =>
+                    constraintValues =>
                 {
-                    int contactA_ID_A = constraintList.Key.ID_A;
-                    int contactA_ID_B = constraintList.Key.ID_B;
+                    int contactA_ID_A = constraintValues.Key.ID_A;
+                    int contactA_ID_B = constraintValues.Key.ID_B;
                                         
-                    for (int w = 0; w < constraintList.Value.Item1.Count; w++)
+                    for (int w = 0; w < constraintValues.Value.Count; w++)
                     {
-                        JacobianConstraint contactA = constraintList.Value.Item1[w];
+                        JacobianConstraint contactA = constraintValues.Value[w].Constraint;
 
                         List<int> index = new List<int>();
                         List<double> values = new List<double>();
 
-                        int indexVal = constraintList.Value.Item2 + w;
+                        int indexVal = constraintValues.Value[w].StartIndex;
 
                         if (positionStabilization)
                             B[indexVal] = contactA.CorrectionValue;
@@ -135,13 +157,13 @@ namespace SharpPhysicsEngine
                         D[indexVal] = 1.0 / mValue;
 
                         //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
-                        for (int j = 0; j < constraintList.Value.Item1.Count; j++)
+                        for (int j = 0; j < constraintValues.Value.Count; j++)
                         {
-                            int innerIndex = constraintList.Value.Item2 + j;
+                            int innerIndex = constraintValues.Value[j].StartIndex;
 
                             if (innerIndex != indexVal)
                             {
-                                JacobianConstraint contactB = constraintList.Value.Item1[j];
+                                JacobianConstraint contactB = constraintValues.Value[j].Constraint;
 
                                 mValue = GetLCPMatrixValue(
                                     contactA.LinearComponentA,
@@ -164,16 +186,16 @@ namespace SharpPhysicsEngine
                         }
 
                         //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
-                        Tuple<List<JacobianConstraint>, int> symmetricList;
+                        List<DictionaryConstraintValue> symmetricList;
                         if (constraintsDictionary.TryGetValue(new HashSetStruct(contactA_ID_B, contactA_ID_A), out symmetricList))
                         {
-                            for (int j = 0; j < symmetricList.Item1.Count; j++)
+                            for (int j = 0; j < symmetricList.Count; j++)
                             {
-                                int innerIndex = constraintList.Value.Item2 + j;
+                                int innerIndex = constraintValues.Value[j].StartIndex;
 
                                 if (innerIndex != indexVal)
                                 {
-                                    JacobianConstraint contactB = symmetricList.Item1[j];
+                                    JacobianConstraint contactB = symmetricList[j].Constraint;
 
                                     mValue = GetLCPMatrixValue(
                                         contactA.LinearComponentA,
@@ -199,15 +221,15 @@ namespace SharpPhysicsEngine
                         //contactA_ID_A == contactB_ID_A
                         foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintList.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
                             {
-                                for (int j = 0; j < constraintCheckItem.Value.Item1.Count; j++)
+                                for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value.Item2 + j;
+                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = constraintCheckItem.Value.Item1[j];
+                                        JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentA,
@@ -226,15 +248,15 @@ namespace SharpPhysicsEngine
                         //contactA_ID_A == contactB_ID_B
                         foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintList.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
                             {
-                                for (int j = 0; j < constraintCheckItem.Value.Item1.Count; j++)
+                                for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value.Item2 + j;
+                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = constraintCheckItem.Value.Item1[j];
+                                        JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentA,
@@ -253,15 +275,15 @@ namespace SharpPhysicsEngine
                         //contactA_ID_B == contactB_ID_A
                         foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintList.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
                             {
-                                for (int j = 0; j < constraintCheckItem.Value.Item1.Count; j++)
+                                for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value.Item2 + j;
+                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = constraintCheckItem.Value.Item1[j];
+                                        JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentB,
@@ -280,15 +302,15 @@ namespace SharpPhysicsEngine
                         //contactA_ID_B == contactB_ID_B
                         foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintList.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
                             {
-                                for (int j = 0; j < constraintCheckItem.Value.Item1.Count; j++)
+                                for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value.Item2 + j;
+                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = constraintCheckItem.Value.Item1[j];
+                                        JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentB,

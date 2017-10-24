@@ -171,7 +171,7 @@ namespace SharpPhysicsEngine
 			PositionBasedJointIterations = 500;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 100;
+			OverallConstraintsIterations = 60;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;
@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine
 			VelocityTolerance = 0.5;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
-			MaxThreadNumber = 2;
+			MaxThreadNumber = 4;
 			MaxCorrectionValue = 20.0;
 			PositionStabilization = false;
             SleepingObject = false;

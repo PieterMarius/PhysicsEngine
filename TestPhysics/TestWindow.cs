@@ -147,118 +147,148 @@ namespace TestPhysics
 			try
 			{
 
-				//testConvexDecomp.Decompose(0.08);
-			  
-				//TestNumeric();
-			   
-				//env.GetPhysicsEnvironment();
+                //testConvexDecomp.Decompose(0.08);
 
-				//LoadObject loadObject = new LoadObject("startJoint.xml");
-				//LoadObject loadObject = new LoadObject("configJoint.xml");
-				//var loadObject = new LoadObject("startConfig.xml");
-				//var loadObject = new LoadObject("carConfig.xml");
-				//var loadObject = new LoadObject("testJointBridge.xml");
-				//var loadObject = new LoadObject("compositeObjectConfig.xml");
-				//var loadObject = new LoadObject("frictionTestConfig.xml");
+                //TestNumeric();
+
+                //env.GetPhysicsEnvironment();
 
 
-				//var loadObject = new LoadObject("softBodyConfig.xml");
-				var env = new BuildEnvironment();
-
-				//simulationObjects = loadObject.LoadSimulationObjects();
-				//simulationJoints = loadObject.LoadSimulationJoints(simulationObjects);
-
-				////displayList = LoadObject.GetOpenGLObjectList("bunny.obj", 1);
-
-				//displayList = loadObject.GetOpenGLObjectList();
-
-				////AddSoftBody();
-
-				////Carico le texture
-				//textureID = loadObject.LoadTexture();
-				redTexture = OpenGLUtilities.LoadTexture("red.bmp");
-								
-				physicsEngine = env.GetPhysicsEnvironment();
-				displayList = env.GetOpenGLEnvironment();
-				textureID = env.LoadTexture();
-
-				
-				//ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
-
-				//stopwatch.Reset();
-				//stopwatch.Start();
-
-				//region = softShape.AABBox;
-
-				
-
-				//shapeConvexDec = new ShapeConvexDecomposition(
-				//region,
-				//softShape.Triangle);
-
-				//convexShape = shapeConvexDec.GetConvexShapeList(
-				//	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(),0)),
-				//	0.2);
-
-				//AABB testRegion = new AABB(
-				//new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
-				//new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
-
-				//convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
-				//	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-				//			item.TriangleIndex.ToArray(),0)),
-				//		0.2);
-
-				//stopwatch.Stop();
-				//Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
 
-				//OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
-				//octTree.BuildOctree();
-				//octTree.Render(ref octTreeLine);
-
-				// octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
-
-				//TODO provare a spostare vertici
-
-				//physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
-
-				//for (int i = 0; i < simulationObjects.Count(); i++)
-				//{
-				//    physicsEngine.AddShape(simulationObjects[i]);
-				//}
-
-				//for (int i = 0; i < simulationJoints.Count(); i++)
-				//{
-				//    physicsEngine.AddJoint(simulationJoints[i]);
-				//}
-
-				//physicsEngine.AddShape(AddSoftBody());
-
-				pause = true;
-
-				//var obj = physicsEngine.GetJointsList();
-				//
-				//				obj.Add(null);
-
-				//Exit();
+                //var env = new BuildEnvironment();
 
 
-				collPoint = new List<CollisionPointStructure> ();
-				collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
-				
-			}
+                ////AddSoftBody();
+
+
+
+                //physicsEngine = env.GetPhysicsEnvironment();
+                //displayList = env.GetOpenGLEnvironment();
+                //textureID = env.LoadTexture();
+
+
+                //ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+
+                //stopwatch.Reset();
+                //stopwatch.Start();
+
+                //region = softShape.AABBox;
+
+
+
+                //shapeConvexDec = new ShapeConvexDecomposition(
+                //region,
+                //softShape.Triangle);
+
+                //convexShape = shapeConvexDec.GetConvexShapeList(
+                //	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(),0)),
+                //	0.2);
+
+                //AABB testRegion = new AABB(
+                //new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
+                //new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
+
+                //convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
+                //	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+                //			item.TriangleIndex.ToArray(),0)),
+                //		0.2);
+
+                //stopwatch.Stop();
+                //Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+
+                //OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
+                //octTree.BuildOctree();
+                //octTree.Render(ref octTreeLine);
+
+                // octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
+
+
+
+                //var obj = physicsEngine.GetJointsList();
+                //
+                //				obj.Add(null);
+
+                //Exit();
+
+                //LoadEngineByXml();
+                LoadEngineByBuilder();
+
+
+            }
 			catch (Exception e) 
 			{
 				throw new Exception (e.StackTrace);
 			}
 		}
 
-		
-			
-		#region OpenGL Windows Settings
+        private void LoadEngineByBuilder()
+        {
+            var env = new BuildEnvironment();
 
-		protected override void OnLoad(EventArgs e)
+
+            //AddSoftBody();
+            
+
+            physicsEngine = env.GetPhysicsEnvironment();
+            displayList = env.GetOpenGLEnvironment();
+            textureID = env.LoadTexture();
+
+            collPoint = new List<CollisionPointStructure>();
+            collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
+        }
+
+        private void LoadEngineByXml()
+        {
+            //LoadObject loadObject = new LoadObject("startJoint.xml");
+            //LoadObject loadObject = new LoadObject("configJoint.xml");
+            //var loadObject = new LoadObject("startConfig.xml");
+            //var loadObject = new LoadObject("carConfig.xml");
+            var loadObject = new LoadObject("testJointBridge.xml");
+            //var loadObject = new LoadObject("compositeObjectConfig.xml");
+            //var loadObject = new LoadObject("frictionTestConfig.xml");
+
+            //var loadObject = new LoadObject("softBodyConfig.xml");
+
+
+            simulationObjects = loadObject.LoadSimulationObjects();
+            simulationJoints = loadObject.LoadSimulationJoints(simulationObjects);
+            
+            displayList = loadObject.GetOpenGLObjectList();
+                        
+            ////Carico le texture
+            textureID = loadObject.LoadTexture();
+            redTexture = OpenGLUtilities.LoadTexture("red.bmp");
+
+            physicsEngine = new SharpEngine();
+
+            physicsEngine.SetSolver(SolverType.ProjectedGaussSeidel);
+
+            for (int i = 0; i < simulationObjects.Count(); i++)
+            {
+                physicsEngine.AddShape(simulationObjects[i]);
+            }
+
+            for (int i = 0; i < simulationJoints.Count(); i++)
+            {
+                physicsEngine.AddJoint(simulationJoints[i]);
+            }
+
+            //physicsEngine.AddShape(AddSoftBody());
+
+            pause = true;
+
+            collPoint = new List<CollisionPointStructure>();
+            collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
+
+        }
+
+
+
+        #region OpenGL Windows Settings
+
+        protected override void OnLoad(EventArgs e)
 		{
 			base.OnLoad (e);
 
