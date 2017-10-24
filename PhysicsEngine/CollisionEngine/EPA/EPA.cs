@@ -37,26 +37,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#endregion
 
 		#region Private Methods
-						   
-		//private void GetEpaVertexFromMinkowsky(
-		//	SupportTriangle triangle,
-		//	VertexProperties[] vertexShape1,
-		//	VertexProperties[] vertexShape2,
-		//	ref EngineCollisionPoint epaCollisionPoint)
-		//{
-		//	Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
-		//	Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
-		//	Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
-
-		//	Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
-		//	Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
-		//	Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
-
-		//	epaCollisionPoint.SetA (a1 + (ba1 * triangle.s) + (ca1 * triangle.t));
-		//	epaCollisionPoint.SetB (a2 + (ba2 * triangle.s) + (ca2 * triangle.t));
-		//}
-
-		/// <summary>
+		
+        /// <summary>
 		/// Executes the EPA engine.
 		/// </summary>
 		/// <param name="shape1">Shape1.</param>

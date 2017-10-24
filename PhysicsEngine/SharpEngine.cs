@@ -335,11 +335,9 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// Runs the engine.
 		/// </summary>
-		public void Simulate(double? timeStep = null)
+		public void Simulate(double timeStep)
 		{
-			TimeStep = (timeStep.HasValue) ?
-					TimeStep = timeStep.Value :
-					EngineParameters.TimeStep;
+            TimeStep = timeStep;
 
 			#region Simulation Workflow
 
@@ -351,6 +349,11 @@ namespace SharpPhysicsEngine
 
 			#endregion
 		}
+
+        public void Simulate()
+        {
+            Simulate(EngineParameters.TimeStep);
+        }
 
 		public void SimulateCCD()
 		{
@@ -528,10 +531,14 @@ namespace SharpPhysicsEngine
 		private void PhysicsExecutionFlow()
 		{
 			var stopwatch = new Stopwatch();
-            
+
+            stopwatch.Reset();
+
+            stopwatch.Start();
+
             #region Contact and Joint elaboration
 
-			solverError = 0.0;
+            solverError = 0.0;
 
 			if (EngineParameters.PositionStabilization)
 			{
@@ -608,19 +615,19 @@ namespace SharpPhysicsEngine
 
 						//jacobianConstraints = ContactSorting(jacobianConstraints);
 
-						stopwatch.Reset();
+						//stopwatch.Reset();
 
-						stopwatch.Start();
+						//stopwatch.Start();
 
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
                                                                 jacobianConstraints,
                                                                 EngineParameters.PositionStabilization);
 
-                        stopwatch.Stop();
+                        //stopwatch.Stop();
 
-                        Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+                        //Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-                        stopwatch.Reset();
+                        //stopwatch.Reset();
 
                         //stopwatch.Start();
 
@@ -652,7 +659,7 @@ namespace SharpPhysicsEngine
 
 							//SolutionValues[] sol = testVerifica.Solve(overallLCP);
 
-							Console.WriteLine("error " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
+							//Console.WriteLine("error " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
 							//Console.WriteLine("errorTest " + SolverHelper.ComputeSolverError(overallLCP, sol));
 						}
 						else if (EngineParameters.OverallConstraintsIterations == 0)
@@ -661,7 +668,7 @@ namespace SharpPhysicsEngine
 								overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
 						}
 
-						integrationHelper.UpdateVelocity(ref jacobianConstraints, overallSolution);
+						integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
 
 						#endregion
 					}
@@ -676,7 +683,7 @@ namespace SharpPhysicsEngine
 
             #region Position and Velocity integration
 
-            integrationHelper.IntegrateObjectsPosition(Shapes, TimeStep);
+            integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
 			#endregion
 

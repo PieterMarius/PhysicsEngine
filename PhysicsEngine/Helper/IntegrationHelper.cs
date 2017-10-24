@@ -28,40 +28,51 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
 
+        /// <summary>
+        /// Update object velocity
+        /// </summary>
+        /// <param name="contact"></param>
+        /// <param name="X"></param>
         public void UpdateVelocity(
-            ref JacobianConstraint[] contact,
+            JacobianConstraint[] contact,
             SolutionValues[] X)
         {
-            for (int i = 0; i < contact.Length; i++)
-            {
-                if (Math.Abs(X[i].X) > 1E-50)
+            //Critical section variable
+            var sync = new object();
+
+            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                i =>
                 {
-                    double impulse = X[i].X;
+                    if (Math.Abs(X[i].X) > 1E-50)
+                    {
+                        double impulse = X[i].X;
 
-                    JacobianConstraint ct = contact[i];
+                        JacobianConstraint ct = contact[i];
 
-                    UpdateObjectVelocity(
-                        ct.ObjectA,
-                        ct.LinearComponentA,
-                        ct.AngularComponentA,
-                        impulse);
+                        UpdateObjectVelocity(
+                            ct.ObjectA,
+                            ct.LinearComponentA,
+                            ct.AngularComponentA,
+                            impulse,
+                            sync);
 
-                    UpdateObjectVelocity(
-                        ct.ObjectB,
-                        ct.LinearComponentB,
-                        ct.AngularComponentB,
-                        impulse);
+                        UpdateObjectVelocity(
+                            ct.ObjectB,
+                            ct.LinearComponentB,
+                            ct.AngularComponentB,
+                            impulse,
+                            sync);
 
-                    ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
-                }
-            }
+                        ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
+                    }
+                });
         }
 
         /// <summary>
         /// Integrates the objects position for ConvexShape and CompoundShape.
         /// </summary>
         public void IntegrateObjectsPosition(
-            IShape[] shapes,
+            ref IShape[] shapes,
             double timeStep)
         {
             foreach (var shape in shapes)
@@ -86,24 +97,27 @@ namespace SharpPhysicsEngine.Helper
             IShapeCommon simObj,
             Vector3 linearComponent,
             Vector3 angularComponent,
-            double X)
+            double X,
+            object sync)
         {
             if (simObj.ObjectType != ObjectType.StaticBody)
             {
                 Vector3 linearImpulse = X * linearComponent;
                 Vector3 angularImpuse = X * angularComponent;
 
-                Vector3 linearVelocity = simObj.LinearVelocity +
-                                         linearImpulse *
+                Vector3 linearVelocity = linearImpulse *
                                          simObj.InverseMass;
 
-                Vector3 angularVelocity = simObj.AngularVelocity +
-                                          (simObj.InertiaTensor *
-                                          angularImpuse);
+                Vector3 angularVelocity = simObj.InertiaTensor *
+                                          angularImpuse;
 
-                //TODO implementare x Soft Body
-                simObj.SetLinearVelocity(linearVelocity);
-                simObj.SetAngularVelocity(angularVelocity);
+                //Critical Section
+                lock (sync)
+                {
+                    //TODO implementare x Soft Body
+                    simObj.SetLinearVelocity(simObj.LinearVelocity + linearVelocity);
+                    simObj.SetAngularVelocity(simObj.AngularVelocity + angularVelocity);
+                }
             }
         }
 

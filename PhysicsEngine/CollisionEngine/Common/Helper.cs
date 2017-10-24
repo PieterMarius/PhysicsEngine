@@ -291,8 +291,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			VertexProperties[] vertexPosition = new VertexProperties[obj.VertexPosition.Length];
 
-			for (int i = 0; i < obj.VertexPosition.Length; i++)
-				vertexPosition[i] = GetVertexPosition(obj, i);
+            for (int i = 0; i < obj.VertexPosition.Length; i++)
+            {
+                vertexPosition[i] = GetVertexPosition(obj, i);
+            }
 
 			return vertexPosition;
 		}
