@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
+using System;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -11,7 +12,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public readonly Vector3 CollisionNormal;
 		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
-		#region "Constructors"
+		#region Constructor
 
 		public CollisionPoint (
 			VertexProperties collisionPointA,
@@ -31,8 +32,25 @@ namespace SharpPhysicsEngine.CollisionEngine
 			};
 		}
 
-		#endregion
+        #endregion
 
-	}
+        #region Public Methods
+
+        public VertexProperties GetCollisionVertex(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return CollisionPointA;
+                case 1:
+                    return CollisionPointB;
+                default:
+                    throw new ArgumentException("Incorrect collision point");
+            }
+        }
+
+        #endregion Public Methods
+
+    }
 }
 

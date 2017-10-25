@@ -72,11 +72,21 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		public readonly StartImpulseProperties StartImpulse;
 
-       	#endregion
+        /// <summary>
+        /// Soft Shape Point Index Object A
+        /// </summary>
+        public readonly int? SoftShapePointIndexA;
 
-		#region Constructor
+        /// <summary>
+        /// Soft Shape Point Index Object B
+        /// </summary>
+        public readonly int? SoftShapePointIndexB;
 
-		public JacobianConstraint (
+        #endregion
+
+        #region Constructor
+
+        public JacobianConstraint (
             IShapeCommon objectA,
             IShapeCommon objectB,
 			int? contactReference,
@@ -89,7 +99,9 @@ namespace SharpPhysicsEngine
 			double correctionValue,
 			double cfm,
 			double constraintLimit,
-			StartImpulseProperties startImpulse)
+			StartImpulseProperties startImpulse,
+            int? softShapePointIndexA,
+            int? softShapePointIndexB)
 		{
 			ObjectA = objectA;
 			ObjectB = objectB;
@@ -104,7 +116,41 @@ namespace SharpPhysicsEngine
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
 			StartImpulse = startImpulse;
+            SoftShapePointIndexA = softShapePointIndexA;
+            SoftShapePointIndexB = softShapePointIndexB;
 		}
+
+        public JacobianConstraint(
+            IShapeCommon objectA,
+            IShapeCommon objectB,
+            int? contactReference,
+            Vector3 linearComponentA,
+            Vector3 linearComponentB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            ConstraintType type,
+            double B,
+            double correctionValue,
+            double cfm,
+            double constraintLimit,
+            StartImpulseProperties startImpulse)
+            :this(objectA, objectB, contactReference, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, startImpulse, null, null)
+        { }
+
+        public JacobianConstraint(
+            IShapeCommon objectA,
+            IShapeCommon objectB,
+            Vector3 linearComponentA,
+            Vector3 linearComponentB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            ConstraintType type,
+            double B,
+            double correctionValue,
+            double cfm,
+            double constraintLimit)
+            : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, new StartImpulseProperties(0.0), null, null)
+        { }
 
         #endregion
 

@@ -116,8 +116,8 @@ namespace SharpPhysicsEngine
 			double cfm,
 			double constraintLimit,
 			ConstraintType type,
-            	int? contactReference = null,
-			StartImpulseProperties startImpulseProperties = null)
+            	int? contactReference,
+			StartImpulseProperties startImpulseProperties)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
@@ -150,20 +150,22 @@ namespace SharpPhysicsEngine
             Vector3 linearComponentB,
             Vector3 angularComponentA,
             Vector3 angularComponentB,
-            SoftShapePoint softShapePointA,
-            SoftShapePoint softShapePointB,
+            IShape simulationObjectA,
+            IShape simulationObjectB,
             double constraintValue,
             double correctionValue,
             double cfm,
             double constraintLimit,
             ConstraintType type,
-            int? contactReference = null,
-            StartImpulseProperties startImpulseProperties = null)
+            int? contactReference,
+            StartImpulseProperties startImpulseProperties,
+            int? softShapePointIndexA,
+            int? softShapePointIndexB)
         {
-            double jacobianVelocityValue = linearComponentA.Dot(softShapePointA.LinearVelocity) +
-                                           linearComponentB.Dot(softShapePointB.LinearVelocity) +
-                                           angularComponentA.Dot(softShapePointA.AngularVelocity) +
-                                           angularComponentB.Dot(softShapePointB.AngularVelocity);
+            double jacobianVelocityValue = linearComponentA.Dot(simulationObjectA.LinearVelocity) +
+                                           linearComponentB.Dot(simulationObjectB.LinearVelocity) +
+                                           angularComponentA.Dot(simulationObjectA.AngularVelocity) +
+                                           angularComponentB.Dot(simulationObjectB.AngularVelocity);
 
             jacobianVelocityValue -= constraintValue;
 
@@ -171,8 +173,8 @@ namespace SharpPhysicsEngine
                 startImpulseProperties = new StartImpulseProperties(0.0);
 
             return new JacobianConstraint(
-                softShapePointA,
-                softShapePointB,
+                simulationObjectA,
+                simulationObjectB,
                 contactReference,
                 linearComponentA,
                 linearComponentB,
@@ -183,7 +185,73 @@ namespace SharpPhysicsEngine
                 correctionValue,
                 cfm,
                 constraintLimit,
-                startImpulseProperties);
+                startImpulseProperties,
+                softShapePointIndexA,
+                softShapePointIndexB);
+        }
+
+
+        public static JacobianConstraint GetDOF(
+            Vector3 linearComponentA,
+            Vector3 linearComponentB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            IShape simulationObjectA,
+            IShape simulationObjectB,
+            double constraintValue,
+            double correctionValue,
+            double cfm,
+            double constraintLimit,
+            ConstraintType type)
+        {
+            return GetDOF(
+                linearComponentA,
+                linearComponentB,
+                angularComponentA,
+                angularComponentB,
+                simulationObjectA,
+                simulationObjectB,
+                constraintValue,
+                correctionValue,
+                cfm,
+                constraintLimit,
+                type,
+                null,
+                null);
+        }
+
+        public static JacobianConstraint GetDOF(
+            Vector3 linearComponentA,
+            Vector3 linearComponentB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            SoftShapePoint softShapePointA,
+            SoftShapePoint softShapePointB,
+            double constraintValue,
+            double correctionValue,
+            double cfm,
+            double constraintLimit,
+            ConstraintType type)
+        {
+            double jacobianVelocityValue = linearComponentA.Dot(softShapePointA.LinearVelocity) +
+                                           linearComponentB.Dot(softShapePointB.LinearVelocity) +
+                                           angularComponentA.Dot(softShapePointA.AngularVelocity) +
+                                           angularComponentB.Dot(softShapePointB.AngularVelocity);
+
+            jacobianVelocityValue -= constraintValue;
+                        
+            return new JacobianConstraint(
+                softShapePointA,
+                softShapePointB,
+                linearComponentA,
+                linearComponentB,
+                angularComponentA,
+                angularComponentB,
+                type,
+                jacobianVelocityValue,
+                correctionValue,
+                cfm,
+                constraintLimit);
         }
 
         public static JacobianConstraint GetLinearLimit (

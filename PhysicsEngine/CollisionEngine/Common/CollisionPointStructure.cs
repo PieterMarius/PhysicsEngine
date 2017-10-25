@@ -8,12 +8,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <summary>
 		/// The object a.
 		/// </summary>
-		public readonly int ObjectA;
+		public readonly int ObjectIndexA;
 
 		/// <summary>
 		/// The object b.
 		/// </summary>
-		public readonly int ObjectB;
+		public readonly int ObjectIndexB;
 
 		/// <summary>
 		/// Collision Points Base Structure
@@ -30,12 +30,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Constructors
 
 		public CollisionPointStructure (
-			int objectA,
-			int objectB,
+			int objectIndexA,
+			int objectIndexB,
 			CollisionPointBaseStructure[] collisionPointBase)
 		{
-			ObjectA = objectA;
-			ObjectB = objectB;
+			ObjectIndexA = objectIndexA;
+			ObjectIndexB = objectIndexB;
 			CollisionPointBase = collisionPointBase;
 			FrameCount = 0;
 		}

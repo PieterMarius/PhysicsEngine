@@ -27,8 +27,8 @@ namespace SharpPhysicsEngine
 				foreach (CollisionPointStructure cps in collisionPoints)
 				{
 					contactIndex.Add (new ContactIndex (
-						cps.ObjectA,
-						cps.ObjectB,
+						cps.ObjectIndexA,
+						cps.ObjectIndexB,
 						ContactGroupType.Collision,
 						keyIndex));
 

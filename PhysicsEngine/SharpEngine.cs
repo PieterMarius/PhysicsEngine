@@ -53,30 +53,30 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		private ISoftShape[] SoftShapes;
 
-        /// <summary>
-        /// The simulation joints.
-        /// </summary>
-        private List<IConstraint> Joints;
+		/// <summary>
+		/// The simulation joints.
+		/// </summary>
+		private List<IConstraint> Joints;
 
-        /// <summary>
-        /// The collision engine.
-        /// </summary>
-        private ICollisionEngine CollisionEngine;
+		/// <summary>
+		/// The collision engine.
+		/// </summary>
+		private ICollisionEngine CollisionEngine;
 
-        /// <summary>
-        /// The collision points.
-        /// </summary>
-        private CollisionPointStructure[] collisionPoints;
+		/// <summary>
+		/// The collision points.
+		/// </summary>
+		private CollisionPointStructure[] collisionPoints;
 
-        /// <summary>
-        /// Partitions elements
-        /// </summary>
-        private List<Partition> Partitions;
+		/// <summary>
+		/// Partitions elements
+		/// </summary>
+		private List<Partition> Partitions;
 
-        /// <summary>
-        /// The solver.
-        /// </summary>
-        private ISolver Solver;
+		/// <summary>
+		/// The solver.
+		/// </summary>
+		private ISolver Solver;
 
 		/// <summary>
 		/// The contact partitioning engine.
@@ -88,14 +88,16 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		double solverError;
 
-        /// <summary>
-        /// Generate ID for shape of simulation
-        /// </summary>
-        private readonly HashGenerator HsGenerator;
+		/// <summary>
+		/// Generate ID for shape of simulation
+		/// </summary>
+		private readonly HashGenerator HsGenerator;
 
 		private readonly LinearProblemBuilder linearProblemBuilder;
 
-        private readonly IntegrationHelper integrationHelper;
+		private readonly IntegrationHelper integrationHelper;
+
+		private readonly ContactConstraint contactConstraintBuilder;
 
 		#endregion
 
@@ -122,18 +124,19 @@ namespace SharpPhysicsEngine
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
-            integrationHelper = new IntegrationHelper(EngineParameters);
+			integrationHelper = new IntegrationHelper(EngineParameters);
+			contactConstraintBuilder = new ContactConstraint(EngineParameters);
 
-            //int minWorker, minIOC;
-            //// Get the current settings.
-            //ThreadPool.GetMinThreads(out minWorker, out minIOC);
-            //// Change the minimum number of worker threads to four, but
-            //// keep the old setting for minimum asynchronous I/O 
-            //// completion threads.
-            //ThreadPool.SetMinThreads(4, minIOC);
-        }
+			//int minWorker, minIOC;
+			//// Get the current settings.
+			//ThreadPool.GetMinThreads(out minWorker, out minIOC);
+			//// Change the minimum number of worker threads to four, but
+			//// keep the old setting for minimum asynchronous I/O 
+			//// completion threads.
+			//ThreadPool.SetMinThreads(4, minIOC);
+		}
 
-        public SharpEngine()
+		public SharpEngine()
 			: this(new PhysicsEngineParameters(), new CollisionEngineParameters(), new SolverParameters())
 		{ }
 
@@ -337,7 +340,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		public void Simulate(double timeStep)
 		{
-            TimeStep = timeStep;
+			TimeStep = timeStep;
 
 			#region Simulation Workflow
 
@@ -350,10 +353,10 @@ namespace SharpPhysicsEngine
 			#endregion
 		}
 
-        public void Simulate()
-        {
-            Simulate(EngineParameters.TimeStep);
-        }
+		public void Simulate()
+		{
+			Simulate(EngineParameters.TimeStep);
+		}
 
 		public void SimulateCCD()
 		{
@@ -532,13 +535,13 @@ namespace SharpPhysicsEngine
 		{
 			var stopwatch = new Stopwatch();
 
-            stopwatch.Reset();
+			stopwatch.Reset();
 
-            stopwatch.Start();
+			stopwatch.Start();
 
-            #region Contact and Joint elaboration
+			#region Contact and Joint elaboration
 
-            solverError = 0.0;
+			solverError = 0.0;
 
 			if (EngineParameters.PositionStabilization)
 			{
@@ -619,32 +622,32 @@ namespace SharpPhysicsEngine
 
 						//stopwatch.Start();
 
-                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
-                                                                jacobianConstraints,
-                                                                EngineParameters.PositionStabilization);
+						LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
+																jacobianConstraints,
+																EngineParameters.PositionStabilization);
 
-                        //stopwatch.Stop();
+						//stopwatch.Stop();
 
-                        //Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+						//Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-                        //stopwatch.Reset();
+						//stopwatch.Reset();
 
-                        //stopwatch.Start();
+						//stopwatch.Start();
 
-                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
-                        //                                        jacobianConstraints,
-                        //                                        EngineParameters.PositionStabilization);
+						//LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
+						//                                        jacobianConstraints,
+						//                                        EngineParameters.PositionStabilization);
 
-                        //stopwatch.Stop();
+						//stopwatch.Stop();
 
-                        //Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+						//Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-                        //var test = overallLCP.Equals(overallLCP, old_overallLCP);
+						//var test = overallLCP.Equals(overallLCP, old_overallLCP);
 
-                        //Console.WriteLine("Test " + test);
-                        
+						//Console.WriteLine("Test " + test);
+						
 
-                        if (overallLCP != null &&
+						if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
 						{
 							Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
@@ -679,11 +682,11 @@ namespace SharpPhysicsEngine
 				}
 			}
 
-            #endregion
+			#endregion
 
-            #region Position and Velocity integration
+			#region Position and Velocity integration
 
-            integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
+			integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
 			#endregion
 
@@ -760,6 +763,7 @@ namespace SharpPhysicsEngine
 				for (int i = 0; i < spatialPartitions.Count; i++)
 				{
 					Partition partitionItem = new Partition();
+                    HashSet<int> objectIndex = new HashSet<int>();
 										
 					for (int j = 0; j < spatialPartitions[i].ObjectList.Count; j++)
 					{
@@ -771,8 +775,11 @@ namespace SharpPhysicsEngine
 
 							if (cpStruct != null)
 								partitionItem.PartitionedCollisionPoints.Add(cpStruct);
-							
-						}
+
+                            objectIndex.Add(cpStruct.ObjectIndexA);
+                            objectIndex.Add(cpStruct.ObjectIndexB);
+
+                        }
 						else
 						{
 							IConstraint smJoint = Joints.Find(item =>
@@ -781,11 +788,21 @@ namespace SharpPhysicsEngine
 												  item.GetKeyIndex() == spatialPartitions[i].ObjectList[j].KeyIndex);
 
 							partitionItem.PartitionedJoints.Add(smJoint);
-							
-						}
+
+                            objectIndex.Add(smJoint.GetObjectIndexA());
+                            objectIndex.Add(smJoint.GetObjectIndexB());
+
+                        }
 					}
 
-					////Add Soft Body Constraints
+                    ////Add Soft Body Constraints
+                    foreach (var item in objectIndex)
+                    {
+                        if(Shapes[item] is ISoftShape)
+                        {
+
+                        }
+                    }
 
 
 					Partitions.Add(partitionItem);
@@ -820,10 +837,9 @@ namespace SharpPhysicsEngine
 			#region Collision Contact
 
 			constraint.AddRange(
-				ContactConstraint.BuildJoints(
+				contactConstraintBuilder.BuildJoints(
 					collisionPointsStruct,
-					simulationObjs,
-					simulationParameters));
+					simulationObjs));
 
 			#endregion
 
@@ -898,8 +914,8 @@ namespace SharpPhysicsEngine
 		}
 
 		#endregion
-        
-        #region Position Based Integration
+		
+		#region Position Based Integration
 
 		private void UpdatePositionBasedVelocity(
 			JacobianConstraint[] contact,

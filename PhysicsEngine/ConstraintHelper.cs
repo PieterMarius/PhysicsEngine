@@ -93,8 +93,8 @@ namespace SharpPhysicsEngine
 		{
 			foreach (CollisionPointStructure cps in collisionPoints)
 			{
-				if (cps.ObjectA == contactIndex.IndexA &&
-				    cps.ObjectB == contactIndex.IndexB)
+				if (cps.ObjectIndexA == contactIndex.IndexA &&
+				    cps.ObjectIndexB == contactIndex.IndexB)
 				{
 					return cps;
 				}
