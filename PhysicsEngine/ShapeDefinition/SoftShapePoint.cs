@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             RotationStatus = rotationStatus;
         }
-
+                
         #endregion
     }
 }

@@ -206,7 +206,7 @@ namespace SharpPhysicsEngine.Helper
 
                 point.SetForce(new Vector3());
 
-                double linearVelocity = point.LinearVelocity.Length();
+                //double linearVelocity = point.LinearVelocity.Length();
 
                 #endregion
             }

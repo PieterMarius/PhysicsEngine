@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine
 
 		private readonly IntegrationHelper integrationHelper;
 
-		private readonly ContactConstraint contactConstraintBuilder;
+		private readonly ContactConstraintBuilder contactConstraintBuilder;
 
 		#endregion
 
@@ -125,7 +125,7 @@ namespace SharpPhysicsEngine
 			HsGenerator = new HashGenerator();
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
 			integrationHelper = new IntegrationHelper(EngineParameters);
-			contactConstraintBuilder = new ContactConstraint(EngineParameters);
+			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
 
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -798,13 +798,12 @@ namespace SharpPhysicsEngine
                     ////Add Soft Body Constraints
                     foreach (var item in objectIndex)
                     {
-                        if(Shapes[item] is ISoftShape)
-                        {
+                        var softShape = Shapes[item] as ISoftShape;
 
-                        }
+                        if(softShape != null)
+                            partitionItem.PartitionedJoints.AddRange(softShape.SoftConstraint);
                     }
-
-
+                    
 					Partitions.Add(partitionItem);
 				}
 			}

@@ -383,8 +383,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.b],
                         this,
-                        0.5,
-                        0.5));
+                        20.0,
+                        1.5));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)) &&
                     triangle.value.a != triangle.value.c)
@@ -392,8 +392,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.c],
                         this,
-                        0.5,
-                        0.5));
+                        20.0,
+                        1.5));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
                     triangle.value.b != triangle.value.b)
@@ -401,8 +401,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.b],
                         ShapePoints[triangle.value.c],
                         this,
-                        0.5,
-                        0.5));
+                        20.0,
+                        1.5));
 
                 //Add triangle index to shape points
                 ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.i);
