@@ -29,11 +29,8 @@ namespace SharpPhysicsEngine
         Vector3 AnchorPoint;
         Vector3 StartErrorAxis1;
         Vector3 StartErrorAxis2;
-        Quaternion RelativeOrientation;
         double RestoreCoefficient;
-
         
-
         #endregion
                 
         #region Constructor
@@ -61,8 +58,6 @@ namespace SharpPhysicsEngine
             StartErrorAxis1 = AnchorPoint - PointA.Position;
 
             StartErrorAxis2 = AnchorPoint - PointB.Position;
-
-            RelativeOrientation = new Quaternion(1.0, 0.0, 0.0, 0.0);
         }
 
         #endregion
@@ -104,19 +99,14 @@ namespace SharpPhysicsEngine
 
             #region Init Angular
 
-            Vector3 angularError = JacobianCommon.GetFixedAngularError(
-                PointA,
-                PointB,
-                RelativeOrientation);
+            Vector3 angularError = JacobianCommon.GetFixedAngularError(PointA, PointB);
 
             #endregion
 
             #region Jacobian Constraint
 
-            ConstraintType constraintType = ConstraintType.Joint;
-
-            constraintType = ConstraintType.SoftJoint;
-
+            ConstraintType constraintType = ConstraintType.SoftJoint;
+                        
             double constraintLimit = RestoreCoefficient * linearError.x;
 
             //DOF 1
@@ -229,12 +219,12 @@ namespace SharpPhysicsEngine
 
         public int GetObjectIndexA()
         {
-            return PointA.GetID();
+            return PointA.ID;
         }
 
         public int GetObjectIndexB()
         {
-            return PointB.GetID();
+            return PointB.ID;
         }
 
         public int GetKeyIndex()

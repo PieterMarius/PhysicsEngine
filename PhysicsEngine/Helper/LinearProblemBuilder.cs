@@ -90,6 +90,12 @@ namespace SharpPhysicsEngine.Helper
                 int?[] constraintsArray = new int?[constraint.Length];
                                                                
                 Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
+
+                Stopwatch test = new Stopwatch();
+
+                test.Reset();
+                test.Start();
+
                                
                 for (int i = 0; i < constraint.Length; i++)
                 {
@@ -97,13 +103,17 @@ namespace SharpPhysicsEngine.Helper
 
                     List<DictionaryConstraintValue> jc;
 
-                    HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.GetID(), itemConstraint.ObjectB.GetID());
+                    HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.ID, itemConstraint.ObjectB.ID);
 
                     if (constraintsDictionary.TryGetValue(hash, out jc))
                         jc.Add(new DictionaryConstraintValue(itemConstraint, i));
                     else
                         constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
                 }
+
+                test.Stop();
+
+                Console.WriteLine("Build LCP " + test.ElapsedMilliseconds);
                 
                 var dictionaryList = constraintsDictionary.ToArray();
 
@@ -391,15 +401,15 @@ namespace SharpPhysicsEngine.Helper
 
                         D[i] = 1.0 / mValue;
 
-                        int contactA_ID_A = contactA.ObjectA.GetID();
-                        int contactA_ID_B = contactA.ObjectB.GetID();
+                        int contactA_ID_A = contactA.ObjectA.ID;
+                        int contactA_ID_B = contactA.ObjectB.ID;
 
                         for (int j = i + 1; j < constraint.Length; j++)
                         {
                             JacobianConstraint contactB = constraint[j];
 
-                            int contactB_ID_A = contactB.ObjectA.GetID();
-                            int contactB_ID_B = contactB.ObjectB.GetID();
+                            int contactB_ID_A = contactB.ObjectA.ID;
+                            int contactB_ID_B = contactB.ObjectB.ID;
 
                             mValue = 0.0;
 

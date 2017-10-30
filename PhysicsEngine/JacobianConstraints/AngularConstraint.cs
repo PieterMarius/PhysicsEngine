@@ -179,12 +179,12 @@ namespace SharpPhysicsEngine
 
         public int GetObjectIndexA()
         {
-            return ShapeA.GetID();
+            return ShapeA.ID;
         }
 
         public int GetObjectIndexB()
         {
-            return ShapeB.GetID();
+            return ShapeB.ID;
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)

@@ -45,7 +45,7 @@ namespace SharpPhysicsEngine
 						smj.GetKeyIndex()));
 				}
 
-                Dictionary<int, ObjectType> objectsTypeDic = simulationObjects.ToDictionary(x => x.GetID(), x => x.ObjectType);
+                Dictionary<int, ObjectType> objectsTypeDic = simulationObjects.ToDictionary(x => x.ID, x => x.ObjectType);
                 
                 while (contactIndex.Count != 0) {
 					var partition = new List<ContactIndex> ();

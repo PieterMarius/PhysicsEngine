@@ -39,8 +39,8 @@ namespace SharpPhysicsEngine
 			{
 				CollisionPointStructure collisionPointStr = collisionPointsStruct [i];
 
-				IShape objectA = simulationObjs.First(x => x.GetID() == collisionPointStr.ObjectIndexA);
-				IShape objectB = simulationObjs.First(x => x.GetID() == collisionPointStr.ObjectIndexB);
+				IShape objectA = simulationObjs.First(x => x.ID == collisionPointStr.ObjectIndexA);
+				IShape objectB = simulationObjs.First(x => x.ID == collisionPointStr.ObjectIndexB);
 
 				if (objectA is ISoftShape && !(objectB is SoftShape))
 				{
@@ -91,7 +91,7 @@ namespace SharpPhysicsEngine
                 
                 for (int i = 0; i < linkedID.Length; i++)
                 {
-                    SoftShapePoint softShapePoint = softShape.ShapePoints.First(x => x.GetID() == linkedID[i]);
+                    SoftShapePoint softShapePoint = softShape.ShapePoints.First(x => x.ID == linkedID[i]);
 
                     Vector3 collisionVertex = softShapePoint.Position;
 

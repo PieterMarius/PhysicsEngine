@@ -150,14 +150,14 @@ namespace SharpPhysicsEngine
 		{
 			ISoftShape softShape = simulationObject as ISoftShape;
 
-			if (softShape != null)
-			{
-				((Identity)softShape).ID = HsGenerator.GetHash();
-				foreach (var point in softShape.ShapePoints)
-					((Identity)point).ID = HsGenerator.GetHash();
-			}
-			else
-				((Identity)simulationObject).ID = HsGenerator.GetHash();
+            if (softShape != null)
+            {
+                ((Identity)softShape).SetID(HsGenerator.GetHash());
+                foreach (var point in softShape.ShapePoints)
+                    ((Identity)point).SetID(HsGenerator.GetHash());
+            }
+            else
+                ((Identity)simulationObject).SetID(HsGenerator.GetHash());
 			
 			if (Shapes != null && 
 				Shapes.Length > 0) 
@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine
 			if (Shapes != null) 
 			{
 				List<IShape> bufferList = Shapes.ToList();
-				int shapeIndex = bufferList.FindIndex(x => x.GetID() == shapeID);
+				int shapeIndex = bufferList.FindIndex(x => x.ID == shapeID);
 
 				if (shapeIndex >= 0)
 				{
@@ -219,7 +219,7 @@ namespace SharpPhysicsEngine
 
 		public IShape GetShape(int shapeID)
 		{
-			return Shapes.FirstOrDefault(x => x.GetID() == shapeID);
+			return Shapes.FirstOrDefault(x => x.ID == shapeID);
 		}
 
 		public int ShapesCount()

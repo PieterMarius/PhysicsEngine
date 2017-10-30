@@ -8,7 +8,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         double DynamicFrictionCoeff { get; }
         bool ExcludeFromCollisionDetection { get; }
         double RestitutionCoeff { get; }
-        
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
         Vector3 StartPosition { get; }

@@ -13,7 +13,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// <summary>
         /// Shape ID
         /// </summary>
-        int Identity.ID { get; set; }
+        public int ID { get; private set; }
 
         /// <summary>
         /// Mass of object point.
@@ -142,9 +142,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Simulation Properties
 
-        public int GetID()
+        public void SetID(int id)
         {
-            return ((Identity)this).ID;
+            ID = id;
         }
 
         /// <summary>

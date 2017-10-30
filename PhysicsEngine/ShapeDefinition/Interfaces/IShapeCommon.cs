@@ -4,6 +4,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 {
     public interface IShapeCommon
     {
+        int ID { get; }
         ObjectType ObjectType { get; }
         Vector3 Position { get; }
         Vector3 LinearVelocity { get; }
@@ -17,7 +18,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 TempLinearVelocity { get; }
         Vector3 ForceValue { get; }
 
-        int GetID();
+        //int GetID();
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);

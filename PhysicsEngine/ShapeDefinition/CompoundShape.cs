@@ -10,7 +10,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// <summary>
         /// Shape ID
         /// </summary>
-        int Identity.ID { get; set; }
+        public int ID { get; private set; }
 
         /// <summary>
         /// Mass of object.
@@ -190,9 +190,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public methods
 
-        public int GetID()
+        public void SetID(int id)
         {
-            return ((Identity)this).ID;
+            ID = id;
         }
 
         public void SetRestitutionCoeff(double restitutionCoeff)

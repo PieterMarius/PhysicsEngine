@@ -287,15 +287,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			List<ShapeDecompositionOutput> shapeOutput = softShape.ConvexDecomposition.GetIntersectedShape(
 				convexShape.ObjectGeometry.AABBox,
 				softShape.AABBox,
-				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
+				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShape.DecompositionParameter);
 
             if (shapeOutput != null)
             {
                 IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry((IShape)convexShape);
 
-                var ID_A = ((IShape)convexShape).GetID();
-                var ID_B = ((IShape)softShape).GetID();
+                var ID_A = ((IShape)convexShape).ID;
+                var ID_B = ((IShape)softShape).ID;
 
                 foreach (var convexGeometry in convexShapeGeometry)
                 {
@@ -335,8 +335,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 			IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
 			IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
 
-            int ID_A = A.GetID();
-            int ID_B = B.GetID();
+            int ID_A = A.ID;
+            int ID_B = B.ID;
 
             foreach (var shapeA in geometryA)
             {
@@ -371,11 +371,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 			var result = new List<CollisionPointStructure>();
 
 			List<ShapeDecompositionOutput> decompConvexShapeA = softShapeA.ConvexDecomposition.GetConvexShapeList(
-				Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
+				Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShapeA.DecompositionParameter);
 
 			List<ShapeDecompositionOutput> decompConvexShapeB = softShapeB.ConvexDecomposition.GetConvexShapeList(
-				Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
+				Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShapeB.DecompositionParameter);
 
 			AABB[][] boxCollision = new AABB[2][];
@@ -399,8 +399,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			var lockMe = new object();
 
-            int ID_A = ((IShape)softShapeA).GetID();
-            int ID_B = ((IShape)softShapeB).GetID();
+            int ID_A = ((IShape)softShapeA).ID;
+            int ID_B = ((IShape)softShapeB).ID;
 
 
             Parallel.ForEach(

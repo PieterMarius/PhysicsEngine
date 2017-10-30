@@ -9,7 +9,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         #region Fields
 
-        int Identity.ID { get; set; }
+        public int ID { get; private set; }
         public double Mass { get; private set; }
         public Vector3 Position { get; private set; }
         public Vector3 StartPosition { get; private set; }
@@ -42,9 +42,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
-        public int GetID()
+        public void SetID(int id)
         {
-            return ((Identity)this).ID;
+            ID = id;
         }
 
         public void SetMass(double mass)
