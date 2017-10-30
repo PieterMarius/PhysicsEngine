@@ -288,28 +288,31 @@ namespace SharpPhysicsEngine.CollisionEngine
 				convexShape.ObjectGeometry.AABBox,
 				softShape.AABBox,
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
-				0.2);
+				softShape.DecompositionParameter);
 
-            IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry((IShape)convexShape);
-                        
-            var ID_A = ((IShape)convexShape).GetID();
-            var ID_B = ((IShape)softShape).GetID();
-
-            foreach (var convexGeometry in convexShapeGeometry)
+            if (shapeOutput != null)
             {
-                VertexProperties[] convexVertexObj = Helper.SetVertexPosition(convexGeometry);
-                
-                foreach (var softConvexShape in shapeOutput)
+                IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry((IShape)convexShape);
+
+                var ID_A = ((IShape)convexShape).GetID();
+                var ID_B = ((IShape)softShape).GetID();
+
+                foreach (var convexGeometry in convexShapeGeometry)
                 {
-                    VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
+                    VertexProperties[] convexVertexObj = Helper.SetVertexPosition(convexGeometry);
 
-                    //TODO verificare output
-                    GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
-                    
-                    var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);
+                    foreach (var softConvexShape in shapeOutput)
+                    {
+                        VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
-                    if (cps != null)
-                        collisionPointStructure.Add(cps);
+                        //TODO verificare output
+                        GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
+
+                        var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);
+
+                        if (cps != null)
+                            collisionPointStructure.Add(cps);
+                    }
                 }
             }
             
@@ -367,18 +370,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var result = new List<CollisionPointStructure>();
 
-			List<ShapeDecompositionOutput> convexShapeA = softShapeA.ConvexDecomposition.GetConvexShapeList(
+			List<ShapeDecompositionOutput> decompConvexShapeA = softShapeA.ConvexDecomposition.GetConvexShapeList(
 				Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
-				0.2);
+				softShapeA.DecompositionParameter);
 
-			List<ShapeDecompositionOutput> convexShapeB = softShapeB.ConvexDecomposition.GetConvexShapeList(
+			List<ShapeDecompositionOutput> decompConvexShapeB = softShapeB.ConvexDecomposition.GetConvexShapeList(
 				Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.GetID())),
-				0.2);
+				softShapeB.DecompositionParameter);
 
 			AABB[][] boxCollision = new AABB[2][];
 
-			boxCollision[0] = Array.ConvertAll(convexShapeA.ToArray(), x => x.Region);
-			boxCollision[1] = Array.ConvertAll(convexShapeB.ToArray(), x => x.Region);
+			boxCollision[0] = Array.ConvertAll(decompConvexShapeA.ToArray(), x => x.Region);
+			boxCollision[1] = Array.ConvertAll(decompConvexShapeB.ToArray(), x => x.Region);
 
 			List<CollisionPair> collisionPair = new List<CollisionPair>();
 
@@ -406,8 +409,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 				pair =>
 				{
 					CollisionPointStructure collisionPointStruct = SoftBodyNarrowPhase(
-						convexShapeA[pair.objectIndexA],
-						convexShapeB[pair.objectIndexB],
+						decompConvexShapeA[pair.objectIndexA],
+						decompConvexShapeB[pair.objectIndexB],
 						ID_A,
 						ID_B);
 

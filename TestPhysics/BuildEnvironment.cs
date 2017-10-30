@@ -4,6 +4,7 @@ using ObjLoader.Loader.Loaders;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
+using SharpPhysicsEngine.LCPSolver;
 
 namespace TestPhysics
 {
@@ -26,7 +27,7 @@ namespace TestPhysics
 			nObject = 4;
 			ShapeFilename = new string[nObject][];
 			ShapeScale = new float[nObject][];
-			TextureFilename = new string[nObject][];
+			TextureFilename = new string[nObject -1][];
 		}
 
 		#endregion
@@ -41,10 +42,12 @@ namespace TestPhysics
 
 			foreach(var obj in objects)
 				physicsEnvironment.AddShape(obj);
-			
-			//physicsEnvironment.RemoveShape(0);
 
-			return physicsEnvironment;
+            //physicsEnvironment.RemoveShape(0);
+
+            physicsEnvironment.SetSolver(SolverType.NonLinearConjugateGradient);
+
+            return physicsEnvironment;
 		}
 
 		public int[][] GetOpenGLEnvironment()
@@ -149,11 +152,13 @@ namespace TestPhysics
 			objects[2].SetExcludeFromCollisionDetection(false);
 			objects[2].SetRestoreCoeff(30.0);
 
-			TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
+			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
 			ShapeFilename[3] = new string[1] { "sphere.obj" };
 			ShapeScale[3] = new float[1] { 1 };
-			objects[3] = BuildSoftBody("sphere.obj", 1, 0.5, new Vector3(0.0, 0.0, 0.0));
+			objects[3] = BuildSoftBody("sphere.obj", 1, new Vector3(0.0, 0.0, 0.0));
+            objects[3].SetStaticFrictionCoeff(0.5);
+            objects[3].SetDynamicFrictionCoeff(0.5);
 
 			#endregion
 
@@ -220,7 +225,6 @@ namespace TestPhysics
 		private SoftShape BuildSoftBody(
 			string fileName,
 			double scale,
-			double diameter,
 			Vector3 position)
 		{
 			GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
@@ -228,8 +232,10 @@ namespace TestPhysics
 			return new SoftShape(
 				prop.triangleIndex, 
 				prop.vertexPoint, 
-				diameter, 
-				position);
+				position,
+                0.3,
+                20.0,
+                5.0);
 		}
 
 		#endregion

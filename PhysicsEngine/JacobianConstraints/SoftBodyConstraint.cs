@@ -167,8 +167,8 @@ namespace SharpPhysicsEngine
             constraintLimit = restoreCoeff * angularError.x;
 
             fixedConstraints.Add(JacobianCommon.GetDOF(
-                new Vector3(0.0, 0.0, 0.0),
-                new Vector3(0.0, 0.0, 0.0),
+                new Vector3(),
+                new Vector3(),
                 new Vector3(-1.0, 0.0, 0.0),
                 new Vector3(1.0, 0.0, 0.0),
                 PointA,
@@ -184,8 +184,8 @@ namespace SharpPhysicsEngine
             constraintLimit = restoreCoeff * angularError.y;
 
             fixedConstraints.Add(JacobianCommon.GetDOF(
-                new Vector3(0.0, 0.0, 0.0),
-                new Vector3(0.0, 0.0, 0.0),
+                new Vector3(),
+                new Vector3(),
                 new Vector3(0.0, -1.0, 0.0),
                 new Vector3(0.0, 1.0, 0.0),
                 PointA,
@@ -201,8 +201,8 @@ namespace SharpPhysicsEngine
             constraintLimit = restoreCoeff * angularError.z;
 
             fixedConstraints.Add(JacobianCommon.GetDOF(
-                new Vector3(0.0, 0.0, 0.0),
-                new Vector3(0.0, 0.0, 0.0),
+                new Vector3(),
+                new Vector3(),
                 new Vector3(0.0, 0.0, -1.0),
                 new Vector3(0.0, 0.0, 1.0),
                 PointA,

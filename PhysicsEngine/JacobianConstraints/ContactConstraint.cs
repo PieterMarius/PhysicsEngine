@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine
 
 				if (objectA is ISoftShape && !(objectB is SoftShape))
 				{
-                   contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
+                    contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
                 }
 				else if (objectB is ISoftShape && !(objectA is SoftShape))
 				{
@@ -94,7 +94,8 @@ namespace SharpPhysicsEngine
                     SoftShapePoint softShapePoint = softShape.ShapePoints.First(x => x.GetID() == linkedID[i]);
 
                     Vector3 collisionVertex = softShapePoint.Position;
-                    
+
+                    Vector3 r_softShape = new Vector3();                    
                     Vector3 r_rigidShape = collisionVertex - rigidShape.Position;
 
                     ////Component
@@ -139,7 +140,7 @@ namespace SharpPhysicsEngine
                     JacobianConstraint normalContact = JacobianCommon.GetDOF(
                         linearComponentSoftShape,
                         linearComponentRigidShape,
-                        new Vector3(),
+                        r_softShape,
                         angularComponentRigidShape,
                         (collisionIndex == 0) ? (IShapeCommon)softShapePoint : rigidShape,
                         (collisionIndex == 0) ? rigidShape: (IShapeCommon)softShapePoint,
@@ -162,7 +163,7 @@ namespace SharpPhysicsEngine
                             simulationParameters,
                             linearComponentSoftShape,
                             relativeVelocity,
-                            new Vector3(),
+                            r_softShape,
                             r_rigidShape,
                             collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
                             softShapePoint,

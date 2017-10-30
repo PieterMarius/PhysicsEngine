@@ -106,7 +106,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             RotationStatus = rotationStatus;
         }
-                
+
+        public void SetRotationMatrix(Matrix3x3 inputRotationMatrix)
+        {
+            RotationMatrix = inputRotationMatrix;
+        }
+
         #endregion
     }
 }

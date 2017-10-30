@@ -10,6 +10,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 AngularVelocity { get; }
         Matrix3x3 InertiaTensor { get; }
         Matrix3x3 BaseInertiaTensor { get; }
+        Matrix3x3 RotationMatrix { get; }
         double Mass { get; }
         double InverseMass { get; }
         Vector3 TempAngularVelocity { get; }
@@ -26,5 +27,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetForce(Vector3 force);
         void SetTempAngularVelocity(Vector3 inputAngularVelocity);
         void SetTempLinearVelocity(Vector3 inputLinearVelocity);
+        void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
     }
 }

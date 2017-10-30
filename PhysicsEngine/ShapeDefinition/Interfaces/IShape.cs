@@ -8,7 +8,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         double DynamicFrictionCoeff { get; }
         bool ExcludeFromCollisionDetection { get; }
         double RestitutionCoeff { get; }
-        Matrix3x3 RotationMatrix { get; }
+        
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
         Vector3 StartPosition { get; }
@@ -20,7 +20,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
         void SetExcludeFromCollisionDetection(bool excludeFromCollisionDetection);
         void SetRestitutionCoeff(double restitutionCoeff);
-        void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
         void SetRotationStatus(Quaternion inputRotationStatus);
         void SetSleepingFrameCount(int frameCount);
         void SetStaticFrictionCoeff(double staticFrictionCoeff);

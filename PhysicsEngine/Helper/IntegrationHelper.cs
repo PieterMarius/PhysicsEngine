@@ -75,18 +75,24 @@ namespace SharpPhysicsEngine.Helper
             ref IShape[] shapes,
             double timeStep)
         {
-            foreach (var shape in shapes)
-            {
-                if (shape.ObjectType != ObjectType.StaticBody)
-                {
-                    ISoftShape softShape = shape as ISoftShape;
+            
+            var dynamicShapes = shapes.Where(x => x.ObjectType != ObjectType.StaticBody);
 
-                    if (softShape == null)
-                        IntegrateRigidShapePosition(shape, timeStep);
-                    else
-                        IntegrateSoftShapePosition(softShape, timeStep);
-                }
+            foreach (var shape in dynamicShapes.OfType<ISoftShape>())
+            {
+                IntegrateSoftShapePosition(shape, timeStep);
             }
+
+            foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+            {
+                IntegrateRigidShapePosition(shape, timeStep);
+            }
+
+            foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+            {
+                IntegrateRigidShapePosition(shape, timeStep);
+            }
+            
         }
         
         #endregion
@@ -191,6 +197,8 @@ namespace SharpPhysicsEngine.Helper
             ISoftShape shape,
             double timeStep)
         {
+            //Parallel.ForEach(shape.ShapePoints, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+            //        point =>
             foreach (var point in shape.ShapePoints)
             {
                 #region Linear Velocity
@@ -206,8 +214,28 @@ namespace SharpPhysicsEngine.Helper
 
                 point.SetForce(new Vector3());
 
-                //double linearVelocity = point.LinearVelocity.Length();
+                #endregion
 
+                #region Angular Velocity
+
+                double angularVelocity = point.AngularVelocity.Length();
+
+                Vector3 versor = point.AngularVelocity.Normalize();
+
+                double rotationAngle = angularVelocity * timeStep;
+
+                var rotationQuaternion = new Quaternion(versor, rotationAngle);
+
+                point.SetRotationStatus((rotationQuaternion * point.RotationStatus).Normalize());
+
+                point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
+
+                point.SetInertiaTensor(
+                    (point.RotationMatrix * point.BaseInertiaTensor) *
+                    point.RotationMatrix.Transpose());
+
+                point.SetAngularVelocity(point.AngularVelocity);
+                               
                 #endregion
             }
 

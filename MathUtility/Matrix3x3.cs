@@ -4,6 +4,11 @@ namespace SharpEngineMathUtility
 {
 	public struct Matrix3x3
 	{
+		#region Fields
+
+		private const double tolerance = 1E-100;
+
+		#endregion
 
 		#region Public Properties
 
@@ -198,7 +203,7 @@ namespace SharpEngineMathUtility
 				-(a.r1c2 * a.r2c1 * a.r3c3)
 				+(a.r1c1 * a.r2c2 * a.r3c3);
 			
-			if (Math.Abs(den) > 1E-100) 
+			if (Math.Abs(den) > tolerance) 
 			{
 				den = 1.0 / den;
 
@@ -221,6 +226,26 @@ namespace SharpEngineMathUtility
 			} 
 
 			return a;
+		}
+
+		public static Matrix3x3 InvertDiagonal(Matrix3x3 a)
+		{
+			double r1c1 = a.r1c1;
+			if (Math.Abs(a.r1c1) > tolerance)
+				r1c1 = 1.0 / a.r1c1;
+
+			double r2c2 = a.r2c2;
+			if (Math.Abs(a.r2c2) > tolerance)
+				r2c2 = 1.0 / a.r2c2;
+
+			double r3c3 = a.r3c3;
+			if (Math.Abs(a.r3c3) > tolerance)
+				r3c3 = 1.0 / a.r3c3;
+
+            return new Matrix3x3(
+                r1c1, 0.0, 0.0,
+                0.0, r2c2, 0.0,
+                0.0, 0.0, r3c3);
 		}
 
 		/// <summary>

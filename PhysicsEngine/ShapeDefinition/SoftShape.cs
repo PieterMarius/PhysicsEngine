@@ -165,6 +165,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public IShapeConvexDecomposition ConvexDecomposition { get; private set; }
 
+        public double DecompositionParameter { get; private set; }
+
+        #endregion
+
+        #region Private Const
+
+        private const double diameter = 0.1;
+
         #endregion
 
         #region Constructor
@@ -172,12 +180,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public SoftShape(
             TriangleIndexes[] triangleIndex,
             SoftShapePoint[] shapePoint,
-            List<SoftBodyConstraint> softConstraint)
+            List<SoftBodyConstraint> softConstraints)
         {
             Triangle = triangleIndex;
             ShapePoints = shapePoint;
             InertiaTensor = Matrix3x3.IdentityMatrix();
-            SoftConstraint = softConstraint;
+            SoftConstraint = softConstraints;
             SleepingFrameCount = 0;
             ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
@@ -185,22 +193,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public SoftShape(
             TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
-            double diameter,
-            Vector3 startPosition)
+            Vector3 startPosition,
+            double decompositionParam,
+            double restoreCoefficient,
+            double springCoefficient)
         {
             Mass = 1.0;
             Triangle = triangleIndex;
+
+            DecompositionParameter = decompositionParam;
                                     
             InertiaTensor = Matrix3x3.IdentityMatrix();
 
             Position = startPosition;
 
-            AddSoftShapePoint(shapePoint, diameter);
-            BuildSoftConstraint();
-
-            //TODO modificare
-            StaticFrictionCoeff = 0.5;
-            DynamicFrictionCoeff = 0.5;
+            AddSoftShapePoint(shapePoint);
+            BuildSoftConstraint(restoreCoefficient, springCoefficient);
+                        
             SleepingFrameCount = 0;
 
             SetAABB();
@@ -340,17 +349,21 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SoftConstraint.RemoveAt(index);
         }
 
+        public void SetDecompositionParameter(double decompositionParam)
+        {
+            DecompositionParameter = decompositionParam;
+        }
+
         #endregion
 
         #region Private Methods
 
         private void AddSoftShapePoint(
-            Vector3[] points,
-            double diameter)
+            Vector3[] points)
         {
             ShapePoints = new SoftShapePoint[points.Length];
 
-            double mass = Mass * (1.0 / (points.Length));
+            double mass = Mass * (1.0 / points.Length);
             double inverseMass = 1.0 / mass;
             
             Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
@@ -365,12 +378,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetMass(mass);
                 ShapePoints[i].SetInverseMass(inverseMass);
                 ShapePoints[i].SetBaseInertiaTensor(inertiaTensor);
-                ShapePoints[i].SetInertiaTensor(Matrix3x3.Invert(inertiaTensor));
+                ShapePoints[i].SetInertiaTensor(Matrix3x3.InvertDiagonal(inertiaTensor));
                 ShapePoints[i].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             }
         }
 
-        private void BuildSoftConstraint()
+        private void BuildSoftConstraint(
+            double restoreCoefficient,
+            double springCoefficient)
         {
             SoftConstraint = new List<SoftBodyConstraint>();
             HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
@@ -383,8 +398,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.b],
                         this,
-                        20.0,
-                        1.5));
+                        restoreCoefficient,
+                        springCoefficient));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)) &&
                     triangle.value.a != triangle.value.c)
@@ -392,8 +407,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.c],
                         this,
-                        20.0,
-                        1.5));
+                        restoreCoefficient,
+                        springCoefficient));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
                     triangle.value.b != triangle.value.b)
@@ -401,8 +416,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.b],
                         ShapePoints[triangle.value.c],
                         this,
-                        20.0,
-                        1.5));
+                        restoreCoefficient,
+                        springCoefficient));
 
                 //Add triangle index to shape points
                 ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.i);

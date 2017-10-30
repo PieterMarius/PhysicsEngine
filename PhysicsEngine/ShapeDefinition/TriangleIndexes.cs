@@ -36,6 +36,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
+        public double this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0:
+                        return a;
+                    case 1:
+                        return b;
+                    case 2:
+                        return c;
+                    default:
+                        throw new ArgumentException("Wrong triangle index.", nameof(index));
+                }
+            }
+        }
+
         public bool Contains(int index)
         {
             return a == index ||

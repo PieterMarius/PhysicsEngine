@@ -11,6 +11,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         SoftPoint[] Sphere { get; }
         List<SoftBodyConstraint> SoftConstraint { get; }
         IShapeConvexDecomposition ConvexDecomposition { get; }
+        double DecompositionParameter { get; }
 
 
         void SetPointsMass(double mass);
@@ -19,5 +20,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetGeometrySphere(SoftPoint[] geometrySphere);
         void AddConstraint(SoftBodyConstraint constraint);
         void RemoveConstraint(int index);
+        void SetDecompositionParameter(double decompositionParam);
     }
 }

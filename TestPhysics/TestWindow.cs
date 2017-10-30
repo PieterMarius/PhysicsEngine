@@ -653,12 +653,12 @@ namespace TestPhysics
 
 		private void DisplaySoftPoint(ISoftShape softShape)
 		{
-            GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
+            //GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
-            GL.CallList(displayList[3][0]);
-            GL.Disable(EnableCap.Texture2D);
+            //GL.CallList(displayList[3][0]);
+            //GL.Disable(EnableCap.Texture2D);
 
-            GL.PopMatrix();
+            //GL.PopMatrix();
 
             foreach (var item in softShape.ShapePoints)
             {
@@ -681,7 +681,7 @@ namespace TestPhysics
                 GL.MultMatrix(dmviewData);
 
 
-                OpenGLUtilities.drawSolidCube(0.04f);
+                OpenGLUtilities.drawSolidCube(0.02f);
 
                 GL.PopMatrix();
             }
@@ -1000,26 +1000,31 @@ namespace TestPhysics
 		{
 			ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
 
-			//region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
-			//region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);
+            //region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
+            //region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);
 
-			//List<List<Vertex3Index>>  convexShape1 = shapeConvexDec.GetConvexShapeList(
-			//		Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-			//			item.TriangleIndex.ToArray())),
-			//		0.2);
+            //List<List<Vertex3Index>>  convexShape1 = shapeConvexDec.GetConvexShapeList(
+            //		Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
+            //			item.TriangleIndex.ToArray())),
+            //		0.2);
 
+            //AABB region = softShape.AABBox;
+            shapeConvexDec = new ShapeConvexDecomposition(
+            softShape.AABBox,
+            softShape.Triangle);
 
-			AABB testRegion = new AABB(
-				new SharpEngineMathUtility.Vector3(-0.5,-0.3,-0.8),
-				new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
+            
+			//AABB testRegion = new AABB(
+			//	new SharpEngineMathUtility.Vector3(-0.5,-0.3,-0.8),
+			//	new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
 
-			convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
-				testRegion,
+			convexShape = shapeConvexDec.GetConvexShapeList(
+                
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
 						item.TriangleIndex.ToArray(),0)),
-					0.2);
+					0.5);
 
-			List<Line> ll = OpenGLUtilities.BuildBoxLine(testRegion.Max, testRegion.Min);
+			List<Line> ll = OpenGLUtilities.BuildBoxLine(softShape.AABBox.Max, softShape.AABBox.Min);
 
 			foreach (var item in ll)
 			{
