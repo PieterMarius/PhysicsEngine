@@ -11,6 +11,13 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Hinge;
 
+        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
+        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
+        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
+        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
+        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
+        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
+
         IShape ShapeA;
         IShape ShapeB;
         int KeyIndex;
@@ -133,9 +140,9 @@ namespace SharpPhysicsEngine
 			double constraintLimit = RestoreCoefficient * linearError.x;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF(
-				new Vector3 (1.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
+                xVec,
+                xVecNeg,
+                new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
 				new Vector3 (skewP2.r1c1,skewP2.r1c2,skewP2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -150,9 +157,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * linearError.y;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 1.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
+                yVec,
+                yVecNeg,
+                new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
 				new Vector3 (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -167,9 +174,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * linearError.z;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 0.0, 1.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
+                zVec,
+                zVecNeg,
+                new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
 				new Vector3 (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -186,9 +193,7 @@ namespace SharpPhysicsEngine
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
-                    new Vector3(), 
-					new Vector3(), 
-					-1.0 * t1, 
+                    	-1.0 * t1, 
 					1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB,
@@ -205,9 +210,7 @@ namespace SharpPhysicsEngine
 
 			hingeConstraints.Add (
 				JacobianCommon.GetDOF (
-                    new Vector3(), 
-					new Vector3(), 
-					-1.0 * t2, 
+                    	-1.0 * t2, 
 					1.0 * t2, 
 					simulationObjectA, 
 					simulationObjectB, 
@@ -254,9 +257,7 @@ namespace SharpPhysicsEngine
 			{
 				hingeConstraints.Add (
 					JacobianCommon.GetDOF (
-                        new Vector3(), 
-						new Vector3(), 
-						-1.0 * axisRotated, 
+                        	-1.0 * axisRotated, 
 						1.0 * axisRotated, 
 						simulationObjectA, 
 						simulationObjectB, 

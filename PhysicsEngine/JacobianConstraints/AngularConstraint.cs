@@ -123,8 +123,6 @@ namespace SharpPhysicsEngine
             double angularLimit = RestoreCoefficient * hingeAngle;
 
             angularConstraints.Add(JacobianCommon.GetDOF(
-                new Vector3(),
-                new Vector3(),
                 hingeAxis,
                 -1.0 * hingeAxis,
                 simulationObjectA,
@@ -138,8 +136,6 @@ namespace SharpPhysicsEngine
             angularLimit = RestoreCoefficient * twistAngle;
 
             angularConstraints.Add(JacobianCommon.GetDOF(
-                new Vector3(),
-                new Vector3(),
                 rotationAxis,
                 -1.0 * rotationAxis,
                 simulationObjectA,

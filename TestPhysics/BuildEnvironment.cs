@@ -234,8 +234,8 @@ namespace TestPhysics
 				prop.vertexPoint, 
 				position,
                 0.3,
-                20.0,
-                5.0);
+                60.0,
+                100.0);
 		}
 
 		#endregion

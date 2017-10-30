@@ -205,9 +205,7 @@ namespace SharpPhysicsEngine
 
 			hinge2Constraints.Add (
 				JacobianCommon.GetDOF (
-                    new Vector3(), 
-					new Vector3(), 
-					t1, 
+                    	t1, 
 					-1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB,

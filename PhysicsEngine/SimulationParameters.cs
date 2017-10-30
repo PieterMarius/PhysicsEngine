@@ -171,7 +171,7 @@ namespace SharpPhysicsEngine
 			PositionBasedJointIterations = 500;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 40;
+			OverallConstraintsIterations = 30;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;

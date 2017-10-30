@@ -7,9 +7,16 @@ namespace SharpPhysicsEngine
 {
 	public sealed class FixedJointConstraint: IConstraint, IConstraintBuilder
 	{
-		#region Public Fields
+		#region Private Fields
 
 		const JointType jointType = JointType.Fixed;
+
+        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
+        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
+        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
+        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
+        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
+        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
 
         IShape ShapeA;
         IShape ShapeB;
@@ -119,9 +126,9 @@ namespace SharpPhysicsEngine
 			//DOF 1
 
 			fixedConstraints.Add (JacobianCommon.GetDOF(
-				new Vector3 (1.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+                xVec,
+                xVecNeg,
+                new Vector3 (-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
 				new Vector3 (skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -136,9 +143,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * linearError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF(
-                new Vector3 (0.0, 1.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+                yVec,
+                yVecNeg,
+                new Vector3 (-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
 				new Vector3 (skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -153,9 +160,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * linearError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 0.0, 1.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+                zVec,
+                zVecNeg,
+                new Vector3 (-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
 				new Vector3 (skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
@@ -170,11 +177,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * angularError.x;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (1.0, 0.0, 0.0),
-				simulationObjectA,
+                xVec,
+                xVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,
@@ -187,11 +192,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * angularError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (0.0, 1.0, 0.0),
-				simulationObjectA,
+                yVec,
+                yVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,
@@ -204,11 +207,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * 2.0 * angularError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (0.0, 0.0, 1.0),
-				simulationObjectA,
+                zVec,
+                zVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,

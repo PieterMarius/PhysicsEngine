@@ -133,8 +133,6 @@ namespace SharpPhysicsEngine
 
 			pistonConstraints.Add (
 				JacobianCommon.GetDOF (
-					new Vector3(), 
-					new Vector3(), 
 					1.0 * t1, 
 					-1.0 * t1, 
 					simulationObjectA, 
@@ -152,9 +150,7 @@ namespace SharpPhysicsEngine
 
 			pistonConstraints.Add (
 				JacobianCommon.GetDOF (
-                    new Vector3(), 
-					new Vector3(), 
-					1.0 * t2, 
+                    	1.0 * t2, 
 					-1.0 * t2, 
 					simulationObjectA, 
 					simulationObjectB,

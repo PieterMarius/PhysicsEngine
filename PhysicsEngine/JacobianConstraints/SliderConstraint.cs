@@ -8,9 +8,16 @@ namespace SharpPhysicsEngine
 {
 	public class SliderConstraint: IConstraint, IConstraintBuilder
 	{
-		#region Fields
+		#region Private Fields
 
 		const JointType jointType = JointType.Slider;
+
+        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
+        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
+        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
+        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
+        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
+        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
 
         IShape ShapeA;
         IShape ShapeB;
@@ -129,11 +136,9 @@ namespace SharpPhysicsEngine
 			//DOF 1
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (-1.0, 0.0, 0.0),
-				new Vector3 (1.0, 0.0, 0.0),
-				simulationObjectA,
+                xVec,
+                xVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,
@@ -146,11 +151,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * 2.0 * angularError.y;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, -1.0, 0.0),
-				new Vector3 (0.0, 1.0, 0.0),
-				simulationObjectA,
+                yVec,
+                yVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,
@@ -163,11 +166,9 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * 2.0 * angularError.z;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, 0.0),
-				new Vector3 (0.0, 0.0, -1.0),
-				new Vector3 (0.0, 0.0, 1.0),
-				simulationObjectA,
+                zVec,
+                zVecNeg,
+                simulationObjectA,
 				simulationObjectB,
 				0.0,
 				constraintLimit,
