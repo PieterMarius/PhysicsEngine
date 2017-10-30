@@ -25,12 +25,12 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// The linear component object A.
 		/// </summary>
-		public readonly Vector3 LinearComponentA;
+		public readonly Vector3? LinearComponentA;
 
 		/// <summary>
 		/// The linear component object B.
 		/// </summary>
-		public readonly Vector3 LinearComponentB;
+		public readonly Vector3? LinearComponentB;
 
 		/// <summary>
 		/// The angular component object A.
@@ -80,8 +80,8 @@ namespace SharpPhysicsEngine
             IShapeCommon objectA,
             IShapeCommon objectB,
 			int? contactReference,
-			Vector3 linearComponentA,
-			Vector3 linearComponentB,
+			Vector3? linearComponentA,
+			Vector3? linearComponentB,
 			Vector3 angularComponentA,
 			Vector3 angularComponentB,
 			ConstraintType type,
@@ -119,6 +119,19 @@ namespace SharpPhysicsEngine
             double cfm,
             double constraintLimit)
             : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, new StartImpulseProperties(0.0))
+        { }
+
+        public JacobianConstraint(
+            IShapeCommon objectA,
+            IShapeCommon objectB,
+            Vector3 angularComponentA,
+            Vector3 angularComponentB,
+            ConstraintType type,
+            double B,
+            double correctionValue,
+            double cfm,
+            double constraintLimit)
+            : this(objectA, objectB, null, null, null, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, new StartImpulseProperties(0.0))
         { }
 
         #endregion

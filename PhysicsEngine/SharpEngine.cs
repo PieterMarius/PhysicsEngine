@@ -480,7 +480,7 @@ namespace SharpPhysicsEngine
 																	   Shapes,
 																	   baumgarteStabilizationValue).ToArray();
 
-							LinearProblemProperties collisionErrorLCP = linearProblemBuilder.BuildLCPMatrix(
+							LinearProblemProperties collisionErrorLCP = linearProblemBuilder.BuildLCP(
 								jointConstraints,
 								EngineParameters.PositionStabilization);
 
@@ -583,7 +583,7 @@ namespace SharpPhysicsEngine
 																					   ConstraintType.Friction,
 																					   ConstraintType.Collision);
 
-							LinearProblemProperties frictionLCP = linearProblemBuilder.BuildLCPMatrix(
+							LinearProblemProperties frictionLCP = linearProblemBuilder.BuildLCP(
 																	frictionConstraint,
 																	EngineParameters.PositionStabilization);
 
@@ -602,7 +602,7 @@ namespace SharpPhysicsEngine
 						{
 							JacobianConstraint[] jointConstraints = ConstraintHelper.FindJointConstraints(jacobianConstraints);
 
-							LinearProblemProperties jointLCP = linearProblemBuilder.BuildLCPMatrix(
+							LinearProblemProperties jointLCP = linearProblemBuilder.BuildLCP(
 																	jointConstraints,
 																	EngineParameters.PositionStabilization);
 
@@ -612,60 +612,70 @@ namespace SharpPhysicsEngine
 														EngineParameters.JointsIterations);
 						}
 
-						#endregion
+                        #endregion
 
-						#region Solve Overall Constraints
+                        #region Solve Overall Constraints
 
-						//jacobianConstraints = ContactSorting(jacobianConstraints);
+                        //jacobianConstraints = ContactSorting(jacobianConstraints);
 
-						//stopwatch.Reset();
+                        //stopwatch.Reset();
 
-						//stopwatch.Start();
+                        //stopwatch.Start();
 
-						LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCPMatrix(
+                        var stopwatch2 = new Stopwatch();
+
+                        stopwatch2.Reset();
+
+                        stopwatch2.Start();
+
+                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
 																jacobianConstraints,
 																EngineParameters.PositionStabilization);
 
-						//stopwatch.Stop();
+                        stopwatch2.Stop();
 
-						//Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+                        Console.WriteLine("LCP Builder ={0}", stopwatch2.ElapsedMilliseconds);
 
-						//stopwatch.Reset();
+                        //stopwatch.Stop();
 
-						//stopwatch.Start();
+                        //Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-						//LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
-						//                                        jacobianConstraints,
-						//                                        EngineParameters.PositionStabilization);
+                        //stopwatch.Reset();
 
-						//stopwatch.Stop();
+                        //stopwatch.Start();
 
-						//Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
+                        //                                        jacobianConstraints,
+                        //                                        EngineParameters.PositionStabilization);
 
-						//var test = overallLCP.Equals(overallLCP, old_overallLCP);
+                        //stopwatch.Stop();
 
-						//Console.WriteLine("Test " + test);
-						
+                        //Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-						if (overallLCP != null &&
+                        //var test = overallLCP.Equals(overallLCP, old_overallLCP);
+
+                        //Console.WriteLine("Test " + test);
+
+
+                        if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
 						{
-							Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
+                            var stopwatch1 = new Stopwatch();
+
+                            stopwatch1.Reset();
+
+                            stopwatch1.Start();
+
+                            Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
 
 							overallSolution = Solver.Solve(overallLCP);
 
-							double[] overallError = new double[overallLCP.Count];
+                            stopwatch1.Stop();
 
-							//SolverParameters test = new SolverParameters(300, solver.GetSolverParameters().ErrorTolerance, solver.GetSolverParameters().SOR, solver.GetSolverParameters().MaxThreadNumber, solver.GetSolverParameters().SORStep, solver.GetSolverParameters().DynamicSORUpdate);
-
-							//ProjectedGaussSeidel testVerifica = new ProjectedGaussSeidel(test);
-
-							//SolutionValues[] sol = testVerifica.Solve(overallLCP);
-
-							//Console.WriteLine("error " + SolverHelper.ComputeSolverError(overallLCP, overallSolution));
-							//Console.WriteLine("errorTest " + SolverHelper.ComputeSolverError(overallLCP, sol));
-						}
-						else if (EngineParameters.OverallConstraintsIterations == 0)
+                            Console.WriteLine("Solver ={0}", stopwatch1.ElapsedMilliseconds);
+                            
+                        }
+                        else if (EngineParameters.OverallConstraintsIterations == 0)
 						{
 							for (int j = 0; j < overallSolution.Length; j++)
 								overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
@@ -928,13 +938,13 @@ namespace SharpPhysicsEngine
 
 				SetPositionBasedVelocity(
 					ct.ObjectA,
-					ct.LinearComponentA,
+					ct.LinearComponentA.Value,
 					ct.AngularComponentA,
 					impulse);
 
 				SetPositionBasedVelocity(
 					ct.ObjectB,
-					ct.LinearComponentB,
+					ct.LinearComponentB.Value,
 					ct.AngularComponentB,
 					impulse);
 			}

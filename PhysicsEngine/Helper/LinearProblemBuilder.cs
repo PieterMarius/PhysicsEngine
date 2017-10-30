@@ -76,7 +76,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
 
-        public LinearProblemProperties BuildLCPMatrix(
+        public LinearProblemProperties BuildLCP(
             JacobianConstraint[] constraint,
             bool positionStabilization = false)
         {
@@ -339,7 +339,7 @@ namespace SharpPhysicsEngine.Helper
         /// Builds the LCP matrix for solver.
         /// </summary>
         [Obsolete]
-        public LinearProblemProperties OldBuildLCPMatrix(
+        public LinearProblemProperties OldBuildLCP(
             JacobianConstraint[] constraint,
             bool positionStabilization = false)
         {
@@ -485,39 +485,46 @@ namespace SharpPhysicsEngine.Helper
         #region Private Methods
 
         private double GetLCPMatrixValue(
-            Vector3 linearComponentA,
-            Vector3 linearComponentB,
+            Vector3? linearComponentA,
+            Vector3? linearComponentB,
             Vector3 angularComponentA,
             Vector3 angularComponentB,
             double inverseMass,
             Matrix3x3 inertiaTensor)
         {
-            double linear = linearComponentA.Dot(
-                        linearComponentB * inverseMass);
+            double LCPValue = 0.0;
 
-            double angular = angularComponentA.Dot(
+            if(linearComponentA.HasValue &&
+               linearComponentB.HasValue)
+                LCPValue += linearComponentA.Value.Dot(
+                            linearComponentB.Value * inverseMass);
+
+            LCPValue += angularComponentA.Dot(
                         inertiaTensor * angularComponentB);
 
-            return linear + angular;
+            return LCPValue;
         }
 
 
         private double GetLCPDiagonalValue(JacobianConstraint contact)
         {
-            double linearA = contact.LinearComponentA.Dot(
-                    contact.LinearComponentA * contact.ObjectA.InverseMass);
+            double LCPvalue = 0.0;
 
-            double angularA = contact.AngularComponentA.Dot(
-                    contact.ObjectA.InertiaTensor * contact.AngularComponentA);
+            if(contact.LinearComponentA.HasValue)
+                LCPvalue +=  contact.LinearComponentA.Value.Dot(
+                          contact.LinearComponentA.Value * contact.ObjectA.InverseMass);
 
-            double linearB = contact.LinearComponentB.Dot(
-                    contact.LinearComponentB * contact.ObjectB.InverseMass);
+            LCPvalue += contact.AngularComponentA.Dot(
+                     contact.ObjectA.InertiaTensor * contact.AngularComponentA);
 
-            double angularB = contact.AngularComponentB.Dot(
+            if(contact.LinearComponentB.HasValue)
+                LCPvalue += contact.LinearComponentB.Value.Dot(
+                          contact.LinearComponentB.Value * contact.ObjectB.InverseMass);
+
+            LCPvalue += contact.AngularComponentB.Dot(
                     contact.ObjectB.InertiaTensor * contact.AngularComponentB);
 
-            return (linearA + angularA) +
-                   (linearB + angularB);
+            return LCPvalue;
         }
 
         private static void AddValues(

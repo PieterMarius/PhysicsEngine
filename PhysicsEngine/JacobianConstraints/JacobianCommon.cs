@@ -289,8 +289,6 @@ namespace SharpPhysicsEngine
             return new JacobianConstraint(
                 softShapePointA,
                 softShapePointB,
-                new Vector3(),
-                new Vector3(),
                 angularComponentA,
                 angularComponentB,
                 type,

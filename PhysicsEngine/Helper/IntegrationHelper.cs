@@ -49,19 +49,33 @@ namespace SharpPhysicsEngine.Helper
 
                         JacobianConstraint ct = contact[i];
 
-                        UpdateObjectVelocity(
-                            ct.ObjectA,
-                            ct.LinearComponentA,
-                            ct.AngularComponentA,
-                            impulse,
-                            sync);
+                        if (ct.LinearComponentA.HasValue)
+                            UpdateObjectVelocity(
+                                ct.ObjectA,
+                                ct.LinearComponentA.Value,
+                                ct.AngularComponentA,
+                                impulse,
+                                sync);
+                        else
+                            UpdateObjectVelocity(
+                                ct.ObjectA,
+                                ct.AngularComponentA,
+                                impulse,
+                                sync);
 
-                        UpdateObjectVelocity(
-                            ct.ObjectB,
-                            ct.LinearComponentB,
-                            ct.AngularComponentB,
-                            impulse,
-                            sync);
+                        if (ct.LinearComponentB.HasValue)
+                            UpdateObjectVelocity(
+                                ct.ObjectB,
+                                ct.LinearComponentB.Value,
+                                ct.AngularComponentB,
+                                impulse,
+                                sync);
+                        else
+                            UpdateObjectVelocity(
+                                ct.ObjectB,
+                                ct.AngularComponentB,
+                                impulse,
+                                sync);
 
                         ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
                     }
@@ -120,12 +134,33 @@ namespace SharpPhysicsEngine.Helper
                 //Critical Section
                 lock (sync)
                 {
-                    //TODO implementare x Soft Body
                     simObj.SetLinearVelocity(simObj.LinearVelocity + linearVelocity);
                     simObj.SetAngularVelocity(simObj.AngularVelocity + angularVelocity);
                 }
             }
         }
+
+        private void UpdateObjectVelocity(
+            IShapeCommon simObj,
+            Vector3 angularComponent,
+            double X,
+            object sync)
+        {
+            if (simObj.ObjectType != ObjectType.StaticBody)
+            {
+                Vector3 angularImpuse = X * angularComponent;
+
+                Vector3 angularVelocity = simObj.InertiaTensor *
+                                          angularImpuse;
+
+                //Critical Section
+                lock (sync)
+                {
+                    simObj.SetAngularVelocity(simObj.AngularVelocity + angularVelocity);
+                }
+            }
+        }
+
 
         private void IntegrateRigidShapePosition(
             IShape shape,
