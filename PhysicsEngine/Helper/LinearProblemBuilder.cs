@@ -14,53 +14,6 @@ namespace SharpPhysicsEngine.Helper
     {
         #region Fields
 
-        private struct HashSetStruct : IEquatable<HashSetStruct>
-        {
-            private readonly int id_a, id_b;
-
-            public int ID_A { get { return id_a; } }
-            public int ID_B { get { return id_b; } }
-
-            public HashSetStruct(int id_a, int id_b)
-            {
-                this.id_a = id_a;
-                this.id_b = id_b;
-            }
-
-            public override int GetHashCode()
-            {
-                return 31 * id_a + 17 * id_b;
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is HashSetStruct && Equals((HashSetStruct)obj);
-            }
-
-            public bool Equals(HashSetStruct p)
-            {
-                return id_a == p.ID_A && id_b == p.ID_B;
-            }
-
-        }
-
-        private struct DictionaryConstraintValue
-        {
-            private readonly JacobianConstraint constraint;
-            private readonly int startIndex;
-
-            public JacobianConstraint Constraint { get { return constraint; } }
-            public int StartIndex { get { return startIndex; } }
-
-            public DictionaryConstraintValue(
-                JacobianConstraint constraint, 
-                int startIndex)
-            {
-                this.constraint = constraint;
-                this.startIndex = startIndex;
-            }
-        }
-
         private readonly PhysicsEngineParameters EngineParameters;
 
         #endregion
@@ -88,15 +41,9 @@ namespace SharpPhysicsEngine.Helper
                 double[] constraintsLimit = new double[constraint.Length];
                 SparseElement[] M = new SparseElement[constraint.Length];
                 int?[] constraintsArray = new int?[constraint.Length];
-                                                               
+
                 Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
 
-                Stopwatch test = new Stopwatch();
-
-                test.Reset();
-                test.Start();
-
-                               
                 for (int i = 0; i < constraint.Length; i++)
                 {
                     JacobianConstraint itemConstraint = constraint[i];
@@ -110,22 +57,20 @@ namespace SharpPhysicsEngine.Helper
                     else
                         constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
                 }
-
-                test.Stop();
-
-                Console.WriteLine("Build LCP " + test.ElapsedMilliseconds);
-                
-                var dictionaryList = constraintsDictionary.ToArray();
+                                
+                var dictionaryArray = constraintsDictionary.ToArray();
 
                 var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
                 var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
 
-                Parallel.ForEach(dictionaryList, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                Parallel.ForEach(
+                    dictionaryArray, 
+                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
                     constraintValues =>
                 {
                     int contactA_ID_A = constraintValues.Key.ID_A;
                     int contactA_ID_B = constraintValues.Key.ID_B;
-                                        
+                                                                               
                     for (int w = 0; w < constraintValues.Value.Count; w++)
                     {
                         JacobianConstraint contactA = constraintValues.Value[w].Constraint;
@@ -133,7 +78,7 @@ namespace SharpPhysicsEngine.Helper
                         List<int> index = new List<int>();
                         List<double> values = new List<double>();
 
-                        int indexVal = constraintValues.Value[w].StartIndex;
+                        int indexVal = constraintValues.Value[w].Index;
 
                         if (positionStabilization)
                             B[indexVal] = contactA.CorrectionValue;
@@ -158,7 +103,7 @@ namespace SharpPhysicsEngine.Helper
                         //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
                         for (int j = 0; j < constraintValues.Value.Count; j++)
                         {
-                            int innerIndex = constraintValues.Value[j].StartIndex;
+                            int innerIndex = constraintValues.Value[j].Index;
 
                             if (innerIndex != indexVal)
                             {
@@ -186,11 +131,12 @@ namespace SharpPhysicsEngine.Helper
 
                         //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
                         List<DictionaryConstraintValue> symmetricList;
-                        if (constraintsDictionary.TryGetValue(new HashSetStruct(contactA_ID_B, contactA_ID_A), out symmetricList))
+                        var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
+                        if (constraintsDictionary.TryGetValue(symmetricHashSet, out symmetricList))
                         {
                             for (int j = 0; j < symmetricList.Count; j++)
                             {
-                                int innerIndex = constraintValues.Value[j].StartIndex;
+                                int innerIndex = symmetricList[j].Index;
 
                                 if (innerIndex != indexVal)
                                 {
@@ -220,11 +166,12 @@ namespace SharpPhysicsEngine.Helper
                         //contactA_ID_A == contactB_ID_A
                         foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
+                                !constraintCheckItem.Key.Equals(symmetricHashSet))
                             {
                                 for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
+                                    int innerIndex = constraintCheckItem.Value[j].Index;
 
                                     if (innerIndex != indexVal)
                                     {
@@ -247,11 +194,12 @@ namespace SharpPhysicsEngine.Helper
                         //contactA_ID_A == contactB_ID_B
                         foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
+                                !constraintCheckItem.Key.Equals(symmetricHashSet))
                             {
                                 for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
+                                    int innerIndex = constraintCheckItem.Value[j].Index;
 
                                     if (innerIndex != indexVal)
                                     {
@@ -274,11 +222,12 @@ namespace SharpPhysicsEngine.Helper
                         //contactA_ID_B == contactB_ID_A
                         foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
+                                !constraintCheckItem.Key.Equals(symmetricHashSet))
                             {
                                 for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
+                                    int innerIndex = constraintCheckItem.Value[j].Index;
 
                                     if (innerIndex != indexVal)
                                     {
@@ -301,11 +250,12 @@ namespace SharpPhysicsEngine.Helper
                         //contactA_ID_B == contactB_ID_B
                         foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
                         {
-                            if (!constraintCheckItem.Key.Equals(constraintValues.Key))
+                            if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
+                                !constraintCheckItem.Key.Equals(symmetricHashSet))
                             {
                                 for (int j = 0; j < constraintCheckItem.Value.Count; j++)
                                 {
-                                    int innerIndex = constraintCheckItem.Value[j].StartIndex;
+                                    int innerIndex = constraintCheckItem.Value[j].Index;
 
                                     if (innerIndex != indexVal)
                                     {
@@ -329,10 +279,10 @@ namespace SharpPhysicsEngine.Helper
                         M[indexVal] = new SparseElement(
                             values.ToArray(),
                             index.ToArray(),
-                            constraint.Length);
+                            constraint.Length);                        
                     }
                 });
-
+                                
                 return new LinearProblemProperties(
                     M,
                     B,

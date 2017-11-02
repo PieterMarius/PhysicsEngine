@@ -29,35 +29,29 @@ namespace SharpPhysicsEngine
 
 		#region Public Methods
 
-		public List<JacobianConstraint> BuildJoints(
-			CollisionPointStructure[] collisionPointsStruct,
-			IShape[] simulationObjs)
-		{
-			var contactConstraints = new List<JacobianConstraint> ();
+        public List<JacobianConstraint> BuildJoints(
+            CollisionPointStructure collisionPointStr,
+            IShape objectA,
+            IShape objectB)
+        {
+            var contactConstraints = new List<JacobianConstraint>();
 
-			for (int i = 0; i < collisionPointsStruct.Length; i++) 
-			{
-				CollisionPointStructure collisionPointStr = collisionPointsStruct [i];
+            if (objectA is ISoftShape && !(objectB is SoftShape))
+            {
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
+            }
+            else if (objectB is ISoftShape && !(objectA is SoftShape))
+            {
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectB, objectA, 1));
+            }
+            else
+            {
+                contactConstraints.AddRange(BuildRigidBodyCollisionJoints(collisionPointStr, objectA, objectB));
+            }
 
-				IShape objectA = simulationObjs.First(x => x.ID == collisionPointStr.ObjectIndexA);
-				IShape objectB = simulationObjs.First(x => x.ID == collisionPointStr.ObjectIndexB);
-
-				if (objectA is ISoftShape && !(objectB is SoftShape))
-				{
-                    contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
-                }
-				else if (objectB is ISoftShape && !(objectA is SoftShape))
-				{
-                    contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectB, objectA, 1));
-                }
-				else
-				{
-					contactConstraints.AddRange(BuildRigidBodyCollisionJoints(collisionPointStr, objectA, objectB));
-				}
-			}
-			return contactConstraints;
-		}
-
+            return contactConstraints;
+        }
+        
 		#endregion
 
 		#region Private Methods

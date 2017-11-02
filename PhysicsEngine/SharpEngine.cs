@@ -461,52 +461,52 @@ namespace SharpPhysicsEngine
 
 		#region Position Correction
 
-		private bool PhysicsJointPositionCorrection()
-		{
-			bool positionUpdated = false;
+		//private bool PhysicsJointPositionCorrection()
+		//{
+		//	bool positionUpdated = false;
 
-			if (Joints.Count > 0)
-			{
-				if (Partitions != null)
-				{
-					double baumgarteStabilizationValue = 1.0 / TimeStep;
+		//	if (Joints.Count > 0)
+		//	{
+		//		if (Partitions != null)
+		//		{
+		//			double baumgarteStabilizationValue = 1.0 / TimeStep;
 
-					for (int i = 0; i < Partitions.Count; i++)
-					{
-						if (EngineParameters.PositionBasedJointIterations > 0)
-						{
-							JacobianConstraint[] jointConstraints = GetJacobianJointConstraint(
-																	   Partitions[i].PartitionedJoints,
-																	   Shapes,
-																	   baumgarteStabilizationValue).ToArray();
+		//			for (int i = 0; i < Partitions.Count; i++)
+		//			{
+		//				if (EngineParameters.PositionBasedJointIterations > 0)
+		//				{
+		//					JacobianConstraint[] jointConstraints = GetJacobianJointConstraint(
+		//															   Partitions[i].PartitionedJoints,
+		//															   Shapes,
+		//															   baumgarteStabilizationValue).ToArray();
 
-							LinearProblemProperties collisionErrorLCP = linearProblemBuilder.BuildLCP(
-								jointConstraints,
-								EngineParameters.PositionStabilization);
+		//					LinearProblemProperties collisionErrorLCP = linearProblemBuilder.BuildLCP(
+		//						jointConstraints,
+		//						EngineParameters.PositionStabilization);
 
-							if (collisionErrorLCP != null)
-							{
-								Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.PositionBasedJointIterations);
+		//					if (collisionErrorLCP != null)
+		//					{
+		//						Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.PositionBasedJointIterations);
 
-								SolutionValues[] correctionValues = Solver.Solve(collisionErrorLCP);
+		//						SolutionValues[] correctionValues = Solver.Solve(collisionErrorLCP);
 
-								UpdatePositionBasedVelocity(jointConstraints, correctionValues);
+		//						UpdatePositionBasedVelocity(jointConstraints, correctionValues);
 
-								positionUpdated = true;
-							}
-						}
-					}
-					#region Position and Velocity integration
+		//						positionUpdated = true;
+		//					}
+		//				}
+		//			}
+		//			#region Position and Velocity integration
 
-					if (positionUpdated)
-						UpdateObjectPosition(Shapes);
+		//			if (positionUpdated)
+		//				UpdateObjectPosition(Shapes);
 
-					#endregion
-				}
-			}
+		//			#endregion
+		//		}
+		//	}
 
-			return positionUpdated;
-		}
+		//	return positionUpdated;
+		//}
 
 		#endregion
 
@@ -543,16 +543,16 @@ namespace SharpPhysicsEngine
 
 			solverError = 0.0;
 
-			if (EngineParameters.PositionStabilization)
-			{
-				bool positionUpdated = PhysicsJointPositionCorrection();
+			//if (EngineParameters.PositionStabilization)
+			//{
+			//	bool positionUpdated = PhysicsJointPositionCorrection();
 
-				if (positionUpdated)
-				{
-					CollisionDetection();
-					PartitionEngineExecute();
-				}
-			}
+			//	if (positionUpdated)
+			//	{
+			//		CollisionDetection();
+			//		PartitionEngineExecute();
+			//	}
+			//}
 			
 			if (Partitions != null) 
 			{
@@ -565,11 +565,11 @@ namespace SharpPhysicsEngine
 
 				for (int i = 0; i < Partitions.Count;i++)
 				{
-					JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
-																   Partitions[i].PartitionedCollisionPoints.ToArray(),
-																   Partitions[i].PartitionedJoints,
-																   Shapes,
-																   EngineParameters).ToArray();
+                    JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
+																            Partitions[i].PartitionedCollisionPoints.ToArray(),
+																            Partitions[i].PartitionedJoints,
+																            Shapes,
+																            EngineParameters);
 
 					if (jacobianConstraints.Length > 0)
 					{
@@ -579,18 +579,18 @@ namespace SharpPhysicsEngine
 
 						if (EngineParameters.FrictionAndNormalIterations > 0)
 						{
-							JacobianConstraint[] frictionConstraint = ConstraintHelper.FilterConstraints(jacobianConstraints,
-																					   ConstraintType.Friction,
-																					   ConstraintType.Collision);
+							//JacobianConstraint[] frictionConstraint = ConstraintHelper.FilterConstraints(jacobianConstraints,
+							//														   ConstraintType.Friction,
+							//														   ConstraintType.Collision);
 
-							LinearProblemProperties frictionLCP = linearProblemBuilder.BuildLCP(
-																	frictionConstraint,
-																	EngineParameters.PositionStabilization);
+							//LinearProblemProperties frictionLCP = linearProblemBuilder.BuildLCP(
+							//										frictionConstraint,
+							//										EngineParameters.PositionStabilization);
 
-							SolutionValues[] contactSolution = BuildMatrixAndExecuteSolver(
-														frictionConstraint,
-														frictionLCP,
-														EngineParameters.FrictionAndNormalIterations);
+							//SolutionValues[] contactSolution = BuildMatrixAndExecuteSolver(
+							//							frictionConstraint,
+							//							frictionLCP,
+							//							EngineParameters.FrictionAndNormalIterations);
 						}
 
 						#endregion
@@ -600,16 +600,16 @@ namespace SharpPhysicsEngine
 						if (Joints.Count > 0 &&
 							EngineParameters.JointsIterations > 0)
 						{
-							JacobianConstraint[] jointConstraints = ConstraintHelper.FindJointConstraints(jacobianConstraints);
+							//JacobianConstraint[] jointConstraints = ConstraintHelper.FindJointConstraints(jacobianConstraints);
 
-							LinearProblemProperties jointLCP = linearProblemBuilder.BuildLCP(
-																	jointConstraints,
-																	EngineParameters.PositionStabilization);
+							//LinearProblemProperties jointLCP = linearProblemBuilder.BuildLCP(
+							//										jointConstraints,
+							//										EngineParameters.PositionStabilization);
 
-							SolutionValues[] jointSolution = BuildMatrixAndExecuteSolver(
-														jointConstraints,
-														jointLCP,
-														EngineParameters.JointsIterations);
+							//SolutionValues[] jointSolution = BuildMatrixAndExecuteSolver(
+							//							jointConstraints,
+							//							jointLCP,
+							//							EngineParameters.JointsIterations);
 						}
 
                         #endregion
@@ -644,8 +644,8 @@ namespace SharpPhysicsEngine
 
                         //stopwatch.Start();
 
-                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCPMatrix(
-                        //                                        jacobianConstraints,
+                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCP(
+                        //                                        jacobianConstraints.JacobianConstraints,
                         //                                        EngineParameters.PositionStabilization);
 
                         //stopwatch.Stop();
@@ -677,11 +677,11 @@ namespace SharpPhysicsEngine
                         }
                         else if (EngineParameters.OverallConstraintsIterations == 0)
 						{
-							for (int j = 0; j < overallSolution.Length; j++)
-								overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
+							//for (int j = 0; j < overallSolution.Length; j++)
+							//	overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
 						}
 
-						integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
+                        integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
 
 						#endregion
 					}
@@ -835,34 +835,69 @@ namespace SharpPhysicsEngine
 
 		#region Jacobian Constraint
 
-		public List<JacobianConstraint> GetJacobianConstraints(
-			CollisionPointStructure[] collisionPointsStruct,
-			List<IConstraint> simulationJointList,
-			IShape[] simulationObjs,
-			PhysicsEngineParameters simulationParameters)
-		{
-			var constraint = new List<JacobianConstraint>();
+		private List<JacobianConstraint> GetContactJacobianConstraints(
+            CollisionPointStructure[] collisionPointsStruct,
+            IShape[] simulationObjs)
+        {
+            List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
 
-			#region Collision Contact
+            var sync = new object();
 
-			constraint.AddRange(
-				contactConstraintBuilder.BuildJoints(
-					collisionPointsStruct,
-					simulationObjs));
+            Parallel.ForEach(
+                collisionPointsStruct, 
+                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                item =>
+                {
+                    IShape objectA = simulationObjs.First(x => x.ID == item.ObjectIndexA);
+                    IShape objectB = simulationObjs.First(x => x.ID == item.ObjectIndexB);
 
-			#endregion
+                    List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, objectA, objectB);
 
-			#region Joint
+                    lock (sync)
+                    {
+                        jacobianConstraints.AddRange(constraintsBuf);
+                    }
+                });
+           
+           return jacobianConstraints;
+        }
+                
+        public JacobianConstraint[] GetJacobianConstraints(
+            CollisionPointStructure[] collisionPointsStruct,
+            List<IConstraint> simulationJointList,
+            IShape[] simulationObjs,
+            PhysicsEngineParameters simulationParameters)
+        {
+            List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
 
-			foreach (IConstraintBuilder constraintItem in simulationJointList)
-				constraint.AddRange(constraintItem.BuildJacobian());
+            ////Collision Contact
 
-			#endregion
+            jacobianConstraints.AddRange(
+                    GetContactJacobianConstraints(
+                        collisionPointsStruct,
+                        simulationObjs));
 
-			return constraint;
-		}
+            ////Joints
+            var sync = new object();
 
-		public List<JacobianConstraint> GetSoftBodyConstraints()
+            Parallel.ForEach(
+                simulationJointList,
+                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                constraintItem =>
+                {
+                    List<JacobianConstraint> jacobianConstraint = ((IConstraintBuilder)constraintItem).BuildJacobian();
+
+                    lock (sync)
+                    {
+                        jacobianConstraints.AddRange(jacobianConstraint);
+                    }
+
+                });
+            
+            return jacobianConstraints.ToArray();
+        }
+
+        public List<JacobianConstraint> GetSoftBodyConstraints()
 		{
 			var constraints = new List<JacobianConstraint>();
 

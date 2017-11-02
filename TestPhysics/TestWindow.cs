@@ -212,8 +212,8 @@ namespace TestPhysics
 
                 //Exit();
 
-                //LoadEngineByXml();
-                LoadEngineByBuilder();
+                LoadEngineByXml();
+                //LoadEngineByBuilder();
 
 
             }
