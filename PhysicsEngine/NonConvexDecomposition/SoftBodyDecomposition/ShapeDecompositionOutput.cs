@@ -8,7 +8,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         #region Fields
 
-        public List<Vertex3Index> Vertex3Idx { get; private set; }
+        public HashSet<Vertex3Index> Vertex3Idx { get; private set; }
         public AABB Region { get; private set; }
 
         #endregion
@@ -16,7 +16,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         #region Constructor
 
         public ShapeDecompositionOutput(
-            List<Vertex3Index> vertex3Index,
+            HashSet<Vertex3Index> vertex3Index,
             AABB region)
         {
             Vertex3Idx = vertex3Index;
@@ -27,9 +27,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         #region Public Methods
 
-        public void AddVertex3Index(List<Vertex3Index> vertex3Index)
+        public void AddVertex3Index(HashSet<Vertex3Index> vertex3Index)
         {
-            Vertex3Idx.AddRange(vertex3Index);
+            Vertex3Idx.UnionWith(vertex3Index);
         }
 
         #endregion

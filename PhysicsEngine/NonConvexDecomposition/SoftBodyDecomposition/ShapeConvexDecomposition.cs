@@ -11,6 +11,8 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
     {
         #region Fields
 
+        private const double perturbationValue =  1E-5;
+
         private double DecompositionValue;
 
         private AABB region;
@@ -119,7 +121,8 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             AABB box,
             AABB region,
             Vertex3Index[] vertexPosition,
-            double precisionSize)
+            double precisionSize,
+            double distanceTolerance)
         {
             VertexPosition = vertexPosition.ToList();
             BaseVertexPosition = vertexPosition;
@@ -132,7 +135,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
 
-            FindIntersectedConvexShape(box, ref convexShapes);
+            FindIntersectedConvexShape(box, ref convexShapes, distanceTolerance);
 
             if (convexShapes.Count > 0)
             {
@@ -231,7 +234,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         private void GenerateConvexShapeList(ref List<ShapeDecompositionOutput> geometry)
         {
             if (VertexPosition.Count > 0)
-                geometry.Add(new ShapeDecompositionOutput(new List<Vertex3Index>(VertexPosition), region));
+                geometry.Add(new ShapeDecompositionOutput(new HashSet<Vertex3Index>(VertexPosition), region));
 
             for (int a = 0; a < 8; a++)
             {
@@ -240,46 +243,53 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
         }
 
-        private void FindIntersectedConvexShape(AABB box, ref List<ShapeDecompositionOutput> geometry)
+        private void FindIntersectedConvexShape(AABB box, ref List<ShapeDecompositionOutput> geometry, double distanceTolerance)
         {
-            if (region.Intersect(box))
+            if (region.Intersect(box, distanceTolerance))
             {
                 if (VertexPosition.Count > 0)
-                    geometry.Add(new ShapeDecompositionOutput(new List<Vertex3Index>(VertexPosition), region));
+                    geometry.Add(new ShapeDecompositionOutput(new HashSet<Vertex3Index>(VertexPosition), region));
 
                 for (int a = 0; a < 8; a++)
                 {
                     if (childNode[a] != null)
-                        childNode[a].FindIntersectedConvexShape(box, ref geometry);
+                        childNode[a].FindIntersectedConvexShape(box, ref geometry, distanceTolerance);
                 }
             }
         }
 
         private void FinalizeShape(ref List<ShapeDecompositionOutput> convexShapes)
         {
-            var convexHullShape = new Vertex3Index[convexShapes.Count][][];
-
-            Parallel.ForEach(convexShapes.Select((value, i) => new { value, i }),
-                new ParallelOptions { MaxDegreeOfParallelism = 2 },
-                shape =>
+             Parallel.ForEach(convexShapes,
+                            new ParallelOptions { MaxDegreeOfParallelism = 2 },
+                            shape =>
              {
-                 List<Vertex3Index> bufVertex = new List<Vertex3Index>();
-                 HashSet<int> triIdx = new HashSet<int>();
-
-                 foreach (var vertex in shape.value.Vertex3Idx)
+                 HashSet<Vertex3Index> bufVertex = new HashSet<Vertex3Index>();
+                 
+                 foreach (var vertex in shape.Vertex3Idx)
                  {
                      foreach (var idx in vertex.Indexes)
                      {
-                         if (triIdx.Add(triangleIndexes[idx].a))
-                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].a]);
-                         if (triIdx.Add(triangleIndexes[idx].b))
-                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].b]);
-                         if (triIdx.Add(triangleIndexes[idx].c))
-                             bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].c]);
+                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].a]);
+                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].b]);
+                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].c]);
                      }
                  }
-                 shape.value.AddVertex3Index(bufVertex);
+
+                 shape.AddVertex3Index(bufVertex);
                                   
+                 if (shape.Vertex3Idx.Count <= 3)
+                 {
+                     bufVertex.Clear();
+                     for (int i = 0; i < 4 - shape.Vertex3Idx.Count; i++)
+                     {
+                         bufVertex.Add(new Vertex3Index(
+                             shape.Vertex3Idx.First().Vector3 + Vector3.Random(-perturbationValue, perturbationValue), 
+                             new int[] { int.MaxValue - i }, 
+                             0));
+                     }
+                     shape.AddVertex3Index(bufVertex);
+                 }
              });
         }
 

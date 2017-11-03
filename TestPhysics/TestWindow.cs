@@ -314,7 +314,7 @@ namespace TestPhysics
 			MoveCamera ();
 
 			//displayOrigin ();
-			//displayContact ();
+			displayContact ();
 			//displayBaseContact();
 			//displayJoint ();
 			//displaySphere(testConvexDecomp.basePoint);
@@ -396,7 +396,7 @@ namespace TestPhysics
 					pause = true;
 					//if (elapsedTime > 6.0)
 					//	Exit();
-					//collPoint = physicsEngine.GetCollisionPointStrucureList();
+					collPoint = physicsEngine.GetCollisionPointStrucureList();
 					//collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
 
 					//colorList = new List<List<double>>();
@@ -526,7 +526,14 @@ namespace TestPhysics
 				selectedObjIndex = Convert.ToInt32 (Console.ReadLine ());
 			}
 
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Down]) 
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.M])
+            {
+
+                ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+                
+            }
+
+            if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Down]) 
 			{
 				
 			}
@@ -712,10 +719,11 @@ namespace TestPhysics
 
 						GL.MultMatrix(dmviewData);
 
-						//GL.Color3 (1.0f, 0.0, 0.0);
+						GL.Color3 (1.0f, 0.0, 0.0);
 						OpenGLUtilities.drawSolidCube(0.08f);
+                        GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
-						GL.PopMatrix();
+                        GL.PopMatrix();
 
 						GL.PushMatrix();
 
@@ -734,10 +742,11 @@ namespace TestPhysics
 						GL.MultMatrix(dmviewData1);
 
 
-						//GL.Color3 (1.0f, 0.0, 0.0);
+						GL.Color3 (1.0f, 0.0, 0.0);
 						OpenGLUtilities.drawSolidCube(0.08f);
+                        GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
-						GL.PopMatrix();
+                        GL.PopMatrix();
 
 					}
 				}
@@ -1022,7 +1031,7 @@ namespace TestPhysics
                 
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
 						item.TriangleIndex.ToArray(),0)),
-					0.5);
+					0.2);
 
 			List<Line> ll = OpenGLUtilities.BuildBoxLine(softShape.AABBox.Max, softShape.AABBox.Min);
 
@@ -1033,22 +1042,32 @@ namespace TestPhysics
 				GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 
-
+            int i = 0;
 			foreach (var shape in convexShape)
 			{
 				GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
 
 				IVertex[] vtx = Array.ConvertAll(shape.Vertex3Idx.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
 
-				ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx);
+                try
+                {
+                    ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx);
 
-				var convexHullShape = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
+                    var convexHullShape = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
 
-				var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));               
+                    var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
 
-				OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0,0.0,0.0), false, false, false);
+                    OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
 
-				GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+
+                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                i++;
 			}
 		}
 

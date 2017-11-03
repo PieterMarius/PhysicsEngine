@@ -5,6 +5,7 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
 using SharpPhysicsEngine.LCPSolver;
+using System;
 
 namespace TestPhysics
 {
@@ -154,15 +155,16 @@ namespace TestPhysics
 
 			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
-			ShapeFilename[3] = new string[1] { "sphere.obj" };
+			ShapeFilename[3] = new string[1] { "bunnySmall.obj" };
 			ShapeScale[3] = new float[1] { 1 };
-			objects[3] = BuildSoftBody("sphere.obj", 1, new Vector3(0.0, 0.0, 0.0));
+			objects[3] = BuildSoftBody("bunnySmall.obj", 1, new Vector3(0.0, 0.0, 0.0));
             objects[3].SetStaticFrictionCoeff(0.5);
             objects[3].SetDynamicFrictionCoeff(0.5);
+            objects[3].SetRestoreCoeff(30.0);
 
-			#endregion
+            #endregion
 
-			return objects;
+            return objects;
 		}
 
 		private void getSimulationConstraints()
@@ -229,16 +231,27 @@ namespace TestPhysics
 		{
 			GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
 
+            RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), Math.PI / 2.0);
+
 			return new SoftShape(
 				prop.triangleIndex, 
 				prop.vertexPoint, 
 				position,
-                0.3,
-                60.0,
-                100.0);
+                0.2,
+                2.0,
+                50.0);
 		}
 
-		#endregion
-	}
+
+        private void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
+        {
+            for (int i = 0; i < obj.vertexPoint.Length; i++)
+            {
+                obj.vertexPoint[i] = Vector3.RotatePoint(obj.vertexPoint[i], versor, angle);
+            }
+        }
+
+        #endregion
+    }
 }
 

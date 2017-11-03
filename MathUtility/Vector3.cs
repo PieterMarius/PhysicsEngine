@@ -225,6 +225,14 @@ namespace SharpEngineMathUtility
 			return new Vector3 (0.0, 0.0, 0.0);
 		}
 
+        public static Vector3 Random(double min, double max)
+        {
+            return new Vector3(
+                GeometryUtilities.GetRandom(min, max), 
+                GeometryUtilities.GetRandom(min, max), 
+                GeometryUtilities.GetRandom(min, max));
+        }
+
 		public static Vector3 Normalize(Vector3 a)
 		{
 			double l = Length (a);

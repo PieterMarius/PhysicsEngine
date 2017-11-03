@@ -49,7 +49,7 @@ namespace SharpPhysicsEngine
             RestoreCoefficient = restoreCoefficient;
             Shape = shape;
 
-            StartAnchorPoint = (PointA.Position - PointB.Position) * 0.5;
+            StartAnchorPoint = PointA.Position;
 
             Vector3 relativePos = StartAnchorPoint - PointA.StartPosition;
             
@@ -73,12 +73,8 @@ namespace SharpPhysicsEngine
         /// <param name="simulationObjs">Simulation objects.</param>
         public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
         {
-            var fixedConstraints = new List<JacobianConstraint>();
-
-            AnchorPoint = (PointA.RotationMatrix *
-                          (StartAnchorPoint - PointA.StartPosition)) +
-                          PointA.Position;
-
+            var softConstraints = new List<JacobianConstraint>();
+            
             #region Init Linear
 
             Vector3 r1 = PointA.RotationMatrix *
@@ -111,7 +107,7 @@ namespace SharpPhysicsEngine
 
             //DOF 1
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
                 new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
@@ -128,7 +124,7 @@ namespace SharpPhysicsEngine
 
             constraintLimit = RestoreCoefficient * linearError.y;
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 yVec,
                 yVecNeg,
                 new Vector3(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
@@ -145,7 +141,7 @@ namespace SharpPhysicsEngine
 
             constraintLimit = RestoreCoefficient * linearError.z;
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 zVec,
                 zVecNeg,
                 new Vector3(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
@@ -162,7 +158,7 @@ namespace SharpPhysicsEngine
 
             constraintLimit = RestoreCoefficient * angularError.x;
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
                 PointA,
@@ -177,7 +173,7 @@ namespace SharpPhysicsEngine
 
             constraintLimit = RestoreCoefficient * angularError.y;
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 yVec,
                 yVecNeg,
                 PointA,
@@ -192,7 +188,7 @@ namespace SharpPhysicsEngine
 
             constraintLimit = RestoreCoefficient * angularError.z;
 
-            fixedConstraints.Add(JacobianCommon.GetDOF(
+            softConstraints.Add(JacobianCommon.GetDOF(
                 zVec,
                 zVecNeg,
                 PointA,
@@ -205,7 +201,7 @@ namespace SharpPhysicsEngine
 
             #endregion
 
-            return fixedConstraints;
+            return softConstraints;
         }
 
         #endregion
@@ -239,7 +235,9 @@ namespace SharpPhysicsEngine
 
         public Vector3 GetAnchorPosition()
         {
-            return AnchorPoint;
+            return (PointA.RotationMatrix *
+                    (StartAnchorPoint - PointA.StartPosition)) +
+                    PointA.Position;
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)

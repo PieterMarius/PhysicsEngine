@@ -21,5 +21,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void AddConstraint(SoftBodyConstraint constraint);
         void RemoveConstraint(int index);
         void SetDecompositionParameter(double decompositionParam);
+        void SetRestoreCoefficient(double restoreCoeff);
+        void SetSpringCoefficient(double springCoeff);
+        
     }
 }

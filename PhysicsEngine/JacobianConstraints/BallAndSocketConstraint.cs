@@ -76,12 +76,8 @@ namespace SharpPhysicsEngine
 
 			IShape simulationObjectA = ShapeA;
 			IShape simulationObjectB = ShapeB;
-
-			AnchorPoint = (simulationObjectA.RotationMatrix *
-						  (StartAnchorPoint - simulationObjectA.StartPosition)) +
-						  simulationObjectA.Position;
-
-			#region Init Linear
+            
+            #region Init Linear
 
 			Vector3 r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
@@ -190,7 +186,9 @@ namespace SharpPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return AnchorPoint;
+			return (ShapeA.RotationMatrix *
+                   (StartAnchorPoint - ShapeA.StartPosition)) +
+                   ShapeA.Position; 
 		}
 
 		public void SetRestoreCoefficient(double restoreCoefficient)

@@ -260,7 +260,9 @@ namespace SharpPhysicsEngine
 
 		public Vector3 GetAnchorPosition()
 		{
-			return AnchorPoint;
+			return (ShapeA.RotationMatrix *
+                   (StartAnchorPoint - ShapeA.StartPosition)) +
+                   ShapeA.Position; 
 		}
 
 		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)

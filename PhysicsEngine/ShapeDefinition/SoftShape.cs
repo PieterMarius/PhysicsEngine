@@ -339,6 +339,17 @@ namespace SharpPhysicsEngine.ShapeDefinition
             throw new NotImplementedException();
         }
 
+        public void SetRestoreCoefficient(double restoreCoeff)
+        {
+            foreach (var item in SoftConstraint)
+                item.SetRestoreCoefficient(restoreCoeff);
+        }
+
+        public void SetSpringCoefficient(double springCoeff)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddConstraint(SoftBodyConstraint constraint)
         {
             SoftConstraint.Add(constraint);

@@ -251,13 +251,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 					 softShapeA == null)
 			{
 				//Manca gestione compuondShape
-				collisionPointStructure.AddRange(RigidSoftBodyCollisionDetection((IConvexShape)A, softShapeB));
+				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection((IConvexShape)A, softShapeB));
 			}
 			else if (softShapeA != null && 
 					 softShapeB == null)
 			{
 				///Manca gestione compuondShape
-				collisionPointStructure.AddRange(RigidSoftBodyCollisionDetection((IConvexShape)B, softShapeA));
+				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection((IConvexShape)B, softShapeA));
 			}
 
 			//Self collision detection
@@ -278,17 +278,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		//Manca gestione compuondShape
-		private List<CollisionPointStructure> RigidSoftBodyCollisionDetection(
+		private List<CollisionPointStructure> Rigid_SoftBodyCollisionDetection(
 			IConvexShape convexShape,
 			ISoftShape softShape)
 		{
 			List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
-						
-			List<ShapeDecompositionOutput> shapeOutput = softShape.ConvexDecomposition.GetIntersectedShape(
+		    
+            	List<ShapeDecompositionOutput> shapeOutput = softShape.ConvexDecomposition.GetIntersectedShape(
 				convexShape.ObjectGeometry.AABBox,
 				softShape.AABBox,
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
-				softShape.DecompositionParameter);
+				softShape.DecompositionParameter,
+                CollisionDistance);
 
             if (shapeOutput != null)
             {
@@ -305,7 +306,6 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
-                        //TODO verificare output
                         GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
 
                         var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);

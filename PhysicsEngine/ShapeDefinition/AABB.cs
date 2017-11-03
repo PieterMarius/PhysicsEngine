@@ -83,11 +83,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
 				   a.Max[2] - b.Min[2] >= -distanceTolerance;
 		}
 
-		#endregion
+        public bool Intersect(
+            AABB box,
+            double distanceTolerance)
+        {
+            return Min[0] - box.Max[0] <= distanceTolerance &&
+                   Max[0] - box.Min[0] >= -distanceTolerance &&
+                   Min[1] - box.Max[1] <= distanceTolerance &&
+                   Max[1] - box.Min[1] >= -distanceTolerance &&
+                   Min[2] - box.Max[2] <= distanceTolerance &&
+                   Max[2] - box.Min[2] >= -distanceTolerance;
+        }
 
-		#region Public static methods
+        #endregion
 
-		public static AABB GetGeometryAABB(IGeometry simObject)
+        #region Public static methods
+
+        public static AABB GetGeometryAABB(IGeometry simObject)
 		{
 			Vector3 vertexPos = Helper.GetVertexPosition(simObject, 0);
 			double xMax = vertexPos.x;
