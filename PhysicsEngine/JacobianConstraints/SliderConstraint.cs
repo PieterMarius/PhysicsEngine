@@ -22,7 +22,7 @@ namespace SharpPhysicsEngine
         IShape ShapeA;
         IShape ShapeB;
         int KeyIndex;
-		readonly double SpringCoefficient;
+		double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 SliderAxis;
 		readonly Vector3 StartErrorAxis1;
@@ -132,8 +132,8 @@ namespace SharpPhysicsEngine
 			//DOF 1
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-                xVec,
                 xVecNeg,
+                xVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -147,8 +147,8 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * 2.0 * angularError.y;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-                yVec,
                 yVecNeg,
+                yVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -162,8 +162,8 @@ namespace SharpPhysicsEngine
 			constraintLimit = RestoreCoefficient * 2.0 * angularError.z;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
-                zVec,
                 zVecNeg,
+                zVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -304,9 +304,14 @@ namespace SharpPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		#region NotImplementedMethods
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            SpringCoefficient = springCoefficient;
+        }
 
-		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
+        #region NotImplementedMethods
+
+        void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}

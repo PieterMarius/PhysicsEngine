@@ -21,7 +21,7 @@ namespace SharpPhysicsEngine
         IShape ShapeA;
 		IShape ShapeB;
 		int KeyIndex;
-		readonly double SpringCoefficient;
+		double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 HingeAxis;
 		readonly Vector3 RotationAxis;
@@ -307,9 +307,14 @@ namespace SharpPhysicsEngine
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
 
-		#region NotImplementedMethods
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            SpringCoefficient = springCoefficient;
+        }
 
-		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
+        #region NotImplementedMethods
+
+        void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotSupportedException();
 		}

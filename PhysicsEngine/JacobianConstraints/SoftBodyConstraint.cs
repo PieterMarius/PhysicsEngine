@@ -23,16 +23,17 @@ namespace SharpPhysicsEngine
         int KeyIndex;
 
         readonly ISoftShape Shape;
-        readonly double SpringCoefficient;
+        double SpringCoefficient;
         readonly Vector3 StartAnchorPoint;
 
         Vector3 AnchorPoint;
         Vector3 StartErrorAxis1;
         Vector3 StartErrorAxis2;
         double RestoreCoefficient;
-        
+        Quaternion RelativeOrientation;
+
         #endregion
-                
+
         #region Constructor
 
         public SoftBodyConstraint(
@@ -49,15 +50,21 @@ namespace SharpPhysicsEngine
             RestoreCoefficient = restoreCoefficient;
             Shape = shape;
 
-            StartAnchorPoint = PointA.Position;
+            StartAnchorPoint = (PointB.StartPosition - PointA.StartPosition) * 0.5;
 
-            Vector3 relativePos = StartAnchorPoint - PointA.StartPosition;
-            
+            Vector3 relativePos = StartAnchorPoint;
+            relativePos = PointA.RotationMatrix * relativePos;
+
             AnchorPoint = relativePos + PointA.Position;
 
-            StartErrorAxis1 = AnchorPoint - PointA.Position;
+            StartErrorAxis1 = PointA.RotationStatus.ConvertToMatrix().Transpose() *
+                                     (AnchorPoint - PointA.Position);
 
-            StartErrorAxis2 = AnchorPoint - PointB.Position;
+            StartErrorAxis2 = PointB.RotationStatus.ConvertToMatrix().Transpose() *
+                                     (AnchorPoint - PointB.Position);
+
+            RelativeOrientation = pointB.RotationStatus.Inverse() *
+                                  pointA.RotationStatus;
         }
 
         #endregion
@@ -74,7 +81,7 @@ namespace SharpPhysicsEngine
         public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
         {
             var softConstraints = new List<JacobianConstraint>();
-            
+
             #region Init Linear
 
             Vector3 r1 = PointA.RotationMatrix *
@@ -95,7 +102,10 @@ namespace SharpPhysicsEngine
 
             #region Init Angular
 
-            Vector3 angularError = JacobianCommon.GetFixedAngularError(PointA, PointB);
+            Vector3 angularError = JacobianCommon.GetFixedAngularError(
+                PointA, 
+                PointB, 
+                RelativeOrientation);
 
             #endregion
 
@@ -159,8 +169,8 @@ namespace SharpPhysicsEngine
             constraintLimit = RestoreCoefficient * angularError.x;
 
             softConstraints.Add(JacobianCommon.GetDOF(
-                xVec,
                 xVecNeg,
+                xVec,
                 PointA,
                 PointB,
                 0.0,
@@ -174,8 +184,8 @@ namespace SharpPhysicsEngine
             constraintLimit = RestoreCoefficient * angularError.y;
 
             softConstraints.Add(JacobianCommon.GetDOF(
-                yVec,
                 yVecNeg,
+                yVec,
                 PointA,
                 PointB,
                 0.0,
@@ -189,8 +199,8 @@ namespace SharpPhysicsEngine
             constraintLimit = RestoreCoefficient * angularError.z;
 
             softConstraints.Add(JacobianCommon.GetDOF(
-                zVec,
                 zVecNeg,
+                zVec,
                 PointA,
                 PointB,
                 0.0,
@@ -236,13 +246,18 @@ namespace SharpPhysicsEngine
         public Vector3 GetAnchorPosition()
         {
             return (PointA.RotationMatrix *
-                    (StartAnchorPoint - PointA.StartPosition)) +
-                    PointA.Position;
+                   StartAnchorPoint) +
+                   PointA.Position;
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
             RestoreCoefficient = restoreCoefficient;
+        }
+
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            SpringCoefficient = springCoefficient;
         }
 
         #region NotSupportedMethods

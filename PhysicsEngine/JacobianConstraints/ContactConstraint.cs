@@ -97,6 +97,7 @@ namespace SharpPhysicsEngine
                     Vector3 linearComponentSoftShape = (normalDirection * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
                     Vector3 linearComponentRigidShape = -1.0 * linearComponentSoftShape;
 
+                    Vector3 angularComponentSoftShape = r_softShape.Cross(linearComponentSoftShape);
                     Vector3 angularComponentRigidShape = -1.0 * r_rigidShape.Cross(linearComponentSoftShape);
                     
                     ////Velocity
@@ -134,7 +135,7 @@ namespace SharpPhysicsEngine
                     JacobianConstraint normalContact = JacobianCommon.GetDOF(
                         linearComponentSoftShape,
                         linearComponentRigidShape,
-                        r_softShape,
+                        angularComponentSoftShape,
                         angularComponentRigidShape,
                         (collisionIndex == 0) ? (IShapeCommon)softShapePoint : rigidShape,
                         (collisionIndex == 0) ? rigidShape: (IShapeCommon)softShapePoint,
@@ -157,12 +158,12 @@ namespace SharpPhysicsEngine
                             simulationParameters,
                             linearComponentSoftShape,
                             relativeVelocity,
-                            r_softShape,
-                            r_rigidShape,
+                            (collisionIndex == 0) ? r_softShape : r_rigidShape,
+                            (collisionIndex == 0) ? r_rigidShape : r_softShape,
                             collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
                             softShapePoint,
-                            (collisionIndex == 0) ? linkedID[i]: null,
-                            (collisionIndex == 1) ? linkedID[i]: null);
+                            (collisionIndex == 0) ? linkedID[i] : null,
+                            (collisionIndex == 1) ? linkedID[i] : null);
 
                     #endregion
 

@@ -28,14 +28,36 @@ namespace TestPhysics
 			nObject = 4;
 			ShapeFilename = new string[nObject][];
 			ShapeScale = new float[nObject][];
-			TextureFilename = new string[nObject -1][];
+			TextureFilename = new string[nObject-1][];
 		}
 
-		#endregion
+        #endregion
 
-		#region Public Methods
+        #region Public Methods
 
-		public SharpEngine GetPhysicsEnvironment()
+        public SharpEngine GetPhysicsEnvironmentJoints()
+        {
+            var physicsEnvironment = new SharpEngine();
+
+            IShape[] objects = getSphereObject();
+
+            foreach (var obj in objects)
+                physicsEnvironment.AddShape(obj);
+
+            IConstraint[] constraints = getConstraint(objects);
+
+            foreach (var item in constraints)
+            {
+                physicsEnvironment.AddJoint(item);
+            }            
+            //physicsEnvironment.RemoveShape(0);
+
+            physicsEnvironment.SetSolver(SolverType.NonLinearConjugateGradient);
+
+            return physicsEnvironment;
+        }
+
+        public SharpEngine GetPhysicsEnvironment()
 		{
 			var physicsEnvironment = new SharpEngine();
 
@@ -92,7 +114,106 @@ namespace TestPhysics
 
 		#region Private Methods
 
-		private IShape[] getSimulationObjects()
+        private IConstraint[] getConstraint(
+            IShape[] shape)
+        {
+            IConstraint[] constraints = new IConstraint[2];
+
+            constraints[0] = new FixedJointConstraint(
+                                shape[1],
+                                shape[2],
+                                60.0,
+                                0.0);
+
+            constraints[1] = new FixedJointConstraint(
+                                shape[2],
+                                shape[3],
+                                60.0,
+                                0.0);
+
+            return constraints;
+        }
+
+        private IShape[] getSphereObject()
+        {
+            IShape[] objects = new IShape[4];
+
+            #region Terrain Base
+
+            ShapeFilename[0] = new string[1] { "cube1.obj" };
+            ShapeScale[0] = new float[1] { 25 };
+            TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
+
+            objects[0] = new ConvexShape(ObjectType.StaticBody);
+            objects[0].SetMass(0.0);
+            objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
+            objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            ((ConvexShape)objects[0]).SetObjectGeometry(GetObjectGeometry(objects[0], ShapeFilename[0][0], ShapeScale[0][0], ObjectGeometryType.ConvexBody));
+            objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[0].SetRestitutionCoeff(0.1);
+            objects[0].SetDynamicFrictionCoeff(1.0);
+            objects[0].SetStaticFrictionCoeff(1.0);
+            objects[0].SetExcludeFromCollisionDetection(false);
+            objects[0].SetRestoreCoeff(30.0);
+
+            #endregion
+
+            ShapeFilename[1] = new string[1] { "sphere.obj" };
+            ShapeScale[1] = new float[1] { 1 };
+            TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
+
+            objects[1] = new ConvexShape(ObjectType.RigidBody);
+            objects[1].SetMass(1.0);
+            objects[1].SetPosition(new Vector3(3.0, 4.0, 7.0));
+            objects[1].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
+            ((ConvexShape)objects[1]).SetObjectGeometry(GetObjectGeometry(objects[1], ShapeFilename[1][0], ShapeScale[1][0], ObjectGeometryType.ConvexBody));
+            objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[1].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[1].SetRestitutionCoeff(0.1);
+            objects[1].SetDynamicFrictionCoeff(0.8);
+            objects[1].SetStaticFrictionCoeff(0.9);
+            objects[1].SetExcludeFromCollisionDetection(false);
+            objects[1].SetRestoreCoeff(30.0);
+
+            ShapeFilename[2] = new string[1] { "sphere.obj" };
+            ShapeScale[2] = new float[1] { 1 };
+            TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
+
+            objects[2] = new ConvexShape(ObjectType.RigidBody);
+            objects[2].SetMass(1.0);
+            objects[2].SetPosition(new Vector3(0.0, 1.2, 7.0));
+            objects[2].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
+            ((ConvexShape)objects[2]).SetObjectGeometry(GetObjectGeometry(objects[2], ShapeFilename[2][0], ShapeScale[2][0], ObjectGeometryType.ConvexBody));
+            objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[2].SetRestitutionCoeff(0.1);
+            objects[2].SetDynamicFrictionCoeff(0.8);
+            objects[2].SetStaticFrictionCoeff(0.9);
+            objects[2].SetExcludeFromCollisionDetection(false);
+            objects[2].SetRestoreCoeff(30.0);
+
+            ShapeFilename[3] = new string[1] { "sphere.obj" };
+            ShapeScale[3] = new float[1] { 1 };
+            TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
+
+            objects[3] = new ConvexShape(ObjectType.RigidBody);
+            objects[3].SetMass(1.0);
+            objects[3].SetPosition(new Vector3(-3.0, 1.2, 7.0));
+            objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
+            ((ConvexShape)objects[3]).SetObjectGeometry(GetObjectGeometry(objects[3], ShapeFilename[3][0], ShapeScale[3][0], ObjectGeometryType.ConvexBody));
+            objects[3].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[3].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[3].SetRestitutionCoeff(0.1);
+            objects[3].SetDynamicFrictionCoeff(0.8);
+            objects[3].SetStaticFrictionCoeff(0.9);
+            objects[3].SetExcludeFromCollisionDetection(false);
+            objects[3].SetRestoreCoeff(30.0);
+
+            return objects;
+        }
+
+        private IShape[] getSimulationObjects()
 		{
 			IShape[] objects = new IShape[nObject];
 			
@@ -113,7 +234,7 @@ namespace TestPhysics
 			objects[0].SetDynamicFrictionCoeff(1.0);
 			objects[0].SetStaticFrictionCoeff(1.0);
 			objects[0].SetExcludeFromCollisionDetection(false);
-			objects[0].SetRestoreCoeff(30.0);
+			objects[0].SetRestoreCoeff(60.0);
 
 			#endregion
 
@@ -155,12 +276,13 @@ namespace TestPhysics
 
 			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
-			ShapeFilename[3] = new string[1] { "bunnySmall.obj" };
+			ShapeFilename[3] = new string[1] { "torus.obj" };
 			ShapeScale[3] = new float[1] { 1 };
-			objects[3] = BuildSoftBody("bunnySmall.obj", 1, new Vector3(0.0, 0.0, 0.0));
+			objects[3] = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
             objects[3].SetStaticFrictionCoeff(0.5);
             objects[3].SetDynamicFrictionCoeff(0.5);
-            objects[3].SetRestoreCoeff(30.0);
+            objects[3].SetRestitutionCoeff(0.5);
+            objects[3].SetRestoreCoeff(60.0);
 
             #endregion
 
@@ -231,7 +353,7 @@ namespace TestPhysics
 		{
 			GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
 
-            RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), Math.PI / 2.0);
+            RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
 
 			return new SoftShape(
 				prop.triangleIndex, 
@@ -239,7 +361,7 @@ namespace TestPhysics
 				position,
                 0.2,
                 2.0,
-                50.0);
+                60.0);
 		}
 
 

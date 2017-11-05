@@ -59,33 +59,7 @@ namespace SharpPhysicsEngine
 
             return objectA.RotationMatrix * angularError;
         }
-
-        public static Vector3 GetFixedAngularError(
-            SoftShapePoint objectA,
-            SoftShapePoint objectB)
-        {
-            Quaternion currentRelativeOrientation = objectB.RotationStatus.Inverse() *
-                                                    objectA.RotationStatus;
-
-            Quaternion relativeOrientationError = new Quaternion(1.0, 0.0, 0.0, 0.0) *
-                                                  currentRelativeOrientation;
-
-            var angularError = new Vector3(
-                relativeOrientationError.b,
-                relativeOrientationError.c,
-                relativeOrientationError.d);
-
-            if (relativeOrientationError.a < 0.0)
-            {
-                angularError = new Vector3(
-                    -angularError.x,
-                    -angularError.y,
-                    -angularError.z);
-            }
-
-            return objectA.RotationMatrix * angularError;
-        }
-
+        
         public static double GetRotationAngle(
 			Vector3 rotationStatus,
 			double rotationValue,
@@ -181,7 +155,7 @@ namespace SharpPhysicsEngine
             double cfm,
             double constraintLimit,
             ConstraintType type,
-                int? contactReference,
+            int? contactReference,
             StartImpulseProperties startImpulseProperties)
         {
             double jacobianVelocityValue = angularComponentA.Dot(simulationObjectA.AngularVelocity) +
@@ -196,8 +170,8 @@ namespace SharpPhysicsEngine
                 simulationObjectA,
                 simulationObjectB,
                 contactReference,
-                new Vector3(),
-                new Vector3(),
+                null,
+                null,
                 angularComponentA,
                 angularComponentB,
                 type,

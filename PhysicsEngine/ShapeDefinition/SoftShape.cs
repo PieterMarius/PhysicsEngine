@@ -347,7 +347,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public void SetSpringCoefficient(double springCoeff)
         {
-            throw new NotImplementedException();
+            foreach (var item in SoftConstraint)
+                item.SetSpringCoefficient(springCoeff);
         }
 
         public void AddConstraint(SoftBodyConstraint constraint)
@@ -376,21 +377,32 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             double mass = Mass * (1.0 / points.Length);
             double inverseMass = 1.0 / mass;
-            
+
             Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
-                                     (diameter * diameter * 0.1 * mass);
+                                    (diameter * diameter * 0.4);
+
+            
 
             for (int i = 0; i < points.Length; i++)
             {
                 ShapePoints[i] = new SoftShapePoint(diameter);
+                ShapePoints[i].SetStartPosition(points[i]);
                 ShapePoints[i].SetPosition(points[i] + Position);
+
+                Vector3 r = -1.0 * ShapePoints[i].StartPosition;
+                Matrix3x3 baseTensors = Matrix3x3.Invert(
+                                inertiaTensor +
+                                (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
+                                mass);
+
                 ShapePoints[i].SetLinearVelocity(LinearVelocity);
                 ShapePoints[i].SetAngularVelocity(AngularVelocity);
                 ShapePoints[i].SetMass(mass);
                 ShapePoints[i].SetInverseMass(inverseMass);
-                ShapePoints[i].SetBaseInertiaTensor(inertiaTensor);
-                ShapePoints[i].SetInertiaTensor(Matrix3x3.InvertDiagonal(inertiaTensor));
+                ShapePoints[i].SetBaseInertiaTensor(baseTensors);
+                ShapePoints[i].SetInertiaTensor(baseTensors);
                 ShapePoints[i].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
+                ShapePoints[i].SetRotationMatrix(Quaternion.ConvertToMatrix(RotationStatus));
             }
         }
 

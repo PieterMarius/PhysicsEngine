@@ -23,6 +23,7 @@ namespace SharpPhysicsEngine
 		void SetAxis2Motor(double speedValue, double forceLimit);
 		void AddTorque(double torqueAxis1, double torqueAxis2);
 		void SetRestoreCoefficient(double restoreCoefficient);
+        void SetSpringCoefficient(double springCoefficient);
 
 		#endregion
 	}

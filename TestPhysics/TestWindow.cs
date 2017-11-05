@@ -152,68 +152,10 @@ namespace TestPhysics
                 //TestNumeric();
 
                 //env.GetPhysicsEnvironment();
+                
+                //LoadEngineByXml();
 
-
-
-
-                //var env = new BuildEnvironment();
-
-
-                ////AddSoftBody();
-
-
-
-                //physicsEngine = env.GetPhysicsEnvironment();
-                //displayList = env.GetOpenGLEnvironment();
-                //textureID = env.LoadTexture();
-
-
-                //ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
-
-                //stopwatch.Reset();
-                //stopwatch.Start();
-
-                //region = softShape.AABBox;
-
-
-
-                //shapeConvexDec = new ShapeConvexDecomposition(
-                //region,
-                //softShape.Triangle);
-
-                //convexShape = shapeConvexDec.GetConvexShapeList(
-                //	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(),0)),
-                //	0.2);
-
-                //AABB testRegion = new AABB(
-                //new SharpEngineMathUtility.Vector3(-0.5, -0.5, 0.6),
-                //new SharpEngineMathUtility.Vector3(0.5, 0.5, 1.6));
-
-                //convexShape = shapeConvexDec.GetIntersectedShape(testRegion,
-                //	Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-                //			item.TriangleIndex.ToArray(),0)),
-                //		0.2);
-
-                //stopwatch.Stop();
-                //Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-
-
-                //OctTree octTree = new OctTree(region, softShape.Triangle.ToList(), Array.ConvertAll(softShape.ShapePoints, item => new SharpEngineMathUtility.Vector3(item.Position)));
-                //octTree.BuildOctree();
-                //octTree.Render(ref octTreeLine);
-
-                // octTree.GetConvexShapeList((IShape)softShape, ref convexShape);
-
-
-
-                //var obj = physicsEngine.GetJointsList();
-                //
-                //				obj.Add(null);
-
-                //Exit();
-
-                LoadEngineByXml();
-                //LoadEngineByBuilder();
+                LoadEngineByBuilder();
 
 
             }
@@ -316,7 +258,7 @@ namespace TestPhysics
 			//displayOrigin ();
 			displayContact ();
 			//displayBaseContact();
-			//displayJoint ();
+			displayJoint ();
 			//displaySphere(testConvexDecomp.basePoint);
 			//DisplayObject();
 
@@ -333,8 +275,9 @@ namespace TestPhysics
 			for (int i = 0; i < physicsEngine.ShapesCount(); i++)
 				SetOpenGLObjectMatrixAndDisplayObject(i);
 
-			//displayOctree();
-			//displayConvexDecomposition();
+            //displayOctree();
+            //displayConvexDecomposition();
+            displaySoftJoint();
 
 			GL.Flush ();
 			SwapBuffers ();
@@ -530,6 +473,7 @@ namespace TestPhysics
             {
 
                 ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+                softShape.SetRestoreCoefficient(60.0);
                 
             }
 
@@ -666,7 +610,7 @@ namespace TestPhysics
             //GL.Disable(EnableCap.Texture2D);
 
             //GL.PopMatrix();
-
+            int i = 0;
             foreach (var item in softShape.ShapePoints)
             {
                 SharpEngineMathUtility.Vector3 relativePosition = item.Position;
@@ -688,9 +632,22 @@ namespace TestPhysics
                 GL.MultMatrix(dmviewData);
 
 
-                OpenGLUtilities.drawSolidCube(0.02f);
+                if (softShape.ShapePoints.Length - i <= 4)
+                {
+                    GL.Color3(0.0f, 0.0, 1.0f);
+                    OpenGLUtilities.drawSolidCube(0.02f);
+                    GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+                else
+                {
+
+                    OpenGLUtilities.drawSolidCube(0.02f);
+                }
+
+                
 
                 GL.PopMatrix();
+                i++;
             }
         }
 
@@ -947,6 +904,38 @@ namespace TestPhysics
 
 			}
 		}
+
+        private void displaySoftJoint()
+        {
+            ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+
+            foreach (var item in softShape.SoftConstraint)
+            {
+                GL.PushMatrix();
+
+                IConstraint joint = item;
+
+                Matrix4 mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(joint.GetAnchorPosition().x),
+                                    Convert.ToSingle(joint.GetAnchorPosition().y),
+                                    Convert.ToSingle(joint.GetAnchorPosition().z));
+
+                var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
+
+                GL.MultMatrix(dmviewData);
+
+                GL.Color3(0.0, 1.0f, 0.0);
+                OpenGLUtilities.drawSolidCube(0.02f);
+                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                GL.PopMatrix();
+            }
+        }
 
 		private void displayAABB()
 		{

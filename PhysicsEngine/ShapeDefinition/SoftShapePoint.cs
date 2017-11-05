@@ -112,6 +112,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             RotationMatrix = inputRotationMatrix;
         }
 
+        public void SetStartPosition(Vector3 startPosition)
+        {
+            StartPosition = startPosition;
+        }
+
         #endregion
     }
 }

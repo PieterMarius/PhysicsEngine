@@ -60,7 +60,7 @@ namespace SharpPhysicsEngine
 									 (AnchorPoint - shapeB.Position);
 
 			RelativeOrientation = shapeB.RotationStatus.Inverse() *
-                                         shapeA.RotationStatus;
+                                  shapeA.RotationStatus;
 		}
 
 		#endregion
@@ -136,7 +136,7 @@ namespace SharpPhysicsEngine
 
 			//DOF 2
 
-			constraintLimit = RestoreCoefficient * linearError.y;
+			constraintLimit = restoreCoeff * linearError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF(
                 yVec,
@@ -170,11 +170,11 @@ namespace SharpPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = restoreCoeff * angularError.x;
+			constraintLimit = restoreCoeff * 2.0 * angularError.x;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                xVec,
                 xVecNeg,
+                xVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -185,11 +185,11 @@ namespace SharpPhysicsEngine
 
 			//DOF 5
 
-			constraintLimit = restoreCoeff * angularError.y;
+			constraintLimit = restoreCoeff * 2.0 * angularError.y;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                yVec,
                 yVecNeg,
+                yVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -203,8 +203,8 @@ namespace SharpPhysicsEngine
 			constraintLimit = restoreCoeff * 2.0 * angularError.z;
 
 			fixedConstraints.Add (JacobianCommon.GetDOF (
-                zVec,
                 zVecNeg,
+                zVec,
                 simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -259,9 +259,14 @@ namespace SharpPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		#region NotSupportedMethods
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            SpringCoefficient = springCoefficient;
+        }
 
-		void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
+        #region NotSupportedMethods
+
+        void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}

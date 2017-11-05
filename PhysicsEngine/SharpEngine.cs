@@ -629,8 +629,8 @@ namespace SharpPhysicsEngine
                         stopwatch2.Start();
 
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
-																jacobianConstraints,
-																EngineParameters.PositionStabilization);
+                                                                jacobianConstraints,
+                                                                EngineParameters.PositionStabilization);
 
                         stopwatch2.Stop();
 
@@ -644,8 +644,8 @@ namespace SharpPhysicsEngine
 
                         //stopwatch.Start();
 
-                        //LinearProblemProperties old_overallLCP = linearProblemBuilder.OldBuildLCP(
-                        //                                        jacobianConstraints.JacobianConstraints,
+                        //LinearProblemProperties overallLCP = linearProblemBuilder.OldBuildLCP(
+                        //                                        jacobianConstraints,
                         //                                        EngineParameters.PositionStabilization);
 
                         //stopwatch.Stop();
@@ -862,7 +862,7 @@ namespace SharpPhysicsEngine
            return jacobianConstraints;
         }
                 
-        public JacobianConstraint[] GetJacobianConstraints(
+        private JacobianConstraint[] GetJacobianConstraints(
             CollisionPointStructure[] collisionPointsStruct,
             List<IConstraint> simulationJointList,
             IShape[] simulationObjs,
@@ -871,7 +871,6 @@ namespace SharpPhysicsEngine
             List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
 
             ////Collision Contact
-
             jacobianConstraints.AddRange(
                     GetContactJacobianConstraints(
                         collisionPointsStruct,
@@ -897,7 +896,7 @@ namespace SharpPhysicsEngine
             return jacobianConstraints.ToArray();
         }
 
-        public List<JacobianConstraint> GetSoftBodyConstraints()
+        private List<JacobianConstraint> GetSoftBodyConstraints()
 		{
 			var constraints = new List<JacobianConstraint>();
 
@@ -910,7 +909,7 @@ namespace SharpPhysicsEngine
 			return constraints;
 		}
 
-		public List<JacobianConstraint> GetJacobianJointConstraint(
+		private List<JacobianConstraint> GetJacobianJointConstraint(
 			List<IConstraint> simulationJointList,
 			IShape[] simulationObjs,
 			double? stabilizationCoeff = null)

@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.Helper
             //Critical section variable
             var sync = new object();
 
-            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = /*EngineParameters.MaxThreadNumber*/1 },
                 i =>
                 {
                     if (Math.Abs(X[i].X) > 1E-50)
@@ -270,7 +270,7 @@ namespace SharpPhysicsEngine.Helper
                     point.RotationMatrix.Transpose());
 
                 point.SetAngularVelocity(point.AngularVelocity);
-                               
+
                 #endregion
             }
 

@@ -21,7 +21,7 @@ namespace SharpPhysicsEngine
         IShape ShapeA;
         IShape ShapeB;
         int KeyIndex;
-		readonly double SpringCoefficient;
+		double SpringCoefficient;
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 StartErrorAxis1;
 		readonly Vector3 StartErrorAxis2;
@@ -196,9 +196,14 @@ namespace SharpPhysicsEngine
 			RestoreCoefficient = restoreCoefficient;
 		}
 
-		#region NotSupportedMethods
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            SpringCoefficient = springCoefficient;
+        }
 
-		void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
+        #region NotSupportedMethods
+
+        void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}

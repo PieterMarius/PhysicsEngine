@@ -217,6 +217,11 @@ namespace SharpPhysicsEngine
             RestoreCoefficient = restoreCoefficient;
         }
 
+        public void SetSpringCoefficient(double springCoefficient)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #endregion
@@ -264,7 +269,7 @@ namespace SharpPhysicsEngine
 
             return Quaternion.Multiply1(bodyRotationStatus, rotationQ);
         }
-
+        
         #endregion
     }
 
