@@ -10,7 +10,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public readonly VertexProperties CollisionPointA;
 		public readonly VertexProperties CollisionPointB;
 		public readonly Vector3 CollisionNormal;
-		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
+		//public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
 		#region Constructor
 
@@ -23,13 +23,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 			CollisionPointB = collisionPointB;
 			CollisionNormal = collisionNormal;
 
-			//Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
-			StartImpulseValue = new List<StartImpulseProperties>()
-			{
-				new StartImpulseProperties(0.0),
-				new StartImpulseProperties(0.0),
-				new StartImpulseProperties(0.0),
-			};
+            //Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
+            //StartImpulseValue = new List<StartImpulseProperties>();
 		}
 
         #endregion
@@ -48,7 +43,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     throw new ArgumentException("Incorrect collision point");
             }
         }
-
+               
         #endregion Public Methods
 
     }

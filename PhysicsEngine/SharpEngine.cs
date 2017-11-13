@@ -110,7 +110,7 @@ namespace SharpPhysicsEngine
 		{
 			SolverParameters = solverParameters;
 
-			SetSolver(SolverType.NonLinearConjugateGradient);
+			SetSolver(SolverType.ProjectedGaussSeidel);
 
 			CollisionEngineParam = collisionEngineParameters;
 
@@ -665,6 +665,10 @@ namespace SharpPhysicsEngine
                             stopwatch1.Reset();
 
                             stopwatch1.Start();
+
+                            //ISolver solv1 = new NonLinearConjugateGradient(SolverParameters);
+                            //solv1.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
+                            //SolutionValues[] sol1 = solv1.Solve(overallLCP);
 
                             Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
 

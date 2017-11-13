@@ -17,31 +17,6 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[] Multiply(SparseElement[] matrix, double[] vector)
-        {
-            if(matrix[0].RowLength != vector.Length)
-                throw new Exception("Wrong input length");
-
-            double[] result = new double[matrix.Length];
-
-            for (int i = 0; i < matrix.Length; i++)
-            {
-                SparseElement m = matrix[i];
-
-                double[] bufValue = m.Value;
-                int[] bufIndex = m.Index;
-
-                double bValue = 0.0;
-
-                for (int j = 0; j < m.Count; j++)
-                    bValue += bufValue[j] * vector[bufIndex[j]];
-
-                result[i] = bValue;
-            }
-
-            return result;
-        }
-
         public static double[] Multiply(double scalar, double[] vector)
         {
             double[] result = new double[vector.Length];

@@ -6,6 +6,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
 using SharpPhysicsEngine.LCPSolver;
 using System;
+using System.Collections.Generic;
 
 namespace TestPhysics
 {
@@ -61,7 +62,7 @@ namespace TestPhysics
 		{
 			var physicsEnvironment = new SharpEngine();
 
-			IShape[] objects = getSimulationObjects();
+			List<IShape> objects = getSimulationObjects();
 
 			foreach(var obj in objects)
 				physicsEnvironment.AddShape(obj);
@@ -213,9 +214,9 @@ namespace TestPhysics
             return objects;
         }
 
-        private IShape[] getSimulationObjects()
+        private List<IShape> getSimulationObjects()
 		{
-			IShape[] objects = new IShape[nObject];
+			List<IShape> objects = new List<IShape>();
 			
 			#region Terrain Base
 
@@ -223,18 +224,20 @@ namespace TestPhysics
 			ShapeScale[0] = new float[1] { 25 };
 			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
-			objects[0] = new ConvexShape(ObjectType.StaticBody);
-			objects[0].SetMass(0.0);
-			objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
-			objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-			((ConvexShape)objects[0]).SetObjectGeometry(GetObjectGeometry(objects[0], ShapeFilename[0][0], ShapeScale[0][0], ObjectGeometryType.ConvexBody));
-			objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[0].SetRestitutionCoeff(0.1);
-			objects[0].SetDynamicFrictionCoeff(1.0);
-			objects[0].SetStaticFrictionCoeff(1.0);
-			objects[0].SetExcludeFromCollisionDetection(false);
-			objects[0].SetRestoreCoeff(60.0);
+			var objects0 = new ConvexShape(ObjectType.StaticBody);
+            objects0.SetMass(0.0);
+            objects0.SetPosition(new Vector3(0.0, -4.0, 0.0));
+            objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            objects0.SetObjectGeometry(GetObjectGeometry(objects0, ShapeFilename[0][0], ShapeScale[0][0], ObjectGeometryType.ConvexBody));
+            objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects0.SetRestitutionCoeff(0.1);
+            objects0.SetDynamicFrictionCoeff(1.0);
+            objects0.SetStaticFrictionCoeff(1.0);
+            objects0.SetExcludeFromCollisionDetection(false);
+            objects0.SetRestoreCoeff(60.0);
+
+            objects.Add(objects0);
 
 			#endregion
 
@@ -244,45 +247,52 @@ namespace TestPhysics
 			ShapeScale[1] = new float[1] { 1 };
 			TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
-			objects[1] = new ConvexShape(ObjectType.RigidBody);
-			objects[1].SetMass(1.0);
-			objects[1].SetPosition(new Vector3(0.0, 1.2, 9.5));
-			objects[1].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-			((ConvexShape)objects[1]).SetObjectGeometry(GetObjectGeometry(objects[1], ShapeFilename[1][0], ShapeScale[1][0], ObjectGeometryType.ConvexBody));
-			objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[1].SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
-			objects[1].SetRestitutionCoeff(0.1);
-			objects[1].SetDynamicFrictionCoeff(0.8);
-			objects[1].SetStaticFrictionCoeff(0.9);
-			objects[1].SetExcludeFromCollisionDetection(false);
-			objects[1].SetRestoreCoeff(30.0);
+			var objects1 = new ConvexShape(ObjectType.RigidBody);
+            objects1.SetMass(1.0);
+            objects1.SetPosition(new Vector3(0.0, 1.2, 9.5));
+            objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            objects1.SetObjectGeometry(GetObjectGeometry(objects1, ShapeFilename[1][0], ShapeScale[1][0], ObjectGeometryType.ConvexBody));
+            objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects1.SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
+            objects1.SetRestitutionCoeff(0.1);
+            objects1.SetDynamicFrictionCoeff(0.8);
+            objects1.SetStaticFrictionCoeff(0.9);
+            objects1.SetExcludeFromCollisionDetection(false);
+            objects1.SetRestoreCoeff(30.0);
+
+            objects.Add(objects1);
 
 			ShapeFilename[2] = new string[1] { "cube1.obj" };
 			ShapeScale[2] = new float[1] { 1 };
 			TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
-			objects[2] = new ConvexShape(ObjectType.RigidBody);
-			objects[2].SetMass(1.0);
-			objects[2].SetPosition(new Vector3(0.0, 1.2, 7.0));
-			objects[2].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-			((ConvexShape)objects[2]).SetObjectGeometry(GetObjectGeometry(objects[2], ShapeFilename[2][0], ShapeScale[2][0], ObjectGeometryType.ConvexBody));
-			objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
-			objects[2].SetRestitutionCoeff(0.1);
-			objects[2].SetDynamicFrictionCoeff(0.8);
-			objects[2].SetStaticFrictionCoeff(0.9);
-			objects[2].SetExcludeFromCollisionDetection(false);
-			objects[2].SetRestoreCoeff(30.0);
+			var objects2 = new ConvexShape(ObjectType.RigidBody);
+            objects2.SetMass(1.0);
+            objects2.SetPosition(new Vector3(0.0, 1.2, 7.0));
+            objects2.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            objects2.SetObjectGeometry(GetObjectGeometry(objects2, ShapeFilename[2][0], ShapeScale[2][0], ObjectGeometryType.ConvexBody));
+            objects2.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects2.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects2.SetRestitutionCoeff(0.1);
+            objects2.SetDynamicFrictionCoeff(0.8);
+            objects2.SetStaticFrictionCoeff(0.9);
+            objects2.SetExcludeFromCollisionDetection(false);
+            objects2.SetRestoreCoeff(30.0);
+
+            objects.Add(objects2);
 
 			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
 			ShapeFilename[3] = new string[1] { "torus.obj" };
 			ShapeScale[3] = new float[1] { 1 };
-			objects[3] = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
-            objects[3].SetStaticFrictionCoeff(0.5);
-            objects[3].SetDynamicFrictionCoeff(0.5);
-            objects[3].SetRestitutionCoeff(0.5);
-            objects[3].SetRestoreCoeff(60.0);
+            
+			var objects3 = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
+            objects3.SetStaticFrictionCoeff(0.5);
+            objects3.SetDynamicFrictionCoeff(0.5);
+            objects3.SetRestitutionCoeff(0.5);
+            objects3.SetRestoreCoeff(60.0);
+
+            objects.Add(objects3);
 
             #endregion
 

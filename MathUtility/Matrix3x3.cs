@@ -22,39 +22,88 @@ namespace SharpEngineMathUtility
 		public readonly double r3c2;
 		public readonly double r3c3;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		public Matrix3x3 (
-			double r1c1, double r1c2, double r1c3,
-			double r2c1, double r2c2, double r2c3,
-			double r3c1, double r3c2, double r3c3)
-		{
-			this.r1c1 = r1c1; this.r1c2 = r1c2; this.r1c3 = r1c3;
-			this.r2c1 = r2c1; this.r2c2 = r2c2; this.r2c3 = r2c3;
-			this.r3c1 = r3c1; this.r3c2 = r3c2; this.r3c3 = r3c3; 
-		}
+        public Matrix3x3(
+            double r1c1, double r1c2, double r1c3,
+            double r2c1, double r2c2, double r2c3,
+            double r3c1, double r3c2, double r3c3)
+        {
+            this.r1c1 = r1c1; this.r1c2 = r1c2; this.r1c3 = r1c3;
+            this.r2c1 = r2c1; this.r2c2 = r2c2; this.r2c3 = r2c3;
+            this.r3c1 = r3c1; this.r3c2 = r3c2; this.r3c3 = r3c3;
+        }
 
-		public Matrix3x3( double[] mat)
-		{
-			if (mat.Length == 8) 
-			{
-				r1c1 = mat [0]; r1c2 = mat [1]; r1c3 = mat [2];
-				r2c1 = mat [3]; r2c2 = mat [4]; r2c3 = mat [5];
-				r3c1 = mat [6]; r3c2 = mat [7]; r3c3 = mat [8]; 
-			} 
-			else 
-			{
-				throw new ArgumentException(COMPONENT_EXCEPTION);
-			}
-		}
+        public Matrix3x3(double[] mat)
+        {
+            if (mat.Length == 8)
+            {
+                r1c1 = mat[0]; r1c2 = mat[1]; r1c3 = mat[2];
+                r2c1 = mat[3]; r2c2 = mat[4]; r2c3 = mat[5];
+                r3c1 = mat[6]; r3c2 = mat[7]; r3c3 = mat[8];
+            }
+            else
+            {
+                throw new ArgumentException(COMPONENT_EXCEPTION);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Public Methods
+        #region Public Methods
 
-		public static Matrix3x3	ToZero()
+        public double this[int row, int column]
+        {
+            get
+            {
+                switch (row)
+                {
+                    case 0:
+                        switch(column)
+                        {
+                            case 0:
+                                return r1c1;
+                            case 1:
+                                return r1c2;
+                            case 2:
+                                return r1c3;
+                            default:
+                                throw new ArgumentException(COMPONENT_EXCEPTION, nameof(column));
+                        }
+                    case 1:
+                        switch (column)
+                        {
+                            case 0:
+                                return r2c1;
+                            case 1:
+                                return r2c2;
+                            case 2:
+                                return r2c3;
+                            default:
+                                throw new ArgumentException(COMPONENT_EXCEPTION, nameof(column));
+                        }
+                        
+                    case 2:
+                        switch (column)
+                        {
+                            case 0:
+                                return r3c1;
+                            case 1:
+                                return r3c2;
+                            case 2:
+                                return r3c3;
+                            default:
+                                throw new ArgumentException(COMPONENT_EXCEPTION, nameof(column));
+                        }
+                    default:
+                        throw new ArgumentException(COMPONENT_EXCEPTION, nameof(row));
+                }
+            }
+        }
+                
+        public static Matrix3x3	ToZero()
 		{
 			return new Matrix3x3 (
 				0.0, 0.0, 0.0,

@@ -28,7 +28,7 @@
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />
             <ObjectType>1</ObjectType>
             <RestitutionCoeff>0,01</RestitutionCoeff>
-            <DynamicFriction>1,0</DynamicFriction>
+            <DynamicFriction>0,3</DynamicFriction>
             <StaticFriction>1,0</StaticFriction>
             <ExludeFromCollisionDetection>false</ExludeFromCollisionDetection>
             <ObjectGeometry>
@@ -42,7 +42,7 @@
 		
 		
 		<Object>
-            <Position x="6,0" y="11,3" z="-5,0" />
+            <Position x="6,0" y="11,25" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />
@@ -63,7 +63,7 @@
         </Object>
 		
 		<Object>
-            <Position x="3,0" y="11,3" z="-5,0" />
+            <Position x="3,0" y="11,25" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />
@@ -84,7 +84,7 @@
         </Object>
 		
 		<Object>
-            <Position x="0,0" y="11,3" z="-5,0" />
+            <Position x="0,0" y="11,25" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />
@@ -107,7 +107,7 @@
 		
 		
 		<Object>
-            <Position x="-3,0" y="11,3" z="-5,0" />
+            <Position x="-3,0" y="11,25" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />
@@ -128,7 +128,7 @@
         </Object>
 		
 		<Object>
-            <Position x="-6,0" y="11,3" z="-5,0" />
+            <Position x="-6,0" y="11,25" z="-5,0" />
             <LinearVelocity x="0,0" y="0,0" z="0,0" />
             <AngularVelocity x="0,0" y="0,0" z="0,0" />
             <RotationStatus x="1,0" y="0,0" z="0,0" angle="0,75" />

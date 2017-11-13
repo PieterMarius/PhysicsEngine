@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public class StartImpulseProperties
+	public sealed class StartImpulseProperties
 	{
 		#region Fields
 

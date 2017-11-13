@@ -84,7 +84,7 @@ namespace SharpPhysicsEngine.LCPSolver
             return matrix;
         }
 
-        public SparseElement[] GetOriginalMatrixSparse()
+        public SparseElement[] GetOriginalSparseMatrix()
         {
             SparseElement[] originalMatrix = new SparseElement[M.Length];
 
@@ -164,7 +164,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public int GetHashCode(LinearProblemProperties obj)
         {
-            throw new NotImplementedException();
+            return this.GetHashCode();
         }
 
         #endregion

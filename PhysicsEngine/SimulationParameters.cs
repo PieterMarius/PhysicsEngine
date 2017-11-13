@@ -54,13 +54,13 @@ namespace SharpPhysicsEngine
 		/// <value>The external force.</value>
 		public Vector3 ExternalForce { get; private set; }
 
-		#region Iterations values
+        #region Iterations values
 
-		/// <summary>
-		/// Gets the friction and normal iterations.
-		/// </summary>
-		/// <value>The friction and normal iterations.</value>
-		public int FrictionAndNormalIterations { get; private set; }
+        /// <summary>
+        /// Gets the friction and normal iterations.
+        /// </summary>
+        /// <value>The friction and normal iterations.</value>
+        public int FrictionAndNormalIterations { get; private set; }
 
 		/// <summary>
 		/// Gets the joints iterations.
@@ -171,7 +171,7 @@ namespace SharpPhysicsEngine
 			PositionBasedJointIterations = 500;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations = 50;
+			OverallConstraintsIterations = 40;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;

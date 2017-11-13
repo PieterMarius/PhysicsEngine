@@ -9,9 +9,11 @@ namespace SharpPhysicsEngine
 {
 	public sealed class ContactConstraintBuilder
 	{
-		#region Fields
+        #region Fields
 
-		private readonly PhysicsEngineParameters simulationParameters;
+        //Box Constraints
+        private const int frictionDirections = 2;
+        private readonly PhysicsEngineParameters simulationParameters;
 
 		#endregion Fields
 
@@ -38,15 +40,15 @@ namespace SharpPhysicsEngine
 
             if (objectA is ISoftShape && !(objectB is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
             }
             else if (objectB is ISoftShape && !(objectA is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionJoints(collisionPointStr, (ISoftShape)objectB, objectA, 1));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectB, objectA, 1));
             }
             else
             {
-                contactConstraints.AddRange(BuildRigidBodyCollisionJoints(collisionPointStr, objectA, objectB));
+                contactConstraints.AddRange(BuildRigidBodyCollisionConstraints(collisionPointStr, objectA, objectB));
             }
 
             return contactConstraints;
@@ -56,7 +58,7 @@ namespace SharpPhysicsEngine
 
 		#region Private Methods
 
-		private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionJoints(
+		private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
             CollisionPointStructure collisionPointStr,
             ISoftShape softShape,
             IShape rigidShape,
@@ -71,14 +73,11 @@ namespace SharpPhysicsEngine
                      rigidShape.RestitutionCoeff) * 0.5;
 
             double baumgarteStabilizationValue =
-                (iSoftShape.RestoreCoeff +
-                 rigidShape.RestoreCoeff) * 0.5;
+                    (iSoftShape.RestoreCoeff +
+                     rigidShape.RestoreCoeff) * 0.5;
 
-            double normalDirection = 1.0;
+            double normalDirection = (collisionIndex == 1) ? -1.0 : 1.0;
             
-            if (collisionIndex == 1)
-                normalDirection = -1.0;
-
             for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
             {
                 int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).LinkedID.Distinct().ToArray();
@@ -87,17 +86,12 @@ namespace SharpPhysicsEngine
                 {
                     SoftShapePoint softShapePoint = softShape.ShapePoints.First(x => x.ID == linkedID[i]);
 
-                    Vector3 collisionVertex = softShapePoint.Position;
-
-                    Vector3 r_softShape = new Vector3();                    
-                    Vector3 r_rigidShape = collisionVertex - rigidShape.Position;
+                    Vector3 r_rigidShape = softShapePoint.Position - rigidShape.Position;
 
                     ////Component
-
                     Vector3 linearComponentSoftShape = (normalDirection * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
                     Vector3 linearComponentRigidShape = -1.0 * linearComponentSoftShape;
 
-                    Vector3 angularComponentSoftShape = r_softShape.Cross(linearComponentSoftShape);
                     Vector3 angularComponentRigidShape = -1.0 * r_rigidShape.Cross(linearComponentSoftShape);
                     
                     ////Velocity
@@ -122,7 +116,6 @@ namespace SharpPhysicsEngine
 
                     double correctionParameter = 0.0;
 
-                    // Console.WriteLine("coll " + linearComponent);
                     if (collisionPointStr.CollisionPointBase[h].Intersection)
                     {
                         //Limit the Baum stabilization jitter effect 
@@ -135,7 +128,7 @@ namespace SharpPhysicsEngine
                     JacobianConstraint normalContact = JacobianCommon.GetDOF(
                         linearComponentSoftShape,
                         linearComponentRigidShape,
-                        angularComponentSoftShape,
+                        Vector3.Zero(),
                         angularComponentRigidShape,
                         (collisionIndex == 0) ? (IShapeCommon)softShapePoint : rigidShape,
                         (collisionIndex == 0) ? rigidShape: (IShapeCommon)softShapePoint,
@@ -145,25 +138,24 @@ namespace SharpPhysicsEngine
                         0.0,
                         ConstraintType.Collision,
                         null,
-                        collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue[0]);
+                        null//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue[0]
+                        );
 
                     #endregion
 
                     #region Friction Contact
 
                     JacobianConstraint[] frictionContact =
-                        addFriction(
+                        AddFrictionConstraints(
                             (collisionIndex == 0) ? iSoftShape : rigidShape,
                             (collisionIndex == 0) ? rigidShape : iSoftShape,
                             simulationParameters,
                             linearComponentSoftShape,
                             relativeVelocity,
-                            (collisionIndex == 0) ? r_softShape : r_rigidShape,
-                            (collisionIndex == 0) ? r_rigidShape : r_softShape,
-                            collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
-                            softShapePoint,
-                            (collisionIndex == 0) ? linkedID[i] : null,
-                            (collisionIndex == 1) ? linkedID[i] : null);
+                            (collisionIndex == 0) ? Vector3.Zero() : r_rigidShape,
+                            (collisionIndex == 0) ? r_rigidShape : Vector3.Zero(),
+                            null,//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
+                            softShapePoint);
 
                     #endregion
 
@@ -175,14 +167,13 @@ namespace SharpPhysicsEngine
                         fjc.SetContactReference(normalIndex);
                         contactConstraints.Add(fjc);
                     }
-
                 }
             }
             
             return contactConstraints;
 		}
 
-		private List<JacobianConstraint> BuildRigidBodyCollisionJoints(
+		private List<JacobianConstraint> BuildRigidBodyCollisionConstraints(
 			CollisionPointStructure collisionPointStr,
 			IShape objectA,
 			IShape objectB)
@@ -233,7 +224,6 @@ namespace SharpPhysicsEngine
 
 					double correctionParameter = 0.0;
 
-					// Console.WriteLine("coll " + linearComponent);
 					if (collisionPointStr.CollisionPointBase[h].Intersection)
 					{
 						//Limit the Baum stabilization jitter effect 
@@ -256,14 +246,15 @@ namespace SharpPhysicsEngine
 						0.0,
 						ConstraintType.Collision,
 						null,
-						collisionPoint.StartImpulseValue[0]);
+						null//collisionPoint.StartImpulseValue[0]
+                        );
 
 					#endregion
 
 					#region Friction Contact
 
 					JacobianConstraint[] frictionContact =
-						addFriction(
+						AddFrictionConstraints(
 							objectA,
 							objectB,
 							simulationParameters,
@@ -271,10 +262,8 @@ namespace SharpPhysicsEngine
 							relativeVelocity,
 							ra,
 							rb,
-							collisionPoint.StartImpulseValue,
-                            null,
-                            null,
-                            null);
+							null//collisionPoint.StartImpulseValue
+                            );
 
 					#endregion
 
@@ -292,7 +281,7 @@ namespace SharpPhysicsEngine
 			return contactConstraints;
 		}
 
-		private JacobianConstraint[] addFriction(
+		private JacobianConstraint[] AddFrictionConstraints(
 			IShape objectA,
 			IShape objectB,
 			PhysicsEngineParameters simulationParameters,
@@ -300,91 +289,132 @@ namespace SharpPhysicsEngine
 			Vector3 relativeVelocity,
 			Vector3 ra,
 			Vector3 rb,
-			List<StartImpulseProperties> startImpulseProperties,
-            SoftShapePoint softShapePoint,
-            int? softShapePointIndexA,
-            int? softShapePointIndexB)
+			StartImpulseProperties[] startImpulseProperties,
+            SoftShapePoint softShapePoint)
 		{
-			JacobianConstraint[] friction = new JacobianConstraint[2];
+            JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
 
-			var tx = new Vector3 ();
-			var ty = new Vector3 ();
+            Vector3[] frictionDirection = GetFrictionCone(normal, frictionDirections);
 
-			GeometryUtilities.ComputeBasis(
-				normal,
-				ref tx,
-				ref ty);
+            double constraintLimit = 0.0;
 
-			double constraintLimit = 0.0;
+            Vector3 tangentialVelocity = relativeVelocity -
+                                         normal.Dot(relativeVelocity) *
+                                         normal;
 
-			Vector3 tangentialVelocity = relativeVelocity -
-										 normal.Dot(relativeVelocity) *
-										 normal;
+            if (Vector3.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
+                constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
+            else
+                constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
 
-			#region Get start friction direction
+            for (int i = 0; i < frictionDirections; i++)
+            {
+                var linearComponentA = frictionDirection[i];
+                var linearComponentB = -1.0 * linearComponentA;
 
-			if (Vector3.Length (tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance) 
-				constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
-			else 
-				constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
-			
-			#endregion
+                var angularComponentA = ra.Cross(linearComponentA);
+                var angularComponentB = -1.0 * rb.Cross(linearComponentA);
 
-			#region Tangential Direction 1
+                friction[i] = JacobianCommon.GetDOF(
+                    linearComponentA,
+                    linearComponentB,
+                    angularComponentA,
+                    angularComponentB,
+                    (objectA is ISoftShape) ? (IShapeCommon)softShapePoint: objectA,
+                    (objectB is ISoftShape) ? (IShapeCommon)softShapePoint: objectB,
+                    0.0,
+                    0.0,
+                    simulationParameters.FrictionCFM,
+                    constraintLimit,
+                    ConstraintType.Friction,
+                    null,
+                    (startImpulseProperties != null) ? startImpulseProperties[i] : null);
+            }
 
-			var linearComponentA = tx;
-			var linearComponentB = -1.0 * linearComponentA;
-
-			var angularComponentA = ra.Cross (linearComponentA);
-			var angularComponentB = -1.0 * rb.Cross (linearComponentA);
-
-            friction[0] = JacobianCommon.GetDOF(
-                linearComponentA,
-                linearComponentB,
-                angularComponentA,
-                angularComponentB,
-                (softShapePointIndexA.HasValue) ? (IShapeCommon)softShapePoint : objectA,
-                (softShapePointIndexB.HasValue) ? (IShapeCommon)softShapePoint : objectB,
-                0.0,
-                0.0,
-                simulationParameters.FrictionCFM,
-                constraintLimit,
-                ConstraintType.Friction,
-                null,
-                startImpulseProperties[1]);
-
-			#endregion
-
-			#region Tangential Direction 2
-
-			linearComponentA = ty;
-			linearComponentB = -1.0 * linearComponentA;
-
-			angularComponentA = ra.Cross (linearComponentA);
-			angularComponentB = -1.0 * rb.Cross (linearComponentA);
-
-			friction [1] = JacobianCommon.GetDOF (
-				linearComponentA,
-				linearComponentB,
-				angularComponentA,
-				angularComponentB,
-                (softShapePointIndexA.HasValue) ? (IShapeCommon)softShapePoint : objectA,
-                (softShapePointIndexB.HasValue) ? (IShapeCommon)softShapePoint : objectB,
-                0.0,
-				0.0,
-				simulationParameters.FrictionCFM,
-				constraintLimit,
-				ConstraintType.Friction,
-				null,
-				startImpulseProperties[2]);
-
-			#endregion
-
-			return friction;
+            return friction;
 		}
 
-		#endregion
+        private JacobianConstraint[] AddFrictionConstraints(
+            IShape objectA,
+            IShape objectB,
+            PhysicsEngineParameters simulationParameters,
+            Vector3 normal,
+            Vector3 relativeVelocity,
+            Vector3 ra,
+            Vector3 rb,
+            StartImpulseProperties[] startImpulseProperties)
+        {
+            JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
 
-	}
+            Vector3[] frictionDirection = GetFrictionCone(normal, frictionDirections);
+            
+            double constraintLimit = 0.0;
+
+            Vector3 tangentialVelocity = relativeVelocity -
+                                         normal.Dot(relativeVelocity) *
+                                         normal;
+            
+            if (Vector3.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
+                constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
+            else
+                constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
+
+            for (int i = 0; i < frictionDirections; i++)
+            {
+                var linearComponentA = frictionDirection[i];
+                var linearComponentB = -1.0 * linearComponentA;
+
+                var angularComponentA = ra.Cross(linearComponentA);
+                var angularComponentB = -1.0 * rb.Cross(linearComponentA);
+
+                friction[i] = JacobianCommon.GetDOF(
+                    linearComponentA,
+                    linearComponentB,
+                    angularComponentA,
+                    angularComponentB,
+                    objectA,
+                    objectB,
+                    0.0,
+                    0.0,
+                    simulationParameters.FrictionCFM,
+                    constraintLimit,
+                    ConstraintType.Friction,
+                    null,
+                    (startImpulseProperties != null) ? startImpulseProperties[i] : null);
+            }
+            
+            return friction;
+        }
+
+        private Vector3[] GetFrictionCone(Vector3 normal, int nDirection)
+        {
+            var coneDirection = new Vector3[nDirection];
+
+            var tx = new Vector3();
+            var ty = new Vector3();
+
+            GeometryUtilities.ComputeBasis(
+                normal,
+                ref tx,
+                ref ty);
+
+            coneDirection[0] = tx;
+            coneDirection[1] = ty;
+
+            if (nDirection > 2)
+            {
+                double step = Math.PI / nDirection;
+                for (int i = 0; i < nDirection; i++)
+                {
+                    coneDirection[i] = Matrix3x3.GetRotationMatrix(normal, step * i) * tx;
+                }
+            }
+                       
+            return coneDirection;
+        }
+
+        #endregion
+
+    }
 }
 

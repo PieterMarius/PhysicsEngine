@@ -171,7 +171,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Private Const
 
-        private const double diameter = 0.1;
+        private const double diameter = 0.01;
 
         #endregion
 

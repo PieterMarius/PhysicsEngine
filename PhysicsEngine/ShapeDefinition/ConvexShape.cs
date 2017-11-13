@@ -297,6 +297,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             StartPosition = CalculateMassCenter();
                         
+            ////TODO Mass check
             Vector3[] vertexPosition = Array.ConvertAll(
                                     ObjectGeometry.VertexPosition,
                                     item => item.Vertex);

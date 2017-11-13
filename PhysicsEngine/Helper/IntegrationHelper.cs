@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.Helper
             //Critical section variable
             var sync = new object();
 
-            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = /*EngineParameters.MaxThreadNumber*/1 },
+            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
                 i =>
                 {
                     if (Math.Abs(X[i].X) > 1E-50)
@@ -77,7 +77,8 @@ namespace SharpPhysicsEngine.Helper
                                 impulse,
                                 sync);
 
-                        ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
+                        if (ct.StartImpulse != null)
+                            ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
                     }
                 });
         }
@@ -232,47 +233,46 @@ namespace SharpPhysicsEngine.Helper
             ISoftShape shape,
             double timeStep)
         {
-            //Parallel.ForEach(shape.ShapePoints, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-            //        point =>
-            foreach (var point in shape.ShapePoints)
-            {
-                #region Linear Velocity
+            Parallel.ForEach(shape.ShapePoints, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                    point =>
+                {
+                    #region Linear Velocity
 
-                point.SetPosition(
-                        point.Position +
-                        timeStep *
-                        point.LinearVelocity);
+                    point.SetPosition(
+                            point.Position +
+                            timeStep *
+                            point.LinearVelocity);
 
-                point.SetLinearVelocity(point.LinearVelocity +
-                    (point.ForceValue * point.InverseMass) +
-                    (timeStep * EngineParameters.ExternalForce));
+                    point.SetLinearVelocity(point.LinearVelocity +
+                        (point.ForceValue * point.InverseMass) +
+                        (timeStep * EngineParameters.ExternalForce));
 
-                point.SetForce(new Vector3());
+                    point.SetForce(new Vector3());
 
-                #endregion
+                    #endregion
 
-                #region Angular Velocity
+                    #region Angular Velocity
 
-                double angularVelocity = point.AngularVelocity.Length();
+                    double angularVelocity = point.AngularVelocity.Length();
 
-                Vector3 versor = point.AngularVelocity.Normalize();
+                    Vector3 versor = point.AngularVelocity.Normalize();
 
-                double rotationAngle = angularVelocity * timeStep;
+                    double rotationAngle = angularVelocity * timeStep;
 
-                var rotationQuaternion = new Quaternion(versor, rotationAngle);
+                    var rotationQuaternion = new Quaternion(versor, rotationAngle);
 
-                point.SetRotationStatus((rotationQuaternion * point.RotationStatus).Normalize());
+                    point.SetRotationStatus((rotationQuaternion * point.RotationStatus).Normalize());
 
-                point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
+                    point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
 
-                point.SetInertiaTensor(
-                    (point.RotationMatrix * point.BaseInertiaTensor) *
-                    point.RotationMatrix.Transpose());
+                    point.SetInertiaTensor(
+                        (point.RotationMatrix * point.BaseInertiaTensor) *
+                        point.RotationMatrix.Transpose());
 
-                point.SetAngularVelocity(point.AngularVelocity);
+                    point.SetAngularVelocity(point.AngularVelocity);
 
-                #endregion
-            }
+                    #endregion
+                });
 
             shape.SetAABB();
         }

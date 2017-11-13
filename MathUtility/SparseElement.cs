@@ -32,6 +32,31 @@ namespace SharpEngineMathUtility
 
         #region Public Methods
 
+        public static double[] Multiply(SparseElement[] matrix, double[] vector)
+        {
+            if (matrix[0].RowLength != vector.Length)
+                throw new Exception("Wrong input length");
+
+            double[] result = new double[matrix.Length];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                SparseElement m = matrix[i];
+
+                double[] bufValue = m.Value;
+                int[] bufIndex = m.Index;
+
+                double bValue = 0.0;
+
+                for (int j = 0; j < m.Count; j++)
+                    bValue += bufValue[j] * vector[bufIndex[j]];
+
+                result[i] = bValue;
+            }
+
+            return result;
+        }
+
         public bool Equals(SparseElement x, SparseElement y)
         {
             if (x.Count != y.Count)
@@ -42,19 +67,7 @@ namespace SharpEngineMathUtility
 
             if (x.Value.Length != x.Value.Length)
                 return false;
-
-            //for (int i = 0; i < x.Index.Length; i++)
-            //{
-            //    if (x.Index[i] != y.Index[i])
-            //        return false;
-            //}
-
-            //for (int i = 0; i < x.Value.Length; i++)
-            //{
-            //    if (!x.Value[i].Equals(y.Value[i]))
-            //        return false;
-            //}
-
+                        
             return true;
         }
 

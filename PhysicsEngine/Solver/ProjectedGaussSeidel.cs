@@ -59,13 +59,13 @@ namespace SharpPhysicsEngine.LCPSolver
 
                     sumBuffer = (input.B[i] - sumBuffer) * input.D[i];
 
-                    	X[i].X += (sumBuffer - X[i].X) * internalSOR;
+                    X[i].X += (sumBuffer - X[i].X) * internalSOR;
 
-					X[i] = ClampSolution.Clamp (input, X, i);
+                    X[i] = ClampSolution.Clamp (input, X, i);
 
                     sum[i] = sumBuffer;
 				}
-
+                
                 if (SolverParameters.DynamicSORUpdate)
                 {
                     double actualSolverError = SolverHelper.ComputeSolverError(input, X);
@@ -78,8 +78,10 @@ namespace SharpPhysicsEngine.LCPSolver
                     if (actualSolverError < SolverParameters.ErrorTolerance)
                         return X;
                 }
+
+                
             }
-             
+            
             return X;
         }
 

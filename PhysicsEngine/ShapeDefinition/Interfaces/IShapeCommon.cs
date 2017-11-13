@@ -18,7 +18,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 TempLinearVelocity { get; }
         Vector3 ForceValue { get; }
 
-        //int GetID();
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);

@@ -153,9 +153,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                //LoadEngineByXml();
+                LoadEngineByXml();
 
-                LoadEngineByBuilder();
+                //LoadEngineByBuilder();
 
 
             }
@@ -187,9 +187,9 @@ namespace TestPhysics
             //LoadObject loadObject = new LoadObject("configJoint.xml");
             //var loadObject = new LoadObject("startConfig.xml");
             //var loadObject = new LoadObject("carConfig.xml");
-            var loadObject = new LoadObject("testJointBridge.xml");
+            //var loadObject = new LoadObject("testJointBridge.xml");
             //var loadObject = new LoadObject("compositeObjectConfig.xml");
-            //var loadObject = new LoadObject("frictionTestConfig.xml");
+            var loadObject = new LoadObject("frictionTestConfig.xml");
 
             //var loadObject = new LoadObject("softBodyConfig.xml");
 
@@ -205,7 +205,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
+            physicsEngine.SetSolver(SolverType.ConjugateGradient);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -277,7 +277,7 @@ namespace TestPhysics
 
             //displayOctree();
             //displayConvexDecomposition();
-            displaySoftJoint();
+            //displaySoftJoint();
 
 			GL.Flush ();
 			SwapBuffers ();
@@ -677,7 +677,7 @@ namespace TestPhysics
 						GL.MultMatrix(dmviewData);
 
 						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.08f);
+						OpenGLUtilities.drawSolidCube(0.02f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();
@@ -700,7 +700,7 @@ namespace TestPhysics
 
 
 						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.08f);
+						OpenGLUtilities.drawSolidCube(0.02f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();

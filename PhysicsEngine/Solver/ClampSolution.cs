@@ -21,7 +21,7 @@ namespace SharpPhysicsEngine.LCPSolver
                         return new SolutionValues(X[i].X, false);
                                         
 				case ConstraintType.Friction:
-                    
+
                     double frictionLimit = X[input.Constraints[i].Value].X * input.ConstraintLimit[i];
 
                     if (X[i].X < -frictionLimit)
@@ -30,7 +30,6 @@ namespace SharpPhysicsEngine.LCPSolver
                         return new SolutionValues(frictionLimit, true);
 
                     return new SolutionValues(X[i].X, false);
-                    
 
                 case ConstraintType.JointMotor:
 					double limit = input.ConstraintLimit[i];
@@ -46,7 +45,7 @@ namespace SharpPhysicsEngine.LCPSolver
                     return new SolutionValues(X[i].X, false);
             }
 		}
-
+                
         public static double Clamp(
             LinearProblemProperties input,
             double[] X,
@@ -129,35 +128,35 @@ namespace SharpPhysicsEngine.LCPSolver
             LinearProblemProperties input,
             double[] x,
             int i,
-            ref double Min,
-            ref double Max)
+            ref double Lower,
+            ref double Upper)
         {
             switch (input.ConstraintType[i])
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    Min = 0.0;
-                    Max = double.MaxValue;
+                    Lower = 0.0;
+                    Upper = double.MaxValue;
                     break;   
 
                 case ConstraintType.Friction:
 
                     double frictionLimit = x[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
-                    Min = -frictionLimit;
-                    Max = frictionLimit;
+                    Lower = -frictionLimit;
+                    Upper = frictionLimit;
                     break;
 
                 case ConstraintType.JointMotor:
                     double limit = input.ConstraintLimit[i];
 
-                    Min = -input.ConstraintLimit[i];
-                    Max = input.ConstraintLimit[i];
+                    Lower = -input.ConstraintLimit[i];
+                    Upper = input.ConstraintLimit[i];
                     break;
 
                 default:
-                    Min = double.MinValue;
-                    Max = double.MaxValue;
+                    Lower = double.MinValue;
+                    Upper = double.MaxValue;
                     break;
             }
         }

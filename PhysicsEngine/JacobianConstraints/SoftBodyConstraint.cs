@@ -52,8 +52,7 @@ namespace SharpPhysicsEngine
 
             StartAnchorPoint = (PointB.StartPosition - PointA.StartPosition) * 0.5;
 
-            Vector3 relativePos = StartAnchorPoint;
-            relativePos = PointA.RotationMatrix * relativePos;
+            Vector3 relativePos = PointA.RotationMatrix * StartAnchorPoint;
 
             AnchorPoint = relativePos + PointA.Position;
 
