@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public interface IGeometry
+    internal interface IGeometry
     {
         AABB AABBox { get; }
         ObjectGeometryType GeometryType { get; }

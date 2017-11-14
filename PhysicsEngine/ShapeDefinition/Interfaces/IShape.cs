@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public interface IShape : IShapeCommon
+    internal interface IShape : IShapeCommon
     {
         double RestoreCoeff { get; }
         double DynamicFrictionCoeff { get; }

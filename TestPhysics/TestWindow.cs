@@ -14,6 +14,8 @@ using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 using SharpEngineMathUtility;
 using ConvexHullGenerator;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
+using SharpPhysicsEngine.PublicObject;
+using SharpPhysicsEngine.PublicObject.Joint;
 
 namespace TestPhysics
 {
@@ -35,8 +37,8 @@ namespace TestPhysics
 		List<CollisionPointStructure> collPoint;
 		List<List<CollisionPointStructure>> collisionPartitionedPoints;
 
-		IShape[] simulationObjects;
-		IConstraint[] simulationJoints;
+		ICollisionShape[] simulationObjects;
+		ICollisionJoint[] simulationJoints;
 
 		CollisionEngineParameters collisionEngineParameters;
 		SolverParameters solverParameters;
@@ -524,9 +526,9 @@ namespace TestPhysics
 		{
 			// TODO parte da modificare
 			//Matrice da utilizzare come costante
-			IShape shape = physicsEngine.GetShapes()[id];
+			ICollisionShape shape = physicsEngine.GetShapes()[id];
 
-			ISoftShape softShape = shape as ISoftShape;
+			SoftCollisionShape softShape = shape as SoftCollisionShape;
 			if (softShape != null)
 				DisplaySoftPoint(softShape);
 			else
@@ -543,8 +545,8 @@ namespace TestPhysics
 
 					SharpEngineMathUtility.Vector3 compoundPos = new SharpEngineMathUtility.Vector3();
 
-					if (shape is ICompoundShape)
-						compoundPos = ((ICompoundShape)shape).StartCompoundPositionObjects[i];
+					if (shape is CompoundRigidCollisionShape)
+						compoundPos = ((CompoundRigidCollisionShape)shape).StartCompoundPositionObjects[i];
 
 					SharpEngineMathUtility.Vector3 positionMt = position + compoundPos -
 																  shape.StartPosition;
@@ -602,7 +604,7 @@ namespace TestPhysics
 					
 		}
 
-		private void DisplaySoftPoint(ISoftShape softShape)
+		private void DisplaySoftPoint(SoftCollisionShape softShape)
 		{
             //GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
@@ -882,7 +884,7 @@ namespace TestPhysics
 			{
 					GL.PushMatrix ();
 
-				IConstraint joint = physicsEngine.GetJoints(i);
+				ICollisionJoint joint = physicsEngine.GetJoints(i);
 
 					Matrix4 mView = Matrix4.CreateTranslation (
 										Convert.ToSingle (joint.GetAnchorPosition ().x), 
@@ -907,7 +909,7 @@ namespace TestPhysics
 
         private void displaySoftJoint()
         {
-            ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+            SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
 
             foreach (var item in softShape.SoftConstraint)
             {

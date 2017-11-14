@@ -6,7 +6,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-	public class SliderConstraint: IConstraint, IConstraintBuilder
+    internal class SliderConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Private Fields
 

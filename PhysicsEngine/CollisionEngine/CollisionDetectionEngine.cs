@@ -7,7 +7,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class CollisionDetectionEngine: ICollisionEngine
+	internal class CollisionDetectionEngine: ICollisionEngine
 	{
 		#region Private Fields
 

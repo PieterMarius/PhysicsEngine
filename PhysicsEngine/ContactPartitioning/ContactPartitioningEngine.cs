@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine
 {
-	public class ContactPartitioningEngine: IContactPartitioningEngine
+	internal class ContactPartitioningEngine: IContactPartitioningEngine
 	{
 
 		#region Public Methods

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.Helper
 {
-    public sealed class LinearProblemBuilder
+    internal sealed class LinearProblemBuilder
     {
         #region Fields
 

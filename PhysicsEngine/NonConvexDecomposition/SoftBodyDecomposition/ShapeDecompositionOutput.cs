@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public sealed class ShapeDecompositionOutput
+    internal sealed class ShapeDecompositionOutput
     {
 
         #region Fields

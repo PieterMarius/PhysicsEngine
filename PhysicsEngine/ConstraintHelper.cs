@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-	public static class ConstraintHelper
+	internal static class ConstraintHelper
 	{
         #region Public Methods
 

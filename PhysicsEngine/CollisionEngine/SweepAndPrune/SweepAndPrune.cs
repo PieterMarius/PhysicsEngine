@@ -4,7 +4,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class SweepAndPruneEngine
+	internal class SweepAndPruneEngine
 	{
 		#region Fileds
 

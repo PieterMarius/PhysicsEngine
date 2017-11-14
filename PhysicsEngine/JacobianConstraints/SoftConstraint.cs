@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine
 {
-    public sealed class SoftBodyConstraint : IConstraint, IConstraintBuilder
+    internal sealed class SoftConstraint : IConstraint, IConstraintBuilder
     {
         #region Private Fields
 
@@ -36,7 +36,7 @@ namespace SharpPhysicsEngine
 
         #region Constructor
 
-        public SoftBodyConstraint(
+        public SoftConstraint(
             SoftShapePoint pointA,
             SoftShapePoint pointB,
             ISoftShape shape,

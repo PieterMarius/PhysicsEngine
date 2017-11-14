@@ -3,7 +3,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-	public struct JacobianConstraint
+	internal struct JacobianConstraint
 	{
 		#region Public Properties
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public sealed class ShapeConvexDecomposition : IShapeConvexDecomposition
+    internal sealed class ShapeConvexDecomposition : IShapeConvexDecomposition
     {
         #region Fields
 

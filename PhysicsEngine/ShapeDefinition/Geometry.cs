@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public class Geometry : IGeometry
+	internal class Geometry : IGeometry
 	{
 		#region Object Properties
 

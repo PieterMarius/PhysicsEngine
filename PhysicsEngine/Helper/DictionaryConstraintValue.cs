@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.Helper
 {
-    public struct DictionaryConstraintValue
+    internal struct DictionaryConstraintValue
     {
         private readonly JacobianConstraint constraint;
         private readonly int index;

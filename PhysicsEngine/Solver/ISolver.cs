@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public interface ISolver
+	internal interface ISolver
 	{
 		SolutionValues[] Solve(
             LinearProblemProperties linearProblemProperties,

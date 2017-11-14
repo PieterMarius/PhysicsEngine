@@ -3,7 +3,7 @@ using System;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public static class Helper
+    internal static class Helper
     {
         public static Vector3 GetVertexPosition(
             IGeometry obj,

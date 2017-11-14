@@ -3,7 +3,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public interface ICollisionEngine
+	internal interface ICollisionEngine
 	{
         List<CollisionPointStructure> Execute(IShape[] objects);
 

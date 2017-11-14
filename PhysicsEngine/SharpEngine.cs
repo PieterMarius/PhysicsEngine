@@ -9,6 +9,8 @@ using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ContactPartitioning;
 using SharpPhysicsEngine.Helper;
+using SharpPhysicsEngine.PublicObject;
+using SharpPhysicsEngine.PublicObject.Joint;
 
 namespace SharpPhysicsEngine
 {
@@ -39,10 +41,20 @@ namespace SharpPhysicsEngine
 		/// <value>The time step.</value>
 		public double TimeStep { get; private set; }
 
-		#endregion
+        #endregion
 
-		#region Private Properties
+        #region Private Properties
 
+        /// <summary>
+        /// User Collision Shapes
+        /// </summary>
+        private List<ICollisionShape> CollisionShapes;
+
+        /// <summary>
+        /// User Collision Joints
+        /// </summary>
+        private List<ICollisionJoint> CollisionJoints;
+        
 		/// <summary>
 		/// The simulation Shapes.
 		/// </summary>
@@ -121,6 +133,7 @@ namespace SharpPhysicsEngine
 			contactPartitioningEngine = new ContactPartitioningEngine();
 
 			Shapes = new IShape[0];
+            CollisionShapes = new List<ICollisionShape>();
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
@@ -146,9 +159,12 @@ namespace SharpPhysicsEngine
 
 		#region Simulation Object Methods
 
-		public void AddShape(IShape simulationObject)
+		public void AddShape(ICollisionShape simulationObject)
 		{
-			ISoftShape softShape = simulationObject as ISoftShape;
+            CollisionShapes.Add(simulationObject);
+            IShape simObj = ((IMapper)simulationObject).GetShape();
+
+            ISoftShape softShape = simObj as ISoftShape;
 
             if (softShape != null)
             {
@@ -157,19 +173,19 @@ namespace SharpPhysicsEngine
                     ((Identity)point).SetID(HsGenerator.GetHash());
             }
             else
-                ((Identity)simulationObject).SetID(HsGenerator.GetHash());
+                ((Identity)simObj).SetID(HsGenerator.GetHash());
 			
 			if (Shapes != null && 
 				Shapes.Length > 0) 
 			{
 				var bufferList = Shapes.ToList();
-				bufferList.Add (simulationObject);
+				bufferList.Add (simObj);
 				Shapes = bufferList.ToArray ();
 			} 
 			else 
 			{
 				var bufferList = new List<IShape>();
-				bufferList.Add (simulationObject);
+				bufferList.Add (simObj);
 				Shapes = bufferList.ToArray ();
 			}
 
@@ -214,12 +230,13 @@ namespace SharpPhysicsEngine
 		public void RemoveShapes()
 		{
 			Shapes = new IShape[0];
+            CollisionShapes.Clear();
 			Joints = new List<IConstraint>();
 		}
 
-		public IShape GetShape(int shapeID)
+		public ICollisionShape GetShape(int shapeID)
 		{
-			return Shapes.FirstOrDefault(x => x.ID == shapeID);
+			return CollisionShapes.FirstOrDefault(x => x.GetID() == shapeID);
 		}
 
 		public int ShapesCount()
@@ -227,26 +244,30 @@ namespace SharpPhysicsEngine
 			return Shapes.Length;
 		}
 
-		public IShape[] GetShapes()
+		public ICollisionShape[] GetShapes()
 		{
-			return Shapes;
+			return CollisionShapes.ToArray();
 		}
 					
 		#endregion
 
 		#region Simulation Joint
 
-		public void AddJoint(IConstraint joint)
+		public void AddJoint(ICollisionJoint joint)
 		{
+            CollisionJoints.Add(joint);
+
+            var mappedJoint = ((IMapperJoint)joint).GetJoint();
+
 			if (Joints != null &&
 				Joints.Count > 0)
 			{
-				Joints.Add(joint);
+				Joints.Add(mappedJoint);
 			}
 			else
 			{
 				Joints = new List<IConstraint>();
-				Joints.Add(joint);
+				Joints.Add(mappedJoint);
 			}
 		}
 
@@ -264,11 +285,10 @@ namespace SharpPhysicsEngine
 			Joints = new List<IConstraint>();
 		}
 
-		public IConstraint GetJoints(int constraintId)
+		public ICollisionJoint GetJoints(int objectID)
 		{
-			if (Joints != null &&
-				Joints.Count > constraintId)
-				return Joints[constraintId];
+            if (Joints != null)
+                return CollisionJoints.FirstOrDefault(x => x.GetKeyIndex() == objectID);
 			
 			return null;
 		}
@@ -278,9 +298,9 @@ namespace SharpPhysicsEngine
 			return Joints.Count;
 		}
 
-		public List<IConstraint> GetJoints()
+		public List<ICollisionJoint> GetJoints()
 		{
-			return new List<IConstraint>(Joints);
+			return CollisionJoints;
 		}
 
 		#endregion
@@ -295,10 +315,10 @@ namespace SharpPhysicsEngine
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
 
-		public List<Partition> GetPartitionedCollisionPoints()
-		{
-			return Partitions;
-		}
+		//public List<Partition> GetPartitionedCollisionPoints()
+		//{
+		//	return Partitions;
+		//}
 
 		#endregion
 

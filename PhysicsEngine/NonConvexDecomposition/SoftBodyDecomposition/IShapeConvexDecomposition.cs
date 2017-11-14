@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public interface IShapeConvexDecomposition
+    internal interface IShapeConvexDecomposition
     {
         List<ShapeDecompositionOutput> GetConvexShapeList(Vertex3Index[] vertexPosition, double precisionSize);
         List<ShapeDecompositionOutput> GetIntersectedShape(

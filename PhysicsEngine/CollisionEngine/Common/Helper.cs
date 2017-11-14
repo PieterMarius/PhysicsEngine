@@ -4,7 +4,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public static class Helper
+	internal static class Helper
 	{
 		#region Public Methods
 

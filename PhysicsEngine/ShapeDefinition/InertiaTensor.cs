@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public class InertiaTensor
+	public sealed class InertiaTensor
 	{
 		#region Private properties
 

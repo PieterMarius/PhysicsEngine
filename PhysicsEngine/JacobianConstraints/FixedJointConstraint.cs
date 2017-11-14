@@ -5,7 +5,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-	public sealed class FixedJointConstraint: IConstraint, IConstraintBuilder
+    internal sealed class FixedJointConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Private Fields
 

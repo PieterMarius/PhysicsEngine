@@ -4,7 +4,7 @@ using SharpPhysicsEngine.CollisionEngine;
 
 namespace SharpPhysicsEngine
 {
-	public interface IContactPartitioningEngine
+	internal interface IContactPartitioningEngine
 	{
 		List<SpatialPartition> CalculateSpatialPartitioning (
 			CollisionPointStructure[] collisionPoints,

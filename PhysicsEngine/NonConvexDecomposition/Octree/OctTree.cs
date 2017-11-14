@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 {
-    public sealed class OctTree
+    internal sealed class OctTree
     {
         #region Fields
 

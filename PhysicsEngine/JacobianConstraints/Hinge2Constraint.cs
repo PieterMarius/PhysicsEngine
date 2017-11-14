@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-	public sealed class Hinge2Constraint: IConstraint, IConstraintBuilder
+    internal sealed class Hinge2Constraint: IConstraint, IConstraintBuilder
 	{
 		#region Private Fields
 

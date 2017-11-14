@@ -1,0 +1,6 @@
+﻿extensions: .cs 
+
+// This is a sample license header.
+
+extensions: .aspx .ascx
+<%-- This is a sample license header. --%>

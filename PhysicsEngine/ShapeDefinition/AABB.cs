@@ -4,7 +4,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public class AABB
+	internal class AABB
 	{
 
 		#region Object fields

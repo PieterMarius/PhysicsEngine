@@ -6,7 +6,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public sealed class SoftShape : IShape, ISoftShape, Identity
+    internal sealed class SoftShape : IShape, ISoftShape, Identity
     {
         #region Object status properties
 
@@ -161,7 +161,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SoftPoint[] Sphere { get; private set; }
 
-        public List<SoftBodyConstraint> SoftConstraint { get; private set; }
+        public List<SoftConstraint> SoftConstraint { get; private set; }
 
         public IShapeConvexDecomposition ConvexDecomposition { get; private set; }
 
@@ -180,7 +180,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public SoftShape(
             TriangleIndexes[] triangleIndex,
             SoftShapePoint[] shapePoint,
-            List<SoftBodyConstraint> softConstraints)
+            List<SoftConstraint> softConstraints)
         {
             Triangle = triangleIndex;
             ShapePoints = shapePoint;
@@ -351,7 +351,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 item.SetSpringCoefficient(springCoeff);
         }
 
-        public void AddConstraint(SoftBodyConstraint constraint)
+        public void AddConstraint(SoftConstraint constraint)
         {
             SoftConstraint.Add(constraint);
         }
@@ -410,14 +410,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
             double restoreCoefficient,
             double springCoefficient)
         {
-            SoftConstraint = new List<SoftBodyConstraint>();
+            SoftConstraint = new List<SoftConstraint>();
             HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
             
             foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
             {
                 if(indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.b)) &&
                    triangle.value.a != triangle.value.b)
-                    SoftConstraint.Add(new SoftBodyConstraint(
+                    SoftConstraint.Add(new SoftConstraint(
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.b],
                         this,
@@ -426,7 +426,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)) &&
                     triangle.value.a != triangle.value.c)
-                    SoftConstraint.Add(new SoftBodyConstraint(
+                    SoftConstraint.Add(new SoftConstraint(
                         ShapePoints[triangle.value.a],
                         ShapePoints[triangle.value.c],
                         this,
@@ -435,7 +435,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
                     triangle.value.b != triangle.value.b)
-                    SoftConstraint.Add(new SoftBodyConstraint(
+                    SoftConstraint.Add(new SoftConstraint(
                         ShapePoints[triangle.value.b],
                         ShapePoints[triangle.value.c],
                         this,

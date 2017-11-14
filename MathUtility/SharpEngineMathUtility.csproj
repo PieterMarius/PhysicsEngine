@@ -68,4 +68,7 @@
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MathUtility.licenseheader" />
+  </ItemGroup>
 </Project>

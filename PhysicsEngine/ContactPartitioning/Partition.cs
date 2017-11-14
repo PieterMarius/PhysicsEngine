@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.ContactPartitioning
 {
-    public sealed class Partition
+    internal sealed class Partition
     {
         public List<CollisionPointStructure> PartitionedCollisionPoints { get; private set; }
         public List<IConstraint> PartitionedJoints { get; private set; }

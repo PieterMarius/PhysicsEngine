@@ -1,9 +1,8 @@
 ﻿
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public interface IConvexShape
+    internal interface IConvexShape
     {
         IGeometry ObjectGeometry { get; }
-        void SetObjectGeometry(IGeometry geometry);
     }
 }

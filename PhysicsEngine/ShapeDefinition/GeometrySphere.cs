@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public class SoftPoint
+    internal class SoftPoint
     {
         #region Fields
 

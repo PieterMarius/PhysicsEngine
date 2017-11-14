@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.Helper
 {
-    public sealed class IntegrationHelper
+    internal sealed class IntegrationHelper
     {
         #region Fields
 

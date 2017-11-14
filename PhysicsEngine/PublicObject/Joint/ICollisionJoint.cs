@@ -1,0 +1,30 @@
+﻿using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
+
+namespace SharpPhysicsEngine.PublicObject.Joint
+{
+    public interface ICollisionJoint
+    {
+        #region Get Methods
+        Vector3 GetAnchorPosition();
+        JointType GetJointType();
+        int GetObjectIndexA();
+        int GetObjectIndexB();
+        int GetKeyIndex();
+
+        #endregion
+
+        #region Set Methods
+
+        void SetLinearLimit(double linearLimitMin, double linearLimitMax);
+        void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);
+        void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
+        void SetAxis1Motor(double speedValue, double forceLimit);
+        void SetAxis2Motor(double speedValue, double forceLimit);
+        void AddTorque(double torqueAxis1, double torqueAxis2);
+        void SetRestoreCoefficient(double restoreCoefficient);
+        void SetSpringCoefficient(double springCoefficient);
+
+        #endregion
+    }
+}

@@ -5,7 +5,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-	public sealed class HingeConstraint: IConstraint, IConstraintBuilder
+    internal sealed class HingeConstraint: IConstraint, IConstraintBuilder
 	{
 		#region Private Fields
 

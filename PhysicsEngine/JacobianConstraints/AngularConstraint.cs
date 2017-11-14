@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-    public sealed class AngularConstraint : IConstraint, IConstraintBuilder
+    internal sealed class AngularConstraint : IConstraint, IConstraintBuilder
     {
 
         #region Fields

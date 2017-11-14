@@ -1,12 +1,13 @@
 ﻿using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.ShapeDefinition
+namespace SharpPhysicsEngine.PublicObject
 {
-    internal interface IShapeCommon
+    public interface ICollisionShape
     {
-        int ID { get; }
         ObjectType ObjectType { get; }
         Vector3 Position { get; }
+        Vector3 StartPosition { get; }
         Vector3 LinearVelocity { get; }
         Vector3 AngularVelocity { get; }
         Matrix3x3 InertiaTensor { get; }
@@ -14,10 +15,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Matrix3x3 RotationMatrix { get; }
         double Mass { get; }
         double InverseMass { get; }
-        Vector3 TempAngularVelocity { get; }
-        Vector3 TempLinearVelocity { get; }
         Vector3 ForceValue { get; }
 
+        int GetID();
+        void SetGeometry(
+            Vector3[] inputVertexPosition,
+            TriangleIndexes[] inputTriangle);
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);
@@ -25,8 +28,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetInertiaTensor(Matrix3x3 inertiaTensor);
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
         void SetForce(Vector3 force);
-        void SetTempAngularVelocity(Vector3 inputAngularVelocity);
-        void SetTempLinearVelocity(Vector3 inputLinearVelocity);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
+        void SetRestoreCoeff(double value);
+        void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
+        void ExcludeFromCollisionDetection(bool excludeFromCollisionDetection);
+        void SetRestitutionCoeff(double restitutionCoeff);
+        void SetRotationStatus(Quaternion inputRotationStatus);
+        void SetSleepingFrameCount(int frameCount);
+        void SetStaticFrictionCoeff(double staticFrictionCoeff);
+        void SetTorque(Vector3 torque);
     }
 }

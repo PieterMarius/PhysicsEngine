@@ -4,7 +4,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-	public static class JacobianCommon
+    internal static class JacobianCommon
 	{
 		public static Vector3 GetFixedAngularError(
 			IShape objectA,

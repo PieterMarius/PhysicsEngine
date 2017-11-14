@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public sealed class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
+	internal sealed class ConvexShape : IShape, IShapeCommon, IConvexShape, Identity
     {
 
         #region Object status properties
@@ -60,12 +60,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		/// </summary>
 		/// <value>The inverse inertia tensor.</value>
 		public Matrix3x3 InertiaTensor{ get; private set; }
-
-		/// <summary>
-		/// Gets or sets the object geometry.
-		/// </summary>
-		/// <value>The object geometry.</value>
-		public IGeometry ObjectGeometry{ get; private set; }
+        
+        /// <summary>
+        /// Object Geometry
+        /// </summary>
+		public IGeometry ObjectGeometry { get; private set; }
 
 		/// <summary>
 		/// Gets the type of the object.
@@ -277,7 +276,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 InverseMass = 1.0 / Mass;
         }
 
-        public void SetObjectGeometry(IGeometry geometry)
+        public void SetGeometry(IGeometry geometry)
         {
             ObjectGeometry = geometry;
             

@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-	public interface IConstraint
+	internal interface IConstraint
 	{
 		#region Get Methods
         	Vector3 GetAnchorPosition ();

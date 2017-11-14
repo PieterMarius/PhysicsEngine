@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine
 {
-	public sealed class ContactConstraintBuilder
+    internal sealed class ContactConstraintBuilder
 	{
         #region Fields
 

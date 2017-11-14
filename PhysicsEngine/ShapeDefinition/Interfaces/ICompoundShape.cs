@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public interface ICompoundShape
+    internal interface ICompoundShape
     {
         IGeometry[] ObjectGeometry { get; }
         double[] PartialMass { get; }

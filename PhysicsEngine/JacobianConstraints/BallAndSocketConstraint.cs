@@ -5,7 +5,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-	public sealed class BallAndSocketConstraint : IConstraint, IConstraintBuilder
+    internal sealed class BallAndSocketConstraint : IConstraint, IConstraintBuilder
 	{
 		#region Fields
 
