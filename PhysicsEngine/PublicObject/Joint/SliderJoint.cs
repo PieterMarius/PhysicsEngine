@@ -18,9 +18,21 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #region Constructor
 
-        public SliderJoint()
+        public SliderJoint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPosition,
+            Vector3 sliderAxis,
+            double restoreCoefficient,
+            double springCoefficient)
         {
-
+            sliderConstraint = new SliderConstraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPosition,
+                sliderAxis,
+                restoreCoefficient,
+                springCoefficient);
         }
 
         #endregion
@@ -29,12 +41,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return sliderConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -44,57 +56,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.Slider;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return sliderConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return sliderConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return sliderConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            sliderConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            sliderConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            sliderConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            sliderConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

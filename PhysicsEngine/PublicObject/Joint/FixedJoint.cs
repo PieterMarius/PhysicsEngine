@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -15,8 +11,7 @@ namespace SharpPhysicsEngine.PublicObject.Joint
         FixedJointConstraint fixedJointConstraint;
 
         #endregion
-
-
+        
         #region Constructor
 
         public FixedJoint(
@@ -32,15 +27,14 @@ namespace SharpPhysicsEngine.PublicObject.Joint
                 restoreCoeff,
                 springCoeff);
         }
-
-
+        
         #endregion
 
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
@@ -75,27 +69,27 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)

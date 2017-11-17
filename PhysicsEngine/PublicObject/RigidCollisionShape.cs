@@ -211,7 +211,22 @@ namespace SharpPhysicsEngine.PublicObject
         {
             convexShape.SetTorque(torque);
         }
-        
+
+        public int GetGeometryCount()
+        {
+            return 1;
+        }
+
+        public Vector3 GetMinAABB()
+        {
+            return convexShape.ObjectGeometry.AABBox.Min;
+        }
+
+        public Vector3 GetMaxAABB()
+        {
+            return convexShape.ObjectGeometry.AABBox.Max;
+        }
+
         #endregion
     }
 }

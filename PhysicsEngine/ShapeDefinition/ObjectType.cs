@@ -7,6 +7,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		StaticBody = 1,
         CompoundShape = 2,
         SoftBody = 3,
+        SoftPoint = 4,
 	}
 }
 

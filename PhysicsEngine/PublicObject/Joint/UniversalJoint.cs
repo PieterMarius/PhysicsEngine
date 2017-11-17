@@ -14,8 +14,24 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #region Constructor
 
-        public UniversalJoint()
-        { }
+        public UniversalJoint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPosition,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficient)
+        {
+            universalConstraint = new UniversalConstraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPosition,
+                hingeAxis,
+                rotationAxis,
+                restoreCoefficient,
+                springCoefficient);
+        }
 
         #endregion
         
@@ -23,12 +39,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return universalConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -38,57 +54,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.Universal;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return universalConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return universalConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return universalConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetAxis2Motor(speedValue, forceLimit);
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            universalConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

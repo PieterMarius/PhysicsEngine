@@ -5,7 +5,15 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
     internal interface IShapeConvexDecomposition
     {
-        List<ShapeDecompositionOutput> GetConvexShapeList(Vertex3Index[] vertexPosition, double precisionSize);
+        List<ShapeDecompositionOutput> GetConvexShapeList(
+            Vertex3Index[] vertexPosition, 
+            double precisionSize);
+
+        List<ShapeDecompositionOutput> GetConvexShapeList(
+            Vertex3Index[] vertexPosition,
+            AABB region,
+            double precisionSize);
+
         List<ShapeDecompositionOutput> GetIntersectedShape(
             AABB box, 
             AABB region, 

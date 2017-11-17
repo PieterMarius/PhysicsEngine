@@ -93,6 +93,7 @@
     <Compile Include="JacobianConstraints\SoftConstraint.cs" />
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
     <Compile Include="Helper\LinearProblemBuilder.cs" />
+    <Compile Include="NonConvexDecomposition\ConvexDecompositionEngine.cs" />
     <Compile Include="NonConvexDecomposition\Octree\OctTree.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />

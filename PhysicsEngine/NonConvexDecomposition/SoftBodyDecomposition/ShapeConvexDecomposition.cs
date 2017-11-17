@@ -51,11 +51,17 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             this.triangleIndexes = triangleIndexes;            
         }
 
+        public ShapeConvexDecomposition(
+            TriangleIndexes[] triangleIndexes)
+        {
+            this.triangleIndexes = triangleIndexes;
+        }
+
         #endregion
 
         #region Public Methods
 
-        public static AABB FindEnclosingCube(AABB region)
+        internal static AABB FindEnclosingCube(AABB region)
         {
             //we can't guarantee that all bounding regions will be relative to the origin, so to keep the math
             //simple, we're going to translate the existing region to be oriented off the origin and remember the translation.
@@ -97,24 +103,15 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             Vertex3Index[] vertexPosition,
             double precisionSize)
         {
-            VertexPosition = vertexPosition.ToList();
-            BaseVertexPosition = vertexPosition;
+            return Decompose(vertexPosition, region, precisionSize);
+        }
 
-            DecompositionValue = precisionSize;
-            
-            BuildTree();
-
-            List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
-
-            GenerateConvexShapeList(ref convexShapes);
-
-            if (convexShapes.Count > 0)
-            {
-                FinalizeShape(ref convexShapes);
-                return convexShapes;
-            }
-
-            throw new Exception("Convex Decomposition Failed.");
+        public List<ShapeDecompositionOutput> GetConvexShapeList(
+            Vertex3Index[] vertexPosition,
+            AABB region,
+            double precisionSize)
+        {
+            return Decompose(vertexPosition, region, precisionSize);
         }
 
         public List<ShapeDecompositionOutput> GetIntersectedShape(
@@ -149,6 +146,31 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         #endregion
 
         #region Private Methods
+
+        private List<ShapeDecompositionOutput> Decompose(
+            Vertex3Index[] vertexPosition,
+            AABB region,
+            double precisionSize)
+        {
+            VertexPosition = vertexPosition.ToList();
+            BaseVertexPosition = vertexPosition;
+
+            DecompositionValue = precisionSize;
+
+            BuildTree();
+
+            List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
+
+            GenerateConvexShapeList(ref convexShapes);
+
+            if (convexShapes.Count > 0)
+            {
+                FinalizeShape(ref convexShapes);
+                return convexShapes;
+            }
+
+            throw new Exception("Convex Decomposition Failed.");
+        }
 
         private void BuildTree()
         {

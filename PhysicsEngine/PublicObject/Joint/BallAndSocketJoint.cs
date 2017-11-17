@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -16,27 +12,33 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #endregion
 
-
         #region Constructor
 
-        public BallAndSocketJoint()
+        public BallAndSocketJoint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPos,
+            double restoreCoeff,
+            double springCoeff)
         {
-
+            ballAndSocketConstraint = new BallAndSocketConstraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPos,
+                restoreCoeff,
+                springCoeff);
         }
-
-
+        
         #endregion
-
-
-
+        
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return ballAndSocketConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -46,57 +48,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.BallAndSocket;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return ballAndSocketConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return ballAndSocketConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return ballAndSocketConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            ballAndSocketConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            ballAndSocketConstraint.SetSpringCoefficient(springCoefficient);
         }
     }
 }

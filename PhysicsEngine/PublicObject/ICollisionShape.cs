@@ -21,6 +21,9 @@ namespace SharpPhysicsEngine.PublicObject
         void SetGeometry(
             Vector3[] inputVertexPosition,
             TriangleIndexes[] inputTriangle);
+        int GetGeometryCount();
+        Vector3 GetMinAABB();
+        Vector3 GetMaxAABB();
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);

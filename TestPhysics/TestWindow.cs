@@ -16,6 +16,7 @@ using ConvexHullGenerator;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.PublicObject;
 using SharpPhysicsEngine.PublicObject.Joint;
+using SharpPhysicsEngine.NonConvexDecomposition;
 
 namespace TestPhysics
 {
@@ -134,14 +135,7 @@ namespace TestPhysics
 		}
 
 		NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
-		List<ShapeDecompositionOutput> convexShape = null;
-
-		AABB region = null;
-
-
-		ShapeConvexDecomposition shapeConvexDec = null;
-
-
+		
 		List<Line> octTreeLine = new List<Line>();
 		void initProgram()
 		{
@@ -155,9 +149,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                LoadEngineByXml();
+                //LoadEngineByXml();
 
-                //LoadEngineByBuilder();
+                LoadEngineByBuilder();
 
 
             }
@@ -170,11 +164,7 @@ namespace TestPhysics
         private void LoadEngineByBuilder()
         {
             var env = new BuildEnvironment();
-
-
-            //AddSoftBody();
             
-
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
             textureID = env.LoadTexture();
@@ -189,9 +179,9 @@ namespace TestPhysics
             //LoadObject loadObject = new LoadObject("configJoint.xml");
             //var loadObject = new LoadObject("startConfig.xml");
             //var loadObject = new LoadObject("carConfig.xml");
-            //var loadObject = new LoadObject("testJointBridge.xml");
+            var loadObject = new LoadObject("testJointBridge.xml");
             //var loadObject = new LoadObject("compositeObjectConfig.xml");
-            var loadObject = new LoadObject("frictionTestConfig.xml");
+            //var loadObject = new LoadObject("frictionTestConfig.xml");
 
             //var loadObject = new LoadObject("softBodyConfig.xml");
 
@@ -207,7 +197,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.ConjugateGradient);
+            physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -474,8 +464,8 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.M])
             {
 
-                ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
-                softShape.SetRestoreCoefficient(60.0);
+                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                softShape.SetConstraintsRestoreCoeff(60.0);
                 
             }
 
@@ -538,7 +528,7 @@ namespace TestPhysics
 
 				ObjectType type = shape.ObjectType;
 				
-				for (int i = 0; i < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(shape).Length; i++)
+				for (int i = 0; i < shape.GetGeometryCount(); i++)
 				{
 					GL.PushMatrix();
 					GL.Enable(EnableCap.Texture2D);
@@ -613,9 +603,9 @@ namespace TestPhysics
 
             //GL.PopMatrix();
             int i = 0;
-            foreach (var item in softShape.ShapePoints)
+            foreach (var item in softShape.GetShapePointsPosition())
             {
-                SharpEngineMathUtility.Vector3 relativePosition = item.Position;
+                SharpEngineMathUtility.Vector3 relativePosition = item;
 
                 GL.PushMatrix();
 
@@ -634,7 +624,7 @@ namespace TestPhysics
                 GL.MultMatrix(dmviewData);
 
 
-                if (softShape.ShapePoints.Length - i <= 4)
+                if (softShape.GetShapePointsCount() - i <= 4)
                 {
                     GL.Color3(0.0f, 0.0, 1.0f);
                     OpenGLUtilities.drawSolidCube(0.02f);
@@ -845,64 +835,64 @@ namespace TestPhysics
 			}
 		}
 
-		private void displayVertex(int index)
+		//private void displayVertex(int index)
+		//{
+
+		//	for (int i = 0; i < physicsEngine.GetShape (index).GetGeometryCount(); i++) 
+		//	{
+		//		for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
+		//		{
+		//			SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
+		//							(physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
+
+		//			GL.PushMatrix();
+
+		//			Matrix4 mView = Matrix4.CreateTranslation(
+		//				Convert.ToSingle(relativePosition.x),
+		//				Convert.ToSingle(relativePosition.y),
+		//				Convert.ToSingle(relativePosition.z));
+
+		//			var dmviewData = new float[] {
+		//			mView.M11, mView.M12, mView.M13, mView.M14,
+		//			mView.M21, mView.M22, mView.M23, mView.M24,
+		//			mView.M31, mView.M32, mView.M33, mView.M34,
+		//			mView.M41, mView.M42, mView.M43, mView.M44
+		//		};
+
+		//			GL.MultMatrix(dmviewData);
+
+		//			OpenGLUtilities.drawSolidCube(0.04f);
+
+		//			GL.PopMatrix();
+		//		}
+		//	}
+		//}
+
+		private void displayJoint()
 		{
-
-			for (int i = 0; i < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape (index)).Length; i++) 
+			for (int i = 0; i < physicsEngine.JointsCount(); i++) 
 			{
-				for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
-				{
-					SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
-									(physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
+				GL.PushMatrix ();
 
-					GL.PushMatrix();
+				ICollisionJoint joint = physicsEngine.GetJoints(i);
 
-					Matrix4 mView = Matrix4.CreateTranslation(
-						Convert.ToSingle(relativePosition.x),
-						Convert.ToSingle(relativePosition.y),
-						Convert.ToSingle(relativePosition.z));
+				Matrix4 mView = Matrix4.CreateTranslation (
+									Convert.ToSingle (joint.GetAnchorPosition ().x), 
+									Convert.ToSingle (joint.GetAnchorPosition ().y), 
+									Convert.ToSingle (joint.GetAnchorPosition ().z));
 
-					var dmviewData = new float[] {
+				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
 					mView.M21, mView.M22, mView.M23, mView.M24,
 					mView.M31, mView.M32, mView.M33, mView.M34,
 					mView.M41, mView.M42, mView.M43, mView.M44
 				};
 
-					GL.MultMatrix(dmviewData);
+				GL.MultMatrix (dmviewData);
 
-					OpenGLUtilities.drawSolidCube(0.04f);
+				OpenGLUtilities.drawSolidCube (0.08f);
 
-					GL.PopMatrix();
-				}
-			}
-		}
-
-		private void displayJoint()
-		{
-			for (int i = 0; i < physicsEngine.JointsCount(); i++) 
-			{
-					GL.PushMatrix ();
-
-				ICollisionJoint joint = physicsEngine.GetJoints(i);
-
-					Matrix4 mView = Matrix4.CreateTranslation (
-										Convert.ToSingle (joint.GetAnchorPosition ().x), 
-										Convert.ToSingle (joint.GetAnchorPosition ().y), 
-										Convert.ToSingle (joint.GetAnchorPosition ().z));
-
-					var dmviewData = new float[] {
-						mView.M11, mView.M12, mView.M13, mView.M14,
-						mView.M21, mView.M22, mView.M23, mView.M24,
-						mView.M31, mView.M32, mView.M33, mView.M34,
-						mView.M41, mView.M42, mView.M43, mView.M44
-					};
-
-					GL.MultMatrix (dmviewData);
-
-					OpenGLUtilities.drawSolidCube (0.08f);
-
-					GL.PopMatrix ();
+				GL.PopMatrix ();
 
 			}
 		}
@@ -911,16 +901,14 @@ namespace TestPhysics
         {
             SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
 
-            foreach (var item in softShape.SoftConstraint)
+            foreach (var item in softShape.GetShapeConstraintsPosition())
             {
                 GL.PushMatrix();
 
-                IConstraint joint = item;
-
                 Matrix4 mView = Matrix4.CreateTranslation(
-                                    Convert.ToSingle(joint.GetAnchorPosition().x),
-                                    Convert.ToSingle(joint.GetAnchorPosition().y),
-                                    Convert.ToSingle(joint.GetAnchorPosition().z));
+                                    Convert.ToSingle(item.x),
+                                    Convert.ToSingle(item.y),
+                                    Convert.ToSingle(item.z));
 
                 var dmviewData = new float[] {
                         mView.M11, mView.M12, mView.M13, mView.M14,
@@ -941,17 +929,18 @@ namespace TestPhysics
 
 		private void displayAABB()
 		{
-			IShape[] simObj = physicsEngine.GetShapes();
+			ICollisionShape[] simObj = physicsEngine.GetShapes();
 			for (int i = 0; i < simObj.Length; i++)
 			{
-				AABB joint = SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(simObj[i])[0].AABBox;
-								
-				GL.PushMatrix();
+				SharpEngineMathUtility.Vector3 min = simObj[i].GetMinAABB();
+                SharpEngineMathUtility.Vector3 max = simObj[i].GetMaxAABB();
+
+                GL.PushMatrix();
 
 				Matrix4 mView = Matrix4.CreateTranslation(
-									Convert.ToSingle(joint.Max[0]),
-									Convert.ToSingle(joint.Max[1]),
-									Convert.ToSingle(joint.Max[2]));
+									Convert.ToSingle(max[0]),
+									Convert.ToSingle(max[1]),
+									Convert.ToSingle(max[2]));
 
 				var dmviewData = new float[] {
 					mView.M11, mView.M12, mView.M13, mView.M14,
@@ -970,9 +959,9 @@ namespace TestPhysics
 				GL.PushMatrix();
 
 				mView = Matrix4.CreateTranslation(
-									Convert.ToSingle(joint.Min[0]),
-									Convert.ToSingle(joint.Min[1]),
-									Convert.ToSingle(joint.Min[2]));
+									Convert.ToSingle(min[0]),
+									Convert.ToSingle(min[1]),
+									Convert.ToSingle(min[2]));
 
 				dmviewData = new float[] {
 						mView.M11, mView.M12, mView.M13, mView.M14,
@@ -998,7 +987,7 @@ namespace TestPhysics
 
 		private void displayConvexDecomposition()
 		{
-			ISoftShape softShape = physicsEngine.GetShape(3) as SoftShape;
+			SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
 
             //region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
             //region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);
@@ -1009,22 +998,15 @@ namespace TestPhysics
             //		0.2);
 
             //AABB region = softShape.AABBox;
-            shapeConvexDec = new ShapeConvexDecomposition(
-            softShape.AABBox,
-            softShape.Triangle);
-
-            
+            ConvexDecompositionEngine shapeConvexDec = new ConvexDecompositionEngine(softShape);
+                        
 			//AABB testRegion = new AABB(
 			//	new SharpEngineMathUtility.Vector3(-0.5,-0.3,-0.8),
 			//	new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
 
-			convexShape = shapeConvexDec.GetConvexShapeList(
-                
-				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position,
-						item.TriangleIndex.ToArray(),0)),
-					0.2);
+			var convexShape = shapeConvexDec.GetConvexShapeList(0.2);
 
-			List<Line> ll = OpenGLUtilities.BuildBoxLine(softShape.AABBox.Max, softShape.AABBox.Min);
+			List<Line> ll = OpenGLUtilities.BuildBoxLine(softShape.GetMaxAABB(), softShape.GetMinAABB());
 
 			foreach (var item in ll)
 			{
@@ -1038,7 +1020,7 @@ namespace TestPhysics
 			{
 				GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
 
-				IVertex[] vtx = Array.ConvertAll(shape.Vertex3Idx.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
+				IVertex[] vtx = Array.ConvertAll(shape.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
 
                 try
                 {

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public class SoftShapePoint: IShapeCommon, Identity
+    internal class SoftShapePoint: IShapeCommon, Identity
     {
         #region Fields
 
@@ -36,6 +36,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Diameter = diameter;
             RotationMatrix = Matrix3x3.IdentityMatrix();
             TriangleIndex = new HashSet<int>();
+            ObjectType = ObjectType.SoftPoint;
         }
 
         #endregion

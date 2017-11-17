@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -10,7 +6,6 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 {
     public sealed class AngularJoint : ICollisionJoint, IMapperJoint
     {
-
         #region Fields
 
         AngularConstraint angularConstraint;
@@ -19,25 +14,39 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #region Constructor
 
-        public AngularJoint()
+        public AngularJoint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPos,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficientRotationAxis)
         {
-
+            angularConstraint = new AngularConstraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPos,
+                hingeAxis,
+                rotationAxis,
+                restoreCoefficient,
+                springCoefficientHingeAxis,
+                springCoefficientRotationAxis);
         }
-
-
+        
         #endregion
-
-
+        
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return angularConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -47,57 +56,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.Angular;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return angularConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return angularConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return angularConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            angularConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         #endregion

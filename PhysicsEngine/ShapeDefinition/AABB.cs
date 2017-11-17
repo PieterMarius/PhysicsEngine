@@ -49,8 +49,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		public bool Contains(AABB box)
 		{
 			return Min.x <= box.Min.x && Max.x >= box.Max.x &&
-				Min.y <= box.Min.y && Max.y >= box.Max.y &&
-				Min.z <= box.Min.z && Max.z >= box.Max.z;
+				   Min.y <= box.Min.y && Max.y >= box.Max.y &&
+				   Min.z <= box.Min.z && Max.z >= box.Max.z;
 		}
 
 		public bool Contains(Vector3 point)

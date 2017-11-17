@@ -134,6 +134,7 @@ namespace SharpPhysicsEngine
 
 			Shapes = new IShape[0];
             CollisionShapes = new List<ICollisionShape>();
+            CollisionJoints = new List<ICollisionJoint>();
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
@@ -285,10 +286,12 @@ namespace SharpPhysicsEngine
 			Joints = new List<IConstraint>();
 		}
 
-		public ICollisionJoint GetJoints(int objectID)
+		public ICollisionJoint GetJoints(int jointIndex)
 		{
-            if (Joints != null)
-                return CollisionJoints.FirstOrDefault(x => x.GetKeyIndex() == objectID);
+            if (Joints != null &&
+                jointIndex >= 0 &&
+                jointIndex < CollisionJoints.Count)
+                return CollisionJoints[jointIndex];
 			
 			return null;
 		}

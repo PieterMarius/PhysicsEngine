@@ -14,9 +14,25 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #region Constructor
 
-        public Hinge2Joint()
+        public Hinge2Joint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPosition,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficient)
         {
-
+            hinge2Constraint = new Hinge2Constraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPosition,
+                hingeAxis,
+                rotationAxis,
+                restoreCoefficient,
+                springCoefficientHingeAxis,
+                springCoefficient);
         }
 
         #endregion
@@ -26,12 +42,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.AddTorque(torqueAxis1, torqueAxis2);
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return hinge2Constraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -41,57 +57,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.Hinge2;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return hinge2Constraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return hinge2Constraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return hinge2Constraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetAxis2Motor(speedValue, forceLimit);
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            hinge2Constraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

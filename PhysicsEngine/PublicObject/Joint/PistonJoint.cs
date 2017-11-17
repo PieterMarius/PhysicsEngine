@@ -18,9 +18,21 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         #region Constructor
 
-        public PistonJoint()
+        public PistonJoint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            Vector3 startAnchorPosition,
+            Vector3 pistonAxis,
+            double restoreCoefficient,
+            double springCoefficient)
         {
-
+            pistonConstraint = new PistonConstraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                startAnchorPosition,
+                pistonAxis,
+                restoreCoefficient,
+                springCoefficient);
         }
 
         #endregion
@@ -29,12 +41,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            throw new NotImplementedException();
+            return pistonConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
@@ -44,57 +56,57 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public JointType GetJointType()
         {
-            throw new NotImplementedException();
+            return JointType.Piston;
         }
 
         public int GetKeyIndex()
         {
-            throw new NotImplementedException();
+            return pistonConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            throw new NotImplementedException();
+            return pistonConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            throw new NotImplementedException();
+            return pistonConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetAxis2Motor(speedValue, forceLimit);
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotImplementedException();
+            pistonConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

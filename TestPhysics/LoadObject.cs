@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml;
+using System.Linq;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine;
 using SharpPhysicsEngine.ShapeDefinition;
@@ -103,11 +104,17 @@ namespace TestPhysics
 				GeometryProperties[] objGeometry = new GeometryProperties[xmlGeometryList.Count];
 				double[] mass = new double[xmlGeometryList.Count];
 				Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
-
+                
 				if (xmlGeometryList.Count > 1)
-					objects[i] = new CompoundShape((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText));
+					objects[i] = new CompoundRigidCollisionShape();
 				else
-					objects[i] = new RigidCollisionShape();
+                {
+                    if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
+                        objects[i] = new RigidCollisionShape();
+                    else if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.StaticBody)
+                        objects[i] = new StaticCollisionShape();
+                }
+					
 				
 				for (int j = 0; j < xmlGeometryList.Count; j++)
 				{
@@ -133,14 +140,16 @@ namespace TestPhysics
 
 				if (xmlGeometryList.Count > 1)
 				{
-					((CompoundShape)objects[i]).SetPartialMass(mass);
-					((CompoundShape)objects[i]).SetCompoundPosition(startCompositePosition);
-					((CompoundShape)objects[i]).SetObjectGeometry(objGeometry);
+					((CompoundRigidCollisionShape)objects[i]).SetPartialMass(mass);
+					((CompoundRigidCollisionShape)objects[i]).SetCompoundPosition(startCompositePosition);
+                    ((CompoundRigidCollisionShape)objects[i]).SetGeometry(
+                                    objGeometry.Select(x => x.VertexPoint).ToList(),
+                                    objGeometry.Select(x => x.TriagleIdx).ToList());
 				}
 				else
 				{
 					objects[i].SetMass(mass[0]);
-					((ConvexShape)objects[i]).SetObjectGeometry(objGeometry[0]);
+                    objects[i].SetGeometry(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx);
 				}
 										   
 				//Linear Velocity
@@ -231,37 +240,37 @@ namespace TestPhysics
 							break;
 
 						case JointType.BallAndSocket:
-                            joint[j] = new BallAndSocketJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//K,
-								//C);
-							break;
+                            joint[j] = new BallAndSocketJoint(
+                                objects[indexA],
+								objects[indexB],
+								startAnchorPosition,
+								K,
+								C);
+                            break;
 
 						case JointType.Slider:
-                            joint[j] = new SliderJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//actionAxis,
-								//K,
-								//C);
+                            joint[j] = new SliderJoint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                actionAxis,
+                                K,
+                                C);
 
-							joint[j].SetLinearLimit(Convert.ToDouble(jointPropertiesList[j][linearLimitMin].InnerText), Convert.ToDouble(jointPropertiesList[j][linearLimitMax].InnerText));
+                            joint[j].SetLinearLimit(Convert.ToDouble(jointPropertiesList[j][linearLimitMin].InnerText), Convert.ToDouble(jointPropertiesList[j][linearLimitMax].InnerText));
 
 							break;
 
 						case JointType.Piston:
-                            joint[j] = new PistonJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//actionAxis,
-								//K,
-								//C);
+                            joint[j] = new PistonJoint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                actionAxis,
+                                K,
+                                C);
 
-							joint[j].SetAxis1AngularLimit(
+                            joint[j].SetAxis1AngularLimit(
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
@@ -272,15 +281,15 @@ namespace TestPhysics
 							break;
 
 						case JointType.Hinge:
-                            joint[j] = new HingeJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//actionAxis,
-								//K,
-								//C);
+                            joint[j] = new HingeJoint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                actionAxis,
+                                K,
+                                C);
 
-							joint[j].SetAxis1AngularLimit(
+                            joint[j].SetAxis1AngularLimit(
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
@@ -288,16 +297,16 @@ namespace TestPhysics
 							break;
 
 						case JointType.Universal:
-                            joint[j] = new UniversalJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//actionAxis,
-								//new Vector3(1.0, 0.0, 0.0),
-								//K,
-								//C);
+                            joint[j] = new UniversalJoint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                actionAxis,
+                                new Vector3(1.0, 0.0, 0.0),
+                                K,
+                                C);
 
-							joint[j].SetAxis1AngularLimit(
+                            joint[j].SetAxis1AngularLimit(
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 							joint[j].SetAxis2AngularLimit(
@@ -306,17 +315,17 @@ namespace TestPhysics
 							break;
 
 						case JointType.Hinge2:
-                            joint[j] = new Hinge2Joint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//actionAxis,
-								//new Vector3 (1.0, 0.0, 0.0),
-								//K,
-								//1.0,
-								//C);
+                            joint[j] = new Hinge2Joint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                actionAxis,
+                                new Vector3(1.0, 0.0, 0.0),
+                                K,
+                                1.0,
+                                C);
 
-							joint[j].SetAxis1AngularLimit(
+                            joint[j].SetAxis1AngularLimit(
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMin].InnerText),
 								Convert.ToDouble(jointPropertiesList[j][angularLimitMax].InnerText));
 
@@ -325,17 +334,17 @@ namespace TestPhysics
 							break;
 
 						case JointType.Angular:
-                            joint[j] = new AngularJoint();
-								//objects[indexA],
-								//objects[indexB],
-								//startAnchorPosition,
-								//new Vector3(1.0, 0.0, 0.0), 
-								//new Vector3(0.0, 1.0, 0.0), 
-								//10.0,
-								//0.5,
-								//0.5);
+                            joint[j] = new AngularJoint(
+                                objects[indexA],
+                                objects[indexB],
+                                startAnchorPosition,
+                                new Vector3(1.0, 0.0, 0.0),
+                                new Vector3(0.0, 1.0, 0.0),
+                                10.0,
+                                0.5,
+                                0.5);
 
-							break;
+                            break;
 
 					}
 					joints[i] = joint[j];

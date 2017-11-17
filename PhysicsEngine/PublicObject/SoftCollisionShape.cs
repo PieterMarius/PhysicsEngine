@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -15,13 +12,30 @@ namespace SharpPhysicsEngine.PublicObject
         SoftShape softShape;
 
         #endregion
-
-
+        
         #region Constructor
 
-        public SoftCollisionShape()
+        public SoftCollisionShape(
+            TriangleIndexes[] triangleIndex,
+            Vector3[] shapePoint,
+            Vector3 startPosition,
+            double decompositionParam,
+            double restoreCoefficient,
+            double springCoefficient)
         {
-            //softShape = new SoftShape();
+            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, decompositionParam, restoreCoefficient, springCoefficient);
+        }
+
+        public SoftCollisionShape(
+            TriangleIndexes[] triangleIndex,
+            Vector3[] shapePoint,
+            ConstraintIndex[] softJoint,
+            double decompositionParam,
+            double restoreCoefficient,
+            double springCoefficient)
+        {
+            
+            softShape = new SoftShape(triangleIndex, shapePoint, softJoint, decompositionParam, restoreCoefficient, springCoefficient);
         }
 
         #endregion
@@ -39,7 +53,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.AngularVelocity;
             }
         }
 
@@ -47,7 +61,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.BaseInertiaTensor;
             }
         }
 
@@ -55,7 +69,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.ForceValue;
             }
         }
 
@@ -63,7 +77,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.InertiaTensor;
             }
         }
 
@@ -71,7 +85,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.InverseMass;
             }
         }
 
@@ -79,7 +93,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.LinearVelocity;
             }
         }
 
@@ -87,7 +101,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.Mass;
             }
         }
 
@@ -95,7 +109,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.ObjectType;
             }
         }
 
@@ -103,7 +117,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.Position;
             }
         }
 
@@ -111,7 +125,7 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.RotationMatrix;
             }
         }
 
@@ -119,23 +133,23 @@ namespace SharpPhysicsEngine.PublicObject
         {
             get
             {
-                throw new NotImplementedException();
+                return softShape.StartPosition;
             }
         }
 
         public void ExcludeFromCollisionDetection(bool excludeFromCollisionDetection)
         {
-            throw new NotImplementedException();
+            softShape.SetExcludeFromCollisionDetection(excludeFromCollisionDetection);
         }
 
         public int GetID()
         {
-            throw new NotImplementedException();
+            return softShape.ID;
         }
 
         public void SetAngularVelocity(Vector3 inputAngularVelocity)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
@@ -145,7 +159,7 @@ namespace SharpPhysicsEngine.PublicObject
 
         public void SetDynamicFrictionCoeff(double dynamicFrictionCoeff)
         {
-            throw new NotImplementedException();
+            softShape.SetDynamicFrictionCoeff(dynamicFrictionCoeff);
         }
 
         public void SetForce(Vector3 force)
@@ -165,22 +179,33 @@ namespace SharpPhysicsEngine.PublicObject
 
         public void SetMass(double mass)
         {
-            throw new NotImplementedException();
+            softShape.SetMass(mass);
         }
 
         public void SetPosition(Vector3 inputPosition)
         {
-            throw new NotImplementedException();
+            
+            throw new NotSupportedException();
         }
 
         public void SetRestitutionCoeff(double restitutionCoeff)
         {
-            throw new NotImplementedException();
+            softShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
         public void SetRestoreCoeff(double value)
         {
-            throw new NotImplementedException();
+            softShape.SetRestoreCoeff(value);
+        }
+
+        public void SetConstraintsRestoreCoeff(double value)
+        {
+            softShape.SetConstraintsRestoreCoefficient(value);
+        }
+
+        public void SetConstraintsSpringCoeff(double value)
+        {
+            softShape.SetConstraintsSpringCoefficient(value);
         }
 
         public void SetRotationMatrix(Matrix3x3 inputRotationMatrix)
@@ -200,7 +225,7 @@ namespace SharpPhysicsEngine.PublicObject
 
         public void SetStaticFrictionCoeff(double staticFrictionCoeff)
         {
-            throw new NotImplementedException();
+            softShape.SetStaticFrictionCoeff(staticFrictionCoeff);
         }
 
         public void SetTorque(Vector3 torque)
@@ -210,7 +235,42 @@ namespace SharpPhysicsEngine.PublicObject
 
         IShape IMapper.GetShape()
         {
-            throw new NotImplementedException();
+            return softShape;
+        }
+
+        public int GetGeometryCount()
+        {
+            return 0;
+        }
+
+        public Vector3 GetMinAABB()
+        {
+            return softShape.AABBox.Min;
+        }
+
+        public Vector3 GetMaxAABB()
+        {
+            return softShape.AABBox.Max;
+        }
+    
+        public int GetShapePointsCount()
+        {
+            return softShape.ShapePoints.Length;
+        }
+
+        public Vector3[] GetShapePointsPosition()
+        {
+            return Array.ConvertAll(softShape.ShapePoints, x => x.Position);
+        }
+
+        public int GetShapeConstraintsCount()
+        {
+            return softShape.SoftConstraint.Count;
+        }
+
+        public Vector3[] GetShapeConstraintsPosition()
+        {
+            return softShape.SoftConstraint.Select(x => x.GetAnchorPosition()).ToArray();
         }
 
         #endregion
