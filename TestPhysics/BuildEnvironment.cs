@@ -71,7 +71,7 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolver(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.SetSolver(SolverType.ProjectedConjugateGradient);
 
             return physicsEnvironment;
 		}
@@ -208,7 +208,7 @@ namespace TestPhysics
             objects[3].SetPosition(new Vector3(-3.0, 1.2, 7.0));
             objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             GeometryProperties geom3 = GetObjectGeometry(ShapeFilename[3][0], ShapeScale[3][0]);
-            objects[2].SetGeometry(geom3.VertexPoint, geom3.TriagleIdx);
+            objects[3].SetGeometry(geom3.VertexPoint, geom3.TriagleIdx);
             objects[3].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[3].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[3].SetRestitutionCoeff(0.1);

@@ -149,9 +149,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                //LoadEngineByXml();
+                LoadEngineByXml();
 
-                LoadEngineByBuilder();
+                //LoadEngineByBuilder();
 
 
             }
@@ -179,9 +179,9 @@ namespace TestPhysics
             //LoadObject loadObject = new LoadObject("configJoint.xml");
             //var loadObject = new LoadObject("startConfig.xml");
             //var loadObject = new LoadObject("carConfig.xml");
-            var loadObject = new LoadObject("testJointBridge.xml");
+            //var loadObject = new LoadObject("testJointBridge.xml");
             //var loadObject = new LoadObject("compositeObjectConfig.xml");
-            //var loadObject = new LoadObject("frictionTestConfig.xml");
+            var loadObject = new LoadObject("frictionTestConfig.xml");
 
             //var loadObject = new LoadObject("softBodyConfig.xml");
 
@@ -197,7 +197,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.NonLinearConjugateGradient);
+            physicsEngine.SetSolver(SolverType.ProjectedConjugateGradient);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {

@@ -148,8 +148,10 @@
     <Compile Include="ContactPartitioning\ContactIndex.cs" />
     <Compile Include="ContactPartitioning\ContactGroupType.cs" />
     <Compile Include="ConstraintHelper.cs" />
+    <Compile Include="Solver\ClampProperties.cs" />
     <Compile Include="Solver\ClampSolution.cs" />
-    <Compile Include="Solver\ConjugateGradient.cs" />
+    <Compile Include="Solver\FrictionStatus.cs" />
+    <Compile Include="Solver\ProjectedConjugateGradient.cs" />
     <Compile Include="Solver\ISolver.cs" />
     <Compile Include="Solver\LinearProblemProperties.cs" />
     <Compile Include="Solver\NonLinearConjugateGradient.cs" />

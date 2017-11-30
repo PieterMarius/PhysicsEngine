@@ -1,11 +1,11 @@
-﻿using SharpEngineMathUtility;
+using SharpEngineMathUtility;
 using static SharpEngineMathUtility.SparseElement;
 using static SharpEngineMathUtility.GeneralMathUtilities;
 using System;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public sealed class ConjugateGradient : ISolver
+    public sealed class ProjectedConjugateGradient : ISolver
     {
         #region Fields
 
@@ -15,7 +15,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Constructor
 
-        public ConjugateGradient(SolverParameters solverParameters)
+        public ProjectedConjugateGradient(SolverParameters solverParameters)
         {
             SolverParameters = solverParameters;
         }
@@ -30,7 +30,7 @@ namespace SharpPhysicsEngine.LCPSolver
         }
 
         public SolutionValues[] Solve(
-            LinearProblemProperties linearProblemProperties, 
+            LinearProblemProperties linearProblemProperties,
             SolutionValues[] X = null)
         {
             if (X == null)
@@ -39,55 +39,59 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x = new double[X.Length];
             for (int i = 0; i < x.Length; i++)
                 x[i] = X[i].X;
-            
+
             SparseElement[] A = linearProblemProperties.GetOriginalSparseMatrix();
             double[] g = GetDirection(A, linearProblemProperties.B, x);
 
-            double a = 0.1;
+            double a = 0.001;
             double t = 1.0;
-                        
+
             if (Dot(g, g) < 1E-50)
                 return X;
 
-            double[] pPhi = GetPhi(linearProblemProperties, A, x, g);
-            
+            double[] p = GetPhi(linearProblemProperties, A, x, g);
+
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
                 double[] sigma = GetPhi(linearProblemProperties, A, x, g);
 
-                if (Dot(GetBetaS(linearProblemProperties, g, x, a), GetBeta(linearProblemProperties, g, x)) <= 
+                if (Dot(GetBetaS(linearProblemProperties, g, x, a), GetBeta(linearProblemProperties, g, x)) <=
                     t * Dot(GetSigmaS(linearProblemProperties, sigma, x, a), sigma))
                 {
                     ////Trial Conjugate Gradient Step
-                    double alphaCG = GetAlphaCG(g, pPhi, A);
-                    double[] y = UpdateSolution(x, pPhi, alphaCG);
+                    double alphaCG = GetAlphaCG(g, p, A);
+                    double[] y = UpdateSolution(x, p, alphaCG);
 
-                    double alphaf = GetAlphaF(linearProblemProperties, pPhi, x);
+                    double? alphaf = GetAlphaF(linearProblemProperties, p, x);
 
-                    if(alphaCG < alphaf)
+                    if (alphaCG < alphaf ||
+                       !alphaf.HasValue)
                     {
                         ////Conjugate Gradient Step
+                        y = Project(linearProblemProperties, y);
                         x = y;
-                        g = GetGradient(A, g, pPhi, alphaCG);
+                        g = GetGradient(A, g, p, alphaCG);
 
                         double[] phiY = GetPhi(linearProblemProperties, A, y, g);
-                        double[] partialValue = Multiply(A, pPhi);
-                        double beta = Dot(phiY, partialValue) /
-                                      Dot(pPhi, partialValue);
+                        double[] partialValue = Multiply(A, p);
+                        double denom = Dot(p, partialValue);
+                        double beta = 0.0;
+                        if (denom != 0.0)
+                            beta = Dot(phiY, partialValue) / denom;
 
-                        pPhi = Minus(phiY, Multiply(beta, pPhi));
+                        p = Minus(phiY, Multiply(beta, p));
                     }
                     else
                     {
                         ////Expansion Step
-                        double[] partialx = UpdateSolution(x, pPhi, alphaf);
-                        g = GetGradient(A, g, pPhi, alphaf);
+                        double[] partialx = UpdateSolution(x, p, alphaf.Value);
+                        g = GetGradient(A, g, p, alphaf.Value);
 
-                        x = GetSigmaPhi(linearProblemProperties, A, g, x, a);
+                        x = GetSigmaPhi(linearProblemProperties, A, g, partialx, a);
                         x = Project(linearProblemProperties, x);
 
                         g = GetDirection(A, linearProblemProperties.B, x);
-                        pPhi = GetPhi(linearProblemProperties, A, x, g);
+                        p = GetPhi(linearProblemProperties, A, x, g);
 
                     }
                 }
@@ -97,41 +101,43 @@ namespace SharpPhysicsEngine.LCPSolver
                     double[] d = GetBeta(linearProblemProperties, g, x);
                     double alphaCG = GetAlphaCG(g, d, A);
 
-                    double alphaf = GetAlphaF(linearProblemProperties, d, x);
+                    double? alphaf = GetAlphaF(linearProblemProperties, d, x);
 
-                    if(alphaCG < alphaf)
+                    if (alphaCG < alphaf ||
+                       !alphaf.HasValue)
                     {
                         ////Proportioning Step
                         x = Minus(x, Multiply(alphaCG, d));
+                        x = Project(linearProblemProperties, x);
                         g = GetGradient(A, g, d, alphaCG);
 
-                        pPhi = GetPhi(linearProblemProperties, A, x, g);
+                        p = GetPhi(linearProblemProperties, A, x, g);
                     }
                     else
                     {
                         ////Proportioning expansion step
-                        double[] partialx = UpdateSolution(x, d, alphaf);
-                        g = GetGradient(A, g, d, alphaf);
+                        double[] partialx = UpdateSolution(x, d, alphaf.Value);
+                        g = GetGradient(A, g, d, alphaf.Value);
 
-                        x = GetSigmaBeta(linearProblemProperties, A, g, x, a);
+                        x = GetSigmaBeta(linearProblemProperties, A, g, partialx, a);
                         x = Project(linearProblemProperties, x);
 
                         g = GetDirection(A, linearProblemProperties.B, x);
-                        pPhi = GetPhi(linearProblemProperties, A, x, g);
+                        p = GetPhi(linearProblemProperties, A, x, g);
                     }
                 }
-
-                //x = Project(linearProblemProperties, x);
             }
 
-            Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x,A,linearProblemProperties)));
+            //x = Project(linearProblemProperties, x);
+
+            Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
 
             for (int i = 0; i < x.Length; i++)
             {
                 X[i].X = x[i];
                 //X[i] = ClampSolution.Clamp(linearProblemProperties, X, i);
             }
-            
+
             return X;
         }
 
@@ -149,16 +155,21 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Collision)
                     error += dir[i] * dir[i];
+                else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Joint)
+                    error += dir[i] * dir[i];
+
+                else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.SoftJoint)
+                    error += dir[i] * dir[i];
                 else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
                 {
-                    double min = 0.0;
-                    double max = 0.0;
+                    double? min = 0.0;
+                    double? max = 0.0;
 
                     ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
 
-                    if (x[i] + 1E-9 < min)
+                    if (min.HasValue && x[i] + 1E-9 < min)
                         error += 0.0;
-                    else if (x[i] - 1E-9 > max)
+                    else if (max.HasValue && x[i] - 1E-9 > max)
                         error += 0.0;
                 }
             }
@@ -179,21 +190,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 if (!ClampSolution.GetIfClamped(input, x, i))
                     result[i] = g[i];
                 else
-                {
                     result[i] = 0.0;
-                    //double min = 0.0;
-                    //double max = 0.0;
-                    //ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
-
-                    //if (x[i] >= min && x[i] <= max)
-                    //{
-                    //    result[i] = g[i];
-                    //}
-                    //else
-                    //{ 
-                    //    result[i] = 0.0;
-                    //}
-                }
             }
 
             return result;
@@ -215,7 +212,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double alphaCG = 0.0;
 
             if (den != 0)
-                alphaCG = Dot(g, p) / den;
+                return Dot(g, p) / den;
 
             return alphaCG;
         }
@@ -267,30 +264,30 @@ namespace SharpPhysicsEngine.LCPSolver
             return Minus(Multiply(A, x), b);
         }
 
-        private double GetAlphaF(
+        private double? GetAlphaF(
             LinearProblemProperties input,
             double[] p,
             double[] x)
         {
-            double outputMin = double.MaxValue;
+            double? outputMin = double.MaxValue;
 
             for (int i = 0; i < input.Count; i++)
             {
-                double min = 0.0;
-                double max = 0.0;
+                double? min = 0.0;
+                double? max = 0.0;
                 double bufMin = double.MaxValue;
                 ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
 
-                if (p[i] > 0.0)
-                    bufMin = (x[i] - min) / p[i];
-                else if (p[i] < 0.0)
-                    bufMin = (x[i] - max) / p[i];
+                if (min.HasValue && p[i] > 0.0)
+                    bufMin = (x[i] - min.Value) / p[i];
+                else if (max.HasValue && p[i] < 0.0)
+                    bufMin = (x[i] - max.Value) / p[i];
 
-                if(bufMin < outputMin)
+                if (bufMin < outputMin)
                     outputMin = bufMin;
             }
 
-            return (outputMin == double.MaxValue) ? 0.0 : outputMin;
+            return (outputMin == double.MaxValue) ? null : outputMin;
         }
 
         private double[] GetSigmaPhi(
@@ -322,13 +319,13 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < input.Count; i++)
             {
-                double lower = 0.0;
-                double upper = 0.0;
+                double? lower = 0.0;
+                double? upper = 0.0;
                 ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
 
-                if (Math.Abs(x[i] - lower) < 1E-50)
+                if (lower.HasValue && Math.Abs(x[i] - lower.Value) < 1E-50)
                     output[i] = Math.Min(0.0, g[i]);
-                else if (Math.Abs(x[i] - upper) < 1E-50)
+                else if (upper.HasValue && Math.Abs(x[i] - upper.Value) < 1E-50)
                     output[i] = Math.Max(0.0, g[i]);
             }
 
@@ -345,18 +342,18 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < input.Count; i++)
             {
-                double lower = 0.0;
-                double upper = 0.0;
+                double? lower = 0.0;
+                double? upper = 0.0;
                 ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
 
-                if (Math.Abs(x[i] - lower) < 1E-50 && 
+                if (lower.HasValue &&
+                    Math.Abs(x[i] - lower.Value) < 1E-50 &&
                     g[i] < 0.0)
                     output[i] = Math.Min(0.0, g[i]);
-                else if (Math.Abs(x[i] - upper) < 1E-50 && 
-                        g[i] > 0.0)
+                else if (upper.HasValue &&
+                         Math.Abs(x[i] - upper.Value) < 1E-50 &&
+                         g[i] > 0.0)
                     output[i] = Math.Max(0.0, g[i]);
-                else
-                    output[i] = 0.0;
             }
 
             return output;
@@ -372,14 +369,14 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < input.Count; i++)
             {
-                double lower = 0.0;
-                double upper = 0.0;
+                double? lower = 0.0;
+                double? upper = 0.0;
                 ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
 
-                if (sigmaValues[i] > 0.0)
-                    output[i] = Math.Min((x[i] - lower) / a, sigmaValues[i]);
-                else if (sigmaValues[i] < 0.0)
-                    output[i] = Math.Max((x[i] - upper) / a, sigmaValues[i]);
+                if (lower.HasValue && sigmaValues[i] > 0.0)
+                    output[i] = Math.Min((x[i] - lower.Value) / a, sigmaValues[i]);
+                else if (upper.HasValue && sigmaValues[i] < 0.0)
+                    output[i] = Math.Max((x[i] - upper.Value) / a, sigmaValues[i]);
             }
 
             return output;

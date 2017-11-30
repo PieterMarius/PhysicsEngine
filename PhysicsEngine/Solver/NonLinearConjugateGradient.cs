@@ -22,7 +22,7 @@ namespace SharpPhysicsEngine.LCPSolver
             solverParam = solverParameters;
 
 			var gaussSeidelSolverParam = new SolverParameters (
-				                                          3,
+				                                          2,
 				                                          solverParam.ErrorTolerance,
 				                                          1.0,
 				                                          solverParam.MaxThreadNumber,

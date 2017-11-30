@@ -344,8 +344,8 @@ namespace SharpPhysicsEngine
 					Solver = new NonLinearConjugateGradient(SolverParameters);
 					break;
 
-				case SolverType.ConjugateGradient:
-					Solver = new ConjugateGradient(SolverParameters);
+				case SolverType.ProjectedConjugateGradient:
+					Solver = new ProjectedConjugateGradient(SolverParameters);
 					break;
 																						 
 				default:

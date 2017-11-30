@@ -5,7 +5,7 @@ namespace SharpPhysicsEngine.LCPSolver
 	{
 		ProjectedGaussSeidel = 0,
 		NonLinearConjugateGradient = 1,
-        ConjugateGradient = 2,
+        ProjectedConjugateGradient = 2,
 	}
 }
 

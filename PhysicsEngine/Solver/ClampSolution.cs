@@ -1,15 +1,16 @@
 ﻿using System;
 using SharpPhysicsEngine.ShapeDefinition;
+using SharpPhysicsEngine.Solver;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public static class ClampSolution
-	{
-		public static SolutionValues Clamp(
-			LinearProblemProperties input,
-			SolutionValues[] X,
-            	int i)
-		{
+    internal static class ClampSolution
+    {
+        public static SolutionValues Clamp(
+            LinearProblemProperties input,
+            SolutionValues[] X,
+                int i)
+        {
 
             switch (input.ConstraintType[i])
             {
@@ -19,8 +20,8 @@ namespace SharpPhysicsEngine.LCPSolver
                         return new SolutionValues(0.0, true);
                     else
                         return new SolutionValues(X[i].X, false);
-                                        
-				case ConstraintType.Friction:
+
+                case ConstraintType.Friction:
 
                     double frictionLimit = X[input.Constraints[i].Value].X * input.ConstraintLimit[i];
 
@@ -32,7 +33,7 @@ namespace SharpPhysicsEngine.LCPSolver
                     return new SolutionValues(X[i].X, false);
 
                 case ConstraintType.JointMotor:
-					double limit = input.ConstraintLimit[i];
+                    double limit = input.ConstraintLimit[i];
 
                     if (X[i].X < -limit)
                         return new SolutionValues(-limit, true);
@@ -40,12 +41,12 @@ namespace SharpPhysicsEngine.LCPSolver
                         return new SolutionValues(limit, true);
 
                     return new SolutionValues(X[i].X, false);
-                    				
-				default:
+
+                default:
                     return new SolutionValues(X[i].X, false);
             }
-		}
-                
+        }
+
         public static double Clamp(
             LinearProblemProperties input,
             double[] X,
@@ -61,7 +62,7 @@ namespace SharpPhysicsEngine.LCPSolver
                         return X[i];
 
                 case ConstraintType.Friction:
-                   
+
                     double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
                     if (X[i] < -frictionLimit)
@@ -70,7 +71,7 @@ namespace SharpPhysicsEngine.LCPSolver
                         return frictionLimit;
 
                     return X[i];
-                    
+
 
                 case ConstraintType.JointMotor:
                     double limit = input.ConstraintLimit[i];
@@ -84,6 +85,59 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 default:
                     return X[i];
+            }
+        }
+
+        public static ClampProperties Clamp(
+            LinearProblemProperties input,
+            double[] p,
+            double[] X,
+            int i)
+        {
+            switch (input.ConstraintType[i])
+            {
+                case ConstraintType.Collision:
+                case ConstraintType.JointLimit:
+                    if (X[i] < 0.0)
+                        return new ClampProperties(0.0, FrictionStatus.None);
+                    else
+                        return new ClampProperties(X[i], FrictionStatus.None);
+
+                case ConstraintType.Friction:
+
+                    if (X[input.Constraints[i].Value] < 0.0)
+                        return new ClampProperties(0.0, FrictionStatus.Gap);
+                    
+                    double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
+                    
+                    if (X[i] < -frictionLimit)
+                        return new ClampProperties(- frictionLimit, FrictionStatus.SlipNegative);
+
+                    if (X[i] > frictionLimit)
+                        return new ClampProperties(frictionLimit, FrictionStatus.SlipPositive);
+
+                    if (Math.Abs(p[i]) < 1E-50 && X[i] < 0.0)
+                        return new ClampProperties(- frictionLimit, FrictionStatus.SlipNegative);
+
+                    if (Math.Abs(p[i]) < 1E-50 && X[i] > 0.0)
+                        return new ClampProperties(frictionLimit, FrictionStatus.SlipPositive);
+
+
+                    return new ClampProperties(X[i], FrictionStatus.Stick);
+
+
+                case ConstraintType.JointMotor:
+                    double limit = input.ConstraintLimit[i];
+
+                    if (X[i] < -limit)
+                        return new ClampProperties(-limit, FrictionStatus.None);
+                    if (X[i] > limit)
+                        return new ClampProperties(limit, FrictionStatus.None);
+
+                    return new ClampProperties(X[i], FrictionStatus.None);
+
+                default:
+                    return new ClampProperties(X[i], FrictionStatus.None);
             }
         }
 
@@ -103,22 +157,20 @@ namespace SharpPhysicsEngine.LCPSolver
                         return false;
 
                 case ConstraintType.Friction:
-                    
+
                     double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
-                    if (Math.Abs(X[i] + frictionLimit) < 1E-50 ||
-                        Math.Abs(X[i] - frictionLimit) < 1E-50)
+                    if (Math.Abs(X[i]) - frictionLimit < 1E-50 )
                         return true;
                     else
                         return false;
-                    
+
                 case ConstraintType.JointMotor:
-                    if (Math.Abs(X[i] - input.ConstraintLimit[i]) < 1E-50 ||
-                        Math.Abs(X[i] + input.ConstraintLimit[i]) < 1E-50)
+                    if (Math.Abs(X[i]) - input.ConstraintLimit[i] < 1E-50)
                         return true;
                     else
                         return false;
-                                        
+
                 default:
                     return false;
             }
@@ -126,22 +178,22 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public static void GetConstraintValues(
             LinearProblemProperties input,
-            double[] x,
+            ClampProperties[] x,
             int i,
-            ref double Lower,
-            ref double Upper)
+            ref double? Lower,
+            ref double? Upper)
         {
             switch (input.ConstraintType[i])
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
                     Lower = 0.0;
-                    Upper = double.MaxValue;
-                    break;   
+                    Upper = null;
+                    break;
 
                 case ConstraintType.Friction:
 
-                    double frictionLimit = x[input.Constraints[i].Value] * input.ConstraintLimit[i];
+                    double frictionLimit = x[input.Constraints[i].Value].Value * input.ConstraintLimit[i];
 
                     Lower = -frictionLimit;
                     Upper = frictionLimit;
@@ -155,8 +207,8 @@ namespace SharpPhysicsEngine.LCPSolver
                     break;
 
                 default:
-                    Lower = double.MinValue;
-                    Upper = double.MaxValue;
+                    Lower = null;
+                    Upper = null;
                     break;
             }
         }

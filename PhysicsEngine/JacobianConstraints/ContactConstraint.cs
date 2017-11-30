@@ -249,32 +249,35 @@ namespace SharpPhysicsEngine
 						null//collisionPoint.StartImpulseValue[0]
                         );
 
-					#endregion
+                    #endregion
 
-					#region Friction Contact
+                    contactConstraints.Add(normalContact);
 
-					JacobianConstraint[] frictionContact =
-						AddFrictionConstraints(
-							objectA,
-							objectB,
-							simulationParameters,
-							linearComponentA,
-							relativeVelocity,
-							ra,
-							rb,
-							null//collisionPoint.StartImpulseValue
-                            );
+                    if (frictionDirections > 0)
+                    {
+                        #region Friction Contact
 
-					#endregion
+                        JacobianConstraint[] frictionContact =
+                            AddFrictionConstraints(
+                                objectA,
+                                objectB,
+                                simulationParameters,
+                                linearComponentA,
+                                relativeVelocity,
+                                ra,
+                                rb,
+                                null//collisionPoint.StartImpulseValue
+                                );
 
-					contactConstraints.Add(normalContact);
+                        #endregion
 
-					int normalIndex = contactConstraints.Count - 1;
-					foreach (JacobianConstraint fjc in frictionContact)
-					{
-						fjc.SetContactReference(normalIndex);
-						contactConstraints.Add(fjc);
-					}
+                        int normalIndex = contactConstraints.Count - 1;
+                        foreach (JacobianConstraint fjc in frictionContact)
+                        {
+                            fjc.SetContactReference(normalIndex);
+                            contactConstraints.Add(fjc);
+                        }
+                    }
 				}
 			}
 

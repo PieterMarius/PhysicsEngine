@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SharpEngineMathUtility
 {
@@ -34,9 +35,6 @@ namespace SharpEngineMathUtility
 
         public static double[] Multiply(SparseElement[] matrix, double[] vector)
         {
-            if (matrix[0].RowLength != vector.Length)
-                throw new Exception("Wrong input length");
-
             double[] result = new double[matrix.Length];
 
             for (int i = 0; i < matrix.Length; i++)
