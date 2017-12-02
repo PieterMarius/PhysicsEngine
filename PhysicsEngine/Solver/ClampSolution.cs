@@ -9,7 +9,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public static SolutionValues Clamp(
             LinearProblemProperties input,
             SolutionValues[] X,
-                int i)
+            int i)
         {
 
             switch (input.ConstraintType[i])

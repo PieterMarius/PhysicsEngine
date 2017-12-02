@@ -43,8 +43,8 @@ namespace SharpPhysicsEngine.LCPSolver
             SparseElement[] A = linearProblemProperties.GetOriginalSparseMatrix();
             double[] g = GetDirection(A, linearProblemProperties.B, x);
 
-            double a = 0.001;
-            double t = 1.0;
+            double a = 0.8;
+            double t = 100000.0;
 
             if (Dot(g, g) < 1E-50)
                 return X;
@@ -273,15 +273,21 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < input.Count; i++)
             {
-                double? min = 0.0;
-                double? max = 0.0;
+                double? lower = 0.0;
+                double? upper = 0.0;
                 double bufMin = double.MaxValue;
-                ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
+                ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
 
-                if (min.HasValue && p[i] > 0.0)
-                    bufMin = (x[i] - min.Value) / p[i];
-                else if (max.HasValue && p[i] < 0.0)
-                    bufMin = (x[i] - max.Value) / p[i];
+                if (!lower.HasValue)
+                    lower = double.MinValue;
+
+                if (!upper.HasValue)
+                    upper = double.MaxValue;
+
+                if (lower.HasValue && p[i] > 0.0)
+                    bufMin = (x[i] - lower.Value) / p[i];
+                else if (upper.HasValue && p[i] < 0.0)
+                    bufMin = (x[i] - upper.Value) / p[i];
 
                 if (bufMin < outputMin)
                     outputMin = bufMin;
@@ -323,6 +329,12 @@ namespace SharpPhysicsEngine.LCPSolver
                 double? upper = 0.0;
                 ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
 
+                if (!lower.HasValue)
+                    lower = double.MinValue;
+
+                if (!upper.HasValue)
+                    upper = double.MaxValue;
+
                 if (lower.HasValue && Math.Abs(x[i] - lower.Value) < 1E-50)
                     output[i] = Math.Min(0.0, g[i]);
                 else if (upper.HasValue && Math.Abs(x[i] - upper.Value) < 1E-50)
@@ -349,11 +361,33 @@ namespace SharpPhysicsEngine.LCPSolver
                 if (lower.HasValue &&
                     Math.Abs(x[i] - lower.Value) < 1E-50 &&
                     g[i] < 0.0)
-                    output[i] = Math.Min(0.0, g[i]);
+                {
+                    if (!upper.HasValue)
+                    {
+                        double value = (x[i] - double.MaxValue) / a;
+                        output[i] = Math.Max(value, g[i]);
+                    }
+                    else
+                    {
+                        double value = (x[i] - upper.Value) / a;
+                        output[i] = Math.Max(value, g[i]);
+                    }
+                }
                 else if (upper.HasValue &&
                          Math.Abs(x[i] - upper.Value) < 1E-50 &&
                          g[i] > 0.0)
-                    output[i] = Math.Max(0.0, g[i]);
+                {
+                    if (!lower.HasValue)
+                    {
+                        double value = (x[i] - double.MinValue) / a;
+                        output[i] = Math.Max(value, g[i]);
+                    }
+                    else
+                    {
+                        double value = (x[i] - lower.Value) / a;
+                        output[i] = Math.Max(value, g[i]);
+                    }
+                }
             }
 
             return output;
@@ -372,6 +406,12 @@ namespace SharpPhysicsEngine.LCPSolver
                 double? lower = 0.0;
                 double? upper = 0.0;
                 ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
+
+                if (!lower.HasValue)
+                    lower = double.MinValue;
+
+                if (!upper.HasValue)
+                    upper = double.MaxValue;
 
                 if (lower.HasValue && sigmaValues[i] > 0.0)
                     output[i] = Math.Min((x[i] - lower.Value) / a, sigmaValues[i]);

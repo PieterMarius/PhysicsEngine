@@ -54,18 +54,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
-                double[] rA = GetBeta(linearProblemProperties, r, x);
-                double[] pA = GetPhi(linearProblemProperties, A, xValue, rA);
-
-                double[] partialValue = Multiply(A, p);
-                double denom = Dot(p, partialValue);
-                double beta = 0.0;
-                if (denom != 0.0)
-                    beta = Dot(rA, partialValue) / denom;
-
-                p = Plus(rA, Multiply(beta, pA));
-
-                denom = Dot(p, Multiply(A, p));
+                double denom = Dot(p, Multiply(A, p));
                 double alfa = 0.0;
                 if (denom != 0.0)
                     alfa = Dot(r, p) / denom;
@@ -74,9 +63,21 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 x = Project(linearProblemProperties, p, xValue);
 
-                xValue = Array.ConvertAll(x, w => w.Value);
+                xValue = Array.ConvertAll(x, k => k.Value);
 
                 r = GetDirection(A, linearProblemProperties.B, xValue);
+
+                double[] w = GetBeta(linearProblemProperties, r, x);
+                double[] z = GetPhi(linearProblemProperties, A, x, p, r);
+
+                double[] partialValue = Multiply(A, p);
+                denom = Dot(p, partialValue);
+                double beta = 0.0;
+                if (denom != 0.0)
+                    beta = Dot(w, partialValue) / denom;
+
+                p = Plus(w, Multiply(beta, z));
+
             }
 
             Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
@@ -139,23 +140,90 @@ namespace SharpPhysicsEngine.LCPSolver
             return Minus(b, Multiply(A, x));
         }
 
+        //private double[] GetPhi(
+        //    LinearProblemProperties input,
+        //    SparseElement[] A,
+        //    double[] x,
+        //    double[] p,
+        //    double[] g)
+        //{
+        //    double[] result = new double[input.Count];
+
+        //    for (int i = 0; i < input.Count; i++)
+        //    {
+        //        if (!ClampSolution.GetIfClamped(input, x, i))
+        //            result[i] = g[i];
+        //        else
+        //            result[i] = 0.0;
+        //    }
+
+        //    return result;
+        //}
+
         private double[] GetPhi(
             LinearProblemProperties input,
             SparseElement[] A,
-            double[] x,
+            ClampProperties[] x,
+            double[] p,
             double[] g)
         {
-            double[] result = new double[input.Count];
+            double[] output = new double[input.Count];
 
             for (int i = 0; i < input.Count; i++)
             {
-                if (!ClampSolution.GetIfClamped(input, x, i))
-                    result[i] = g[i];
-                else
-                    result[i] = 0.0;
+                switch (x[i].FrictionStatus)
+                {
+                    case FrictionStatus.Gap:
+                        if (g[input.Constraints[i].Value] <= 0.0)
+                        {
+                            output[input.Constraints[i].Value] = 0.0;
+                            output[i] = 0.0;
+                        }
+                        else
+                        {
+                            output[input.Constraints[i].Value] = g[input.Constraints[i].Value];
+                            output[i] = 0.0;
+                        }
+
+                        break;
+
+                    case FrictionStatus.Stick:
+                        output[i] = p[i];
+                        break;
+
+                    case FrictionStatus.SlipPositive:
+                        output[input.Constraints[i].Value] = g[input.Constraints[i].Value];
+                        output[i] = Math.Min(0.0, g[i]);
+
+                        break;
+
+                    case FrictionStatus.SlipNegative:
+                        output[input.Constraints[i].Value] = g[input.Constraints[i].Value];
+                        output[i] = Math.Max(0.0, g[i]);
+
+                        break;
+
+                    case FrictionStatus.None:
+                    default:
+                        double? lower = 0.0;
+                        double? upper = 0.0;
+                        ClampSolution.GetConstraintValues(input, x, i, ref lower, ref upper);
+
+                        if (lower.HasValue && Math.Abs(x[i].Value - lower.Value) < 1E-50)
+                            output[i] = Math.Max(0.0, g[i]);
+                        else if (upper.HasValue && Math.Abs(x[i].Value - upper.Value) < 1E-50)
+                            output[i] = Math.Min(0.0, g[i]);
+                        else output[i] = p[i];
+
+                        break;
+                }
+                //if (ClampSolution.GetIfClamped(input, x, i))
+                //    result[i] = g[i];
+                //else
+                //    result[i] = p[i];
             }
 
-            return result;
+            return output;
         }
 
         private double[] GetBeta(
