@@ -48,7 +48,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		{
 			MaxIteration = 10;
 			ErrorTolerance = 1E-20;
-			SOR = 1.0;
+			SOR = 1.1;
 			SORStep = 0.007;
 			MaxThreadNumber = 2;
             DynamicSORUpdate = false;

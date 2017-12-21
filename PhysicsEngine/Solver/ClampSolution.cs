@@ -151,34 +151,37 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    if (Math.Abs(X[i]) < 1E-50)
-                        return true;
-                    else
-                        return false;
+                    return true;
+                    //if (Math.Abs(X[i]) < 1E-50)
+                    //    return true;
+                    //else
+                    //    return false;
 
                 case ConstraintType.Friction:
+                    return true;
+                    //double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
-                    double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
-
-                    if (Math.Abs(X[i]) - frictionLimit < 1E-50 )
-                        return true;
-                    else
-                        return false;
+                    //if (Math.Abs(X[i]) - frictionLimit < 1E-50)
+                    //    return true;
+                    //else
+                    //    return false;
 
                 case ConstraintType.JointMotor:
-                    if (Math.Abs(X[i]) - input.ConstraintLimit[i] < 1E-50)
-                        return true;
-                    else
-                        return false;
+                    return true;
+                    //if (Math.Abs(X[i]) - input.ConstraintLimit[i] < 1E-50)
+                    //    return true;
+                    //else
+                    //    return false;
 
                 default:
                     return false;
             }
         }
 
+        
         public static void GetConstraintValues(
             LinearProblemProperties input,
-            ClampProperties[] x,
+            double[] x,
             int i,
             ref double? Lower,
             ref double? Upper)
@@ -193,7 +196,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 case ConstraintType.Friction:
 
-                    double frictionLimit = x[input.Constraints[i].Value].Value * input.ConstraintLimit[i];
+                    double frictionLimit = x[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
                     Lower = -frictionLimit;
                     Upper = frictionLimit;
