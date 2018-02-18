@@ -3,7 +3,7 @@ using System.Linq;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject
+namespace SharpPhysicsEngine.Wrapper
 {
     public sealed class SoftCollisionShape : ICollisionShape, IMapper
     {

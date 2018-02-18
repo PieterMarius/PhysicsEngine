@@ -22,9 +22,9 @@ namespace SharpPhysicsEngine.LCPSolver
             solverParam = solverParameters;
 
 			var gaussSeidelSolverParam = new SolverParameters (
-				                                          2,
+				                                          1,
 				                                          solverParam.ErrorTolerance,
-				                                          1.1,
+				                                          1.0,
 				                                          solverParam.MaxThreadNumber,
 				                                          solverParam.SORStep,
                                                           false);
@@ -36,37 +36,37 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Public Methods
 
-        public SolutionValues[] Solve(
+        public double[] Solve(
             LinearProblemProperties input,
-            SolutionValues[] X = null)
+            double[] X = null)
         {
             X = (X == null) ?
-                X = new SolutionValues[input.Count] :
+                new double[input.Count] :
                 null;
 
-            SolutionValues[] Xk = gaussSeidelSolver.Solve(input);
-            double[] delta = calculateDelta(Xk, X);
-            double[] searchDirection = negateArray(delta);
+            double[] Xk = gaussSeidelSolver.Solve(input);
+            double[] delta = CalculateDelta(Xk, X);
+            double[] searchDirection = NegateArray(delta);
 
-            SolutionValues[] Xk1 = new SolutionValues[input.Count];
+            double[] Xk1 = new double[input.Count];
 
             for (int i = 0; i < solverParam.MaxIteration; i++)
             {
                 Xk1 = gaussSeidelSolver.Solve(input, Xk);
                                 
-                double[] deltaK = calculateDelta(Xk1, Xk);
+                double[] deltaK = CalculateDelta(Xk1, Xk);
 
-                deltaErrorCheck = arraySquareModule(delta);
+                deltaErrorCheck = ArraySquareModule(delta);
                 
                 double betaK = 1.1;
 				if (Math.Abs(deltaErrorCheck) > 1E-40)
-                    betaK = arraySquareModule(deltaK) / deltaErrorCheck;
+                    betaK = ArraySquareModule(deltaK) / deltaErrorCheck;
 
 				if (betaK > 1.0)
 					searchDirection = new double[searchDirection.Length];
                 else
                 {
-					Xk1 = calculateDirection (
+					Xk1 = CalculateDirection (
 						input,
 						Xk1, 
 						deltaK, 
@@ -94,9 +94,9 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Private Methods
 
-        private double[] calculateDelta(
-            SolutionValues[] a,
-            SolutionValues[] b)
+        private double[] CalculateDelta(
+            double[] a,
+            double[] b)
         {
 			if (a.Length < 0 ||
 				b.Length < 0 ||
@@ -108,12 +108,12 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] result = new double[a.Length];
 
             for (int i = 0; i < a.Length; i++)
-                result[i] = -(a[i].X - b[i].X);
+                result[i] = -(a[i] - b[i]);
             
             return result;
         }
 
-        private double[] negateArray(
+        private double[] NegateArray(
             double[] a)
         {
             double[] result = new double[a.Length];
@@ -126,7 +126,7 @@ namespace SharpPhysicsEngine.LCPSolver
             return result;
         }
 
-        private double arraySquareModule(
+        private double ArraySquareModule(
             double[] a)
         {
             double mod = 0.0;
@@ -139,20 +139,20 @@ namespace SharpPhysicsEngine.LCPSolver
             return mod;
         }
 
-        private SolutionValues[] calculateDirection(
+        private double[] CalculateDirection(
 			LinearProblemProperties input,
-			SolutionValues[] Xk1,
+			double[] Xk1,
             double[] deltaK,
             ref double[] searchDirection,
             double betak)
         {
-            SolutionValues[] result = new SolutionValues[Xk1.Length];
+            double[] result = new double[Xk1.Length];
 
             for (int i = 0; i < Xk1.Length; i++)
             {
                 double bDirection = betak * searchDirection[i];
 
-                result[i].X = Xk1[i].X + bDirection;
+                result[i] = Xk1[i] + bDirection;
 
                 searchDirection[i] = bDirection - deltaK[i];
 

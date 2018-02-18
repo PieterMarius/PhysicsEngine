@@ -193,14 +193,14 @@ namespace SharpPhysicsEngine
 
 			#region Limit Constraints 
 
-			pistonConstraints.AddRange(getLinearLimit(
+			pistonConstraints.AddRange(GetLinearLimit(
 				simulationObjectA,
 				simulationObjectB,
 				sliderAxis,
 				r1,
 				r2));
 
-			pistonConstraints.AddRange(getAnguarLimit(
+			pistonConstraints.AddRange(GetAnguarLimit(
 				simulationObjectA,
 				simulationObjectB,
 				sliderAxis));
@@ -209,7 +209,7 @@ namespace SharpPhysicsEngine
 
 			#region Motor Constraint
 
-			pistonConstraints.AddRange(getMotorConstraint(
+			pistonConstraints.AddRange(GetMotorConstraint(
 				simulationObjectA,
 				simulationObjectB,
 				sliderAxis));
@@ -318,7 +318,7 @@ namespace SharpPhysicsEngine
 
 		#region Private Methods
 
-		List<JacobianConstraint> getLinearLimit(
+		List<JacobianConstraint> GetLinearLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 sliderAxis,
@@ -346,7 +346,7 @@ namespace SharpPhysicsEngine
 			return linearConstraints;
 		}
 
-		List<JacobianConstraint> getAnguarLimit(
+		List<JacobianConstraint> GetAnguarLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 sliderAxis)
@@ -380,7 +380,7 @@ namespace SharpPhysicsEngine
 			return angularConstraints;
 		}
 
-		List<JacobianConstraint> getMotorConstraint(
+		List<JacobianConstraint> GetMotorConstraint(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 sliderAxis)

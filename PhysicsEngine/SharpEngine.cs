@@ -9,8 +9,8 @@ using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ContactPartitioning;
 using SharpPhysicsEngine.Helper;
-using SharpPhysicsEngine.PublicObject;
-using SharpPhysicsEngine.PublicObject.Joint;
+using SharpPhysicsEngine.Wrapper;
+using SharpPhysicsEngine.Wrapper.Joint;
 
 namespace SharpPhysicsEngine
 {
@@ -165,18 +165,16 @@ namespace SharpPhysicsEngine
             CollisionShapes.Add(simulationObject);
             IShape simObj = ((IMapper)simulationObject).GetShape();
 
-            ISoftShape softShape = simObj as ISoftShape;
-
-            if (softShape != null)
+            if (simObj is ISoftShape softShape)
             {
-                ((Identity)softShape).SetID(HsGenerator.GetHash());
+                ((IDentity)softShape).SetID(HsGenerator.GetHash());
                 foreach (var point in softShape.ShapePoints)
-                    ((Identity)point).SetID(HsGenerator.GetHash());
+                    ((IDentity)point).SetID(HsGenerator.GetHash());
             }
             else
-                ((Identity)simObj).SetID(HsGenerator.GetHash());
-			
-			if (Shapes != null && 
+                ((IDentity)simObj).SetID(HsGenerator.GetHash());
+
+            if (Shapes != null && 
 				Shapes.Length > 0) 
 			{
 				var bufferList = Shapes.ToList();
@@ -185,9 +183,11 @@ namespace SharpPhysicsEngine
 			} 
 			else 
 			{
-				var bufferList = new List<IShape>();
-				bufferList.Add (simObj);
-				Shapes = bufferList.ToArray ();
+                var bufferList = new List<IShape>
+                {
+                    simObj
+                };
+                Shapes = bufferList.ToArray ();
 			}
 
 			SoftShapes = Shapes.Where(x => (x as ISoftShape) != null).Cast<ISoftShape>().ToArray();
@@ -267,9 +267,11 @@ namespace SharpPhysicsEngine
 			}
 			else
 			{
-				Joints = new List<IConstraint>();
-				Joints.Add(mappedJoint);
-			}
+                Joints = new List<IConstraint>
+                {
+                    mappedJoint
+                };
+            }
 		}
 
 		public void RemoveJoint(int jointIndex)
@@ -476,64 +478,13 @@ namespace SharpPhysicsEngine
 
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Private Methods
+        #region Private Methods
 
-		#region Position Correction
-
-		//private bool PhysicsJointPositionCorrection()
-		//{
-		//	bool positionUpdated = false;
-
-		//	if (Joints.Count > 0)
-		//	{
-		//		if (Partitions != null)
-		//		{
-		//			double baumgarteStabilizationValue = 1.0 / TimeStep;
-
-		//			for (int i = 0; i < Partitions.Count; i++)
-		//			{
-		//				if (EngineParameters.PositionBasedJointIterations > 0)
-		//				{
-		//					JacobianConstraint[] jointConstraints = GetJacobianJointConstraint(
-		//															   Partitions[i].PartitionedJoints,
-		//															   Shapes,
-		//															   baumgarteStabilizationValue).ToArray();
-
-		//					LinearProblemProperties collisionErrorLCP = linearProblemBuilder.BuildLCP(
-		//						jointConstraints,
-		//						EngineParameters.PositionStabilization);
-
-		//					if (collisionErrorLCP != null)
-		//					{
-		//						Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.PositionBasedJointIterations);
-
-		//						SolutionValues[] correctionValues = Solver.Solve(collisionErrorLCP);
-
-		//						UpdatePositionBasedVelocity(jointConstraints, correctionValues);
-
-		//						positionUpdated = true;
-		//					}
-		//				}
-		//			}
-		//			#region Position and Velocity integration
-
-		//			if (positionUpdated)
-		//				UpdateObjectPosition(Shapes);
-
-		//			#endregion
-		//		}
-		//	}
-
-		//	return positionUpdated;
-		//}
-
-		#endregion
-
-		private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
+        private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
 		{
 			var sorted = jacobianContact.Select((x, i) => new KeyValuePair<JacobianConstraint, int>(x, i)).
 				OrderBy(x => Math.Abs(x.Key.B)).ToArray();
@@ -565,27 +516,9 @@ namespace SharpPhysicsEngine
 			#region Contact and Joint elaboration
 
 			solverError = 0.0;
-
-			//if (EngineParameters.PositionStabilization)
-			//{
-			//	bool positionUpdated = PhysicsJointPositionCorrection();
-
-			//	if (positionUpdated)
-			//	{
-			//		CollisionDetection();
-			//		PartitionEngineExecute();
-			//	}
-			//}
-			
+            			
 			if (Partitions != null) 
 			{
-				bool convertSetting = false;
-				if (EngineParameters.PositionStabilization)
-				{
-					EngineParameters.SetPositionStabilization(false);
-					convertSetting = true;
-				}
-
 				for (int i = 0; i < Partitions.Count;i++)
 				{
                     JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
@@ -596,55 +529,8 @@ namespace SharpPhysicsEngine
 
 					if (jacobianConstraints.Length > 0)
 					{
-						SolutionValues[] overallSolution = new SolutionValues[jacobianConstraints.Length];
-
-						#region Solve Normal And Friction Constraints
-
-						if (EngineParameters.FrictionAndNormalIterations > 0)
-						{
-							//JacobianConstraint[] frictionConstraint = ConstraintHelper.FilterConstraints(jacobianConstraints,
-							//														   ConstraintType.Friction,
-							//														   ConstraintType.Collision);
-
-							//LinearProblemProperties frictionLCP = linearProblemBuilder.BuildLCP(
-							//										frictionConstraint,
-							//										EngineParameters.PositionStabilization);
-
-							//SolutionValues[] contactSolution = BuildMatrixAndExecuteSolver(
-							//							frictionConstraint,
-							//							frictionLCP,
-							//							EngineParameters.FrictionAndNormalIterations);
-						}
-
-						#endregion
-
-						#region Solve Joint Constraint
-
-						if (Joints.Count > 0 &&
-							EngineParameters.JointsIterations > 0)
-						{
-							//JacobianConstraint[] jointConstraints = ConstraintHelper.FindJointConstraints(jacobianConstraints);
-
-							//LinearProblemProperties jointLCP = linearProblemBuilder.BuildLCP(
-							//										jointConstraints,
-							//										EngineParameters.PositionStabilization);
-
-							//SolutionValues[] jointSolution = BuildMatrixAndExecuteSolver(
-							//							jointConstraints,
-							//							jointLCP,
-							//							EngineParameters.JointsIterations);
-						}
-
-                        #endregion
-
-                        #region Solve Overall Constraints
-
-                        //jacobianConstraints = ContactSorting(jacobianConstraints);
-
-                        //stopwatch.Reset();
-
-                        //stopwatch.Start();
-
+						double[] overallSolution = new double[jacobianConstraints.Length];
+                        						
                         var stopwatch2 = new Stopwatch();
 
                         stopwatch2.Reset();
@@ -652,33 +538,11 @@ namespace SharpPhysicsEngine
                         stopwatch2.Start();
 
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
-                                                                jacobianConstraints,
-                                                                EngineParameters.PositionStabilization);
+                                                                jacobianConstraints);
 
                         stopwatch2.Stop();
 
                         Console.WriteLine("LCP Builder ={0}", stopwatch2.ElapsedMilliseconds);
-
-                        //stopwatch.Stop();
-
-                        //Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-
-                        //stopwatch.Reset();
-
-                        //stopwatch.Start();
-
-                        //LinearProblemProperties overallLCP = linearProblemBuilder.OldBuildLCP(
-                        //                                        jacobianConstraints,
-                        //                                        EngineParameters.PositionStabilization);
-
-                        //stopwatch.Stop();
-
-                        //Console.WriteLine("Old Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-
-                        //var test = overallLCP.Equals(overallLCP, old_overallLCP);
-
-                        //Console.WriteLine("Test " + test);
-
 
                         if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
@@ -689,10 +553,6 @@ namespace SharpPhysicsEngine
 
                             stopwatch1.Start();
 
-                            //ISolver solv1 = new NonLinearConjugateGradient(SolverParameters);
-                            //solv1.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
-                            //SolutionValues[] sol1 = solv1.Solve(overallLCP);
-
                             Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
 
 							overallSolution = Solver.Solve(overallLCP);
@@ -702,20 +562,9 @@ namespace SharpPhysicsEngine
                             Console.WriteLine("Solver ={0}", stopwatch1.ElapsedMilliseconds);
                             
                         }
-                        else if (EngineParameters.OverallConstraintsIterations == 0)
-						{
-							//for (int j = 0; j < overallSolution.Length; j++)
-							//	overallSolution[j].X = jacobianConstraints[j].StartImpulse.StartImpulseValue;
-						}
-
+                        
                         integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
-
-						#endregion
 					}
-				}
-				if (convertSetting)
-				{
-					EngineParameters.SetPositionStabilization(true);
 				}
 			}
 
@@ -835,9 +684,7 @@ namespace SharpPhysicsEngine
                     ////Add Soft Body Constraints
                     foreach (var item in objectIndex)
                     {
-                        var softShape = Shapes[item] as ISoftShape;
-
-                        if(softShape != null)
+                        if (Shapes[item] is ISoftShape softShape)
                             partitionItem.PartitionedJoints.AddRange(softShape.SoftConstraint);
                     }
                     
@@ -961,7 +808,7 @@ namespace SharpPhysicsEngine
 
 		#region Solver Matrix Builder
 
-		private SolutionValues[] BuildMatrixAndExecuteSolver(
+		private double[] BuildMatrixAndExecuteSolver(
 			JacobianConstraint[] contactConstraints,
 			LinearProblemProperties linearProblemProperties,
 			int nIterations)
@@ -970,11 +817,11 @@ namespace SharpPhysicsEngine
 			{
 				Solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
 
-				SolutionValues[]  solutionValues = Solver.Solve(linearProblemProperties);
+				double[]  solutionValues = Solver.Solve(linearProblemProperties);
 
 				for (int j = 0; j < contactConstraints.Length; j++)
 				{
-					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j].X);
+					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j]);
 				}
 
 				return solutionValues;
@@ -985,120 +832,6 @@ namespace SharpPhysicsEngine
 
 		#endregion
 		
-		#region Position Based Integration
-
-		private void UpdatePositionBasedVelocity(
-			JacobianConstraint[] contact,
-			SolutionValues[] X)
-		{
-			for (int i = 0; i < contact.Length; i++)
-			{
-				double impulse = X[i].X;
-
-				JacobianConstraint ct = contact[i];
-
-				SetPositionBasedVelocity(
-					ct.ObjectA,
-					ct.LinearComponentA.Value,
-					ct.AngularComponentA,
-					impulse);
-
-				SetPositionBasedVelocity(
-					ct.ObjectB,
-					ct.LinearComponentB.Value,
-					ct.AngularComponentB,
-					impulse);
-			}
-		}
-
-		private void SetPositionBasedVelocity(
-			IShapeCommon simObj,
-			Vector3 linearComponent,
-			Vector3 angularComponent,
-			double X)
-		{
-			if (simObj.ObjectType != ObjectType.StaticBody)
-			{
-				Vector3 linearImpulse = X * linearComponent;
-				Vector3 angularImpuse = X * angularComponent;
-
-				Vector3 linearVelocity = simObj.TempLinearVelocity +
-										 linearImpulse *
-										 simObj.InverseMass;
-
-				Vector3 angularVelocity = simObj.TempAngularVelocity +
-										  simObj.InertiaTensor *
-										  angularImpuse;
-
-				simObj.SetTempLinearVelocity(linearVelocity);
-				simObj.SetTempAngularVelocity(angularVelocity);
-			}
-		}
-
-		private void UpdateObjectPosition(
-			IShape[] simulationObj)
-		{
-			int index = 0;
-			foreach (IShape simObj in simulationObj)
-			{
-				if (simObj.ObjectType != ObjectType.StaticBody)
-				{
-					#region Linear Velocity
-
-					double linearVelocity = simObj.TempLinearVelocity.Length();
-
-					simObj.SetPosition(
-						simObj.Position +
-						TimeStep *
-						simObj.TempLinearVelocity);
-
-					simObj.SetTempLinearVelocity(new Vector3());
-
-					#endregion
-
-					#region Angular Velocity
-
-					double angularVelocity = simObj.TempAngularVelocity.Length();
-
-					Vector3 versor = simObj.TempAngularVelocity.Normalize();
-
-					double rotationAngle = angularVelocity * TimeStep;
-
-					var rotationQuaternion = new Quaternion(versor, rotationAngle);
-
-					simObj.SetRotationStatus(
-						(rotationQuaternion * simObj.RotationStatus).Normalize());
-
-					simObj.SetRotationMatrix(simObj.RotationStatus.ConvertToMatrix());
-
-					simObj.SetInertiaTensor(
-						(simObj.RotationMatrix * simObj.BaseInertiaTensor) *
-						simObj.RotationMatrix.Transpose());
-
-					simObj.SetTempAngularVelocity(new Vector3());
-
-					#endregion
-
-					#region Update AABB
-
-					if (ShapeDefinition.Helper.GetGeometry(simObj) != null &&
-						(linearVelocity > 0.0 || angularVelocity > 0.0))
-					{
-						simObj.SetAABB();
-
-						simObj.SetTempLinearVelocity(new Vector3());
-						simObj.SetTempAngularVelocity(new Vector3());
-					}
-
-					#endregion
-				}
-				Shapes[index] = simObj;
-				index++;
-			}
-		}
-
-		#endregion
-
 		#region IDisposable
 
 		bool disposed = false;
@@ -1132,7 +865,6 @@ namespace SharpPhysicsEngine
 		#endregion
 
 		#endregion
-
 	}
 }
 

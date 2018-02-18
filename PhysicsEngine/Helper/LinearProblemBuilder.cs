@@ -30,8 +30,7 @@ namespace SharpPhysicsEngine.Helper
         #region Public Methods
 
         public LinearProblemProperties BuildLCP(
-            JacobianConstraint[] constraint,
-            bool positionStabilization = false)
+            JacobianConstraint[] constraint)
         {
             if (constraint.Length > 0)
             {
@@ -48,11 +47,9 @@ namespace SharpPhysicsEngine.Helper
                 {
                     JacobianConstraint itemConstraint = constraint[i];
 
-                    List<DictionaryConstraintValue> jc;
-
                     HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.ID, itemConstraint.ObjectB.ID);
 
-                    if (constraintsDictionary.TryGetValue(hash, out jc))
+                    if (constraintsDictionary.TryGetValue(hash, out List<DictionaryConstraintValue> jc))
                         jc.Add(new DictionaryConstraintValue(itemConstraint, i));
                     else
                         constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
@@ -80,10 +77,7 @@ namespace SharpPhysicsEngine.Helper
 
                         int indexVal = constraintValues.Value[w].Index;
 
-                        if (positionStabilization)
-                            B[indexVal] = contactA.CorrectionValue;
-                        else
-                            B[indexVal] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
+                        B[indexVal] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
                                                                                            Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
                         
                         constraintsArray[indexVal] = contactA.ContactReference;
@@ -130,9 +124,8 @@ namespace SharpPhysicsEngine.Helper
                         }
 
                         //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
-                        List<DictionaryConstraintValue> symmetricList;
                         var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
-                        if (constraintsDictionary.TryGetValue(symmetricHashSet, out symmetricList))
+                        if (constraintsDictionary.TryGetValue(symmetricHashSet, out List<DictionaryConstraintValue> symmetricList))
                         {
                             for (int j = 0; j < symmetricList.Count; j++)
                             {

@@ -4,7 +4,7 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Linq;
 
-namespace SharpPhysicsEngine.PublicObject
+namespace SharpPhysicsEngine.Wrapper
 {
     public sealed class CompoundRigidCollisionShape : ICollisionShape, IMapper
     {

@@ -2,16 +2,16 @@
 	
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public struct SupportTriangle
+	internal struct SupportTriangle
 	{
 		#region Public Properties
 
-		public Support a { get; private set; }
-		public Support b { get; private set; }
-		public Support c { get; private set; }
-		public double s { get; private set; }
-		public double t { get; private set; }
-		public Vector3 normal { get; private set; } 
+		public Support A { get; private set; }
+		public Support B { get; private set; }
+		public Support C { get; private set; }
+		public double S { get; private set; }
+		public double T { get; private set; }
+		public Vector3 Normal { get; private set; } 
 
 		#endregion
 
@@ -26,12 +26,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3 normal)
 			:this()
 		{
-			this.a = a;
-			this.b = b;
-			this.c = c;
-			this.s = s;
-			this.t = t;
-			this.normal = normal;
+			this.A = a;
+			this.B = b;
+			this.C = c;
+			this.S = s;
+			this.T = t;
+			this.Normal = normal;
 		}
 
 		#endregion
@@ -40,12 +40,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public void SetValueS (double s)
 		{
-			this.s = s;
+			this.S = s;
 		}
 
 		public void SetValueT (double t)
 		{
-			this.t = t;
+			this.T = t;
 		}
 
 		#endregion

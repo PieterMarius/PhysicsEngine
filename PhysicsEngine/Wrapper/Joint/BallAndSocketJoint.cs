@@ -1,44 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class SliderJoint : ICollisionJoint, IMapperJoint
+    public sealed class BallAndSocketJoint : ICollisionJoint, IMapperJoint
     {
         #region Fields
 
-        SliderConstraint sliderConstraint;
+        BallAndSocketConstraint ballAndSocketConstraint;
 
         #endregion
 
         #region Constructor
 
-        public SliderJoint(
+        public BallAndSocketJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 sliderAxis,
-            double restoreCoefficient,
-            double springCoefficient)
+            Vector3 startAnchorPos,
+            double restoreCoeff,
+            double springCoeff)
         {
-            sliderConstraint = new SliderConstraint(
+            ballAndSocketConstraint = new BallAndSocketConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
-                startAnchorPosition,
-                sliderAxis,
-                restoreCoefficient,
-                springCoefficient);
+                startAnchorPos,
+                restoreCoeff,
+                springCoeff);
         }
-
+        
         #endregion
-
-        #region Public Methods
-
+        
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
             throw new NotSupportedException();
@@ -46,32 +38,32 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public Vector3 GetAnchorPosition()
         {
-            return sliderConstraint.GetAnchorPosition();
+            return ballAndSocketConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return sliderConstraint;
+            return ballAndSocketConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Slider;
+            return JointType.BallAndSocket;
         }
 
         public int GetKeyIndex()
         {
-            return sliderConstraint.GetKeyIndex();
+            return ballAndSocketConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return sliderConstraint.GetObjectIndexA();
+            return ballAndSocketConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return sliderConstraint.GetObjectIndexB();
+            return ballAndSocketConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -81,7 +73,7 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            sliderConstraint.SetAxis1Motor(speedValue, forceLimit);
+            throw new NotSupportedException();
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -96,19 +88,17 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            sliderConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            sliderConstraint.SetRestoreCoefficient(restoreCoefficient);
+            ballAndSocketConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            sliderConstraint.SetSpringCoefficient(springCoefficient);
+            ballAndSocketConstraint.SetSpringCoefficient(springCoefficient);
         }
-
-        #endregion
     }
 }

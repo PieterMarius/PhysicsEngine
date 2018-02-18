@@ -2,94 +2,93 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class UniversalJoint : ICollisionJoint, IMapperJoint
+    public sealed class HingeJoint : ICollisionJoint, IMapperJoint
     {
+
         #region Fields
 
-        UniversalConstraint universalConstraint;
+        HingeConstraint hingeConstraint;
 
         #endregion
 
         #region Constructor
 
-        public UniversalJoint(
+        public HingeJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
-            Vector3 rotationAxis,
             double restoreCoefficient,
             double springCoefficient)
         {
-            universalConstraint = new UniversalConstraint(
+            hingeConstraint = new HingeConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
                 startAnchorPosition,
                 hingeAxis,
-                rotationAxis,
                 restoreCoefficient,
                 springCoefficient);
         }
 
         #endregion
-        
+
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            throw new NotSupportedException();
+            hingeConstraint.AddTorque(torqueAxis1, torqueAxis2);
         }
 
         public Vector3 GetAnchorPosition()
         {
-            return universalConstraint.GetAnchorPosition();
+            return hingeConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return universalConstraint;
+            return hingeConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Universal;
+            return JointType.Hinge;
         }
 
         public int GetKeyIndex()
         {
-            return universalConstraint.GetKeyIndex();
+            return hingeConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return universalConstraint.GetObjectIndexA();
+            return hingeConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return universalConstraint.GetObjectIndexB();
+            return hingeConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            universalConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
+            hingeConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            universalConstraint.SetAxis1Motor(speedValue, forceLimit);
+            hingeConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            universalConstraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
+            throw new NotSupportedException();
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            universalConstraint.SetAxis2Motor(speedValue, forceLimit);
+            throw new NotSupportedException();
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
@@ -99,12 +98,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            universalConstraint.SetRestoreCoefficient(restoreCoefficient);
+            hingeConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            universalConstraint.SetSpringCoefficient(springCoefficient);
+            hingeConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

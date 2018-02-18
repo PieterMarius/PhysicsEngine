@@ -1,5 +1,5 @@
 ﻿using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
-using SharpPhysicsEngine.PublicObject;
+using SharpPhysicsEngine.Wrapper;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;

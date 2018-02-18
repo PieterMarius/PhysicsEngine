@@ -3,14 +3,14 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class EngineCollisionPoint
+	internal class EngineCollisionPoint
 	{
 		#region Public Properties
 
-		public Vector3 dist { get; private set; }
-		public VertexProperties a { get; private set; }
-		public VertexProperties b { get; private set; }
-		public Vector3 normal { get; private set; }
+		public Vector3 Dist { get; private set; }
+		public VertexProperties A { get; private set; }
+		public VertexProperties B { get; private set; }
+		public Vector3 Normal { get; private set; }
 		
 		#endregion
 
@@ -22,10 +22,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties b,
 			Vector3 normal)
 		{
-			this.dist = dist;
-			this.a = a;
-			this.b = b;
-			this.normal = normal;
+			this.Dist = dist;
+			this.A = a;
+			this.B = b;
+			this.Normal = normal;
 		}
 
 		public EngineCollisionPoint()
@@ -37,22 +37,22 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public void SetA(VertexProperties a)
 		{
-			this.a = a;
+			this.A = a;
 		}
 
 		public void SetB(VertexProperties b)
 		{
-			this.b = b;
+			this.B = b;
 		}
 
 		public void SetDist(Vector3 dist)
 		{
-			this.dist = dist;
+			this.Dist = dist;
 		}
 			
 		public void SetNormal(Vector3 normal)
 		{
-			this.normal = normal;
+			this.Normal = normal;
 		}
 
 		#endregion

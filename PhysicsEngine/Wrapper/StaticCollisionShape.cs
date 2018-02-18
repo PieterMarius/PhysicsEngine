@@ -2,7 +2,7 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject
+namespace SharpPhysicsEngine.Wrapper
 {
     public sealed class StaticCollisionShape : ICollisionShape, IMapper
     {

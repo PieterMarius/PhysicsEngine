@@ -1,42 +1,42 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class AngularJoint : ICollisionJoint, IMapperJoint
+    public sealed class SliderJoint : ICollisionJoint, IMapperJoint
     {
         #region Fields
 
-        AngularConstraint angularConstraint;
+        SliderConstraint sliderConstraint;
 
         #endregion
 
         #region Constructor
 
-        public AngularJoint(
+        public SliderJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPos,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3 startAnchorPosition,
+            Vector3 sliderAxis,
             double restoreCoefficient,
-            double springCoefficientHingeAxis,
-            double springCoefficientRotationAxis)
+            double springCoefficient)
         {
-            angularConstraint = new AngularConstraint(
+            sliderConstraint = new SliderConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
-                startAnchorPos,
-                hingeAxis,
-                rotationAxis,
+                startAnchorPosition,
+                sliderAxis,
                 restoreCoefficient,
-                springCoefficientHingeAxis,
-                springCoefficientRotationAxis);
+                springCoefficient);
         }
-        
+
         #endregion
-        
+
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
@@ -46,32 +46,32 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public Vector3 GetAnchorPosition()
         {
-            return angularConstraint.GetAnchorPosition();
+            return sliderConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return angularConstraint;
+            return sliderConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Angular;
+            return JointType.Slider;
         }
 
         public int GetKeyIndex()
         {
-            return angularConstraint.GetKeyIndex();
+            return sliderConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return angularConstraint.GetObjectIndexA();
+            return sliderConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return angularConstraint.GetObjectIndexB();
+            return sliderConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -81,7 +81,7 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotSupportedException();
+            sliderConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -96,17 +96,17 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotSupportedException();
+            sliderConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            angularConstraint.SetRestoreCoefficient(restoreCoefficient);
+            sliderConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            throw new NotSupportedException();
+            sliderConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

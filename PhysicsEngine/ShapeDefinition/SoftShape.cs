@@ -6,7 +6,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal sealed class SoftShape : IShape, ISoftShape, Identity
+    internal sealed class SoftShape : IShape, ISoftShape, IDentity
     {
         #region Object status properties
 
@@ -452,7 +452,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         springCoeff));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
-                    triangle.value.b != triangle.value.b)
+                    triangle.value.b != triangle.value.c)
                     SoftConstraint.Add(new SoftConstraint(
                         ShapePoints[triangle.value.b],
                         ShapePoints[triangle.value.c],

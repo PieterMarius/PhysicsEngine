@@ -53,6 +53,26 @@ namespace SharpEngineMathUtility
             return result;
         }
 
+        public static double Truncate(
+            double value, 
+            int precision)
+        {
+            var tPrecision = Math.Pow(10, precision);
+            return Math.Truncate(value * tPrecision) / tPrecision;
+        }
+
+        public static Vector3 Truncate(
+            Vector3 value,
+            int precision)
+        {
+            var tPrecision = Math.Pow(10, precision);
+
+            return new Vector3(
+                Math.Truncate(value.x * tPrecision) / tPrecision,
+                Math.Truncate(value.y * tPrecision) / tPrecision,
+                Math.Truncate(value.z * tPrecision) / tPrecision);
+        }
+
         public static int SigBit(int x)
         {
             if (x < 0)

@@ -279,18 +279,25 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             if (objList.Count == 0)
                 return null;
 
-            OctTree ret = new OctTree(region, objList, VertexPosition);
-            ret.parent = this;
+            OctTree ret = new OctTree(region, objList, VertexPosition)
+            {
+                parent = this
+            };
 
             return ret;
         }
 
         private OctTree CreateNode(AABB region, TriangleIndexes Item)
         {
-            List<TriangleIndexes> objList = new List<TriangleIndexes>(1); //sacrifice potential CPU time for a smaller memory footprint
-            objList.Add(Item);
-            OctTree ret = new OctTree(region, objList, VertexPosition);
-            ret.parent = this;
+            List<TriangleIndexes> objList = new List<TriangleIndexes>(1)
+            {
+                Item
+            }; //sacrifice potential CPU time for a smaller memory footprint
+
+            OctTree ret = new OctTree(region, objList, VertexPosition)
+            {
+                parent = this
+            };
             return ret;
         }
 

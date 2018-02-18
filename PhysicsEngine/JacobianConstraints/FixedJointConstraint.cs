@@ -115,7 +115,7 @@ namespace SharpPhysicsEngine
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
-			double restoreCoeff = (baumStabilization.HasValue) ? baumStabilization.Value : RestoreCoefficient;
+			double restoreCoeff = baumStabilization ?? RestoreCoefficient;
 
 			double constraintLimit = restoreCoeff * linearError.x;
 

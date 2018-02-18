@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine
 {
-	public class SpatialPartition
+	internal class SpatialPartition
 	{
 		#region Public Fields
 

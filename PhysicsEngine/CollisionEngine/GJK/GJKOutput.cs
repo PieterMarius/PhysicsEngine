@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class GJKOutput
+	internal class GJKOutput
 	{
 		#region Public Fields
 

@@ -47,9 +47,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 								AABB box2 = boxs[j][w];
 
 								if (boxs[i] != null && boxs[j] != null &&
-									testAABBAABB(box1, box2, 0, distanceTolerance) &&
-									testAABBAABB(box1, box2, 1, distanceTolerance) &&
-									testAABBAABB(box1, box2, 2, distanceTolerance))
+									TestBoxes(box1, box2, 0, distanceTolerance) &&
+									TestBoxes(box1, box2, 1, distanceTolerance) &&
+									TestBoxes(box1, box2, 2, distanceTolerance))
 								{
 									lock (lockMe)
 									{
@@ -69,7 +69,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#region Private Methods
 
-		private bool testAABBAABB(
+		private bool TestBoxes(
 			AABB a, 
 			AABB b,
 			int axisIndex,

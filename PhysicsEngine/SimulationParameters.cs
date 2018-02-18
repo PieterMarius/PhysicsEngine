@@ -73,13 +73,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <value>The overall constraints iterations.</value>
 		public int OverallConstraintsIterations { get; private set; }
-
-		/// <summary>
-		/// Gets the position based joint iterations.
-		/// </summary>
-		/// <value>The position based joint iterations.</value>
-		public int PositionBasedJointIterations { get; private set; }
-
+        		
 		#endregion
 
 		/// <summary>
@@ -129,13 +123,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <value>The max correction value.</value>
 		public double MaxCorrectionValue { get; private set; }
-
-		/// <summary>
-		/// Sets the position stabilization.
-		/// </summary>
-		/// <value>The position stabilization.</value>
-		public bool PositionStabilization { get; private set; }
-
+        		
 		/// <summary>
 		/// Gets the baum position stabilization.
 		/// </summary>
@@ -164,14 +152,13 @@ namespace SharpPhysicsEngine
         public PhysicsEngineParameters ()
 		{
 			TimeStep = 0.016;
-			CFM = 1E-7;
+			CFM = 1E-07;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
-			PositionBasedJointIterations = 500;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations =50;
+			OverallConstraintsIterations =25;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;
@@ -183,8 +170,7 @@ namespace SharpPhysicsEngine
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;
 			MaxCorrectionValue = 20.0;
-			PositionStabilization = false;
-            SleepingObject = false;
+			SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;
 		}
@@ -262,12 +248,7 @@ namespace SharpPhysicsEngine
 			BaumPositionStabilization = baumStabilizationValue;
 		}
 
-		public void SetPositionStabilization(bool activate)
-		{
-			PositionStabilization = activate;
-		}
-
-		#endregion
+        	#endregion
 	}
 }
 

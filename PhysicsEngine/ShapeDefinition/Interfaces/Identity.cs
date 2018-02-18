@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal interface Identity
+    internal interface IDentity
     {
         void SetID(int id);   
     }

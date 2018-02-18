@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine
 {
-	public enum ContactGroupType
+	internal enum ContactGroupType
 	{
 		Collision,
 		Joint,

@@ -2,7 +2,8 @@
 using static SharpEngineMathUtility.SparseElement;
 using static SharpEngineMathUtility.GeneralMathUtilities;
 using System;
-using SharpPhysicsEngine.Solver;
+using System.Linq;
+using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
@@ -41,57 +42,56 @@ namespace SharpPhysicsEngine.LCPSolver
             return SolverParameters;
         }
 
-        public SolutionValues[] Solve(
+        public double[] Solve(
             LinearProblemProperties linearProblemProperties,
-            SolutionValues[] X = null)
+            double[] startValues = null)
         {
-            if (X == null)
-                X = new SolutionValues[linearProblemProperties.Count];
+            if (startValues == null)
+                startValues = new double[linearProblemProperties.Count];
 
-            double[] x = Array.ConvertAll(X, item => item.X);
+            double[] x = startValues;
            
             SparseElement[] A = linearProblemProperties.GetOriginalSparseMatrix();
             double[] r = GetDirection(A, linearProblemProperties.B, x);
 
             if (Dot(r, r) < 1E-50)
-                return X;
+                return startValues;
 
             double[] p = r;
+
+            var checkBoundContsraints = linearProblemProperties.ConstraintType.Any(k =>
+                k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
+            var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
+                k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
 
             //Solve Constraint without bound
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
-                double alphaCG = GetAlphaCG(r, p, A);
-                x = UpdateSolution(x, p, alphaCG);
-                
-                r = GetGradient(A, r, p, alphaCG);
+                if (checkUnboundConstraints)
+                {
+                    double alphaCG = GetAlphaCG(r, p, A);
 
-                double[] phiY = GetPhi(linearProblemProperties, x, r);
-                double[] partialValue = Multiply(A, p);
-                double denom = Dot(p, partialValue);
-                double beta = 0.0;
-                if (denom != 0.0)
-                    beta = Dot(phiY, partialValue) / denom;
+                    x = UpdateSolution(x, p, alphaCG);
 
-                p = Minus(phiY, Multiply(beta, p));
+                    r = GetGradient(A, r, p, alphaCG);
 
-                //Solve Constraint with bounds
-                for (int j = 0; j < x.Length; j++)
-                    X[j].X = x[j];
+                    double[] phiY = GetPhi(linearProblemProperties, x, r);
+                    double[] partialValue = Multiply(A, p);
+                    double denom = Dot(p, partialValue);
+                    double beta = 0.0;
+                    if (denom != 0.0)
+                        beta = Dot(phiY, partialValue) / denom;
 
-                SolutionValues[] y = gaussSeidelSolver.Solve(linearProblemProperties, X);
+                    p = Minus(phiY, Multiply(beta, p));
+                }
 
-                x = Array.ConvertAll(y, item => item.X);
+                if (checkBoundContsraints)
+                    x = gaussSeidelSolver.Solve(linearProblemProperties, x);
             }
 
-           
-
-            Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
-
-            for (int j = 0; j < x.Length; j++)
-                X[j].X = x[j];
-
-            return X;
+            //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
+                        
+            return x;
         }
 
         #endregion
@@ -114,18 +114,18 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.SoftJoint)
                     error += dir[i] * dir[i];
-                else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
-                {
-                    double? min = 0.0;
-                    double? max = 0.0;
+                //else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
+                //{
+                //    double? min = 0.0;
+                //    double? max = 0.0;
 
-                    ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
+                //    ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
 
-                    if (min.HasValue && xValue[i] + 1E-9 < min)
-                        error += 0.0;
-                    else if (max.HasValue && xValue[i] - 1E-9 > max)
-                        error += 0.0;
-                }
+                //    if (min.HasValue && xValue[i] + 1E-9 < min)
+                //        error += 0.0;
+                //    else if (max.HasValue && xValue[i] - 1E-9 > max)
+                //        error += 0.0;
+                //}
             }
 
             return error;

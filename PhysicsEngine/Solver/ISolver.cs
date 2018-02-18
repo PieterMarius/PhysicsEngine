@@ -3,9 +3,9 @@ namespace SharpPhysicsEngine.LCPSolver
 {
 	internal interface ISolver
 	{
-		SolutionValues[] Solve(
+		double[] Solve(
             LinearProblemProperties linearProblemProperties,
-            SolutionValues[] X = null);
+            double[] x = null);
         		
 		SolverParameters GetSolverParameters();
 	}

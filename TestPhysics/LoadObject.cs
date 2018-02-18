@@ -5,8 +5,8 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine;
 using SharpPhysicsEngine.ShapeDefinition;
 using Utility;
-using SharpPhysicsEngine.PublicObject;
-using SharpPhysicsEngine.PublicObject.Joint;
+using SharpPhysicsEngine.Wrapper;
+using SharpPhysicsEngine.Wrapper.Joint;
 
 namespace TestPhysics
 {

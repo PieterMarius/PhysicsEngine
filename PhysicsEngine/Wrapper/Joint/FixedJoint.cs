@@ -2,35 +2,36 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class BallAndSocketJoint : ICollisionJoint, IMapperJoint
+    public sealed class FixedJoint : ICollisionJoint, IMapperJoint
     {
         #region Fields
 
-        BallAndSocketConstraint ballAndSocketConstraint;
+        FixedJointConstraint fixedJointConstraint;
 
         #endregion
-
+        
         #region Constructor
 
-        public BallAndSocketJoint(
+        public FixedJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPos,
             double restoreCoeff,
             double springCoeff)
         {
-            ballAndSocketConstraint = new BallAndSocketConstraint(
+
+            fixedJointConstraint = new FixedJointConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
-                startAnchorPos,
                 restoreCoeff,
                 springCoeff);
         }
         
         #endregion
-        
+
+        #region Public Methods
+
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
             throw new NotSupportedException();
@@ -38,32 +39,32 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public Vector3 GetAnchorPosition()
         {
-            return ballAndSocketConstraint.GetAnchorPosition();
+            return fixedJointConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return ballAndSocketConstraint;
+            return fixedJointConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.BallAndSocket;
+            return JointType.Fixed;
         }
 
         public int GetKeyIndex()
         {
-            return ballAndSocketConstraint.GetKeyIndex();
+            return fixedJointConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return ballAndSocketConstraint.GetObjectIndexA();
+            return fixedJointConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return ballAndSocketConstraint.GetObjectIndexB();
+            return fixedJointConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -93,12 +94,14 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            ballAndSocketConstraint.SetRestoreCoefficient(restoreCoefficient);
+            fixedJointConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            ballAndSocketConstraint.SetSpringCoefficient(springCoefficient);
+            fixedJointConstraint.SetSpringCoefficient(springCoefficient);
         }
+
+        #endregion
     }
 }

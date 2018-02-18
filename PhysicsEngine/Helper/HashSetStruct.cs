@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.Helper
 {
-    public struct HashSetStruct : IEquatable<HashSetStruct>
+    internal struct HashSetStruct : IEquatable<HashSetStruct>
     {
         private readonly int id_a, id_b;
 

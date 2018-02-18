@@ -1,7 +1,7 @@
 ﻿using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
     public interface ICollisionJoint
     {

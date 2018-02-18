@@ -78,12 +78,12 @@ namespace SharpPhysicsEngine
 			Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
 			Vector3 rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
-			RelativeOrientation1 = calculateRelativeOrientation (
+			RelativeOrientation1 = CalculateRelativeOrientation (
 				rHingeAxis,
 				rRotationAxis,
                 ShapeA.RotationStatus);
 
-			RelativeOrientation2 = calculateRelativeOrientation (
+			RelativeOrientation2 = CalculateRelativeOrientation (
 				rRotationAxis,
 				rHingeAxis,
                 ShapeB.RotationStatus);
@@ -221,7 +221,7 @@ namespace SharpPhysicsEngine
 
 			#region Limit Constraints 
 
-			universalConstraints.AddRange(getAngularLimit(
+			universalConstraints.AddRange(GetAngularLimit(
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
@@ -327,7 +327,7 @@ namespace SharpPhysicsEngine
 
 		#region Private Static Methods
 
-		List<JacobianConstraint> getAngularLimit(
+		List<JacobianConstraint> GetAngularLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 hingeAxis,
@@ -338,7 +338,7 @@ namespace SharpPhysicsEngine
 			if (AngularLimitMin1.HasValue &&
 				AngularLimitMax1.HasValue)
 			{
-				double angle1 = getAngle1(
+				double angle1 = GetAngle1(
 					hingeAxis,
 					rotationAxis,
 					HingeAxis,
@@ -364,7 +364,7 @@ namespace SharpPhysicsEngine
 				AngularLimitMax2.HasValue)
 			{
 
-				double angle2 = getAngle2(
+				double angle2 = GetAngle2(
 					hingeAxis,
 					rotationAxis,
 					RotationAxis,
@@ -389,17 +389,17 @@ namespace SharpPhysicsEngine
 			return angularConstraint;
 		}
 
-		double getAngle2(
+		double GetAngle2(
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 startAxis,
 			Quaternion rotationStatus,
 			Quaternion startRelativeRotation)
 		{
-			return -getAngle1(axis2, axis1, startAxis, rotationStatus, startRelativeRotation);
+			return -GetAngle1(axis2, axis1, startAxis, rotationStatus, startRelativeRotation);
 		}
 
-		double getAngle1(
+		double GetAngle1(
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 startAxis,
@@ -420,7 +420,7 @@ namespace SharpPhysicsEngine
 			return JacobianCommon.GetRotationAngle(quaternionVectorPart, mult2.a, startAxis);
 		}
 
-		Quaternion calculateRelativeOrientation(
+		Quaternion CalculateRelativeOrientation(
 			Vector3 axis1,
 			Vector3 axis2,
 			Quaternion bodyRotationStatus)

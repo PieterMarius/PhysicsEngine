@@ -4,7 +4,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public sealed class GJK
+	internal sealed class GJK
 	{
 
 		#region Settings Variables
@@ -85,14 +85,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 				buffer = triangles[i];
 
 				if (!GeometryUtilities.TestCollinearity(
-						buffer.a.s,
-						buffer.b.s,
-						buffer.c.s))
+						buffer.A.s,
+						buffer.B.s,
+						buffer.C.s))
 				{
 					distanceBuf = GeometryUtilities.GetPointTriangleIntersection(
-						buffer.a.s,
-						buffer.b.s,
-						buffer.c.s,
+						buffer.A.s,
+						buffer.B.s,
+						buffer.C.s,
 						point,
 						ref s,
 						ref t).Value;
@@ -204,7 +204,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				{
 					for (int j = 0; j < triangles.Count; j++)
 					{
-						direction = triangles[j].normal;
+						direction = triangles[j].Normal;
 						if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(vertexShape1, vertexShape2, direction)))
 						{
 							if (simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(vertexShape1, vertexShape2, -1.0 * direction)))
@@ -239,11 +239,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 				}
 			}
 
-			collisionNormal = -1.0 * result.normal;
+			collisionNormal = -1.0 * result.Normal;
 
 			cp = new CollisionPoint(
-				result.a,
-				result.b,
+				result.A,
+				result.B,
 				collisionNormal);
 			
 			return minDistance;

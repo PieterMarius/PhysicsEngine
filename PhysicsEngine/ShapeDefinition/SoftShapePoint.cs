@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal class SoftShapePoint: IShapeCommon, Identity
+    internal class SoftShapePoint: IShapeCommon, IDentity
     {
         #region Fields
 

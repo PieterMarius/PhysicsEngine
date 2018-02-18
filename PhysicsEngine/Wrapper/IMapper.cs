@@ -1,6 +1,6 @@
 ﻿using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject
+namespace SharpPhysicsEngine.Wrapper
 {
     internal interface IMapper
     {

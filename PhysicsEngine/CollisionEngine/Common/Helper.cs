@@ -108,31 +108,31 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			while (i < result.Count)
 			{
-				Vector3 center = result[i].a.s;
+				Vector3 center = result[i].A.s;
 				Vector3 dir = Vector3.Normalize(vt.s - center);
 
-				if (Vector3.Dot(result[i].normal, dir) > 0.0)
+				if (Vector3.Dot(result[i].Normal, dir) > 0.0)
 				{
 					//Edge 1
 					var edge = new Edge(
-									result[i].a,
-									result[i].b);
+									result[i].A,
+									result[i].B);
 
 					edges = CheckEdge(edges, edge);
 
 					//Edge 2
 
 					edge = new Edge(
-						result[i].a,
-						result[i].c);
+						result[i].A,
+						result[i].C);
 
 					edges = CheckEdge(edges, edge);
 
 					//Edge 3
 
 					edge = new Edge(
-						result[i].b,
-						result[i].c);
+						result[i].B,
+						result[i].C);
 
 					edges = CheckEdge(edges, edge);
 
@@ -164,18 +164,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 			SupportTriangle triangle,
 			Vector3 v)
 		{
-			Vector3 centroidDiff = triangle.a.s - v;
-			Vector3 normal = triangle.normal;
+			Vector3 centroidDiff = triangle.A.s - v;
+			Vector3 normal = triangle.Normal;
 
-			if (Vector3.Dot(triangle.normal, centroidDiff) < 0.0)
-				normal = triangle.normal * -1.0;
+			if (Vector3.Dot(triangle.Normal, centroidDiff) < 0.0)
+				normal = triangle.Normal * -1.0;
 
 			var tr = new SupportTriangle(
-								triangle.a,
-								triangle.b,
-								triangle.c,
-								triangle.s,
-								triangle.t,
+								triangle.A,
+								triangle.B,
+								triangle.C,
+								triangle.S,
+								triangle.T,
 								normal);
 
 			return tr;
@@ -197,15 +197,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ref List<SupportTriangle> triangles,
 			Support[] startPoint)
 		{
-			var triangleSupport = new List<Support>();
-			triangleSupport.Add(startPoint[0]);
-			triangleSupport.Add(startPoint[1]);
-			triangleSupport.Add(startPoint[2]);
-			triangleSupport.Add(startPoint[3]);
+            var triangleSupport = new List<Support>
+            {
+                startPoint[0],
+                startPoint[1],
+                startPoint[2],
+                startPoint[3]
+            };
 
-			//First triangle
+            //First triangle
 
-			triangles.Add(
+            triangles.Add(
 				AddTriangle(
 				triangleSupport[0],
 				triangleSupport[1],
@@ -253,8 +255,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			foreach (SupportTriangle spt in triangles)
 			{
-				Vector3 p2f = spt.a.s - p;         // f.v[0] is an arbitrary point on f
-				double d = p2f.Dot(spt.normal);
+				Vector3 p2f = spt.A.s - p;         // f.v[0] is an arbitrary point on f
+				double d = p2f.Dot(spt.Normal);
 				d /= p2f.Length();                 // for numeric stability
 
 				double bound = -1e-15; // use 1e15 to exclude boundaries
@@ -271,20 +273,20 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexShape2,
 			ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = vertexShape1[triangle.a.a].Vertex;
-			Vector3 ba1 = vertexShape1[triangle.b.a].Vertex - a1;
-			Vector3 ca1 = vertexShape1[triangle.c.a].Vertex - a1;
+			Vector3 a1 = vertexShape1[triangle.A.a].Vertex;
+			Vector3 ba1 = vertexShape1[triangle.B.a].Vertex - a1;
+			Vector3 ca1 = vertexShape1[triangle.C.a].Vertex - a1;
 
-			Vector3 a2 = vertexShape2[triangle.a.b].Vertex;
-			Vector3 ba2 = vertexShape2[triangle.b.b].Vertex - a2;
-			Vector3 ca2 = vertexShape2[triangle.c.b].Vertex - a2;
+			Vector3 a2 = vertexShape2[triangle.A.b].Vertex;
+			Vector3 ba2 = vertexShape2[triangle.B.b].Vertex - a2;
+			Vector3 ca2 = vertexShape2[triangle.C.b].Vertex - a2;
 
 			collisionPoint.SetA(
-				new VertexProperties(a1 + (ba1 * triangle.s) + (ca1 * triangle.t),
-				new int?[] { vertexShape1[triangle.a.a].ID, vertexShape1[triangle.b.a].ID, vertexShape1[triangle.c.a].ID }));
+				new VertexProperties(a1 + (ba1 * triangle.S) + (ca1 * triangle.T),
+				new int?[] { vertexShape1[triangle.A.a].ID, vertexShape1[triangle.B.a].ID, vertexShape1[triangle.C.a].ID }));
 			collisionPoint.SetB(
-				new VertexProperties(a2 + (ba2 * triangle.s) + (ca2 * triangle.t),
-				new int?[] { vertexShape2[triangle.a.b].ID, vertexShape2[triangle.b.b].ID, vertexShape2[triangle.c.b].ID }));
+				new VertexProperties(a2 + (ba2 * triangle.S) + (ca2 * triangle.T),
+				new int?[] { vertexShape2[triangle.A.b].ID, vertexShape2[triangle.B.b].ID, vertexShape2[triangle.C.b].ID }));
 		}
 
 		public static VertexProperties[] SetVertexPosition(IGeometry obj)
@@ -314,12 +316,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			for (int i = 0; i < edge.Count; i++)
 			{
 				var tri = new SupportTriangle(
-									  edge[i].a,
-									  edge[i].b,
+									  edge[i].A,
+									  edge[i].B,
 									  p,
 									  0.0,
 									  0.0,
-									  GeometryUtilities.CalculateNormal(edge[i].a.s, edge[i].b.s, p.s));
+									  GeometryUtilities.CalculateNormal(edge[i].A.s, edge[i].B.s, p.s));
 
 				tri = TurnClockWiseNormal(tri, centroid);
 				result.Add(tri);
@@ -338,8 +340,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 			int i = 0;
 			while (i < result.Count)
 			{
-				if (result[i].a.s == ed.a.s &&
-					result[i].b.s == ed.b.s)
+				if (result[i].A.s == ed.A.s &&
+					result[i].B.s == ed.B.s)
 				{
 					test = true;
 					result.RemoveAt(i);

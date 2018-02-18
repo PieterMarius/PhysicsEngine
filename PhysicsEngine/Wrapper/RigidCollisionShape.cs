@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
 
-namespace SharpPhysicsEngine.PublicObject
+namespace SharpPhysicsEngine.Wrapper
 {
     public sealed class RigidCollisionShape: ICollisionShape, IMapper
     {

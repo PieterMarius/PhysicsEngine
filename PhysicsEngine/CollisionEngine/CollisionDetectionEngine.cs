@@ -199,30 +199,27 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			foreach (var item in shapes.Select((shape, i) => new { shape, i }))
 			{
-				IConvexShape shape = item.shape as IConvexShape;
-				if (shape != null)
-				{
-					boxs[item.i] = new AABB[1];
-					boxs[item.i][0] = shape.ObjectGeometry.AABBox;
-					continue;
-				}
+                if (item.shape is IConvexShape shape)
+                {
+                    boxs[item.i] = new AABB[1];
+                    boxs[item.i][0] = shape.ObjectGeometry.AABBox;
+                    continue;
+                }
 
-				ICompoundShape compoundShape = item.shape as ICompoundShape;
-				if (compoundShape != null)
-				{
-					AABB[] bufBox = Array.ConvertAll(compoundShape.ObjectGeometry, x => x.AABBox);
-					boxs[item.i] = bufBox;
-					continue;
-				}
+                if (item.shape is ICompoundShape compoundShape)
+                {
+                    AABB[] bufBox = Array.ConvertAll(compoundShape.ObjectGeometry, x => x.AABBox);
+                    boxs[item.i] = bufBox;
+                    continue;
+                }
 
-				ISoftShape softShape = item.shape as ISoftShape;
-				if (softShape != null)
-				{
-					boxs[item.i] = new AABB[1];
-					boxs[item.i][0] = softShape.AABBox;
-					continue;
-				}
-			}
+                if (item.shape is ISoftShape softShape)
+                {
+                    boxs[item.i] = new AABB[1];
+                    boxs[item.i][0] = softShape.AABBox;
+                    continue;
+                }
+            }
 
 			return boxs;
 		}

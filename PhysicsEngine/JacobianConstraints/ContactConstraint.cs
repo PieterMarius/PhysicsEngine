@@ -16,8 +16,7 @@ namespace SharpPhysicsEngine
         private readonly PhysicsEngineParameters simulationParameters;
 
 		#endregion Fields
-
-
+        
 		#region Constructor
 
 		public ContactConstraintBuilder(
@@ -27,8 +26,7 @@ namespace SharpPhysicsEngine
 		}
 
 		#endregion Constructor
-
-
+        
 		#region Public Methods
 
         public List<JacobianConstraint> BuildJoints(
@@ -331,7 +329,7 @@ namespace SharpPhysicsEngine
                     constraintLimit,
                     ConstraintType.Friction,
                     null,
-                    (startImpulseProperties != null) ? startImpulseProperties[i] : null);
+                    startImpulseProperties?[i]);
             }
 
             return friction;
@@ -383,7 +381,7 @@ namespace SharpPhysicsEngine
                     constraintLimit,
                     ConstraintType.Friction,
                     null,
-                    (startImpulseProperties != null) ? startImpulseProperties[i] : null);
+                    startImpulseProperties?[i]);
             }
             
             return friction;

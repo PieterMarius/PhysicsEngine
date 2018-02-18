@@ -7,8 +7,8 @@ using Utility;
 using SharpPhysicsEngine.LCPSolver;
 using System;
 using System.Collections.Generic;
-using SharpPhysicsEngine.PublicObject;
-using SharpPhysicsEngine.PublicObject.Joint;
+using SharpPhysicsEngine.Wrapper;
+using SharpPhysicsEngine.Wrapper.Joint;
 
 namespace TestPhysics
 {
@@ -292,10 +292,10 @@ namespace TestPhysics
 
 			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
-			ShapeFilename[3] = new string[1] { "torus.obj" };
+			ShapeFilename[3] = new string[1] { "bunnySmall.obj" };
 			ShapeScale[3] = new float[1] { 1 };
             
-			var objects3 = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
+			var objects3 = BuildSoftBody("bunnySmall.obj", 1, new Vector3(0.0, -1.5, 0.0));
             objects3.SetStaticFrictionCoeff(0.5);
             objects3.SetDynamicFrictionCoeff(0.5);
             objects3.SetRestitutionCoeff(0.5);
@@ -389,8 +389,8 @@ namespace TestPhysics
 				prop.vertexPoint, 
 				position,
                 0.2,
-                2.0,
-                60.0);
+                1.0,
+                1.0);
 		}
 
 

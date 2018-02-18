@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public struct CollisionPair
+	internal struct CollisionPair
 	{
 		public readonly int objectIndexA;
 		public readonly int objectIndexB;

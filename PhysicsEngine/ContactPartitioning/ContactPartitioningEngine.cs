@@ -48,10 +48,11 @@ namespace SharpPhysicsEngine
                 Dictionary<int, ObjectType> objectsTypeDic = simulationObjects.ToDictionary(x => x.ID, x => x.ObjectType);
                 
                 while (contactIndex.Count != 0) {
-					var partition = new List<ContactIndex> ();
-
-					partition.Add (contactIndex [0]);
-					recursiveSearch (
+                    var partition = new List<ContactIndex>
+                    {
+                        contactIndex[0]
+                    };
+                    RecursiveSearch (
 						contactIndex [0],
 						contactIndex,
 						partition,
@@ -92,7 +93,7 @@ namespace SharpPhysicsEngine
 
 		#region Private mehtods
 
-		private void recursiveSearch(
+		private void RecursiveSearch(
 			ContactIndex searchPoint,
 			List<ContactIndex> readList,
 			List<ContactIndex> partition,
@@ -119,7 +120,7 @@ namespace SharpPhysicsEngine
 					{
 						partition.Add (collisionValue);
 
-						recursiveSearch (
+						RecursiveSearch (
 							collisionValue,
 							readList, 
 							partition,
@@ -134,7 +135,7 @@ namespace SharpPhysicsEngine
 					{
 						partition.Add (collisionValue);
 
-						recursiveSearch (
+						RecursiveSearch (
 							collisionValue,
 							readList, 
 							partition,
@@ -152,7 +153,7 @@ namespace SharpPhysicsEngine
 					{
 						partition.Add (collisionValue);
 
-						recursiveSearch (
+						RecursiveSearch (
 							collisionValue,
 							readList, 
 							partition,

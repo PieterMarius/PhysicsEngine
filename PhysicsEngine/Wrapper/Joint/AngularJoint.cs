@@ -2,83 +2,86 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class HingeJoint : ICollisionJoint, IMapperJoint
+    public sealed class AngularJoint : ICollisionJoint, IMapperJoint
     {
-
         #region Fields
 
-        HingeConstraint hingeConstraint;
+        AngularConstraint angularConstraint;
 
         #endregion
 
         #region Constructor
 
-        public HingeJoint(
+        public AngularJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPosition,
+            Vector3 startAnchorPos,
             Vector3 hingeAxis,
+            Vector3 rotationAxis,
             double restoreCoefficient,
-            double springCoefficient)
+            double springCoefficientHingeAxis,
+            double springCoefficientRotationAxis)
         {
-            hingeConstraint = new HingeConstraint(
+            angularConstraint = new AngularConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
-                startAnchorPosition,
+                startAnchorPos,
                 hingeAxis,
+                rotationAxis,
                 restoreCoefficient,
-                springCoefficient);
+                springCoefficientHingeAxis,
+                springCoefficientRotationAxis);
         }
-
+        
         #endregion
-
+        
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
         {
-            hingeConstraint.AddTorque(torqueAxis1, torqueAxis2);
+            throw new NotSupportedException();
         }
 
         public Vector3 GetAnchorPosition()
         {
-            return hingeConstraint.GetAnchorPosition();
+            return angularConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return hingeConstraint;
+            return angularConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Hinge;
+            return JointType.Angular;
         }
 
         public int GetKeyIndex()
         {
-            return hingeConstraint.GetKeyIndex();
+            return angularConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return hingeConstraint.GetObjectIndexA();
+            return angularConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return hingeConstraint.GetObjectIndexB();
+            return angularConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            hingeConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
+            throw new NotSupportedException();
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            hingeConstraint.SetAxis1Motor(speedValue, forceLimit);
+            throw new NotSupportedException();
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -98,12 +101,12 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            hingeConstraint.SetRestoreCoefficient(restoreCoefficient);
+            angularConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            hingeConstraint.SetSpringCoefficient(springCoefficient);
+            throw new NotSupportedException();
         }
 
         #endregion

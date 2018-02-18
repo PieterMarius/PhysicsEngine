@@ -1,10 +1,8 @@
 ﻿using SharpEngineMathUtility;
-using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.Helper
@@ -35,7 +33,7 @@ namespace SharpPhysicsEngine.Helper
         /// <param name="X"></param>
         public void UpdateVelocity(
             JacobianConstraint[] contact,
-            SolutionValues[] X)
+            double[] x)
         {
             //Critical section variable
             var sync = new object();
@@ -43,9 +41,9 @@ namespace SharpPhysicsEngine.Helper
             Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
                 i =>
                 {
-                    if (Math.Abs(X[i].X) > 1E-50)
+                    if (Math.Abs(x[i]) > 1E-50)
                     {
-                        double impulse = X[i].X;
+                        double impulse = x[i];
 
                         JacobianConstraint ct = contact[i];
 
@@ -94,20 +92,14 @@ namespace SharpPhysicsEngine.Helper
             var dynamicShapes = shapes.Where(x => x.ObjectType != ObjectType.StaticBody);
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
-            {
                 IntegrateSoftShapePosition(shape, timeStep);
-            }
-
-            foreach (var shape in dynamicShapes.OfType<ConvexShape>())
-            {
-                IntegrateRigidShapePosition(shape, timeStep);
-            }
-
-            foreach (var shape in dynamicShapes.OfType<CompoundShape>())
-            {
-                IntegrateRigidShapePosition(shape, timeStep);
-            }
             
+            foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+                IntegrateRigidShapePosition(shape, timeStep);
+            
+            foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+                IntegrateRigidShapePosition(shape, timeStep);
+
         }
         
         #endregion
@@ -296,7 +288,5 @@ namespace SharpPhysicsEngine.Helper
 
 
         #endregion Privare Methods
-
-
     }
 }

@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal sealed class CompoundShape : IShape, IShapeCommon, ICompoundShape, Identity
+    internal sealed class CompoundShape : IShape, IShapeCommon, ICompoundShape, IDentity
     {
         #region Object status properties
 

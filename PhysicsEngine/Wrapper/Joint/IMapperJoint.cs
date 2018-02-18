@@ -1,4 +1,4 @@
-﻿namespace SharpPhysicsEngine.PublicObject.Joint
+﻿namespace SharpPhysicsEngine.Wrapper.Joint
 {
     internal interface IMapperJoint
     {

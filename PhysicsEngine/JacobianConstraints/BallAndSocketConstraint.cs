@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine
 
 			#region Jacobian Constraint
 
-			double restoreCoeff = (baumStabilization.HasValue) ? baumStabilization.Value : RestoreCoefficient;
+			double restoreCoeff = baumStabilization ?? RestoreCoefficient;
 
 			double constraintLimit = restoreCoeff * linearError.x;
 

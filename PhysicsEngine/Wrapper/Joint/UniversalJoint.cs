@@ -1,42 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class PistonJoint : ICollisionJoint, IMapperJoint
+    public sealed class UniversalJoint : ICollisionJoint, IMapperJoint
     {
         #region Fields
 
-        PistonConstraint pistonConstraint;
+        UniversalConstraint universalConstraint;
 
         #endregion
 
         #region Constructor
 
-        public PistonJoint(
+        public UniversalJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
             Vector3 startAnchorPosition,
-            Vector3 pistonAxis,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
             double restoreCoefficient,
             double springCoefficient)
         {
-            pistonConstraint = new PistonConstraint(
+            universalConstraint = new UniversalConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
                 startAnchorPosition,
-                pistonAxis,
+                hingeAxis,
+                rotationAxis,
                 restoreCoefficient,
                 springCoefficient);
         }
 
         #endregion
-
+        
         #region Public Methods
 
         public void AddTorque(double torqueAxis1, double torqueAxis2)
@@ -46,67 +44,67 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public Vector3 GetAnchorPosition()
         {
-            return pistonConstraint.GetAnchorPosition();
+            return universalConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return pistonConstraint;
+            return universalConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Piston;
+            return JointType.Universal;
         }
 
         public int GetKeyIndex()
         {
-            return pistonConstraint.GetKeyIndex();
+            return universalConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return pistonConstraint.GetObjectIndexA();
+            return universalConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return pistonConstraint.GetObjectIndexB();
+            return universalConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            pistonConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
+            universalConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            pistonConstraint.SetAxis1Motor(speedValue, forceLimit);
+            universalConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotSupportedException();
+            universalConstraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            pistonConstraint.SetAxis2Motor(speedValue, forceLimit);
+            universalConstraint.SetAxis2Motor(speedValue, forceLimit);
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            pistonConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
+            throw new NotSupportedException();
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            pistonConstraint.SetRestoreCoefficient(restoreCoefficient);
+            universalConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            pistonConstraint.SetSpringCoefficient(springCoefficient);
+            universalConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion

@@ -1,17 +1,17 @@
 ﻿
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class Edge
+	internal class Edge
 	{
-		public Support a { get; set; }
-		public Support b { get; set; }
+		public Support A { get; set; }
+		public Support B { get; set; }
 
 		public Edge (
 			Support a,
 			Support b)
 		{
-			this.a = a;
-			this.b = b;
+			this.A = a;
+			this.B = b;
 		}
 	}
 }

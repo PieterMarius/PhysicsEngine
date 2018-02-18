@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class EPAOutput
+	internal class EPAOutput
 	{
 		#region Public fields
 

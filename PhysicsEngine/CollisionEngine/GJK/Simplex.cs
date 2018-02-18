@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public class Simplex : ICloneable, IEquatable<Simplex>
+	internal class Simplex : ICloneable, IEquatable<Simplex>
 	{
 		public List<Support> Support { get; set; }
-		public double w { get; set; }
-		public double t { get; set; }
+		public double W { get; set; }
+		public double T { get; set; }
 
 		#region "Constructor"
 
@@ -22,8 +22,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 			double t)
 		{
 			Support = support;
-			this.w = w;
-			this.t = t;
+			this.W = w;
+			this.T = t;
 		}
 
 		#endregion

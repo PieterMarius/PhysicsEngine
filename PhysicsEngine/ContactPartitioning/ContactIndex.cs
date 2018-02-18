@@ -1,7 +1,7 @@
 ﻿
 namespace SharpPhysicsEngine
 {
-	public struct ContactIndex
+	internal struct ContactIndex
 	{
 		#region Public Properties
 

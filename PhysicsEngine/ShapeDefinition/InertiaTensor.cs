@@ -50,7 +50,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			massCenter = new Vector3 ();
 			inertiaTensor = new Matrix3x3 ();
                          
-			computeInertiaTensor ();
+			ComputeInertiaTensor ();
 		}
 
         #endregion
@@ -71,7 +71,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Private Methods
 
-        private void computeInertiaTensor()
+        private void ComputeInertiaTensor()
 		{
 			
 			for (int i = 0; i < triangleVertexIndex.Length; i++) 

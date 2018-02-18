@@ -24,15 +24,15 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Public Methods
 
-        public SolutionValues[] Solve(
+        public double[] Solve(
             LinearProblemProperties input,
-            SolutionValues[] X = null)
+            double[] X = null)
         {
             if(X == null)
-                X = new SolutionValues[input.Count];
+                X = new double[input.Count];
 
 			double internalSOR = SolverParameters.SOR;
-            double solverError = double.MaxValue;
+            //double solverError = double.MaxValue;
 
 			for (int k = 0; k < SolverParameters.MaxIteration; k++) 
 			{
@@ -53,31 +53,31 @@ namespace SharpPhysicsEngine.LCPSolver
 						for (int j = 0; j < m.Count; j++) 
 						{
 							if (bufIndex[j] < i) 
-								sumBuffer += bufValue [j] * X [bufIndex[j]].X;
+								sumBuffer += bufValue [j] * X [bufIndex[j]];
 						}
 					}
 
                     sumBuffer = (input.B[i] - sumBuffer) * input.D[i];
 
-                    X[i].X += (sumBuffer - X[i].X) * internalSOR;
+                    X[i] += (sumBuffer - X[i]) * internalSOR;
 
                     X[i] = ClampSolution.Clamp (input, X, i);
 
                     sum[i] = sumBuffer;
 				}
                 
-                if (SolverParameters.DynamicSORUpdate)
-                {
-                    double actualSolverError = SolverHelper.ComputeSolverError(input, X);
+                //if (SolverParameters.DynamicSORUpdate)
+                //{
+                //    double actualSolverError = SolverHelper.ComputeSolverError(input, X);
                     
-                    if (actualSolverError > solverError)
-                        internalSOR = Math.Max(internalSOR - SolverParameters.SORStep, SolverParameters.SORStep);
-                    else
-                        solverError = actualSolverError;
+                //    if (actualSolverError > solverError)
+                //        internalSOR = Math.Max(internalSOR - SolverParameters.SORStep, SolverParameters.SORStep);
+                //    else
+                //        solverError = actualSolverError;
 
-                    if (actualSolverError < SolverParameters.ErrorTolerance)
-                        return X;
-                }
+                //    if (actualSolverError < SolverParameters.ErrorTolerance)
+                //        return X;
+                //}
 
                 
             }
@@ -101,7 +101,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         private double[] ElaborateLowerTriangularMatrix(
             LinearProblemProperties input,
-            SolutionValues[] X)
+            double[] X)
         {
             double[] sum = new double[input.Count];
 
@@ -109,15 +109,15 @@ namespace SharpPhysicsEngine.LCPSolver
 				input.Count, 
 				new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber }, 
 				i => {
-					sum [i] = kernel (input, X, i);
+					sum [i] = Kernel (input, X, i);
 				});
 				
             return sum;
         }
 
-        private double kernel(
+        private double Kernel(
             LinearProblemProperties input,
-            SolutionValues[] X,
+            double[] X,
             int i)
         {
 			double sumBuffer = 0.0;
@@ -130,7 +130,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
 				for (int j = 0; j < input.M [i].Count; j++) {
 					if(bufIndex [j] > i) 
-						sumBuffer += bufValue [j] * X [bufIndex [j]].X;
+						sumBuffer += bufValue [j] * X [bufIndex [j]];
 				}
 			}
             return sumBuffer;

@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public sealed class ManifoldPointsGenerator
+	internal sealed class ManifoldPointsGenerator
 	{
 		#region Properties
 
@@ -36,17 +36,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3[] vertexObjB,
 			CollisionPoint collisionPoint)
 		{
-			List<Vector3> collisionA = getNearestPoint (
+			List<Vector3> collisionA = GetNearestPoint (
 				vertexObjA,
 				collisionPoint.CollisionPointA.Vertex,
 				collisionPoint.CollisionNormal);
 
-			List<Vector3> collisionB = getNearestPoint (
+			List<Vector3> collisionB = GetNearestPoint (
 				vertexObjB,
 				collisionPoint.CollisionPointB.Vertex,
 				collisionPoint.CollisionNormal);
 
-			List<CollisionPoint> collisionPointsList = findCollisionPoints (
+			List<CollisionPoint> collisionPointsList = FindCollisionPoints (
 				collisionA.ToArray (),
 				collisionB.ToArray (),
 				collisionPoint.CollisionNormal,
@@ -68,7 +68,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <returns>The nearest point.</returns>
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>
-		private List<Vector3> getNearestPoint(
+		private List<Vector3> GetNearestPoint(
 			Vector3[] vertexObj,
 			Vector3 collisionPoint,
 			Vector3 planeNormal)
@@ -86,7 +86,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return collisionPoints;
 		}
 
-		private List<CollisionPoint> findCollisionPoints(
+		private List<CollisionPoint> FindCollisionPoints(
 			Vector3[] ca,
 			Vector3[] cb,
 			Vector3 normal,

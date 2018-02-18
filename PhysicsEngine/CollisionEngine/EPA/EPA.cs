@@ -5,7 +5,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public sealed class EPA
+	internal sealed class EPA
 	{
 		#region Settings Variable
 
@@ -72,14 +72,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 						epaBuffer = triangles [i];
 
 						if (!GeometryUtilities.TestCollinearity (
-								epaBuffer.a.s,
-								epaBuffer.b.s,
-								epaBuffer.c.s)) 
+								epaBuffer.A.s,
+								epaBuffer.B.s,
+								epaBuffer.C.s)) 
 						{
 							vDistance = GeometryUtilities.GetPointTriangleIntersection (
-								epaBuffer.a.s,
-								epaBuffer.b.s,
-								epaBuffer.c.s,
+								epaBuffer.A.s,
+								epaBuffer.B.s,
+								epaBuffer.C.s,
 								origin,
 								ref s,
 								ref t).Value;
@@ -163,12 +163,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 													  centroid);
 
 			var collisionPoint = new CollisionPoint (
-				epaCollisionPoint.a,
-				epaCollisionPoint.b,
-				epaCollisionPoint.normal);
+				epaCollisionPoint.A,
+				epaCollisionPoint.B,
+				epaCollisionPoint.Normal);
 
 			return new EPAOutput (
-				Vector3.Length (epaCollisionPoint.dist),
+				Vector3.Length (epaCollisionPoint.Dist),
 				collisionPoint);
 		}
 

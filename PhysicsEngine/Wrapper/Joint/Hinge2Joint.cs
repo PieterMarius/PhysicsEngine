@@ -2,7 +2,7 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
     public sealed class Hinge2Joint : ICollisionJoint, IMapperJoint
     {

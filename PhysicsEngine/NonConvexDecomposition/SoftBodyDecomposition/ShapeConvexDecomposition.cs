@@ -247,8 +247,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             if (objList.Count == 0)
                 return null;
 
-            ShapeConvexDecomposition ret = new ShapeConvexDecomposition(region, objList, triangleIndexes, DecompositionValue);
-            ret.parent = this;
+            ShapeConvexDecomposition ret = new ShapeConvexDecomposition(region, objList, triangleIndexes, DecompositionValue)
+            {
+                parent = this
+            };
 
             return ret;
         }

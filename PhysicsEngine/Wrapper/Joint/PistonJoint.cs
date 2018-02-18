@@ -1,33 +1,40 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.PublicObject.Joint
+namespace SharpPhysicsEngine.Wrapper.Joint
 {
-    public sealed class FixedJoint : ICollisionJoint, IMapperJoint
+    public sealed class PistonJoint : ICollisionJoint, IMapperJoint
     {
         #region Fields
 
-        FixedJointConstraint fixedJointConstraint;
+        PistonConstraint pistonConstraint;
 
         #endregion
-        
+
         #region Constructor
 
-        public FixedJoint(
+        public PistonJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            double restoreCoeff,
-            double springCoeff)
+            Vector3 startAnchorPosition,
+            Vector3 pistonAxis,
+            double restoreCoefficient,
+            double springCoefficient)
         {
-
-            fixedJointConstraint = new FixedJointConstraint(
+            pistonConstraint = new PistonConstraint(
                 ((IMapper)shapeA).GetShape(),
                 ((IMapper)shapeB).GetShape(),
-                restoreCoeff,
-                springCoeff);
+                startAnchorPosition,
+                pistonAxis,
+                restoreCoefficient,
+                springCoefficient);
         }
-        
+
         #endregion
 
         #region Public Methods
@@ -39,42 +46,42 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public Vector3 GetAnchorPosition()
         {
-            return fixedJointConstraint.GetAnchorPosition();
+            return pistonConstraint.GetAnchorPosition();
         }
 
         IConstraint IMapperJoint.GetJoint()
         {
-            return fixedJointConstraint;
+            return pistonConstraint;
         }
 
         public JointType GetJointType()
         {
-            return JointType.Fixed;
+            return JointType.Piston;
         }
 
         public int GetKeyIndex()
         {
-            return fixedJointConstraint.GetKeyIndex();
+            return pistonConstraint.GetKeyIndex();
         }
 
         public int GetObjectIndexA()
         {
-            return fixedJointConstraint.GetObjectIndexA();
+            return pistonConstraint.GetObjectIndexA();
         }
 
         public int GetObjectIndexB()
         {
-            return fixedJointConstraint.GetObjectIndexB();
+            return pistonConstraint.GetObjectIndexB();
         }
 
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
-            throw new NotSupportedException();
+            pistonConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
 
         public void SetAxis1Motor(double speedValue, double forceLimit)
         {
-            throw new NotSupportedException();
+            pistonConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
         public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
@@ -84,22 +91,22 @@ namespace SharpPhysicsEngine.PublicObject.Joint
 
         public void SetAxis2Motor(double speedValue, double forceLimit)
         {
-            throw new NotSupportedException();
+            pistonConstraint.SetAxis2Motor(speedValue, forceLimit);
         }
 
         public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
-            throw new NotSupportedException();
+            pistonConstraint.SetLinearLimit(linearLimitMin, linearLimitMax);
         }
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            fixedJointConstraint.SetRestoreCoefficient(restoreCoefficient);
+            pistonConstraint.SetRestoreCoefficient(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            fixedJointConstraint.SetSpringCoefficient(springCoefficient);
+            pistonConstraint.SetSpringCoefficient(springCoefficient);
         }
 
         #endregion
