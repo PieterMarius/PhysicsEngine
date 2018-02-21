@@ -23,11 +23,10 @@ namespace SharpPhysicsEngine.LCPSolver
             SolverParameters = solverParameters;
 
             var gaussSeidelSolverParam = new SolverParameters(
-                                                          2,
+                                                          1,
                                                           SolverParameters.ErrorTolerance,
                                                           1.0,
                                                           SolverParameters.MaxThreadNumber,
-                                                          SolverParameters.SORStep,
                                                           false);
 
             gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
@@ -63,20 +62,22 @@ namespace SharpPhysicsEngine.LCPSolver
                 k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
             var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
                 k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
-
+            
             //Solve Constraint without bound
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
                 if (checkUnboundConstraints)
                 {
-                    double alphaCG = GetAlphaCG(r, p, A);
+                    double[] Ap = Multiply(A, p);
+
+                    double alphaCG = GetAlphaCG(Ap, r, p);
 
                     x = UpdateSolution(x, p, alphaCG);
 
-                    r = GetGradient(A, r, p, alphaCG);
+                    r = GetGradient(Ap, r, p, alphaCG);
 
                     double[] phiY = GetPhi(linearProblemProperties, x, r);
-                    double[] partialValue = Multiply(A, p);
+                    double[] partialValue = Ap;
                     double denom = Dot(p, partialValue);
                     double beta = 0.0;
                     if (denom != 0.0)
@@ -86,7 +87,9 @@ namespace SharpPhysicsEngine.LCPSolver
                 }
 
                 if (checkBoundContsraints)
+                {
                     x = gaussSeidelSolver.Solve(linearProblemProperties, x);
+                }
             }
 
             //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
@@ -154,11 +157,11 @@ namespace SharpPhysicsEngine.LCPSolver
         /// <param name="A"></param>
         /// <returns></returns>
         private double GetAlphaCG(
+            double[] Ap,
             double[] g,
-            double[] p,
-            SparseElement[] A)
+            double[] p)
         {
-            double den = Dot(Multiply(A, p), p);
+            double den = Dot(Ap, p);
             double alphaCG = 0.0;
 
             if (den != 0)
@@ -176,12 +179,12 @@ namespace SharpPhysicsEngine.LCPSolver
         /// <param name="alpha"></param>
         /// <returns></returns>
         private double[] GetGradient(
-            SparseElement[] A,
+            double[] Ap,
             double[] g,
             double[] p,
             double alpha)
         {
-            return Minus(g, Multiply(alpha, Multiply(A, p)));
+            return Minus(g, Multiply(alpha, Ap));
         }
 
         /// <summary>
@@ -216,21 +219,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             return result;
         }
-
-        private double[] Project(
-             LinearProblemProperties input,
-             double[] x)
-        {
-            double[] result = new double[input.Count];
-
-            for (int i = 0; i < input.Count; i++)
-            {
-                result[i] = ClampSolution.Clamp(input, x, i);
-            }
-
-            return result;
-        }
-
+        
         #endregion
     }
 }

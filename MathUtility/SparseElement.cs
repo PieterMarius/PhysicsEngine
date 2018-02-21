@@ -12,20 +12,17 @@ namespace SharpEngineMathUtility
 		public readonly double[] Value;
 		public readonly int[] Index;
 		public readonly int Count;
-		public readonly int RowLength;
-
+		
 		#endregion
 
 		#region Constructor
 
 		public SparseElement (
 			double[] value,
-			int[] index,
-			int rowLength)
+			int[] index)
 		{
 			Value = value;
 			Index = index;
-			RowLength = rowLength;
 			Count = value.Length;
 		}
 
@@ -37,20 +34,22 @@ namespace SharpEngineMathUtility
         {
             double[] result = new double[matrix.Length];
 
-            for (int i = 0; i < matrix.Length; i++)
-            {
-                SparseElement m = matrix[i];
+            Parallel.For(0,
+                matrix.Length,
+                i =>
+                {
+                    SparseElement m = matrix[i];
 
-                double[] bufValue = m.Value;
-                int[] bufIndex = m.Index;
+                    double[] bufValue = m.Value;
+                    int[] bufIndex = m.Index;
 
-                double bValue = 0.0;
+                    double bValue = 0.0;
 
-                for (int j = 0; j < m.Count; j++)
-                    bValue += bufValue[j] * vector[bufIndex[j]];
+                    for (int j = 0; j < m.Count; j++)
+                        bValue += bufValue[j] * vector[bufIndex[j]];
 
-                result[i] = bValue;
-            }
+                    result[i] = bValue;
+                });
 
             return result;
         }

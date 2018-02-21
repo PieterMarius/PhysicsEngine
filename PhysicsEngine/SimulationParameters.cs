@@ -158,7 +158,7 @@ namespace SharpPhysicsEngine
 			BaumStabilization = 60;
 			FrictionAndNormalIterations = 0;
 			JointsIterations = 0;
-			OverallConstraintsIterations =25;
+			OverallConstraintsIterations =80;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;

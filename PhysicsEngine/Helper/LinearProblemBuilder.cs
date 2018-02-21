@@ -36,6 +36,7 @@ namespace SharpPhysicsEngine.Helper
             {
                 double[] B = new double[constraint.Length];
                 double[] D = new double[constraint.Length];
+                double[] invD = new double[constraint.Length];
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
                 double[] constraintsLimit = new double[constraint.Length];
                 SparseElement[] M = new SparseElement[constraint.Length];
@@ -92,7 +93,8 @@ namespace SharpPhysicsEngine.Helper
                                   EngineParameters.CFM +
                                   1E-40;
 
-                        D[indexVal] = 1.0 / mValue;
+                        D[indexVal] = mValue;
+                        invD[indexVal] = 1.0 / mValue;
 
                         //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
                         for (int j = 0; j < constraintValues.Value.Count; j++)
@@ -271,8 +273,7 @@ namespace SharpPhysicsEngine.Helper
                         //Sparse Matrix
                         M[indexVal] = new SparseElement(
                             values.ToArray(),
-                            index.ToArray(),
-                            constraint.Length);                        
+                            index.ToArray());                        
                     }
                 });
                                 
@@ -280,6 +281,7 @@ namespace SharpPhysicsEngine.Helper
                     M,
                     B,
                     D,
+                    invD,
                     constraintsLimit,
                     constraintsType,
                     constraintsArray);
@@ -300,6 +302,7 @@ namespace SharpPhysicsEngine.Helper
             {
                 double[] B = new double[constraint.Length];
                 double[] D = new double[constraint.Length];
+                double[] invD = new double[constraint.Length];
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
                 double[] constraintsLimit = new double[constraint.Length];
                 int?[] constraints = new int?[constraint.Length];
@@ -342,7 +345,8 @@ namespace SharpPhysicsEngine.Helper
                                   EngineParameters.CFM +
                                   1E-40;
 
-                        D[i] = 1.0 / mValue;
+                        D[i] = mValue;
+                        invD[i] = 1.0 / mValue;
 
                         int contactA_ID_A = contactA.ObjectA.ID;
                         int contactA_ID_B = contactA.ObjectB.ID;
@@ -417,14 +421,14 @@ namespace SharpPhysicsEngine.Helper
                 {
                     M[i] = new SparseElement(
                         value[i].ToArray(),
-                        index[i].ToArray(),
-                        constraint.Length);
+                        index[i].ToArray());
                 }
 
                 return new LinearProblemProperties(
                     M,
                     B,
                     D,
+                    invD,
                     constraintsLimit,
                     constraintsType,
                     constraints);

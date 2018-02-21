@@ -5,7 +5,7 @@ namespace SharpPhysicsEngine.LCPSolver
 	{
 		double[] Solve(
             LinearProblemProperties linearProblemProperties,
-            double[] x = null);
+            double[] x);
         		
 		SolverParameters GetSolverParameters();
 	}

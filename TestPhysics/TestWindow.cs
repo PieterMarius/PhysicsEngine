@@ -41,10 +41,7 @@ namespace TestPhysics
 		ICollisionShape[] simulationObjects;
 		ICollisionJoint[] simulationJoints;
 
-		CollisionEngineParameters collisionEngineParameters;
-		SolverParameters solverParameters;
-		PhysicsEngineParameters simulationParameters;
-		SharpPhysicsEngine.SharpEngine physicsEngine;
+		SharpEngine physicsEngine;
 
 		List<List<double>> colorList = new List<List<double>>();
 
@@ -131,8 +128,55 @@ namespace TestPhysics
 			stopwatch.Stop();
 			Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
+            stopwatch.Reset();
+            stopwatch.Start();
 
-		}
+            //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
+
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+
+            //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
+
+            
+            //System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
+            List<double> test4 = new List<double>();
+            //double[] test4 = new double[nvalue * 3];
+
+            for (int i = 0; i < nvalue; i++)
+            {
+                // int index = (i * 3);
+                test4.AddRange(testVector1[i].ToList);
+                //test4[index] = testVector1[i].x;
+                //test4[index +1] = testVector1[i].y;
+                //test4[index +2] = testVector1[i].z;
+
+                //test3.AddRange(testVector1[i].Array);
+                //test3.Add(0);
+
+
+            }
+            double out4 = 0.0;
+            for (int i = 0; i < test4.Count; i++)
+            {
+                // int index = (i * 3);
+                out4=test4[i]*2.0;
+                //test4[index] = testVector1[i].x;
+                //test4[index +1] = testVector1[i].y;
+                //test4[index +2] = testVector1[i].z;
+
+                //test3.AddRange(testVector1[i].Array);
+                //test3.Add(0);
+
+
+            }
+                        
+
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+
+        }
 
 		NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
 		
@@ -149,9 +193,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                //LoadEngineByXml();
+                LoadEngineByXml();
 
-                LoadEngineByBuilder();
+                //LoadEngineByBuilder();
 
 
             }

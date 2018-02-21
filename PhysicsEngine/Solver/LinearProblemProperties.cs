@@ -9,16 +9,17 @@ namespace SharpPhysicsEngine.LCPSolver
     public sealed class LinearProblemProperties : IEqualityComparer<LinearProblemProperties>
     {
         #region Properties
-
-        //y = Ax + B 
-
+                
         //Matrix A (N*N)
         public readonly SparseElement[] M;
 
         //Vector B (N)
         public readonly double[] B;
 
-        //Diagonal of matrix A (N)
+        //Inverse Diagonal of matrix A (N)
+        public readonly double[] InvD;
+
+        //Diagonal of matrix A(N)
         public readonly double[] D;
 
         //Constraint
@@ -41,6 +42,7 @@ namespace SharpPhysicsEngine.LCPSolver
             SparseElement[] M,
             double[] B,
             double[] D,
+            double[] InvD,
             double[] constraintLimit,
             ConstraintType[] constraintType,
             int?[] constraints)
@@ -48,6 +50,7 @@ namespace SharpPhysicsEngine.LCPSolver
             this.M = M;
             this.B = B;
             this.D = D;
+            this.InvD = InvD;
             ConstraintLimit = constraintLimit;
             ConstraintType = constraintType;
             Constraints = constraints;
@@ -65,7 +68,7 @@ namespace SharpPhysicsEngine.LCPSolver
             for (int i = 0; i < Count; i++)
             {
                 matrix[i] = GetOriginalRow(i);
-                matrix[i][i] = 1.0 / D[i];
+                matrix[i][i] = D[i];
             }
 
             return matrix;
@@ -78,7 +81,7 @@ namespace SharpPhysicsEngine.LCPSolver
             for (int i = 0; i < Count; i++)
             {
                 matrix.Add(GetOriginalRow(i).ToList());
-                matrix[i][i] = 1.0 / D[i];
+                matrix[i][i] = D[i];
             }
 
             return matrix;
@@ -93,10 +96,10 @@ namespace SharpPhysicsEngine.LCPSolver
                 List<double> valueList = M[i].Value.ToList();
                 List<int> indexList = M[i].Index.ToList();
 
-                valueList.Add(1.0 / D[i]);
+                valueList.Add(D[i]);
                 indexList.Add(i);
 
-                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray(), M[i].RowLength);
+                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray());
             }
 
             return originalMatrix;
@@ -132,7 +135,7 @@ namespace SharpPhysicsEngine.LCPSolver
             if (x.B.Length != y.B.Length)
                 return false;
 
-            if (x.D.Length != y.D.Length)
+            if (x.InvD.Length != y.InvD.Length)
                 return false;
 
             for (int i = 0; i < x.B.Length; i++)
@@ -141,9 +144,9 @@ namespace SharpPhysicsEngine.LCPSolver
                     return false;
             }
 
-            for (int i = 0; i < x.D.Length; i++)
+            for (int i = 0; i < x.InvD.Length; i++)
             {
-                if (!x.D[i].Equals(y.D[i]))
+                if (!x.InvD[i].Equals(y.InvD[i]))
                     return false;
             }
 

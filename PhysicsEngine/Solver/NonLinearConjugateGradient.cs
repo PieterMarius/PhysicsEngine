@@ -26,7 +26,6 @@ namespace SharpPhysicsEngine.LCPSolver
 				                                          solverParam.ErrorTolerance,
 				                                          1.0,
 				                                          solverParam.MaxThreadNumber,
-				                                          solverParam.SORStep,
                                                           false);
 			
 			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
@@ -38,14 +37,10 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties input,
-            double[] X = null)
+            double[] x)
         {
-            X = (X == null) ?
-                new double[input.Count] :
-                null;
-
-            double[] Xk = gaussSeidelSolver.Solve(input);
-            double[] delta = CalculateDelta(Xk, X);
+            double[] Xk = gaussSeidelSolver.Solve(input, x);
+            double[] delta = CalculateDelta(Xk, x);
             double[] searchDirection = NegateArray(delta);
 
             double[] Xk1 = new double[input.Count];

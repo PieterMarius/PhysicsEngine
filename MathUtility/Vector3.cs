@@ -261,9 +261,8 @@ namespace SharpEngineMathUtility
 
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{
-			var p= new Vector3();
-			p = versor * versor;
-			double c = Math.Cos (angle);
+			var p= versor * versor;
+            	double c = Math.Cos (angle);
 			double s = Math.Sin (angle);
 			double t = 1.0 - angle;
 
@@ -379,8 +378,7 @@ namespace SharpEngineMathUtility
 		}
 
 		#endregion
-
-
+        
 		#region IEquatable implementation
 
 		public bool Equals (Vector3 other)

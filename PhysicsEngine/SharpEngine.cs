@@ -319,12 +319,7 @@ namespace SharpPhysicsEngine
 			
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
-
-		//public List<Partition> GetPartitionedCollisionPoints()
-		//{
-		//	return Partitions;
-		//}
-
+        
 		#endregion
 
 		#region Solver
@@ -530,20 +525,10 @@ namespace SharpPhysicsEngine
 					if (jacobianConstraints.Length > 0)
 					{
 						double[] overallSolution = new double[jacobianConstraints.Length];
-                        						
-                        var stopwatch2 = new Stopwatch();
-
-                        stopwatch2.Reset();
-
-                        stopwatch2.Start();
-
+                        	                      
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
                                                                 jacobianConstraints);
-
-                        stopwatch2.Stop();
-
-                        Console.WriteLine("LCP Builder ={0}", stopwatch2.ElapsedMilliseconds);
-
+                                                
                         if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
 						{
@@ -555,7 +540,7 @@ namespace SharpPhysicsEngine
 
                             Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
 
-							overallSolution = Solver.Solve(overallLCP);
+							overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
 
                             stopwatch1.Stop();
 
@@ -817,7 +802,7 @@ namespace SharpPhysicsEngine
 			{
 				Solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
 
-				double[]  solutionValues = Solver.Solve(linearProblemProperties);
+				double[]  solutionValues = Solver.Solve(linearProblemProperties, new double[linearProblemProperties.Count]);
 
 				for (int j = 0; j < contactConstraints.Length; j++)
 				{

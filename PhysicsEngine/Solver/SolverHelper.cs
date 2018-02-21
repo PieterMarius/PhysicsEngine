@@ -17,7 +17,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 double[] bufValue = m.Value;
                 int[] bufIndex = m.Index;
 
-                double bValue = (1.0 / input.D[i]) * X[i];
+                double bValue = (1.0 / input.InvD[i]) * X[i];
 
                 for (int j = 0; j < m.Count; j++)
                     bValue += bufValue[j] * X[bufIndex[j]];

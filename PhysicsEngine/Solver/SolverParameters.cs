@@ -22,14 +22,8 @@ namespace SharpPhysicsEngine.LCPSolver
 		/// </summary>
 		/// <value>The SO.</value>
 		public double SOR { get; private set; }
-
-		/// <summary>
-		/// Gets the Successive Over Relaxation decrease step.
-		/// </summary>
-		/// <value>The SOR step.</value>
-		public double SORStep { get; private set; }
-
-		/// <summary>
+        
+        /// <summary>
 		/// Gets the max thread number.
 		/// </summary>
 		/// <value>The max thread number.</value>
@@ -49,7 +43,6 @@ namespace SharpPhysicsEngine.LCPSolver
 			MaxIteration = 10;
 			ErrorTolerance = 1E-20;
 			SOR = 1.1;
-			SORStep = 0.007;
 			MaxThreadNumber = 2;
             DynamicSORUpdate = false;
 
@@ -60,15 +53,13 @@ namespace SharpPhysicsEngine.LCPSolver
 			double errorTolerance,
 			double sor,
 			int maxThreadNumber,
-			double sorStep,
-            bool dynamicSORUpdate)
+			bool dynamicSORUpdate)
 		{
 			MaxIteration = maxIteration;
 			ErrorTolerance = errorTolerance;
 			SOR = sor;
 			MaxThreadNumber = maxThreadNumber;
-			SORStep = sorStep;
-            DynamicSORUpdate = dynamicSORUpdate;
+			DynamicSORUpdate = dynamicSORUpdate;
         }
 			
 		#endregion
@@ -89,12 +80,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		{
 			SOR = successiveOverRelaxation;
 		}
-
-		public void SetSORStep(double successiveOverRelaxationStep)
-		{
-			SORStep = successiveOverRelaxationStep;
-		}
-
+        		
 		#endregion
 	}
 }

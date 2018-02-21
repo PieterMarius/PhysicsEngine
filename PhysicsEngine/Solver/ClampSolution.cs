@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine.LCPSolver
                     return X[i];
             }
         }
-        
+
         public static bool GetIfClamped(
             LinearProblemProperties input,
             double[] X,
@@ -56,37 +56,58 @@ namespace SharpPhysicsEngine.LCPSolver
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
                     return true;
-                    //if (Math.Abs(X[i]) < 1E-50)
-                    //    return true;
-                    //else
-                    //    return false;
+                //if (Math.Abs(X[i]) < 1E-50)
+                //    return true;
+                //else
+                //    return false;
 
                 case ConstraintType.Friction:
                     return true;
-                    //double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
+                //double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
 
-                    //if (X[i] < -frictionLimit)
-                    //    return true;
-                    //if (X[i] > frictionLimit)
-                    //    return true;
+                //if (X[i] < -frictionLimit)
+                //    return true;
+                //if (X[i] > frictionLimit)
+                //    return true;
 
-                    //return false;
+                //return false;
 
                 case ConstraintType.JointMotor:
                     return true;
-                    //double limit = input.ConstraintLimit[i];
+                //double limit = input.ConstraintLimit[i];
 
-                    //if (X[i] < -limit)
-                    //    return true;
-                    //if (X[i] > limit)
-                    //    return true;
+                //if (X[i] < -limit)
+                //    return true;
+                //if (X[i] > limit)
+                //    return true;
 
-                    //return false;
+                //return false;
 
                 default:
                     return false;
             }
         }
+
+        //public static bool GetIfClamped(
+        //    ConstraintType constraintType)
+        //{
+
+        //    switch (constraintType)
+        //    {
+        //        case ConstraintType.Collision:
+        //        case ConstraintType.JointLimit:
+        //            return true;
+
+        //        case ConstraintType.Friction:
+        //            return true;
+
+        //        case ConstraintType.JointMotor:
+        //            return true;
+
+        //        default:
+        //            return false;
+        //    }
+        //}
     }
 }
 

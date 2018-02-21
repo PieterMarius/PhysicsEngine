@@ -7,7 +7,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>TestPhysics</RootNamespace>
     <AssemblyName>TestPhysics</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
