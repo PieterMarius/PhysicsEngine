@@ -344,8 +344,12 @@ namespace SharpPhysicsEngine
 				case SolverType.ProjectedConjugateGradient:
 					Solver = new ProjectedConjugateGradient(SolverParameters);
 					break;
-																						 
-				default:
+
+                case SolverType.MINRES:
+                    Solver = new MINRES(SolverParameters);
+                    break;
+
+                default:
 					Solver = new ProjectedGaussSeidel(SolverParameters);
 					break;
 			}
@@ -482,7 +486,7 @@ namespace SharpPhysicsEngine
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
 		{
 			var sorted = jacobianContact.Select((x, i) => new KeyValuePair<JacobianConstraint, int>(x, i)).
-				OrderBy(x => Math.Abs(x.Key.B)).ToArray();
+				OrderBy(x => x.Key.ObjectA.Position * EngineParameters.ExternalForce).ToArray();
 
 			int[] sortedIndex = sorted.Select(x => x.Value).ToArray();
 			JacobianConstraint[] sortedContact = sorted.Select(x => x.Key).ToArray();
@@ -491,13 +495,13 @@ namespace SharpPhysicsEngine
 			for (int i = 0; i < randomIndex.Length; i++)
 				randomIndex[sortedIndex[i]] = i;
 
-			for (int i = 0; i < sortedContact.Length; i++)
-			{
-				if (sortedContact[i].Type == ConstraintType.Friction)
-					sortedContact[i].SetContactReference(randomIndex[sortedContact[i].ContactReference.Value]);
-			}
+            for (int i = 0; i < sortedContact.Length; i++)
+            {
+                if (sortedContact[i].Type == ConstraintType.Friction)
+                    sortedContact[i].SetContactReference(randomIndex[sortedContact[i].ContactReference.Value]);
+            }
 
-			return sortedContact;
+            return sortedContact;
 		}
 
 		private void PhysicsExecutionFlow()
@@ -524,11 +528,18 @@ namespace SharpPhysicsEngine
 
 					if (jacobianConstraints.Length > 0)
 					{
-						double[] overallSolution = new double[jacobianConstraints.Length];
+                        //Contact sorting
+                        //JacobianConstraint[] jacobianConstraints1 = ContactSorting(jacobianConstraints);
+
+
+                        double[] overallSolution = new double[jacobianConstraints.Length];
                         	                      
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
                                                                 jacobianConstraints);
-                                                
+
+                        //LinearProblemProperties overallLCP1 = linearProblemBuilder.BuildLCP(
+                        //                                        jacobianConstraints1);
+
                         if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
 						{
@@ -541,6 +552,8 @@ namespace SharpPhysicsEngine
                             Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
 
 							overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
+
+                           //var overallSolution1 = Solver.Solve(overallLCP1, new double[overallLCP.Count]);
 
                             stopwatch1.Stop();
 

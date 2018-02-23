@@ -71,10 +71,10 @@ namespace SharpPhysicsEngine
 		/// The index of the collision struct.
 		/// </summary>
 		public readonly StartImpulseProperties StartImpulse;
-        
+
         #endregion
 
-        #region Constructor
+        #region Constructorv
 
         public JacobianConstraint (
             IShapeCommon objectA,

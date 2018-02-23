@@ -54,28 +54,12 @@ namespace SharpPhysicsEngine
 		/// <value>The external force.</value>
 		public Vector3 ExternalForce { get; private set; }
 
-        #region Iterations values
-
-        /// <summary>
-        /// Gets the friction and normal iterations.
-        /// </summary>
-        /// <value>The friction and normal iterations.</value>
-        public int FrictionAndNormalIterations { get; private set; }
-
-		/// <summary>
-		/// Gets the joints iterations.
-		/// </summary>
-		/// <value>The joints iterations.</value>
-		public int JointsIterations { get; private set; }
-
-		/// <summary>
+        	/// <summary>
 		/// Gets the overall constraints iterations.
 		/// </summary>
 		/// <value>The overall constraints iterations.</value>
 		public int OverallConstraintsIterations { get; private set; }
         		
-		#endregion
-
 		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
 		/// </summary>
@@ -145,6 +129,11 @@ namespace SharpPhysicsEngine
         /// </summary>
         public double CollisionSORValue { get; private set; }
 
+        /// <summary>
+        /// Turn to zero if angular velocity is lower
+        /// </summary>
+        public double AngularValocityMinLimit { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -156,9 +145,7 @@ namespace SharpPhysicsEngine
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 60;
-			FrictionAndNormalIterations = 0;
-			JointsIterations = 0;
-			OverallConstraintsIterations =80;
+            OverallConstraintsIterations = 120;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;
@@ -173,7 +160,8 @@ namespace SharpPhysicsEngine
 			SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;
-		}
+            AngularValocityMinLimit = 0.0;
+        }
 
 		//TODO Update input parameters
 		public PhysicsEngineParameters (

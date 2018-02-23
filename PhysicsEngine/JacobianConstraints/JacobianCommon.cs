@@ -116,7 +116,7 @@ namespace SharpPhysicsEngine
 			double cfm,
 			double constraintLimit,
 			ConstraintType type,
-            	int? contactReference,
+            int? contactReference,
 			StartImpulseProperties startImpulseProperties)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +

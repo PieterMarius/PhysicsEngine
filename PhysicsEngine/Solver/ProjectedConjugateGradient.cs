@@ -1,13 +1,12 @@
 ﻿using SharpEngineMathUtility;
 using static SharpEngineMathUtility.SparseElement;
 using static SharpEngineMathUtility.GeneralMathUtilities;
-using System;
 using System.Linq;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public sealed class ProjectedConjugateGradient : ISolver
+    internal sealed class ProjectedConjugateGradient : ISolver
     {
         #region Fields
 
@@ -26,8 +25,7 @@ namespace SharpPhysicsEngine.LCPSolver
                                                           1,
                                                           SolverParameters.ErrorTolerance,
                                                           1.0,
-                                                          SolverParameters.MaxThreadNumber,
-                                                          false);
+                                                          SolverParameters.MaxThreadNumber);
 
             gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }
@@ -43,7 +41,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties linearProblemProperties,
-            double[] startValues = null)
+            double[] startValues)
         {
             if (startValues == null)
                 startValues = new double[linearProblemProperties.Count];
@@ -58,10 +56,10 @@ namespace SharpPhysicsEngine.LCPSolver
 
             double[] p = r;
 
-            var checkBoundContsraints = linearProblemProperties.ConstraintType.Any(k =>
+            var checkBoundConstraints = linearProblemProperties.ConstraintType.Any(k =>
                 k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
             var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
-                k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
+                k == ConstraintType.Joint || k == ConstraintType.SoftJoint || k== ConstraintType.Collision);
             
             //Solve Constraint without bound
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
@@ -73,8 +71,8 @@ namespace SharpPhysicsEngine.LCPSolver
                     double alphaCG = GetAlphaCG(Ap, r, p);
 
                     x = UpdateSolution(x, p, alphaCG);
-
-                    r = GetGradient(Ap, r, p, alphaCG);
+                    r = GetDirection(A, linearProblemProperties.B, x);
+                    //r = GetGradient(Ap, r, p, alphaCG);
 
                     double[] phiY = GetPhi(linearProblemProperties, x, r);
                     double[] partialValue = Ap;
@@ -86,7 +84,7 @@ namespace SharpPhysicsEngine.LCPSolver
                     p = Minus(phiY, Multiply(beta, p));
                 }
 
-                if (checkBoundContsraints)
+                if (checkBoundConstraints)
                 {
                     x = gaussSeidelSolver.Solve(linearProblemProperties, x);
                 }
@@ -110,12 +108,12 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < dir.Length; i++)
             {
-                if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Collision)
+                if (input.ConstraintType[i] == ConstraintType.Collision)
                     error += dir[i] * dir[i];
-                else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Joint)
+                else if (input.ConstraintType[i] == ConstraintType.Joint)
                     error += dir[i] * dir[i];
 
-                else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.SoftJoint)
+                else if (input.ConstraintType[i] == ConstraintType.SoftJoint)
                     error += dir[i] * dir[i];
                 //else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
                 //{

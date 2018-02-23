@@ -193,9 +193,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                LoadEngineByXml();
+                //LoadEngineByXml();
 
-                //LoadEngineByBuilder();
+                LoadEngineByBuilder();
 
 
             }
@@ -207,7 +207,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment();
+            var env = new BuildEnvironment2();
             
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -518,7 +518,15 @@ namespace TestPhysics
 				
 			}
 
-		}
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
+            {
+                for (int i = 0; i < physicsEngine.JointsCount(); i++)
+                {
+                    physicsEngine.GetJoints(i).AddTorque(0.0, 0.4);
+                }
+            }
+
+        }
 
 		//private void UpdateVertexPosition(int index)
 		//{

@@ -16,22 +16,19 @@ namespace TestPhysics
 	{
 		#region Fields
 
-		public string[][] ShapeFilename { get; set; }
-		public string[][] TextureFilename { get; set; }
-		public float[][] ShapeScale { get; set; }
-
-		private int nObject;
-
-		#endregion
+		public List<string> ShapeFilename { get; set; }
+		public List<string> TextureFilename { get; set; }
+		public List<float> ShapeScale { get; set; }
+        
+        #endregion
 
 		#region Constructor
 
 		public BuildEnvironment1()
 		{
-			nObject = 4;
-			ShapeFilename = new string[nObject][];
-			ShapeScale = new float[nObject][];
-			TextureFilename = new string[nObject-1][];
+			ShapeFilename = new List<string>();
+			ShapeScale = new List<float>();
+			TextureFilename = new List<string>();
 		}
 
         #endregion
@@ -56,40 +53,62 @@ namespace TestPhysics
 
         public int[][] LoadTexture()
 		{
-			int[][] textureID = new int[TextureFilename.Length][];
+			int[][] textureID = new int[TextureFilename.Count][];
 
-			for (int i = 0; i < TextureFilename.Length; i++)
+			for (int i = 0; i < TextureFilename.Count; i++)
 			{
-				textureID[i] = new int[TextureFilename[i].Length];
+				textureID[i] = new int[1];
 
-				for (int j = 0; j < TextureFilename[i].Length; j++)
-					textureID[i][j] = OpenGLUtilities.LoadTexture(TextureFilename[i][j]);
+				for (int j = 0; j < 1; j++)
+					textureID[i][j] = OpenGLUtilities.LoadTexture(TextureFilename[i]);
 			}
 			return textureID;
 		}
 
+        public int[][] GetOpenGLEnvironment()
+        {
+            ObjImporter.meshStruct[][] loadObjects = new ObjImporter.meshStruct[ShapeFilename.Count][];
 
-		#endregion
+            for (int i = 0; i < ShapeFilename.Count; i++)
+            {
+                loadObjects[i] = new ObjImporter.meshStruct[1];
 
-		#region Private Methods
+                for (int j = 0; j < 1; j++)
+                {
+                    loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i]);
+                }
+            }
 
-        
+            return OpenGLUtilities.LoadGLObjects(
+                loadObjects,
+                ShapeFilename.Count,
+                true,
+                false,
+                true);
+        }
+
+
+        #endregion
+
+        #region Private Methods
+
+
 
         private List<ICollisionShape> GetSimulationObjects()
 		{
 			List<ICollisionShape> objects = new List<ICollisionShape>();
-			
-			#region Terrain Base
 
-			ShapeFilename[0] = new string[1] { "cube1.obj" };
-			ShapeScale[0] = new float[1] { 25 };
-			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
+            #region Terrain Base
+
+            ShapeFilename.Add("cube1.obj");
+			ShapeScale.Add(25);
+			TextureFilename.Add("texture/woodbox.bmp");
 
 			var objects0 = new StaticCollisionShape();
             objects0.SetMass(0.0);
-            objects0.SetPosition(new Vector3(0.0, -4.0, 0.0));
+            objects0.SetPosition(new Vector3(0.0, -0.7, 0.0));
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            GeometryProperties geom0= GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
+            GeometryProperties geom0= GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
             objects0.SetGeometry(geom0.VertexPoint, geom0.TriagleIdx);
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -105,39 +124,149 @@ namespace TestPhysics
 
             #region Dynamic Objects
 
-            for (int i = 0; i < 5; i++)
+            Vector3 shift = new Vector3(0.0, 2.1, 0.0);
+            Vector3 position = new Vector3(0.0, 1.7, 0.0);
+            
+            for (int i = 0; i < 7; i++)
             {
+                ShapeFilename.Add("cube.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
+                
                 var objects1 = new RigidCollisionShape();
                 objects1.SetMass(1.0);
-                objects1.SetPosition(new Vector3(0.0, 1.2, 0.0));
+                objects1.SetPosition(position);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-                GeometryProperties geom1 = GetObjectGeometry("tessera.obj", 1);
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
                 objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetRestoreCoeff(30.0);
+                position = position + shift;
 
                 objects.Add(objects1);
             }
 
-			
+            position = new Vector3(3.0, 1.7, 0.0);
 
-			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
-			//TODO rimuovere
-			//<ShapeFilename[3] = new string[1] { "torus.obj" };
-			//ShapeScale[3] = new float[1] { 1 };
-            
-			//var objects3 = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
-   //         objects3.SetStaticFrictionCoeff(0.5);
-   //         objects3.SetDynamicFrictionCoeff(0.5);
-   //         objects3.SetRestitutionCoeff(0.5);
-   //         objects3.SetRestoreCoeff(60.0);
+            for (int i = 0; i < 7; i++)
+            {
+                ShapeFilename.Add("cube.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
 
-   //         objects.Add(objects3);
+                var objects1 = new RigidCollisionShape();
+                objects1.SetMass(1.0);
+                objects1.SetPosition(position);
+                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
+                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetRestitutionCoeff(0.1);
+                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetStaticFrictionCoeff(0.9);
+                objects1.ExcludeFromCollisionDetection(false);
+                objects1.SetRestoreCoeff(30.0);
+                position = position + shift;
+
+                objects.Add(objects1);
+            }
+            position = new Vector3(-3.0, 1.7, 0.0);
+
+            for (int i = 0; i < 7; i++)
+            {
+                ShapeFilename.Add("cube.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
+
+                var objects1 = new RigidCollisionShape();
+                objects1.SetMass(1.0);
+                objects1.SetPosition(position);
+                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
+                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetRestitutionCoeff(0.1);
+                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetStaticFrictionCoeff(0.9);
+                objects1.ExcludeFromCollisionDetection(false);
+                objects1.SetRestoreCoeff(30.0);
+                position = position + shift;
+
+                objects.Add(objects1);
+            }
+
+            position = new Vector3(0.0, 1.7, -3.0);
+
+            for (int i = 0; i < 7; i++)
+            {
+                ShapeFilename.Add("cube.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
+
+                var objects1 = new RigidCollisionShape();
+                objects1.SetMass(1.0);
+                objects1.SetPosition(position);
+                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
+                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetRestitutionCoeff(0.1);
+                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetStaticFrictionCoeff(0.9);
+                objects1.ExcludeFromCollisionDetection(false);
+                objects1.SetRestoreCoeff(30.0);
+                position = position + shift;
+
+                objects.Add(objects1);
+            }
+
+            position = new Vector3(0.0, 1.7, 3.0);
+
+            for (int i = 0; i < 7; i++)
+            {
+                ShapeFilename.Add("cube.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
+
+                var objects1 = new RigidCollisionShape();
+                objects1.SetMass(1.0);
+                objects1.SetPosition(position);
+                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
+                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+                objects1.SetRestitutionCoeff(0.1);
+                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetStaticFrictionCoeff(0.9);
+                objects1.ExcludeFromCollisionDetection(false);
+                objects1.SetRestoreCoeff(30.0);
+                position = position + shift;
+
+                objects.Add(objects1);
+            }
+
+
+            //TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
+            //TODO rimuovere
+            //<ShapeFilename[3] = new string[1] { "torus.obj" };
+            //ShapeScale[3] = new float[1] { 1 };
+
+            //var objects3 = BuildSoftBody("torus.obj", 1, new Vector3(0.0, -1.5, 0.0));
+            //         objects3.SetStaticFrictionCoeff(0.5);
+            //         objects3.SetDynamicFrictionCoeff(0.5);
+            //         objects3.SetRestitutionCoeff(0.5);
+            //         objects3.SetRestoreCoeff(60.0);
+
+            //         objects.Add(objects3);
 
             #endregion
 

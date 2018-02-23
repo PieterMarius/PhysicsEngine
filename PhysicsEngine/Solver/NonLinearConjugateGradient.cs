@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public sealed class NonLinearConjugateGradient : ISolver
+	internal sealed class NonLinearConjugateGradient : ISolver
     {
 		#region Private Fields
 
@@ -25,8 +25,7 @@ namespace SharpPhysicsEngine.LCPSolver
 				                                          1,
 				                                          solverParam.ErrorTolerance,
 				                                          1.0,
-				                                          solverParam.MaxThreadNumber,
-                                                          false);
+				                                          solverParam.MaxThreadNumber);
 			
 			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
         }

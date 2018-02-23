@@ -3,7 +3,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public sealed class ProjectedGaussSeidel : ISolver
+    internal sealed class ProjectedGaussSeidel : ISolver
     {
 		#region Fields
 

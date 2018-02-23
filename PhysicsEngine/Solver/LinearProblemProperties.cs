@@ -6,7 +6,7 @@ using System;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public sealed class LinearProblemProperties : IEqualityComparer<LinearProblemProperties>
+    internal sealed class LinearProblemProperties : IEqualityComparer<LinearProblemProperties>
     {
         #region Properties
                 

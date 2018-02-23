@@ -406,9 +406,7 @@ namespace SharpPhysicsEngine
             {
                 double step = Math.PI / nDirection;
                 for (int i = 0; i < nDirection; i++)
-                {
                     coneDirection[i] = Matrix3x3.GetRotationMatrix(normal, step * i) * tx;
-                }
             }
                        
             return coneDirection;

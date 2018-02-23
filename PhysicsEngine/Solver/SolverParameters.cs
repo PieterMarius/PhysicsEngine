@@ -28,12 +28,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		/// </summary>
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
-
-        /// <summary>
-        /// Dynamic update of SOR value
-        /// </summary>
-        public bool DynamicSORUpdate { get; private set; }
-
+        
         #endregion
 
         #region Constructors
@@ -44,22 +39,18 @@ namespace SharpPhysicsEngine.LCPSolver
 			ErrorTolerance = 1E-20;
 			SOR = 1.1;
 			MaxThreadNumber = 2;
-            DynamicSORUpdate = false;
-
         }
 
 		public SolverParameters (
 			int maxIteration,
 			double errorTolerance,
 			double sor,
-			int maxThreadNumber,
-			bool dynamicSORUpdate)
+			int maxThreadNumber)
 		{
 			MaxIteration = maxIteration;
 			ErrorTolerance = errorTolerance;
 			SOR = sor;
 			MaxThreadNumber = maxThreadNumber;
-			DynamicSORUpdate = dynamicSORUpdate;
         }
 			
 		#endregion

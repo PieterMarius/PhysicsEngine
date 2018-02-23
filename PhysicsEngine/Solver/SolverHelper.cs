@@ -2,7 +2,7 @@
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public static class SolverHelper
+    internal static class SolverHelper
     {
         public static double ComputeSolverError(
             LinearProblemProperties input,
