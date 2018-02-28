@@ -1,25 +1,14 @@
 
 *.mdb
 
-*.mdb
-
 *.dll
 
 *.exe
 
-*.mdb
 
 LCPSolver/bin/Release/LCPSolver.dll.mdb
 
 LCPSolver/obj/x86/Release/LCPSolver.dll.mdb
-
-*.mdb
-
-*.mdb
-
-*.dll
-
-*.exe
 
 TestPhysics/bin/Release/TestPhysics.exe
 
@@ -29,21 +18,17 @@ TestPhysics/obj/x86/Release/TestPhysics.exe
 
 TestPhysics/obj/x86/Release/TestPhysics.exe.mdb
 
-*.dll
 
 Loading/obj/Release/Loading.dll
 
 PhysicsEngine/bin/Release/LCPSolver.dll.mdb
 
 PhysicsEngine/bin/Release/LCPSolver.dll.mdb
-*.dll
 *.pdb
-*.dll
-*.mdb
+
 CollisionEngine/bin/Debug/MathUtility.dll
 
 *.cache
-*.pdb
 
 CollisionEngine/obj/*
 LCPSolver/obj/*
@@ -71,7 +56,6 @@ packages/System.Numerics.Vectors.4.3.0/ThirdPartyNotices.txt
 packages/System.Numerics.Vectors.4.3.0/System.Numerics.Vectors.4.3.0.nupkg
 packages/System.Numerics.Vectors.4.3.0/ref/net46/System.Numerics.Vectors.xml
 packages/System.Numerics.Vectors.4.3.0/ref/netstandard1.0/System.Numerics.Vectors.xml
-*.suo
 .vs/*
 ConvexHullUtilities/bin/*
 ConvexHullUtilities/obj/*

@@ -75,4 +75,7 @@
       <Name>SharpPhysicsEngine</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="MathUtility.licenseheader" />
+  </ItemGroup>
 </Project>

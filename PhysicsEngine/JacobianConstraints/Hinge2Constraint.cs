@@ -1,4 +1,30 @@
-﻿using System;
+﻿/******************************************************************************
+ *
+ * The MIT License (MIT)
+ *
+ * PhysicsEngine, Copyright (c) 2018 Pieter Marius van Duin
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *  
+ *****************************************************************************/
+
+using System;
 using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
@@ -11,81 +37,48 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Hinge2;
 
-        IShape ShapeA;
-        IShape ShapeB;
-        IShape ExternalSyncShape;
-        int KeyIndex;
-		double SpringCoefficient;
-		readonly double SpringCoefficientHingeAxis; 
-		readonly Vector3 StartAnchorPoint;
-		readonly Vector3 HingeAxis;
-		readonly Vector3 RotationAxis;
-		readonly Vector3 StartErrorAxis1;
-		readonly Vector3 StartErrorAxis2;
-		readonly Quaternion RelativeOrientation1;
-		readonly Quaternion RelativeOrientation2;
+        private IShape ShapeA;
+        private IShape ShapeB;
+        private IShape ExternalSyncShape;
+        private int KeyIndex;
+        private double SpringCoefficient;
+        private double SpringCoefficientHingeAxis;
+        private Vector3 StartAnchorPoint;
+        private Vector3 HingeAxis;
+        private Vector3 RotationAxis;
+        private Vector3 StartErrorAxis1;
+        private Vector3 StartErrorAxis2;
+        private Quaternion RelativeOrientation1;
+        private Quaternion RelativeOrientation2;
 
-		double RestoreCoefficient;
+        private double RestoreCoefficient;
 
-		double? AngularLimitMin1;
-		double? AngularLimitMax1;
-		double? AngularLimitMin2;
-		double? AngularLimitMax2;
+        private double? AngularLimitMin1;
+        private double? AngularLimitMax1;
+        private double? AngularLimitMin2;
+        private double? AngularLimitMax2;
 
-		double? SpeedHingeAxisLimit;
-		double? ForceHingeAxisLimit;
-		double? SpeedRotationAxisLimit;
-		double? ForceRotationAxisLimit;
-		Vector3 AnchorPoint;
+        private double? SpeedHingeAxisLimit;
+        private double? ForceHingeAxisLimit;
+        private double? SpeedRotationAxisLimit;
+        private double? ForceRotationAxisLimit;
+        private Vector3 AnchorPoint;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public Hinge2Constraint(
+        public Hinge2Constraint(
             IShape shapeA,
             IShape shapeB,
             Vector3 startAnchorPosition,
-			Vector3 hingeAxis,
-			Vector3 rotationAxis,
-			double restoreCoefficient,
-			double springCoefficientHingeAxis,
-			double springCoefficient)
-		{
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = GetHashCode();
-			RestoreCoefficient = restoreCoefficient;
-			SpringCoefficientHingeAxis = springCoefficientHingeAxis;
-			SpringCoefficient = springCoefficient;
-			StartAnchorPoint = startAnchorPosition;
-			HingeAxis = hingeAxis.Normalize ();
-			RotationAxis = rotationAxis.Normalize ();
-
-			Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
-			relativePos = ShapeA.RotationMatrix * relativePos;
-
-			AnchorPoint = relativePos + ShapeA.Position;
-
-			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeA.Position);
-
-			StartErrorAxis2 = shapeB.RotationMatrix.Transpose() *
-									 (AnchorPoint - shapeB.Position);
-
-			Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
-			Vector3 rRotationAxis = shapeB.RotationMatrix * RotationAxis;
-
-			RelativeOrientation1 = CalculateRelativeOrientation(
-				rHingeAxis,
-				rRotationAxis,
-                ShapeA.RotationStatus);
-
-			RelativeOrientation2 = CalculateRelativeOrientation(
-				rRotationAxis,
-				rHingeAxis,
-                shapeB.RotationStatus);
-		}
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficient)
+            : this(shapeA, shapeB, null, startAnchorPosition, hingeAxis, rotationAxis, restoreCoefficient, springCoefficientHingeAxis, springCoefficient)
+        { }
 
         public Hinge2Constraint(
             IShape shapeA,
@@ -109,34 +102,11 @@ namespace SharpPhysicsEngine
             HingeAxis = hingeAxis.Normalize();
             RotationAxis = rotationAxis.Normalize();
 
-            Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
-            relativePos = ShapeA.RotationMatrix * relativePos;
-
-            AnchorPoint = relativePos + ShapeA.Position;
-
-            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
-                                     (AnchorPoint - ShapeA.Position);
-
-            StartErrorAxis2 = shapeB.RotationMatrix.Transpose() *
-                                     (AnchorPoint - shapeB.Position);
-
-            Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
-            Vector3 rRotationAxis = shapeB.RotationMatrix * RotationAxis;
-
-            RelativeOrientation1 = CalculateRelativeOrientation(
-                rHingeAxis,
-                rRotationAxis,
-                ShapeA.RotationStatus);
-
-            RelativeOrientation2 = CalculateRelativeOrientation(
-                rRotationAxis,
-                rHingeAxis,
-                shapeB.RotationStatus);
+            InitConstraint();
         }
-
+                
         #endregion
-
-
+        
         #region Public Methods
 
         #region IConstraintBuilder
@@ -418,15 +388,42 @@ namespace SharpPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Private Methods
-                
-		double GetAngle2(
+        #region Private Methods
+
+        private void InitConstraint()
+        {
+            Vector3 relativePos = StartAnchorPoint - ShapeA.StartPosition;
+            relativePos = ShapeA.RotationMatrix * relativePos;
+
+            AnchorPoint = relativePos + ShapeA.Position;
+
+            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeA.Position);
+
+            StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeB.Position);
+
+            Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
+            Vector3 rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
+
+            RelativeOrientation1 = CalculateRelativeOrientation(
+                rHingeAxis,
+                rRotationAxis,
+                ShapeA.RotationStatus);
+
+            RelativeOrientation2 = CalculateRelativeOrientation(
+                rRotationAxis,
+                rHingeAxis,
+                ShapeB.RotationStatus);
+        }
+
+        double GetAngle2(
 			Vector3 axis1,
 			Vector3 axis2,
 			Vector3 startAxis,

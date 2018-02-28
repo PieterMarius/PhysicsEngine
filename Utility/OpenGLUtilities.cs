@@ -1,4 +1,30 @@
-﻿using System;
+﻿/******************************************************************************
+ *
+ * The MIT License (MIT)
+ *
+ * PhysicsEngine, Copyright (c) 2018 Pieter Marius van Duin
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *  
+ *****************************************************************************/
+
+using System;
 using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -114,7 +140,7 @@ namespace Utility
 
 					GL.NewList(displayList[i][j], ListMode.CompileAndExecute);
 
-					GLDrawSolid(objects[i][j], new SharpEngineMathUtility.Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+					GLDrawSolid(objects[i][j], new Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
 
 					GL.EndList();
 				}
@@ -480,7 +506,7 @@ namespace Utility
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		private static void GLDrawSolid(
 			ObjImporter.meshStruct solid,
-			SharpEngineMathUtility.Vector3 translate,
+			Vector3 translate,
 			bool GLM_TEXTURE, 
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)
@@ -511,23 +537,23 @@ namespace Utility
 
 				if (GLM_FLAT) 
 				{
-					var a = new SharpEngineMathUtility.Vector3(
+					var a = new Vector3(
 						solid.vertices[indicedata[index]].x,
 						solid.vertices[indicedata[index]].y,
 						solid.vertices[indicedata[index]].z);
 					
-					var b = new SharpEngineMathUtility.Vector3 (
+					var b = new Vector3 (
 						solid.vertices[indicedata [index + 1]].x, 
 						solid.vertices[indicedata [index + 1]].y, 
 						solid.vertices[indicedata [index + 1]].z);
 
-					var c = new SharpEngineMathUtility.Vector3 (
+					var c = new Vector3 (
 						solid.vertices[indicedata [index + 2]].x, 
 						solid.vertices[indicedata [index + 2]].y, 
 						solid.vertices[indicedata [index + 2]].z);
 
-					SharpEngineMathUtility.Vector3 normal = 
-						SharpEngineMathUtility.GeometryUtilities.CalculateNormal (a, b, c);
+					Vector3 normal = 
+						GeometryUtilities.CalculateNormal (a, b, c);
 
 					GL.Normal3 (normal.x, normal.y, normal.z);	
 				}
