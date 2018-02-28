@@ -363,7 +363,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             DecompositionParameter = decompositionParam;
         }
-        
+
+        public void Rotate(Vector3 versor, double angle)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Private Methods

@@ -137,24 +137,27 @@ namespace TestPhysics
             ShapeScale.Add(2);
             TextureFilename.Add("texture/woodbox.bmp");
                 
+            var objects_0 = new RigidCollisionShape();
+
+            objects_0.SetMass(40.0);
+            objects_0.SetPosition(position);
+            objects_0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            GeometryProperties geom1 = GetObjectGeometry("cube1.obj", 2);
+            objects_0.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+            objects_0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects_0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects_0.SetRestitutionCoeff(0.1);
+            objects_0.SetDynamicFrictionCoeff(0.8);
+            objects_0.SetStaticFrictionCoeff(0.9);
+            objects_0.ExcludeFromCollisionDetection(false);
+            objects_0.SetRestoreCoeff(30.0);
+            objects.Add(objects_0);
+
             var objects1 = new RigidCollisionShape();
-            objects1.SetMass(40.0);
-            objects1.SetPosition(position);
-            objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-            objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
-            objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects1.SetRestitutionCoeff(0.1);
-            objects1.SetDynamicFrictionCoeff(0.8);
-            objects1.SetStaticFrictionCoeff(0.9);
-            objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetRestoreCoeff(30.0);
-            objects.Add(objects1);
 
-            position = new Vector3(-5-0, 4.6, -1.5);
+            position = new Vector3(-3.5, 4.6, -1.9);
 
-            ShapeFilename.Add("cube.obj");
+            ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
             TextureFilename.Add("texture/woodbox.bmp");
 
@@ -162,7 +165,7 @@ namespace TestPhysics
             objects1.SetMass(1.0);
             objects1.SetPosition(position);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            geom1 = GetObjectGeometry("cube.obj", 1);
+            geom1 = GetObjectGeometry("wheel.obj", 1);
             objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -173,9 +176,9 @@ namespace TestPhysics
             objects1.SetRestoreCoeff(30.0);
             objects.Add(objects1);
             
-            position = new Vector3(5.0, 4.6, -1.5);
+            position = new Vector3(3.5, 4.6, -1.9);
                         
-            ShapeFilename.Add("cube.obj");
+            ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
             TextureFilename.Add("texture/woodbox.bmp");
 
@@ -183,7 +186,7 @@ namespace TestPhysics
             objects1.SetMass(1.0);
             objects1.SetPosition(position);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            geom1 = GetObjectGeometry("cube.obj", 1);
+            geom1 = GetObjectGeometry("wheel.obj", 1);
             objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -195,9 +198,9 @@ namespace TestPhysics
                 
             objects.Add(objects1);
 
-            position = new Vector3(5.0, 4.6, 1.5);
+            position = new Vector3(3.5, 4.6, 1.9);
 
-            ShapeFilename.Add("cube.obj");
+            ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
             TextureFilename.Add("texture/woodbox.bmp");
 
@@ -205,7 +208,7 @@ namespace TestPhysics
             objects1.SetMass(1.0);
             objects1.SetPosition(position);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            geom1 = GetObjectGeometry("cube.obj", 1);
+            geom1 = GetObjectGeometry("wheel.obj", 1);
             objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -217,9 +220,9 @@ namespace TestPhysics
 
             objects.Add(objects1);
 
-            position = new Vector3(-5.0, 4.6, 1.5);
+            position = new Vector3(-3.5, 4.6, 1.9);
 
-            ShapeFilename.Add("cube.obj");
+            ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
             TextureFilename.Add("texture/woodbox.bmp");
 
@@ -227,7 +230,7 @@ namespace TestPhysics
             objects1.SetMass(1.0);
             objects1.SetPosition(position);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            geom1 = GetObjectGeometry("cube.obj", 1);
+            geom1 = GetObjectGeometry("wheel.obj", 1);
             objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -262,46 +265,55 @@ namespace TestPhysics
         {
             ICollisionJoint[] constraints = new ICollisionJoint[4];
 
+            //Wheels Joints
+
             constraints[0] = new Hinge2Joint(
                                 shape[1],
                                 shape[2],
-                                new Vector3(-3.0, -1.0, -1.5),
+                                shape[3],
+                                new Vector3(-3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
                                 13.2,
                                 1.0,
                                 0.0);
-
+            
             constraints[0].SetAxis1AngularLimit(0.0, 0.0);
-
+            //constraints[0].SetAxis2AngularLimit(0.0, 0.0);
+            
             constraints[1] = new Hinge2Joint(
                                 shape[1],
                                 shape[4],
-                                new Vector3(3.0, -1.0, 1.5),
+                                shape[5],
+                                new Vector3(3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
                                 13.2,
                                 1.0,
                                 0.0);
-
+            
             constraints[1].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
+            //constraints[1].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
 
             constraints[2] = new Hinge2Joint(
                                 shape[1],
                                 shape[3],
-                                new Vector3(3.0, -1.0, -1.5),
+                                shape[2],
+                                new Vector3(3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
                                 13.2,
                                 1.0,
                                 0.0);
-
+            
             constraints[2].SetAxis1AngularLimit(0.0, 0.0);
+            //constraints[2].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
 
             constraints[3] = new Hinge2Joint(
                                 shape[1],
                                 shape[5],
-                                new Vector3(-3.0, -1.0, 1.5),
+                                shape[4],
+                                new Vector3(-3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
                                 13.2,
@@ -309,6 +321,7 @@ namespace TestPhysics
                                 0.0);
 
             constraints[3].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
+            //constraints[3].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
 
             return constraints;
         }

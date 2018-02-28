@@ -180,34 +180,32 @@ namespace SharpPhysicsEngine.Helper
             #region Angular Velocity
 
             double angularVelocity = shape.AngularVelocity.Length();
-
-            if (angularVelocity > 0.0)
+                        
+            if (angularVelocity < EngineParameters.AngularValocityMinLimit)
             {
-                if (angularVelocity < EngineParameters.AngularValocityMinLimit)
-                {
-                    shape.SetAngularVelocity(shape.InertiaTensor * shape.TorqueValue);
-                }
-                else
-                {
-                    Vector3 versor = shape.AngularVelocity.Normalize();
-
-                    double rotationAngle = angularVelocity * timeStep;
-
-                    var rotationQuaternion = new Quaternion(versor, rotationAngle);
-
-                    shape.SetRotationStatus((rotationQuaternion * shape.RotationStatus).Normalize());
-
-                    shape.SetRotationMatrix(shape.RotationStatus.ConvertToMatrix());
-
-                    shape.SetInertiaTensor(
-                        (shape.RotationMatrix * shape.BaseInertiaTensor) *
-                        shape.RotationMatrix.Transpose());
-
-                    shape.SetAngularVelocity(shape.AngularVelocity +
-                                             shape.InertiaTensor *
-                                             shape.TorqueValue);
-                }
+                shape.SetAngularVelocity(shape.InertiaTensor * shape.TorqueValue);
             }
+            else
+            {
+                Vector3 versor = shape.AngularVelocity.Normalize();
+
+                double rotationAngle = angularVelocity * timeStep;
+
+                var rotationQuaternion = new Quaternion(versor, rotationAngle);
+
+                shape.SetRotationStatus((rotationQuaternion * shape.RotationStatus).Normalize());
+
+                shape.SetRotationMatrix(shape.RotationStatus.ConvertToMatrix());
+
+                shape.SetInertiaTensor(
+                    (shape.RotationMatrix * shape.BaseInertiaTensor) *
+                    shape.RotationMatrix.Transpose());
+
+                shape.SetAngularVelocity(shape.AngularVelocity +
+                                            shape.InertiaTensor *
+                                            shape.TorqueValue);
+            }
+            
 
             angularVelocity = shape.AngularVelocity.Length();
             shape.SetTorque(new Vector3());

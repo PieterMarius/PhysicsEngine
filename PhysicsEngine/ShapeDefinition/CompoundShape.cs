@@ -347,6 +347,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetAABB();
         }
 
+        public void Rotate(Vector3 versor, double angle)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Private Methods

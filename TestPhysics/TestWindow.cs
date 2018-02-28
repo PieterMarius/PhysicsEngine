@@ -362,7 +362,7 @@ namespace TestPhysics
 
 					stopwatch.Stop();
 
-					elapsedTime += 0.015;
+					elapsedTime += 0.016;
 					performaceValue += stopwatch.ElapsedMilliseconds;
 
 					Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
@@ -372,10 +372,12 @@ namespace TestPhysics
 
 
 
-					pause = true;
+					//pause = true;
 					//if (elapsedTime > 6.0)
 					//	Exit();
 					collPoint = physicsEngine.GetCollisionPointStrucureList();
+                    if (collPoint.Count > 0)
+                        Console.WriteLine();
 					//collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
 
 					//colorList = new List<List<double>>();
@@ -513,17 +515,65 @@ namespace TestPhysics
                 
             }
 
-            if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Down]) 
-			{
-				
-			}
-
+           
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
-                for (int i = 0; i < physicsEngine.JointsCount(); i++)
+                pause = true;
+                //physicsEngine.GetShape(2).SetAngularVelocity(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
+                // physicsEngine.GetShape(2).SetTorque(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
+                for (int i = 0; i < physicsEngine.JointsCount()-1; i++)
                 {
-                    physicsEngine.GetJoints(i).AddTorque(0.0, 0.4);
+                    physicsEngine.GetJoints(i).AddTorque(0.0, 2.5);
                 }
+                physicsEngine.Simulate();
+                pause = false;
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Down])
+            {
+                pause = true;
+                for (int i = 0; i < physicsEngine.JointsCount()-1; i++)
+                {
+                    physicsEngine.GetJoints(i).AddTorque(0.0, -2.5);
+                }
+                physicsEngine.Simulate();
+                pause = false;
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Left])
+            {
+                pause = true;
+               
+                //((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(0.1);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(0.1);
+                //((FixedJoint)physicsEngine.GetJoints(4)).ReInitialize();
+                physicsEngine.GetJoints(1).AddTorque(2.0,0.0);
+                physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
+                //physicsEngine.GetJoints(4).SetSpringCoefficient(1200.0);
+
+
+
+                physicsEngine.Simulate();
+                //physicsEngine.GetJoints(4).SetRestoreCoefficient(30.0);
+                //physicsEngine.GetJoints(4).SetSpringCoefficient(0);
+                pause = false;
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Right])
+            {
+                pause = true;
+
+                //((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(-0.1);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.1);
+                physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
+                physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
+                //physicsEngine.GetJoints(4).SetRestoreCoefficient(0.0);
+                //physicsEngine.GetJoints(4).SetSpringCoefficient(1200.0);
+
+                physicsEngine.Simulate();
+                //physicsEngine.GetJoints(4).SetRestoreCoefficient(30.0);
+                //physicsEngine.GetJoints(4).SetSpringCoefficient(0);
+                pause = false;
             }
 
         }
@@ -720,7 +770,7 @@ namespace TestPhysics
 						GL.MultMatrix(dmviewData);
 
 						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.02f);
+						OpenGLUtilities.drawSolidCube(0.05f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();
@@ -743,7 +793,7 @@ namespace TestPhysics
 
 
 						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.02f);
+						OpenGLUtilities.drawSolidCube(0.05f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();

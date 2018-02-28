@@ -23,5 +23,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetSleepingFrameCount(int frameCount);
         void SetStaticFrictionCoeff(double staticFrictionCoeff);
         void SetTorque(Vector3 torque);
+        void Rotate(Vector3 versor, double angle);
     }
 }

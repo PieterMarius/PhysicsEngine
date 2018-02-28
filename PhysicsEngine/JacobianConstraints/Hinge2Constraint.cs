@@ -13,6 +13,7 @@ namespace SharpPhysicsEngine
 
         IShape ShapeA;
         IShape ShapeB;
+        IShape ExternalSyncShape;
         int KeyIndex;
 		double SpringCoefficient;
 		readonly double SpringCoefficientHingeAxis; 
@@ -86,19 +87,66 @@ namespace SharpPhysicsEngine
                 shapeB.RotationStatus);
 		}
 
-		#endregion
+        public Hinge2Constraint(
+            IShape shapeA,
+            IShape shapeB,
+            IShape externalSyncShape,
+            Vector3 startAnchorPosition,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficient)
+        {
+            ShapeA = shapeA;
+            ShapeB = shapeB;
+            ExternalSyncShape = externalSyncShape;
+            KeyIndex = GetHashCode();
+            RestoreCoefficient = restoreCoefficient;
+            SpringCoefficientHingeAxis = springCoefficientHingeAxis;
+            SpringCoefficient = springCoefficient;
+            StartAnchorPoint = startAnchorPosition;
+            HingeAxis = hingeAxis.Normalize();
+            RotationAxis = rotationAxis.Normalize();
+
+            Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
+            relativePos = ShapeA.RotationMatrix * relativePos;
+
+            AnchorPoint = relativePos + ShapeA.Position;
+
+            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeA.Position);
+
+            StartErrorAxis2 = shapeB.RotationMatrix.Transpose() *
+                                     (AnchorPoint - shapeB.Position);
+
+            Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
+            Vector3 rRotationAxis = shapeB.RotationMatrix * RotationAxis;
+
+            RelativeOrientation1 = CalculateRelativeOrientation(
+                rHingeAxis,
+                rRotationAxis,
+                ShapeA.RotationStatus);
+
+            RelativeOrientation2 = CalculateRelativeOrientation(
+                rRotationAxis,
+                rHingeAxis,
+                shapeB.RotationStatus);
+        }
+
+        #endregion
 
 
-		#region Public Methods
+        #region Public Methods
 
-		#region IConstraintBuilder
+        #region IConstraintBuilder
 
-		/// <summary>
-		/// Builds the Universal joint.
-		/// </summary>
-		/// <returns>The Universal joint.</returns>
-		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        /// <summary>
+        /// Builds the Universal joint.
+        /// </summary>
+        /// <returns>The Universal joint.</returns>
+        /// <param name="simulationObjs">Simulation objects.</param>
+        public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var hinge2Constraints = new List<JacobianConstraint> ();
 
@@ -157,9 +205,9 @@ namespace SharpPhysicsEngine
 				0.0,
 				constraintType));
 
-			//DOF 2
+            //DOF 2
 
-			constraintLimit = RestoreCoefficient * Vector3.Dot (tempPerpendicular,linearError);
+            constraintLimit = RestoreCoefficient * Vector3.Dot(tempPerpendicular, linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 tempPerpendicular,
@@ -211,11 +259,13 @@ namespace SharpPhysicsEngine
 					0.0,
 					constraintType));
 
-			#endregion
+            hinge2Constraints.AddRange(GetSyncConstraintsExternalShape(hingeAxis, rotationAxis));
+            
+            #endregion
 
-			#region Limit Constraints 
+            #region Limit Constraints 
 
-			hinge2Constraints.AddRange(GetAngularLimit(
+            hinge2Constraints.AddRange(GetAngularLimit(
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
@@ -300,14 +350,61 @@ namespace SharpPhysicsEngine
 
 		public void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
-			Vector3 rotationAxis = ShapeB.RotationMatrix * RotationAxis;
+            Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
+            Vector3 rotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
-			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
+            Vector3 torque = rotationAxis * torqueAxis2 + hingeAxis * torqueAxis1;
 
-			ShapeA.SetTorque(ShapeA.TorqueValue + torque);
-			ShapeB.SetTorque(ShapeB.TorqueValue - torque);
-		}
+            ShapeA.SetTorque(ShapeA.TorqueValue + torque);
+            ShapeB.SetTorque(ShapeB.TorqueValue - torque);
+        }
+
+        public void RotateAxis1(double angle)
+        {
+            Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
+            Vector3 rotationAxis = ShapeB.RotationMatrix * RotationAxis;
+
+            var rotationQuaternion = new Quaternion(hingeAxis, angle);
+            var rt = (rotationQuaternion * ShapeB.RotationStatus).Normalize();
+            var bufRotationAxis = rt.ConvertToMatrix() * RotationAxis;
+
+            double angle1 = GetAngle1(
+                    hingeAxis,
+                    bufRotationAxis,
+                    HingeAxis,
+                    ShapeA.RotationStatus,
+                    RelativeOrientation1);
+
+            if(angle1 > AngularLimitMin1.Value &&
+               angle1 < AngularLimitMax1.Value)
+            {
+                ShapeB.Rotate(hingeAxis, angle);
+            }
+            else if (angle1 < AngularLimitMin1.Value)
+            {
+                angle1 = GetAngle1(
+                    hingeAxis,
+                    rotationAxis,
+                    HingeAxis,
+                    ShapeA.RotationStatus,
+                    RelativeOrientation1);
+
+                double anglediff = AngularLimitMin1.Value - angle1;
+                ShapeB.Rotate(hingeAxis, anglediff);
+            }
+            else if (angle1 > AngularLimitMax1.Value)
+            {
+                angle1 = GetAngle1(
+                    hingeAxis,
+                    rotationAxis,
+                    HingeAxis,
+                    ShapeA.RotationStatus,
+                    RelativeOrientation1);
+
+                double anglediff = AngularLimitMax1.Value - angle1;
+                ShapeB.Rotate(hingeAxis, anglediff);
+            }            
+        }
 
         public void SetSpringCoefficient(double springCoefficient)
         {
@@ -328,7 +425,7 @@ namespace SharpPhysicsEngine
 		#endregion
 
 		#region Private Methods
-
+                
 		double GetAngle2(
 			Vector3 axis1,
 			Vector3 axis2,
@@ -433,7 +530,7 @@ namespace SharpPhysicsEngine
 			return angularConstraint;
 		}
 
-		List<JacobianConstraint> GetMotorConstraint(
+		private List<JacobianConstraint> GetMotorConstraint(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 hingeAxis,
@@ -480,7 +577,52 @@ namespace SharpPhysicsEngine
 			return motorConstraint;
 		}
 
-		#endregion
-	}
+        private List<JacobianConstraint> GetSyncConstraintsExternalShape(
+            Vector3 hingeAxis,
+            Vector3 rotationAxis)
+        {
+            var syncConstraints = new List<JacobianConstraint>();
+
+            if (ExternalSyncShape != null)
+            {
+                var rotationAxisExt = ExternalSyncShape.RotationMatrix * RotationAxis;
+                var hingeAxisExt = hingeAxis;
+
+                syncConstraints.Add(JacobianCommon.GetDOF(
+                    new Vector3(),
+                    new Vector3(),
+                    -1.0 * rotationAxisExt,
+                    rotationAxis,
+                    ExternalSyncShape,
+                    ShapeB,
+                    0.0,
+                    0.0,
+                    SpringCoefficientHingeAxis,
+                    0.0,
+                    ConstraintType.Joint));
+
+                var ax = hingeAxis.Cross(rotationAxis).Normalize();
+                var ax1 = hingeAxisExt.Cross(rotationAxisExt).Normalize();
+                double error = (ax - ax1).Length();
+
+                syncConstraints.Add(JacobianCommon.GetDOF(
+                    new Vector3(),
+                    new Vector3(),
+                    -1.0 * hingeAxis,
+                    hingeAxis,
+                    ExternalSyncShape,
+                    ShapeB,
+                    0.0,
+                    0.0,
+                    SpringCoefficientHingeAxis,
+                    0.0,
+                    ConstraintType.Joint));
+            }
+
+            return syncConstraints;
+        }
+
+        #endregion
+    }
 }
 

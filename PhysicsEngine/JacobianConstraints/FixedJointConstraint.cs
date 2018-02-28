@@ -22,7 +22,7 @@ namespace SharpPhysicsEngine
         IShape ShapeB;
         int KeyIndex;
 		double SpringCoefficient;
-		readonly Vector3 StartAnchorPoint;
+		Vector3 StartAnchorPoint;
 
 		Vector3 AnchorPoint;
 		Vector3 StartErrorAxis1;
@@ -62,19 +62,19 @@ namespace SharpPhysicsEngine
 			RelativeOrientation = shapeB.RotationStatus.Inverse() *
                                   shapeA.RotationStatus;
 		}
+                
+        #endregion
 
-		#endregion
+        #region Public Methods
 
-		#region Public Methods
+        #region IConstraintBuilder
 
-		#region IConstraintBuilder
-
-		/// <summary>
-		/// Builds the fixed joint.
-		/// </summary>
-		/// <returns>The fixed joint.</returns>
-		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        /// <summary>
+        /// Builds the fixed joint.
+        /// </summary>
+        /// <returns>The fixed joint.</returns>
+        /// <param name="simulationObjs">Simulation objects.</param>
+        public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var fixedConstraints = new List<JacobianConstraint> ();
 
@@ -263,7 +263,7 @@ namespace SharpPhysicsEngine
         {
             SpringCoefficient = springCoefficient;
         }
-
+        
         #region NotSupportedMethods
 
         void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)

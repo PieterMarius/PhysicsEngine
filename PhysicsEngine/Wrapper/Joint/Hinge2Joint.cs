@@ -35,6 +35,29 @@ namespace SharpPhysicsEngine.Wrapper.Joint
                 springCoefficient);
         }
 
+        public Hinge2Joint(
+            ICollisionShape shapeA,
+            ICollisionShape shapeB,
+            ICollisionShape externalSyncShape,
+            Vector3 startAnchorPosition,
+            Vector3 hingeAxis,
+            Vector3 rotationAxis,
+            double restoreCoefficient,
+            double springCoefficientHingeAxis,
+            double springCoefficient)
+        {
+            hinge2Constraint = new Hinge2Constraint(
+                ((IMapper)shapeA).GetShape(),
+                ((IMapper)shapeB).GetShape(),
+                ((IMapper)externalSyncShape).GetShape(),
+                startAnchorPosition,
+                hingeAxis,
+                rotationAxis,
+                restoreCoefficient,
+                springCoefficientHingeAxis,
+                springCoefficient);
+        }
+
         #endregion
 
 
@@ -110,6 +133,11 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.SetSpringCoefficient(springCoefficient);
         }
 
+        public void RotateAxis1(double angle)
+        {
+            hinge2Constraint.RotateAxis1(angle);
+        }
+        
         #endregion
     }
 }

@@ -41,15 +41,10 @@ PhysicsEngine/bin/Release/LCPSolver.dll.mdb
 *.dll
 *.mdb
 CollisionEngine/bin/Debug/MathUtility.dll
-*.dll
-*.pdb
-*.pdb
+
 *.cache
 *.pdb
-*.dll
-*.dll
-*.pdb
-*.pdb
+
 CollisionEngine/obj/*
 LCPSolver/obj/*
 CollisionEngine/bin/*
@@ -63,11 +58,8 @@ ObjectDefinition/obj/*
 PhysicsEngine/obj/*
 MathUtility/obj/*
 TestPhysics/bin/Debug/testJointBridge.txt
-*.suo
 *.manifest
-*.suo
-.vs/PhysicsEngine/v14/.suo
-.vs/PhysicsEngine/v14/.suo
+
 *.suo
 .vs/PhysicsEngine/v14/.suo
 packages/System.Numerics.Vectors.4.3.0/dotnet_library_license.txt
@@ -84,3 +76,5 @@ packages/System.Numerics.Vectors.4.3.0/ref/netstandard1.0/System.Numerics.Vector
 ConvexHullUtilities/bin/*
 ConvexHullUtilities/obj/*
 TestPhysics/bin/*
+.suo
+*.vspx

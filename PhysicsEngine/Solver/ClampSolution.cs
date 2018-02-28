@@ -55,10 +55,7 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    if (Math.Abs(X[i]) < 1E-50)
-                        return true;
-                    else
-                        return false;
+                    return true;
 
                 case ConstraintType.Friction:
                     return true;

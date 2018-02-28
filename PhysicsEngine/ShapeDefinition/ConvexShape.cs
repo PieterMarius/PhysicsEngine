@@ -283,11 +283,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetObjectProperties();
             SetAABB();
         }
-        
+
+        public void Rotate(Vector3 versor, double angle)
+        {
+            var rotationQuaternion = new Quaternion(versor, angle);
+
+            SetRotationStatus((rotationQuaternion * RotationStatus).Normalize());
+
+            SetRotationMatrix(RotationStatus.ConvertToMatrix());
+
+            SetInertiaTensor(
+                (RotationMatrix * BaseInertiaTensor) *
+                RotationMatrix.Transpose());
+        }
+
         #endregion
 
         #region Private Methods
-        
+
         private void SetObjectProperties()
         {
             Matrix3x3 baseTensors = new Matrix3x3();

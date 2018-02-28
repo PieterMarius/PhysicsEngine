@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         {
             return fixedJointConstraint.GetObjectIndexB();
         }
-
+        
         public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
             throw new NotSupportedException();
