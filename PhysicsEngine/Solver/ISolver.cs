@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.LCPSolver
 {
 	internal interface ISolver

@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine
 {
 	internal struct ContactIndex

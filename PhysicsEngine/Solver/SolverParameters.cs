@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.LCPSolver
 {
 	public class SolverParameters

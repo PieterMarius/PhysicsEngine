@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.ShapeDefinition
 {
 	public enum ObjectType

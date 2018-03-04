@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 

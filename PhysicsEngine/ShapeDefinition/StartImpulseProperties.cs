@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.ShapeDefinition
 {
 	public sealed class StartImpulseProperties

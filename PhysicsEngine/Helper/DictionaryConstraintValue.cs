@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.Helper
 {
     internal struct DictionaryConstraintValue

@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.CollisionEngine
 {
 	public sealed class CollisionPointStructure
