@@ -81,9 +81,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 				SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
 			}
 			else
-			{
-				SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
-			}
+			    SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
 		}
 
 		public Geometry(
@@ -101,9 +99,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		{
 			if (VertexPosition != null && 
 				VertexPosition.Length > index ) 
-			{
 				VertexPosition[index].SetVertexPosition(v);
-			}
+			
 		}
 
 		public void SetVertexPositions(Vector3[] v)
@@ -144,8 +141,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 				{
 					VertexPosition[i] = new VertexProperties(inputVertexPosition[i]);
 
-					if (Triangle != null && 
-						getAdjacencyList)
+					if (getAdjacencyList  && 
+                        Triangle != null	)
 					{
 						HashSet<int> adjacencyList = new HashSet<int>();
 

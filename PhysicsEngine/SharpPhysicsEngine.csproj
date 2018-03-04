@@ -102,6 +102,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
+    <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Wrapper\CompoundRigidCollisionShape.cs" />
     <Compile Include="Wrapper\Joint\AngularJoint.cs" />
@@ -120,10 +121,10 @@
     <Compile Include="Wrapper\SoftCollisionShape.cs" />
     <Compile Include="Wrapper\StaticCollisionShape.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
-    <Compile Include="ShapeDefinition\CompoundShape.cs" />
+    <Compile Include="ShapeDefinition\Shape\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintIndex.cs" />
     <Compile Include="ShapeDefinition\ConstraintType.cs" />
-    <Compile Include="ShapeDefinition\ConvexShape.cs" />
+    <Compile Include="ShapeDefinition\Shape\ConvexShape.cs" />
     <Compile Include="ShapeDefinition\Geometry.cs" />
     <Compile Include="ShapeDefinition\GeometrySphere.cs" />
     <Compile Include="ShapeDefinition\Helper.cs" />
@@ -135,10 +136,10 @@
     <Compile Include="ShapeDefinition\Interfaces\IShape.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IShapeCommon.cs" />
     <Compile Include="ShapeDefinition\Interfaces\ISoftShape.cs" />
-    <Compile Include="ShapeDefinition\JointType.cs" />
+    <Compile Include="JacobianConstraints\JointType.cs" />
     <Compile Include="ShapeDefinition\ObjectGeometryType.cs" />
     <Compile Include="ShapeDefinition\ObjectType.cs" />
-    <Compile Include="ShapeDefinition\SoftShape.cs" />
+    <Compile Include="ShapeDefinition\Shape\SoftShape.cs" />
     <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
     <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
     <Compile Include="ShapeDefinition\TriangleIndexes.cs" />
