@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 using System.Collections.Generic;
-using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {

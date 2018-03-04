@@ -62,3 +62,4 @@ ConvexHullUtilities/obj/*
 TestPhysics/bin/*
 .suo
 *.vspx
+packages/*

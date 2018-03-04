@@ -31,59 +31,43 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class BallAndSocketConstraint : IConstraint, IConstraintBuilder
+    internal sealed class BallAndSocketConstraint : Constraint
 	{
 		#region Fields
 
 		const JointType jointType = JointType.BallAndSocket;
-
-        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
-        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
-        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
-        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
-        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
-        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
-
-        IShape ShapeA;
-        IShape ShapeB;
-        int KeyIndex;
-		double SpringCoefficient;
-		readonly Vector3 StartAnchorPoint;
+                
+        readonly Vector3 StartAnchorPoint;
 		readonly Vector3 StartErrorAxis1;
 		readonly Vector3 StartErrorAxis2;
-
-		double RestoreCoefficient;
+        		
 		Vector3 AnchorPoint;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public BallAndSocketConstraint(
+        public BallAndSocketConstraint(
             IShape shapeA,
             IShape shapeB,
             Vector3 startAnchorPosition,
-			double restoreCoefficient,
-			double springCoefficient)
-		{
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = GetHashCode();
-			RestoreCoefficient = restoreCoefficient;
-			SpringCoefficient = springCoefficient;
-			StartAnchorPoint = startAnchorPosition;
+            double restoreCoefficient,
+            double springCoefficient)
+            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+        {
+            StartAnchorPoint = startAnchorPosition;
 
-			Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
-			relativePos = ShapeA.RotationMatrix * relativePos;
+            Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
+            relativePos = ShapeA.RotationMatrix * relativePos;
 
-			AnchorPoint = relativePos + ShapeA.Position;
+            AnchorPoint = relativePos + ShapeA.Position;
 
-			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeA.Position);
+            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeA.Position);
 
-			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeB.Position);
-		}
+            StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeB.Position);
+        }
 
 		#endregion
 
@@ -96,7 +80,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The ball socket joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var ballSocketConstraints = new List<JacobianConstraint>();
 
@@ -190,71 +174,46 @@ namespace SharpPhysicsEngine
 
 		#region IConstraint
 
-		public JointType GetJointType()
+		public override JointType GetJointType()
 		{
 			return jointType;
 		}
-
-		public int GetObjectIndexA()
-		{
-			return ShapeA.ID;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return ShapeB.ID;
-		}
-
-		public int GetKeyIndex()
-		{
-			return KeyIndex;
-		}
-
-		public Vector3 GetAnchorPosition()
+        	
+		public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.StartPosition)) +
                    ShapeA.Position; 
 		}
 
-		public void SetRestoreCoefficient(double restoreCoefficient)
-		{
-			RestoreCoefficient = restoreCoefficient;
-		}
-
-        public void SetSpringCoefficient(double springCoefficient)
-        {
-            SpringCoefficient = springCoefficient;
-        }
-
         #region NotSupportedMethods
 
-        void IConstraint.SetAxis1Motor(double speedValue, double forceLimit)
+        public override void SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
+        public override void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
+        public override void SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.AddTorque(double torqueAxis1, double torqueAxis2)
+        public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}

@@ -233,7 +233,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment2();
+            var env = new BuildEnvironment();
             
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -540,14 +540,12 @@ namespace TestPhysics
                 softShape.SetConstraintsRestoreCoeff(60.0);
                 
             }
-
-           
+                       
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
                 pause = true;
-                //physicsEngine.GetShape(2).SetAngularVelocity(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
-                // physicsEngine.GetShape(2).SetTorque(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
-                for (int i = 0; i < physicsEngine.JointsCount()-1; i++)
+                
+                for (int i = 0; i < physicsEngine.JointsCount(); i++)
                 {
                     physicsEngine.GetJoints(i).AddTorque(0.0, 2.5);
                 }
@@ -558,7 +556,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Down])
             {
                 pause = true;
-                for (int i = 0; i < physicsEngine.JointsCount()-1; i++)
+                for (int i = 0; i < physicsEngine.JointsCount(); i++)
                 {
                     physicsEngine.GetJoints(i).AddTorque(0.0, -2.5);
                 }
@@ -569,36 +567,24 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Left])
             {
                 pause = true;
-               
-                //((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(0.1);
-                //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(0.1);
-                //((FixedJoint)physicsEngine.GetJoints(4)).ReInitialize();
-                physicsEngine.GetJoints(1).AddTorque(2.0,0.0);
+
+                physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
                 physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
-                //physicsEngine.GetJoints(4).SetSpringCoefficient(1200.0);
-
-
-
+                
                 physicsEngine.Simulate();
-                //physicsEngine.GetJoints(4).SetRestoreCoefficient(30.0);
-                //physicsEngine.GetJoints(4).SetSpringCoefficient(0);
+                
                 pause = false;
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Right])
             {
                 pause = true;
-
-                //((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(-0.1);
-                //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.1);
+                               
                 physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
                 physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
-                //physicsEngine.GetJoints(4).SetRestoreCoefficient(0.0);
-                //physicsEngine.GetJoints(4).SetSpringCoefficient(1200.0);
-
+               
                 physicsEngine.Simulate();
-                //physicsEngine.GetJoints(4).SetRestoreCoefficient(30.0);
-                //physicsEngine.GetJoints(4).SetSpringCoefficient(0);
+                
                 pause = false;
             }
 

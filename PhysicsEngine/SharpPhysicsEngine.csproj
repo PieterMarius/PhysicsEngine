@@ -81,6 +81,7 @@
     <Compile Include="Helper\IntegrationHelper.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />
+    <Compile Include="JacobianConstraints\Constraint.cs" />
     <Compile Include="JacobianConstraints\ContactConstraint.cs" />
     <Compile Include="JacobianConstraints\FixedJointConstraint.cs" />
     <Compile Include="JacobianConstraints\Hinge2Constraint.cs" />

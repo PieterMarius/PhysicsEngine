@@ -31,16 +31,12 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class AngularConstraint : IConstraint, IConstraintBuilder
+    internal sealed class AngularConstraint : Constraint
     {
-
         #region Fields
 
         const JointType jointType = JointType.Angular;
 
-        IShape ShapeA;
-        IShape ShapeB;
-        int KeyIndex;
         double SpringCoefficientHingeAxis;
         double SpringCoefficientRotationAxis;
         readonly Vector3 StartAnchorPoint;
@@ -52,8 +48,7 @@ namespace SharpPhysicsEngine
         readonly Vector3 RotationAxis;
 
         Vector3 AnchorPoint;
-        double RestoreCoefficient;
-        
+
         #endregion
 
         #region Constructor
@@ -67,17 +62,14 @@ namespace SharpPhysicsEngine
             double restoreCoefficient,
             double springCoefficientHingeAxis,
             double springCoefficientRotationAxis)
+            : base(shapeA, shapeB, restoreCoefficient, 0.0)
         {
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = GetHashCode();
-            RestoreCoefficient = restoreCoefficient;
             SpringCoefficientHingeAxis = springCoefficientHingeAxis;
             SpringCoefficientRotationAxis = springCoefficientRotationAxis;
             StartAnchorPoint = startAnchorPosition;
             HingeAxis = hingeAxis.Normalize();
             RotationAxis = rotationAxis.Normalize();
-                        
+
             Vector3 relativePos = startAnchorPosition - ShapeA.StartPosition;
             relativePos = ShapeA.RotationMatrix * relativePos;
 
@@ -108,7 +100,7 @@ namespace SharpPhysicsEngine
         #region Public Methods
 
         #region IConstraintBuilder
-        public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
         {
             var angularConstraints = new List<JacobianConstraint>();
 
@@ -181,73 +173,48 @@ namespace SharpPhysicsEngine
 
         #region IConstraint
 
-        public void AddTorque(
+        public override Vector3 GetAnchorPosition()
+        {
+            return AnchorPoint;
+        }
+
+        public override JointType GetJointType()
+        {
+            return jointType;
+        }
+
+        public override void AddTorque(
             double torqueAxis1, 
             double torqueAxis2)
         {
             throw new NotImplementedException();
         }
-
-        public Vector3 GetAnchorPosition()
-        {
-            return AnchorPoint;
-        }
-
-        public JointType GetJointType()
-        {
-            return jointType;
-        }
-
-        public int GetKeyIndex()
-        {
-            return KeyIndex;
-        }
-
-        public int GetObjectIndexA()
-        {
-            return ShapeA.ID;
-        }
-
-        public int GetObjectIndexB()
-        {
-            return ShapeB.ID;
-        }
-
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+                       
+        public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAxis1Motor(double speedValue, double forceLimit)
+        public override void SetAxis1Motor(double speedValue, double forceLimit)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
         {
             throw new NotImplementedException();
         }
 
-        public void SetAxis2Motor(double speedValue, double forceLimit)
+        public override void SetAxis2Motor(double speedValue, double forceLimit)
         {
             throw new NotImplementedException();
         }
 
-        public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+        public override void SetLinearLimit(double linearLimitMin, double linearLimitMax)
         {
             throw new NotImplementedException();
         }
-
-        public void SetRestoreCoefficient(double restoreCoefficient)
-        {
-            RestoreCoefficient = restoreCoefficient;
-        }
-
-        public void SetSpringCoefficient(double springCoefficient)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         #endregion
 
         #endregion

@@ -305,8 +305,7 @@ namespace TestPhysics
                                 0.0);
             
             constraints[0].SetAxis1AngularLimit(0.0, 0.0);
-            //constraints[0].SetAxis2AngularLimit(0.0, 0.0);
-            
+                        
             constraints[1] = new Hinge2Joint(
                                 shape[1],
                                 shape[4],
@@ -319,8 +318,7 @@ namespace TestPhysics
                                 0.0);
             
             constraints[1].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
-            //constraints[1].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
-
+            
             constraints[2] = new Hinge2Joint(
                                 shape[1],
                                 shape[3],
@@ -333,8 +331,7 @@ namespace TestPhysics
                                 0.0);
             
             constraints[2].SetAxis1AngularLimit(0.0, 0.0);
-            //constraints[2].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
-
+            
             constraints[3] = new Hinge2Joint(
                                 shape[1],
                                 shape[5],
@@ -347,8 +344,7 @@ namespace TestPhysics
                                 0.0);
 
             constraints[3].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
-            //constraints[3].SetAxis2AngularLimit(-0.78539816339, 0.78539816339);
-
+            
             return constraints;
         }
 

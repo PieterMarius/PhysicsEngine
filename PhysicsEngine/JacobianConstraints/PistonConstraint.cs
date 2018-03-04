@@ -31,17 +31,13 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class PistonConstraint: IConstraint, IConstraintBuilder
+    internal sealed class PistonConstraint: Constraint
 	{
 		#region Public Fields
 
 		const JointType jointType = JointType.Piston;
 
-        IShape ShapeA;
-        IShape ShapeB;
-        int KeyIndex;
-		double SpringCoefficient;
-		readonly Vector3 StartAnchorPoint;
+        readonly Vector3 StartAnchorPoint;
 		readonly Vector3 PistonAxis;
 
 		double? AngularLimitMin;
@@ -55,47 +51,42 @@ namespace SharpPhysicsEngine
 		double? AngularSpeedValue;
 		double? AngularForceLimit;
 
-		double RestoreCoefficient;
 		Vector3 AnchorPoint;
 		Vector3 StartErrorAxis1;
 		Vector3 StartErrorAxis2;
 		Quaternion RelativeOrientation;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public PistonConstraint(
+        public PistonConstraint(
             IShape shapeA,
             IShape shapeB,
             Vector3 startAnchorPosition,
-			Vector3 pistonAxis,
-			double restoreCoefficient,
-			double springCoefficient)
-		{
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = GetHashCode();
-			RestoreCoefficient = restoreCoefficient;
-			SpringCoefficient = springCoefficient;
-			StartAnchorPoint = startAnchorPosition;
+            Vector3 pistonAxis,
+            double restoreCoefficient,
+            double springCoefficient)
+            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+        {
+            StartAnchorPoint = startAnchorPosition;
 
-			PistonAxis = -1.0 * pistonAxis.Normalize ();
+            PistonAxis = -1.0 * pistonAxis.Normalize();
 
-			Vector3 relativePos = ShapeA.RotationMatrix *
-				(startAnchorPosition - ShapeA.StartPosition);
+            Vector3 relativePos = ShapeA.RotationMatrix *
+                (startAnchorPosition - ShapeA.StartPosition);
 
-			AnchorPoint = relativePos + ShapeA.Position;
+            AnchorPoint = relativePos + ShapeA.Position;
 
-			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeA.Position);
+            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeA.Position);
 
-			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeB.Position);
+            StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeB.Position);
 
-			RelativeOrientation = ShapeB.RotationStatus.Inverse() *
+            RelativeOrientation = ShapeB.RotationStatus.Inverse() *
                                          ShapeA.RotationStatus;
-		}
+        }
 
 		#endregion
 
@@ -108,7 +99,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The piston joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var pistonConstraints = new List<JacobianConstraint> ();
 
@@ -247,31 +238,16 @@ namespace SharpPhysicsEngine
 			return pistonConstraints;
 		}
 
-		#endregion
+        #endregion
 
-		#region IConstraint
+        #region IConstraint
 
-		public int GetObjectIndexA()
-		{
-			return ShapeA.ID;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return ShapeB.ID;
-		}
-
-		public int GetKeyIndex()
-		{
-			return KeyIndex;
-		}
-
-		public JointType GetJointType()
+        public override JointType GetJointType()
 		{
 			return jointType;
 		}
 
-		public Vector3 GetAnchorPosition()
+		public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                     (StartAnchorPoint -
@@ -279,19 +255,19 @@ namespace SharpPhysicsEngine
                     ShapeA.Position;
         }
 
-		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			AngularLimitMin = angularLimitMin;
 			AngularLimitMax = angularLimitMax;
 		}
 
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		public override void SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			LinearLimitMin = linearLimitMin;
 			LinearLimitMax = linearLimitMax;
 		}
 
-		public void SetAxis1Motor(double speedValue, double forceLimit)
+		public override void SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			LinearSpeedValue = speedValue;
 			LinearForceLimit = forceLimit;
@@ -303,18 +279,13 @@ namespace SharpPhysicsEngine
 		/// <returns>The axis2 motor.</returns>
 		/// <param name="speedValue">Speed value.</param>
 		/// <param name="forceLimit">Force limit.</param>
-		public void SetAxis2Motor(double speedValue, double forceLimit)
+		public override void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			AngularSpeedValue = speedValue;
 			AngularForceLimit = forceLimit;
 		}
-
-		public void SetRestoreCoefficient(double restoreCoefficient)
-		{
-			RestoreCoefficient = restoreCoefficient;
-		}
-
-		public void AddTorque(double torqueAxis1, double torqueAxis2)
+        
+		public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
 			Vector3 pistonAxis = ShapeA.RotationMatrix * PistonAxis;
 
@@ -323,15 +294,10 @@ namespace SharpPhysicsEngine
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
-
-        public void SetSpringCoefficient(double springCoefficient)
-        {
-            SpringCoefficient = springCoefficient;
-        }
-
+                
         #region NotImplementedMethod
 
-        void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}

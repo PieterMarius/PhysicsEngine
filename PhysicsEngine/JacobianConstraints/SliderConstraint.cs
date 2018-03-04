@@ -32,24 +32,13 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-    internal class SliderConstraint: IConstraint, IConstraintBuilder
+    internal class SliderConstraint: Constraint
 	{
 		#region Private Fields
 
 		const JointType jointType = JointType.Slider;
-
-        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
-        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
-        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
-        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
-        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
-        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
-
-        IShape ShapeA;
-        IShape ShapeB;
-        int KeyIndex;
-		double SpringCoefficient;
-		readonly Vector3 StartAnchorPoint;
+                
+        readonly Vector3 StartAnchorPoint;
 		readonly Vector3 SliderAxis;
 		readonly Vector3 StartErrorAxis1;
 		readonly Vector3 StartErrorAxis2;
@@ -60,42 +49,37 @@ namespace SharpPhysicsEngine
 		double? SpeedValue;
 		double? ForceLimit;
 		Vector3 AnchorPoint;
-		double RestoreCoefficient;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #region Constructor
 
-		public SliderConstraint(
+        public SliderConstraint(
             IShape shapeA,
             IShape shapeB,
             Vector3 startAnchorPosition,
-			Vector3 sliderAxis,
-			double restoreCoefficient,
-			double springCoefficient)
-		{
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = this.GetHashCode();
-			RestoreCoefficient = restoreCoefficient;
-			SpringCoefficient = springCoefficient;
-			StartAnchorPoint = startAnchorPosition;
-			SliderAxis = -1.0 * sliderAxis.Normalize ();
+            Vector3 sliderAxis,
+            double restoreCoefficient,
+            double springCoefficient)
+            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+        {
+            StartAnchorPoint = startAnchorPosition;
+            SliderAxis = -1.0 * sliderAxis.Normalize();
 
-			Vector3 relativePos = ShapeA.RotationMatrix *
-				(startAnchorPosition - ShapeA.StartPosition);
+            Vector3 relativePos = ShapeA.RotationMatrix *
+                (startAnchorPosition - ShapeA.StartPosition);
 
-			AnchorPoint = relativePos + ShapeA.Position;
+            AnchorPoint = relativePos + ShapeA.Position;
 
-			StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeA.Position);
+            StartErrorAxis1 = ShapeA.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeA.Position);
 
-			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
-									 (AnchorPoint - ShapeB.Position);
+            StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
+                                     (AnchorPoint - ShapeB.Position);
 
-			RelativeOrientation = ShapeB.RotationStatus.Inverse() *
+            RelativeOrientation = ShapeB.RotationStatus.Inverse() *
                                          ShapeA.RotationStatus;
-		}
+        }
 
 		#endregion
 
@@ -108,7 +92,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The slider joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
 		{
 			var sliderConstraints = new List<JacobianConstraint> ();
 
@@ -285,74 +269,49 @@ namespace SharpPhysicsEngine
 		#endregion
 
 		#region IConstraint
-
-		public int GetObjectIndexA()
-		{
-			return ShapeA.ID;
-		}
-
-		public int GetObjectIndexB()
-		{
-			return ShapeB.ID;
-		}
-
-		public int GetKeyIndex()
-		{
-			return KeyIndex;
-		}
-
-		public JointType GetJointType()
+        
+		public override JointType GetJointType()
 		{
 			return jointType;
 		}
 
-		public Vector3 GetAnchorPosition()
+		public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                     (StartAnchorPoint - ShapeA.StartPosition)) +
                     ShapeA.Position; 
         }
 
-		public void SetAxis1Motor(double speedValue, double forceLimit)
+		public override void SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			SpeedValue = speedValue;
 			ForceLimit = forceLimit;
 		}
 
-		public void SetLinearLimit(double linearLimitMin, double linearLimitMax)
+		public override void SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			LinearLimitMin = linearLimitMin;
 			LinearLimitMax = linearLimitMax;
 		}
 
-		public void SetRestoreCoefficient(double restoreCoefficient)
-		{
-			RestoreCoefficient = restoreCoefficient;
-		}
-
-        public void SetSpringCoefficient(double springCoefficient)
-        {
-            SpringCoefficient = springCoefficient;
-        }
-
         #region NotImplementedMethods
 
-        void IConstraint.SetAxis2Motor(double speedValue, double forceLimit)
+        public override void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-		void IConstraint.AddTorque(double torqueAxis1, double torqueAxis2)
+        public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
 			throw new NotSupportedException();
 		}
