@@ -26,6 +26,8 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Utility
@@ -41,11 +43,10 @@ namespace Utility
         public static double InvariantCultureDoubleConverter(string value)
         {
             string text = value.Replace(',', '.');
-            double tmp;
-            double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out tmp);
+            double.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out double tmp);
             return tmp;
         }
-
+                
         public static ObjProperties GetImportedObjectProperties(
             string fileName,
             double scale)

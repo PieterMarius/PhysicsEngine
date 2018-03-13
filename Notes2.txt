@@ -1072,3 +1072,20 @@ namespace LCPSolver
     }
 }
 
+/// create a lock object
+                    //object lockObj = new object();
+                    double[] xv = new double[x.Length];
+                    Array.Copy(x, xv, x.Length);
+                    
+                    Parallel.For(
+                         0,
+                         m.Count,
+                         () => 0,
+                         (int index, ParallelLoopState loopState, double tlsValue) => {
+                             int idx = bufIndex[index];
+                             if (idx < i)
+                                 tlsValue += bufValue[index] * xv[idx];
+                             return tlsValue;
+                         },
+                         value => GeneralMathUtilities.Add(ref sumBuffer, value));
+

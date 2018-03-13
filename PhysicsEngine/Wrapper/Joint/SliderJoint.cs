@@ -82,7 +82,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Slider;
+            return sliderConstraint.GetJointType();
         }
 
         public int GetKeyIndex()

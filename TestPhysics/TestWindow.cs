@@ -233,7 +233,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment2();
+            var env = new BuildEnvironment();
             
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -267,7 +267,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.ProjectedConjugateGradient);
+            physicsEngine.SetSolver(SolverType.RedBlackProjectedGaussSeidel);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -336,12 +336,12 @@ namespace TestPhysics
 
 			for (int i = 0; i < physicsEngine.ShapesCount(); i++)
 				SetOpenGLObjectMatrixAndDisplayObject(i);
-
+            
             //displayOctree();
             //displayConvexDecomposition();
             //displaySoftJoint();
 
-			GL.Flush ();
+            GL.Flush ();
 			SwapBuffers ();
 
 
@@ -368,9 +368,9 @@ namespace TestPhysics
 
 			//Physics
 			UpdateMouse ();
-			UpdateKeyboard ();
-			
-			try {
+            UpdateKeyboard();
+
+            try {
 				
 				if (!pause)
 				{
@@ -758,7 +758,8 @@ namespace TestPhysics
 
 		private void displayContact()
 		{
-			for (int i = 0; i < collPoint.Count; i++)
+            //Console.WriteLine("NContact " + collPoint.Count);
+            for (int i = 0; i < collPoint.Count; i++)
 			{
 				for (int h = 0; h < collPoint[i].CollisionPointBase.Length; h++)
 				{
@@ -836,7 +837,7 @@ namespace TestPhysics
 					color[0] = colorList[h][0]; color[1] = colorList[h][1]; color[2] = colorList[h][2];
 					List<CollisionPointStructure> collPointStr = collisionPartitionedPoints[h];
 
-					for (int i = 0; i < collPointStr.Count; i++)
+                    	for (int i = 0; i < collPointStr.Count; i++)
 					{
 						for (int n = 0; n < collPointStr[i].CollisionPointBase.Length; n++)
 						{

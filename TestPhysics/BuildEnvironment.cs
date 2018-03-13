@@ -97,7 +97,7 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolver(SolverType.ProjectedConjugateGradient);
+            physicsEnvironment.SetSolver(SolverType.RedBlackProjectedGaussSeidel);
 
             return physicsEnvironment;
 		}

@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System;
+using System.Threading;
 
 namespace SharpEngineMathUtility
 {
@@ -110,6 +111,19 @@ namespace SharpEngineMathUtility
             x |= x >> 8;
             x |= x >> 16;
             return x + 1;
+        }
+
+        public static double Add(ref double location1, double value)
+        {
+            double newCurrentValue = location1; // non-volatile read, so may be stale
+            while (true)
+            {
+                double currentValue = newCurrentValue;
+                double newValue = currentValue + value;
+                newCurrentValue = Interlocked.CompareExchange(ref location1, newValue, currentValue);
+                if (newCurrentValue == currentValue)
+                    return newValue;
+            }
         }
 
     }

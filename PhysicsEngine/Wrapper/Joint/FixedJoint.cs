@@ -75,7 +75,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Fixed;
+            return fixedJointConstraint.GetJointType();
         }
 
         public int GetKeyIndex()

@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-using System;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 

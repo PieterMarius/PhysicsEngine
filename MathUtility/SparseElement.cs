@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -58,22 +59,26 @@ namespace SharpEngineMathUtility
         public static double[] Multiply(SparseElement[] matrix, double[] vector)
         {
             double[] result = new double[matrix.Length];
-
-            Parallel.For(0,
-                matrix.Length,
-                i =>
+            
+            var rangePartitioner = Partitioner.Create(0, matrix.Length);
+            Parallel.ForEach(
+                rangePartitioner,
+                (range, loopState) =>
                 {
-                    SparseElement m = matrix[i];
+                    for (int i = range.Item1; i < range.Item2; i++)
+                    {
+                        SparseElement m = matrix[i];
 
-                    double[] bufValue = m.Value;
-                    int[] bufIndex = m.Index;
+                        double[] bufValue = m.Value;
+                        int[] bufIndex = m.Index;
 
-                    double bValue = 0.0;
+                        double bValue = 0.0;
 
-                    for (int j = 0; j < m.Count; j++)
-                        bValue += bufValue[j] * vector[bufIndex[j]];
+                        for (int j = 0; j < m.Count; j++)
+                            bValue += bufValue[j] * vector[bufIndex[j]];
 
-                    result[i] = bValue;
+                        result[i] = bValue;
+                    }
                 });
 
             return result;

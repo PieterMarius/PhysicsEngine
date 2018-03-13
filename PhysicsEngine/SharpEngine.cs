@@ -371,8 +371,8 @@ namespace SharpPhysicsEngine
 					Solver = new ProjectedConjugateGradient(SolverParameters);
 					break;
 
-                case SolverType.MINRES:
-                    Solver = new MINRES(SolverParameters);
+                case SolverType.RedBlackProjectedGaussSeidel:
+                    Solver = new RedBlackProjectedGaussSeidel(SolverParameters);
                     break;
 
                 default:

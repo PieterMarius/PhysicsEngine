@@ -80,7 +80,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Universal;
+            return universalConstraint.GetJointType();
         }
 
         public int GetKeyIndex()

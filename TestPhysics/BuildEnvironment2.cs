@@ -296,7 +296,7 @@ namespace TestPhysics
             constraints[0] = new Hinge2Joint(
                                 shape[1],
                                 shape[2],
-                                shape[3],
+                                //shape[3],
                                 new Vector3(-3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -309,7 +309,7 @@ namespace TestPhysics
             constraints[1] = new Hinge2Joint(
                                 shape[1],
                                 shape[4],
-                                shape[5],
+                                //shape[5],
                                 new Vector3(3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -322,7 +322,7 @@ namespace TestPhysics
             constraints[2] = new Hinge2Joint(
                                 shape[1],
                                 shape[3],
-                                shape[2],
+                                //shape[2],
                                 new Vector3(3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -335,7 +335,7 @@ namespace TestPhysics
             constraints[3] = new Hinge2Joint(
                                 shape[1],
                                 shape[5],
-                                shape[4],
+                                //shape[4],
                                 new Vector3(-3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),

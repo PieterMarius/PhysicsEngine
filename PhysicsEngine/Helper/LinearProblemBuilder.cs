@@ -28,6 +28,7 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -83,7 +84,7 @@ namespace SharpPhysicsEngine.Helper
                 }
                                 
                 var dictionaryArray = constraintsDictionary.ToArray();
-
+                
                 var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
                 var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
 
@@ -105,7 +106,7 @@ namespace SharpPhysicsEngine.Helper
                         int indexVal = constraintValues.Value[w].Index;
 
                         B[indexVal] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
-                                                                                           Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
+                                                                                       Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
                         
                         constraintsArray[indexVal] = contactA.ContactReference;
 
@@ -302,7 +303,7 @@ namespace SharpPhysicsEngine.Helper
                             index.ToArray());                        
                     }
                 });
-                                
+
                 return new LinearProblemProperties(
                     M,
                     B,

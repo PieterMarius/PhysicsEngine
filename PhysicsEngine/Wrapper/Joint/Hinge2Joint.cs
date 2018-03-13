@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Hinge2;
+            return hinge2Constraint.GetJointType();
         }
 
         public int GetKeyIndex()

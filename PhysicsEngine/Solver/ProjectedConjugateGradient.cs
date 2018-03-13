@@ -85,9 +85,8 @@ namespace SharpPhysicsEngine.LCPSolver
             var checkBoundConstraints = linearProblemProperties.ConstraintType.Any(k =>
                 k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
             var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
-                k == ConstraintType.Joint || k == ConstraintType.SoftJoint || k== ConstraintType.Collision);
+                k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
             
-            //Solve Constraint without bound
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
                 if (checkUnboundConstraints)
@@ -98,8 +97,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                     x = UpdateSolution(x, p, alphaCG);
                     r = GetDirection(A, linearProblemProperties.B, x);
-                    //r = GetGradient(Ap, r, p, alphaCG);
-
+                    
                     double[] phiY = GetPhi(linearProblemProperties, x, r);
                     double[] partialValue = Ap;
                     double denom = Dot(p, partialValue);
@@ -193,24 +191,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             return alphaCG;
         }
-
-        /// <summary>
-        /// g - alpha * A * p
-        /// </summary>
-        /// <param name="A"></param>
-        /// <param name="g"></param>
-        /// <param name="p"></param>
-        /// <param name="alpha"></param>
-        /// <returns></returns>
-        private double[] GetGradient(
-            double[] Ap,
-            double[] g,
-            double[] p,
-            double alpha)
-        {
-            return Minus(g, Multiply(alpha, Ap));
-        }
-
+                
         /// <summary>
         /// x - alpha * p
         /// </summary>

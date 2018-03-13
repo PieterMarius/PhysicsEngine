@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
-using System.Linq;
 
 namespace SharpPhysicsEngine.Wrapper
 {

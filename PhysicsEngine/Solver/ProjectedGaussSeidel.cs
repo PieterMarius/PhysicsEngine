@@ -24,6 +24,8 @@
  *  
  *****************************************************************************/
 
+using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
 
@@ -53,10 +55,9 @@ namespace SharpPhysicsEngine.LCPSolver
             LinearProblemProperties input,
             double[] x)
         {
+            var rangePartitioner = Partitioner.Create(0, input.Count, Convert.ToInt32(input.Count / SolverParameters.MaxThreadNumber) + 1);
             for (int k = 0; k < SolverParameters.MaxIteration; k++) 
-			{
-                ElaborateUpperTriangularMatrix(input, ref x);
-            }
+			    ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
             
             return x;
         }
@@ -77,9 +78,10 @@ namespace SharpPhysicsEngine.LCPSolver
 
         private void ElaborateUpperTriangularMatrix(
             LinearProblemProperties input,
+            OrderablePartitioner<Tuple<int, int>> rangePartitioner,
             ref double[] x)
         {
-            double[] sum = ElaborateLowerTriangularMatrix(input, x);
+            double[] sum = ElaborateLowerTriangularMatrix(input, x, rangePartitioner);
 
             for (int i = 0; i < input.Count; i++)
             {
@@ -88,11 +90,11 @@ namespace SharpPhysicsEngine.LCPSolver
                 SparseElement m = input.M[i];
 
                 //Avoid first row elaboration
-                if (i != 0 && m.Count > 0)
+                if (i != 0)
                 {
                     double[] bufValue = m.Value;
                     int[] bufIndex = m.Index;
-                                                    
+
                     for (int j = 0; j < m.Count; j++)
                     {
                         int idx = bufIndex[j];
@@ -111,22 +113,25 @@ namespace SharpPhysicsEngine.LCPSolver
 
         private double[] ElaborateLowerTriangularMatrix(
             LinearProblemProperties input,
-            double[] x)
+            double[] x,
+            OrderablePartitioner<Tuple<int, int>> rangePartitioner)
         {
             double[] sum = new double[input.Count];
 
-			Parallel.For (
-                0, 
-				input.Count, 
-				new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber }, 
-				i => {
-					sum [i] = Kernel (input, x, i);
-				});
-				
+            
+            Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
+                    (range, loopState) =>
+                {
+                    for (int i = range.Item1; i < range.Item2; i++)
+                        sum[i] = Kernel(input, x, i);
+                });
+
             return sum;
         }
 
-        private double Kernel(
+        static double Kernel(
             LinearProblemProperties input,
             double[] x,
             int i)

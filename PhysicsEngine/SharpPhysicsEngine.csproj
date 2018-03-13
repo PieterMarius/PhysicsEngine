@@ -104,6 +104,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="Solver\MINRES.cs" />
+    <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="Wrapper\CompoundRigidCollisionShape.cs" />
     <Compile Include="Wrapper\Joint\AngularJoint.cs" />
     <Compile Include="Wrapper\Joint\BallAndSocketJoint.cs" />

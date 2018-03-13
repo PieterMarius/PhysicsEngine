@@ -31,7 +31,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		ProjectedGaussSeidel = 0,
 		NonLinearConjugateGradient = 1,
         ProjectedConjugateGradient = 2,
-        MINRES = 3,
-	}
+        RedBlackProjectedGaussSeidel = 3,
+    }
 }
 

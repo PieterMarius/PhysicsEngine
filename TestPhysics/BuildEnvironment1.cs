@@ -72,7 +72,7 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolver(SolverType.ProjectedConjugateGradient);
+            physicsEnvironment.SetSolver(SolverType.RedBlackProjectedGaussSeidel);
 
             return physicsEnvironment;
 		}
@@ -153,7 +153,7 @@ namespace TestPhysics
             Vector3 shift = new Vector3(0.0, 2.1, 0.0);
             Vector3 position = new Vector3(0.0, 1.7, 0.0);
             
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -179,7 +179,7 @@ namespace TestPhysics
 
             position = new Vector3(3.0, 1.7, 0.0);
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -204,7 +204,7 @@ namespace TestPhysics
             }
             position = new Vector3(-3.0, 1.7, 0.0);
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -230,7 +230,7 @@ namespace TestPhysics
 
             position = new Vector3(0.0, 1.7, -3.0);
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -256,7 +256,7 @@ namespace TestPhysics
 
             position = new Vector3(0.0, 1.7, 3.0);
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 10; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);

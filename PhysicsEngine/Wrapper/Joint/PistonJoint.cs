@@ -82,7 +82,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Piston;
+            return pistonConstraint.GetJointType();
         }
 
         public int GetKeyIndex()

@@ -79,7 +79,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public JointType GetJointType()
         {
-            return JointType.Hinge;
+            return hingeConstraint.GetJointType();
         }
 
         public int GetKeyIndex()
