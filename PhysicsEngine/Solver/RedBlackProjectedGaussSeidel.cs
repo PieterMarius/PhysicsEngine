@@ -49,6 +49,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 //Execute Red
                 Parallel.ForEach(
                     rangePartitionerRed,
+                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
                     (range, loopState) =>
                     {
                         for (int i = range.Item1; i < range.Item2; i++)
@@ -58,6 +59,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 //Execute Black
                 Parallel.ForEach(
                     rangePartitionerBlack,
+                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
                     (range, loopState) =>
                     {
                         for (int i = range.Item1; i < range.Item2; i++)
@@ -84,27 +86,22 @@ namespace SharpPhysicsEngine.LCPSolver
 
         private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(LinearProblemProperties input)
         {
-            SparseElement[] elements = input.GetOriginalSparseMatrix();
-
-            List<Tuple<int, int>> edges = GetEdges(elements);
-            var vertices = Enumerable.Range(0, elements.Length);
-            
-            var graph = new Graph<int>(vertices, edges);
+            var graph = input.ConstrGraph;
             var algorithms = new BreadthFirstSearch();
 
-            var nodeDictionary = algorithms.GetLevelBFS<int>(graph, 0);
+            var nodeDictionary = algorithms.GetLevelBFS(graph, 0);
 
-            if (nodeDictionary.Count < elements.Length)
+            if (nodeDictionary.Count < input.Count)
             {
-                for (int i = 0; i < elements.Length; i++)
+                for (int i = 0; i < input.Count; i++)
                 {
                     if (!nodeDictionary.ContainsKey(i))
                     {
-                        var dict = algorithms.GetLevelBFS<int>(graph, i);
+                        var dict = algorithms.GetLevelBFS(graph, i);
                         foreach (var element in dict)
                             nodeDictionary.Add(element.Key, element.Value);
 
-                        if (nodeDictionary.Count == elements.Length)
+                        if (nodeDictionary.Count == input.Count)
                             break;
                     }
                 }
@@ -143,13 +140,13 @@ namespace SharpPhysicsEngine.LCPSolver
             return redBlackDictionary;
         }
 
-        private List<Tuple<int, int>> GetEdges(SparseElement[] elements)
+        private List<HashSetStruct> GetEdges(SparseElement[] elements)
         {
-            List<Tuple<int, int>> edges = new List<Tuple<int, int>>();
+            List<HashSetStruct> edges = new List<HashSetStruct>();
 
             for (int i = 0; i < elements.Length; i++)
                 for (int j = 0; j < elements[i].Count; j++)
-                    edges.Add(Tuple.Create(i, elements[i].Index[j]));
+                    edges.Add(new HashSetStruct(i, elements[i].Index[j]));
             
             return edges;
         }
@@ -160,6 +157,7 @@ namespace SharpPhysicsEngine.LCPSolver
             ref double[] x)
         {
             SparseElement m = input.M[index];
+            double xValue = x[index];
 
             double sumBuffer = 0.0;
             
@@ -174,9 +172,9 @@ namespace SharpPhysicsEngine.LCPSolver
             
             sumBuffer = (input.B[index] - sumBuffer) * input.InvD[index];
 
-            x[index] += (sumBuffer - x[index]) * SolverParameters.SOR;
+            xValue += (sumBuffer - xValue) * SolverParameters.SOR;
 
-            x[index] = ClampSolution.Clamp(input, x, index);
+            x[index] = ClampSolution.Clamp(input, xValue, x, index);
         }
 
         #endregion

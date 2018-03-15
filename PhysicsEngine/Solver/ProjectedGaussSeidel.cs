@@ -89,6 +89,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 SparseElement m = input.M[i];
 
+                double xValue = x[i];
+
                 //Avoid first row elaboration
                 if (i != 0)
                 {
@@ -105,9 +107,9 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 sumBuffer = (input.B[i] - sumBuffer) * input.InvD[i];
 
-                x[i] += (sumBuffer - x[i]) * SolverParameters.SOR;
+                xValue += (sumBuffer - xValue) * SolverParameters.SOR;
 
-                x[i] = ClampSolution.Clamp(input, x, i);
+                x[i] = ClampSolution.Clamp(input, xValue, x, i);
             }
         }
 

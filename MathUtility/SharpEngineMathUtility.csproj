@@ -51,6 +51,8 @@
   <ItemGroup>
     <Compile Include="BreadthFirstSearch.cs" />
     <Compile Include="GeneralMathUtilities.cs" />
+    <Compile Include="Graph.cs" />
+    <Compile Include="HashSetStruct.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="SIMDMathUtility.cs" />
     <Compile Include="Vector2.cs" />

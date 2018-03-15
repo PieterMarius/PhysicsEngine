@@ -57,6 +57,8 @@ namespace SharpPhysicsEngine.LCPSolver
         //Constraint joint
         public readonly int?[] Constraints;
 
+        public readonly Graph ConstrGraph;
+
         //Size of the system
         public readonly int Count;
 
@@ -71,6 +73,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] InvD,
             double[] constraintLimit,
             ConstraintType[] constraintType,
+            Graph constrGraph,
             int?[] constraints)
         {
             this.M = M;
@@ -80,6 +83,7 @@ namespace SharpPhysicsEngine.LCPSolver
             ConstraintLimit = constraintLimit;
             ConstraintType = constraintType;
             Constraints = constraints;
+            ConstrGraph = constrGraph;
             Count = B.Length;
         }
 

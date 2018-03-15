@@ -77,7 +77,6 @@
     <Compile Include="ContactPartitioning\Partition.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
-    <Compile Include="Helper\HashSetStruct.cs" />
     <Compile Include="Helper\IntegrationHelper.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />

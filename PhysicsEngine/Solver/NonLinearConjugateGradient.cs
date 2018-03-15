@@ -176,7 +176,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 searchDirection[i] = bDirection - deltaK[i];
 
-                result[i] = ClampSolution.Clamp(input, result, i);
+                result[i] = ClampSolution.Clamp(input, result[i], result, i);
             }
 
             return result;

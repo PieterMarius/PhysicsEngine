@@ -34,6 +34,7 @@ namespace SharpPhysicsEngine.LCPSolver
     {
         public static double Clamp(
             LinearProblemProperties input,
+            double xValue,
             double[] X,
             int i)
         {
@@ -42,32 +43,32 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    return (X[i] < 0) ?
+                    return (xValue < 0) ?
                         0.0:
-                        X[i];
+                        xValue;
 
                 case ConstraintType.Friction:
                     double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
                     
-                    if (X[i] < -frictionLimit)
+                    if (xValue < -frictionLimit)
                         return -frictionLimit;
-                    if (X[i] > frictionLimit)
+                    if (xValue > frictionLimit)
                         return frictionLimit;
 
-                    return X[i];
+                    return xValue;
 
                 case ConstraintType.JointMotor:
                     double limit = input.ConstraintLimit[i];
 
-                    if (X[i] < -limit)
+                    if (xValue < -limit)
                         return -limit;
-                    if (X[i] > limit)
+                    if (xValue > limit)
                         return limit;
 
-                    return X[i];
+                    return xValue;
 
                 default:
-                    return X[i];
+                    return xValue;
             }
         }
 

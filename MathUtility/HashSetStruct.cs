@@ -25,29 +25,23 @@
  *****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace SharpPhysicsEngine.Helper
+namespace SharpEngineMathUtility
 {
-    internal struct HashSetStruct : IEquatable<HashSetStruct>
+    public struct HashSetStruct : IEquatable<HashSetStruct>
     {
-        private readonly int id_a, id_b;
-
-        public int ID_A { get { return id_a; } }
-        public int ID_B { get { return id_b; } }
+        public int ID_A { get; }
+        public int ID_B { get; }
 
         public HashSetStruct(int id_a, int id_b)
         {
-            this.id_a = id_a;
-            this.id_b = id_b;
+            this.ID_A = id_a;
+            this.ID_B = id_b;
         }
 
         public override int GetHashCode()
         {
-            return 31 * id_a + 17 * id_b;
+            return 31 * ID_A + 17 * ID_B;
         }
 
         public override bool Equals(object obj)
@@ -57,7 +51,7 @@ namespace SharpPhysicsEngine.Helper
 
         public bool Equals(HashSetStruct p)
         {
-            return id_a == p.ID_A && id_b == p.ID_B;
+            return ID_A == p.ID_A && ID_B == p.ID_B;
         }
     }
 }

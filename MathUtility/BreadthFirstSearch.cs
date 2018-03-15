@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpEngineMathUtility
 {
     public class BreadthFirstSearch
     {
-        public HashSet<T> BFS<T>(Graph<T> graph, T start)
+        public HashSet<int> BFS(Graph graph, int start)
         {
-            var visited = new HashSet<T>();
+            var visited = new HashSet<int>();
             
             if (!graph.AdjacencyList.ContainsKey(start))
                 return visited;
                 
-            var queue = new Queue<T>();
+            var queue = new Queue<int>();
             queue.Enqueue(start);
 
             while (queue.Count > 0) {
@@ -38,10 +35,10 @@ namespace SharpEngineMathUtility
             return visited;
         }
 
-        public Dictionary<T, int> GetLevelBFS<T>(Graph<T> graph, T start)
+        public Dictionary<int, int> GetLevelBFS(Graph graph, int start)
         {
-            var visited = new HashSet<T>();
-            var level = new Dictionary<T, int>
+            var visited = new HashSet<int>();
+            var level = new Dictionary<int, int>
             {
                 { start, 0 }
             };
@@ -49,7 +46,7 @@ namespace SharpEngineMathUtility
             if (!graph.AdjacencyList.ContainsKey(start))
                 return level;
 
-            var queue = new Queue<T>();
+            var queue = new Queue<int>();
             queue.Enqueue(start);
 
             while (queue.Count > 0)
@@ -74,37 +71,6 @@ namespace SharpEngineMathUtility
             }
 
             return level;
-        }
-    }
-
-
-
-    public class Graph<T>
-    {
-        public Graph() { }
-        public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
-        {
-            foreach (var vertex in vertices)
-                AddVertex(vertex);
-
-            foreach (var edge in edges)
-                AddEdge(edge);
-        }
-
-        public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
-
-        public void AddVertex(T vertex)
-        {
-            AdjacencyList[vertex] = new HashSet<T>();
-        }
-
-        public void AddEdge(Tuple<T, T> edge)
-        {
-            if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
-            {
-                AdjacencyList[edge.Item1].Add(edge.Item2);
-                AdjacencyList[edge.Item2].Add(edge.Item1);
-            }
         }
     }
 }

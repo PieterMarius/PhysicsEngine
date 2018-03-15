@@ -192,7 +192,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < input.Count; i++)
             {
-                result[i] = ClampSolution.Clamp(input, x, i);
+                result[i] = ClampSolution.Clamp(input, x[i], x, i);
             }
 
             return result;
