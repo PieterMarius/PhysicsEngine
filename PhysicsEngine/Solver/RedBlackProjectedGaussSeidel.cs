@@ -87,9 +87,8 @@ namespace SharpPhysicsEngine.LCPSolver
         private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(LinearProblemProperties input)
         {
             var graph = input.ConstrGraph;
-            var algorithms = new BreadthFirstSearch();
-
-            var nodeDictionary = algorithms.GetLevelBFS(graph, 0);
+            
+            var nodeDictionary = BreadthFirstSearch.GetBoolLevelBFS(graph, 0);
 
             if (nodeDictionary.Count < input.Count)
             {
@@ -97,7 +96,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 {
                     if (!nodeDictionary.ContainsKey(i))
                     {
-                        var dict = algorithms.GetLevelBFS(graph, i);
+                        var dict = BreadthFirstSearch.GetBoolLevelBFS(graph, i);
                         foreach (var element in dict)
                             nodeDictionary.Add(element.Key, element.Value);
 
@@ -107,12 +106,12 @@ namespace SharpPhysicsEngine.LCPSolver
                 }
             }
 
-            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = GetRedBlackDictionary(nodeDictionary);
+            var redBlackDictionary = GetRedBlackDictionary(nodeDictionary);
             
             return redBlackDictionary;
         }
         
-        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, int> nodeDictionary)
+        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)
         {
             Dictionary<RedBlackEnum, List<int>> redBlackDictionary = new Dictionary<RedBlackEnum, List<int>>
             {
@@ -122,35 +121,15 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < nodeDictionary.Count; i++)
             {
-                if (nodeDictionary.TryGetValue(i, out int value))
-                {
-                    if (value % 2 == 0)
-                    {
-                        redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> list);
-                        list.Add(i);
-                    }
-                    else
-                    {
-                        redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> list);
-                        list.Add(i);
-                    }
-                }
+                if(nodeDictionary[i])
+                    redBlackDictionary[RedBlackEnum.Black].Add(i);
+                else
+                    redBlackDictionary[RedBlackEnum.Red].Add(i);
             }
             
             return redBlackDictionary;
         }
-
-        private List<HashSetStruct> GetEdges(SparseElement[] elements)
-        {
-            List<HashSetStruct> edges = new List<HashSetStruct>();
-
-            for (int i = 0; i < elements.Length; i++)
-                for (int j = 0; j < elements[i].Count; j++)
-                    edges.Add(new HashSetStruct(i, elements[i].Index[j]));
-            
-            return edges;
-        }
-
+        
         private void Execute(
             LinearProblemProperties input,
             int index,

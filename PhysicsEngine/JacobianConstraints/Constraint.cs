@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine
 {
-    internal abstract class Constraint: IConstraint, IConstraintBuilder
+    internal abstract class Constraint: IConstraint
     {
         #region Fields
 

@@ -132,13 +132,13 @@ namespace SharpPhysicsEngine.Helper
                             invD[indexVal] = 1.0 / mValue;
 
                             //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
-                            for (int j = 0; j < constraintValues.Value.Count; j++)
+                            foreach (var item in constraintValues.Value)
                             {
-                                int innerIndex = constraintValues.Value[j].Index;
+                                int innerIndex = item.Index;
 
                                 if (innerIndex != indexVal)
                                 {
-                                    JacobianConstraint contactB = constraintValues.Value[j].Constraint;
+                                    JacobianConstraint contactB = item.Constraint;
 
                                     mValue = GetLCPMatrixValue(
                                         contactA.LinearComponentA,
@@ -164,13 +164,13 @@ namespace SharpPhysicsEngine.Helper
                             var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
                             if (constraintsDictionary.TryGetValue(symmetricHashSet, out List<DictionaryConstraintValue> symmetricList))
                             {
-                                for (int j = 0; j < symmetricList.Count; j++)
+                                foreach (var item in symmetricList)
                                 {
-                                    int innerIndex = symmetricList[j].Index;
+                                    int innerIndex = item.Index;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = symmetricList[j].Constraint;
+                                        JacobianConstraint contactB = item.Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentA,
@@ -196,113 +196,69 @@ namespace SharpPhysicsEngine.Helper
                             //contactA_ID_A == contactB_ID_A
                             foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
                             {
-                                if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
-                                    !constraintCheckItem.Key.Equals(symmetricHashSet))
-                                {
-                                    for (int j = 0; j < constraintCheckItem.Value.Count; j++)
-                                    {
-                                        int innerIndex = constraintCheckItem.Value[j].Index;
-
-                                        if (innerIndex != indexVal)
-                                        {
-                                            JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
-
-                                            mValue = GetLCPMatrixValue(
-                                                contactA.LinearComponentA,
-                                                contactB.LinearComponentA,
-                                                contactA.AngularComponentA,
-                                                contactB.AngularComponentA,
-                                                contactA.ObjectA.InverseMass,
-                                                contactA.ObjectA.InertiaTensor);
-
-                                            AddValues(ref index, ref values, mValue, innerIndex);
-                                        }
-                                    }
-                                }
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValues.Key,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentA,
+                                    contactA.AngularComponentA,
+                                    contactA.ObjectA.InverseMass,
+                                    contactA.ObjectA.InertiaTensor,
+                                    true);
                             }
 
                             //contactA_ID_A == contactB_ID_B
                             foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
                             {
-                                if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
-                                    !constraintCheckItem.Key.Equals(symmetricHashSet))
-                                {
-                                    for (int j = 0; j < constraintCheckItem.Value.Count; j++)
-                                    {
-                                        int innerIndex = constraintCheckItem.Value[j].Index;
-
-                                        if (innerIndex != indexVal)
-                                        {
-                                            JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
-
-                                            mValue = GetLCPMatrixValue(
-                                                contactA.LinearComponentA,
-                                                contactB.LinearComponentB,
-                                                contactA.AngularComponentA,
-                                                contactB.AngularComponentB,
-                                                contactA.ObjectA.InverseMass,
-                                                contactA.ObjectA.InertiaTensor);
-
-                                            AddValues(ref index, ref values, mValue, innerIndex);
-                                        }
-                                    }
-                                }
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValues.Key,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentA,
+                                    contactA.AngularComponentA,
+                                    contactA.ObjectA.InverseMass,
+                                    contactA.ObjectA.InertiaTensor,
+                                    false);
                             }
 
                             //contactA_ID_B == contactB_ID_A
                             foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
                             {
-                                if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
-                                    !constraintCheckItem.Key.Equals(symmetricHashSet))
-                                {
-                                    for (int j = 0; j < constraintCheckItem.Value.Count; j++)
-                                    {
-                                        int innerIndex = constraintCheckItem.Value[j].Index;
-
-                                        if (innerIndex != indexVal)
-                                        {
-                                            JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
-
-                                            mValue = GetLCPMatrixValue(
-                                                contactA.LinearComponentB,
-                                                contactB.LinearComponentA,
-                                                contactA.AngularComponentB,
-                                                contactB.AngularComponentA,
-                                                contactA.ObjectB.InverseMass,
-                                                contactA.ObjectB.InertiaTensor);
-
-                                            AddValues(ref index, ref values, mValue, innerIndex);
-                                        }
-                                    }
-                                }
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValues.Key,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentB,
+                                    contactA.AngularComponentB,
+                                    contactA.ObjectB.InverseMass,
+                                    contactA.ObjectB.InertiaTensor,
+                                    true);
                             }
 
                             //contactA_ID_B == contactB_ID_B
                             foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
                             {
-                                if (!constraintCheckItem.Key.Equals(constraintValues.Key) &&
-                                    !constraintCheckItem.Key.Equals(symmetricHashSet))
-                                {
-                                    for (int j = 0; j < constraintCheckItem.Value.Count; j++)
-                                    {
-                                        int innerIndex = constraintCheckItem.Value[j].Index;
-
-                                        if (innerIndex != indexVal)
-                                        {
-                                            JacobianConstraint contactB = constraintCheckItem.Value[j].Constraint;
-
-                                            mValue = GetLCPMatrixValue(
-                                                contactA.LinearComponentB,
-                                                contactB.LinearComponentB,
-                                                contactA.AngularComponentB,
-                                                contactB.AngularComponentB,
-                                                contactA.ObjectB.InverseMass,
-                                                contactA.ObjectB.InertiaTensor);
-
-                                            AddValues(ref index, ref values, mValue, innerIndex);
-                                        }
-                                    }
-                                }
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValues.Key,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentB,
+                                    contactA.AngularComponentB,
+                                    contactA.ObjectB.InverseMass,
+                                    contactA.ObjectB.InertiaTensor,
+                                    false);
                             }
 
                             //Sparse Matrix
@@ -328,6 +284,46 @@ namespace SharpPhysicsEngine.Helper
             }
 
             return null;
+        }
+
+        private void AddLCPValues(
+            ref List<int> index,
+            ref List<double> values,
+            int indexVal,
+            KeyValuePair<HashSetStruct, List<DictionaryConstraintValue>> constraintCheckItem,
+            HashSetStruct constraintValuesKey,
+            HashSetStruct symmetricHashSet,
+            Vector3? linearComponentA,
+            Vector3 angularComponentA,
+            double inverseMass,
+            Matrix3x3 inertiaTensor,
+            bool componentA)
+        {
+            double mValue = 0.0;
+
+            if (!constraintCheckItem.Key.Equals(constraintValuesKey) &&
+                !constraintCheckItem.Key.Equals(symmetricHashSet))
+            {                
+                foreach (var item in constraintCheckItem.Value)
+                {
+                    int innerIndex = item.Index;
+
+                    if (innerIndex != indexVal)
+                    {
+                        JacobianConstraint contactB = item.Constraint;
+
+                        mValue = GetLCPMatrixValue(
+                            linearComponentA,
+                            (componentA) ? contactB.LinearComponentA : contactB.LinearComponentB,
+                            angularComponentA,
+                            (componentA) ? contactB.AngularComponentA : contactB.AngularComponentB,
+                            inverseMass,
+                            inertiaTensor);
+
+                        AddValues(ref index, ref values, mValue, innerIndex);
+                    }
+                }
+            }
         }
         
         /// <summary>

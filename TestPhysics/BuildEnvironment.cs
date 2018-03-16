@@ -318,10 +318,10 @@ namespace TestPhysics
 
 			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 			//TODO rimuovere
-			ShapeFilename[3] = new string[1] { "sph.obj" };
+			ShapeFilename[3] = new string[1] { "bunnySmall.obj" };
 			ShapeScale[3] = new float[1] { 1 };
             
-			var objects3 = BuildSoftBody("sph.obj", 1, new Vector3(0.0, -1.5, 0.0));
+			var objects3 = BuildSoftBody("bunnySmall.obj", 1, new Vector3(0.0, -1.5, 0.0));
             objects3.SetStaticFrictionCoeff(0.5);
             objects3.SetDynamicFrictionCoeff(0.5);
             objects3.SetRestitutionCoeff(0.5);

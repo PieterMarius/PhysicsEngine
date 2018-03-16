@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace SharpEngineMathUtility
 {
-    public class BreadthFirstSearch
+    public static class BreadthFirstSearch
     {
-        public HashSet<int> BFS(Graph graph, int start)
+        public static HashSet<int> BFS(Graph graph, int start)
         {
             var visited = new HashSet<int>();
             
@@ -35,7 +35,7 @@ namespace SharpEngineMathUtility
             return visited;
         }
 
-        public Dictionary<int, int> GetLevelBFS(Graph graph, int start)
+        public static Dictionary<int, int> GetLevelBFS(Graph graph, int start)
         {
             var visited = new HashSet<int>();
             var level = new Dictionary<int, int>
@@ -71,6 +71,53 @@ namespace SharpEngineMathUtility
             }
 
             return level;
+        }
+
+        public static Dictionary<int, bool> GetBoolLevelBFS(Graph graph, int start)
+        {
+            var visited = new HashSet<int>();
+            var level = new Dictionary<int, int>
+            {
+                { start, 0 }
+            };
+
+            var boolLevel = new Dictionary<int, bool>
+            {
+                { start, true }
+            };
+
+            if (!graph.AdjacencyList.ContainsKey(start))
+                return boolLevel;
+
+            var queue = new Queue<int>();
+            queue.Enqueue(start);
+
+            while (queue.Count > 0)
+            {
+                var vertex = queue.Dequeue();
+
+                if (visited.Contains(vertex))
+                    continue;
+
+                visited.Add(vertex);
+
+                foreach (var neighbor in graph.AdjacencyList[vertex])
+                {
+                    if (!visited.Contains(neighbor))
+                    {
+                        level.TryGetValue(vertex, out int value);
+                        if (!level.ContainsKey(neighbor))
+                        {
+                            var sValue = value + 1;
+                            level.Add(neighbor, sValue);
+                            boolLevel.Add(neighbor, sValue % 2 == 0);
+                        }
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            return boolLevel;
         }
     }
 }

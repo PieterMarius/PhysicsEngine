@@ -31,7 +31,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class UniversalConstraint: IConstraint, IConstraintBuilder
+    internal sealed class UniversalConstraint: IConstraint
 	{
 		#region Public Fields
 

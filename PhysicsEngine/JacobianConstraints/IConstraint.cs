@@ -26,6 +26,7 @@
 
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpEngineMathUtility;
+using System.Collections.Generic;
 
 namespace SharpPhysicsEngine
 {
@@ -50,8 +51,9 @@ namespace SharpPhysicsEngine
 		void AddTorque(double torqueAxis1, double torqueAxis2);
 		void SetRestoreCoefficient(double restoreCoefficient);
         void SetSpringCoefficient(double springCoefficient);
+        List<JacobianConstraint> BuildJacobian(double? baumStabilization = null);
 
-		#endregion
-	}
+        #endregion
+    }
 }
 

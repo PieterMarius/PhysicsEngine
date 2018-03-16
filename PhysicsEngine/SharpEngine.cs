@@ -37,6 +37,7 @@ using SharpPhysicsEngine.ContactPartitioning;
 using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.Wrapper;
 using SharpPhysicsEngine.Wrapper.Joint;
+using System.Collections.Concurrent;
 
 namespace SharpPhysicsEngine
 {
@@ -775,21 +776,22 @@ namespace SharpPhysicsEngine
                         simulationObjs));
 
             ////Joints
-            var sync = new object();
+            if (simulationJointList.Count > 0)
+            {
+                List<JacobianConstraint>[] jConstraints = new List<JacobianConstraint>[simulationJointList.Count];
+                var rangePartitioner = Partitioner.Create(0, simulationJointList.Count, Convert.ToInt32(simulationJointList.Count / EngineParameters.MaxThreadNumber) + 1);
 
-            Parallel.ForEach(
-                simulationJointList,
-                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                constraintItem =>
-                {
-                    List<JacobianConstraint> jacobianConstraint = ((IConstraintBuilder)constraintItem).BuildJacobian();
-
-                    lock (sync)
+                Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                    (range, loopState) =>
                     {
-                        jacobianConstraints.AddRange(jacobianConstraint);
-                    }
+                        for (int i = range.Item1; i < range.Item2; i++)
+                            jConstraints[i] = simulationJointList[i].BuildJacobian();
+                    });
 
-                });
+                jacobianConstraints.AddRange(jConstraints.SelectMany(f => f));
+            }
             
             return jacobianConstraints.ToArray();
         }
@@ -816,12 +818,12 @@ namespace SharpPhysicsEngine
 						
 			if (stabilizationCoeff.HasValue)
 			{
-					foreach (IConstraintBuilder constraintItem in simulationJointList)
+					foreach (var constraintItem in simulationJointList)
 					constraint.AddRange(constraintItem.BuildJacobian(stabilizationCoeff));
 			}
 			else
 			{
-				foreach (IConstraintBuilder constraintItem in simulationJointList)
+				foreach (var constraintItem in simulationJointList)
 					constraint.AddRange(constraintItem.BuildJacobian());
 			}
 

@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class SoftConstraint : IConstraint, IConstraintBuilder
+    internal sealed class SoftConstraint : IConstraint
     {
         #region Private Fields
 

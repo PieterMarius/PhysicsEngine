@@ -86,7 +86,6 @@
     <Compile Include="JacobianConstraints\Hinge2Constraint.cs" />
     <Compile Include="JacobianConstraints\HingeConstraint.cs" />
     <Compile Include="JacobianConstraints\IConstraint.cs" />
-    <Compile Include="JacobianConstraints\IConstraintBuilder.cs" />
     <Compile Include="JacobianConstraints\JacobianCommon.cs" />
     <Compile Include="JacobianConstraints\JacobianConstraint.cs" />
     <Compile Include="JacobianConstraints\PistonConstraint.cs" />
