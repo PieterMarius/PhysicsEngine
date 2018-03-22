@@ -45,7 +45,7 @@ namespace SharpPhysicsEngine
         protected IShape ShapeB;
         protected int KeyIndex;
         protected double SpringCoefficient;
-        protected double RestoreCoefficient;
+        protected double ErrorReductionParam;
 
         #endregion
 
@@ -55,13 +55,13 @@ namespace SharpPhysicsEngine
             IShape shapeA,
             IShape shapeB,
             double restoreCoefficient,
-            double springCoefficient)
+            double errorReductionParam)
         {
             ShapeA = shapeA;
             ShapeB = shapeB;
             KeyIndex = GetHashCode();
-            SpringCoefficient = springCoefficient;
-            RestoreCoefficient = restoreCoefficient;
+            SpringCoefficient = errorReductionParam;
+            ErrorReductionParam = restoreCoefficient;
         }
         
         #endregion
@@ -83,9 +83,9 @@ namespace SharpPhysicsEngine
             return ShapeB.ID;
         }
 
-        public void SetRestoreCoefficient(double restoreCoefficient)
+        public void SetErrorReductionParam(double errorReductionParam)
         {
-            RestoreCoefficient = restoreCoefficient;
+            ErrorReductionParam = errorReductionParam;
         }
 
         public void SetSpringCoefficient(double springCoefficient)
@@ -93,7 +93,17 @@ namespace SharpPhysicsEngine
             SpringCoefficient = springCoefficient;
         }
 
-        public abstract List<JacobianConstraint> BuildJacobian(double? baumStabilization = null);
+        public double GetDampingCoefficient()
+        {
+            return ErrorReductionParam;
+        }
+
+        public double GetSpringCoefficient()
+        {
+            return SpringCoefficient;
+        }
+
+        public abstract List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null);
         public abstract Vector3 GetAnchorPosition();
         public abstract JointType GetJointType();
         public abstract void AddTorque(double torqueAxis1, double torqueAxis2);

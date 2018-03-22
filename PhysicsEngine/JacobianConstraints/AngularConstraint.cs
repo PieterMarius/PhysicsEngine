@@ -100,16 +100,17 @@ namespace SharpPhysicsEngine
         #region Public Methods
 
         #region IConstraintBuilder
-        public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
         {
             var angularConstraints = new List<JacobianConstraint>();
 
             IShape simulationObjectA = ShapeA;
             IShape simulationObjectB = ShapeB;
 
-            AnchorPoint = (simulationObjectA.RotationMatrix *
-                          (StartAnchorPoint - simulationObjectA.StartPosition)) +
-                          simulationObjectA.Position;
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficientHingeAxis = SpringCoefficientHingeAxis * freq;
+            double springCoefficientRotationAxis = SpringCoefficientRotationAxis * freq;
 
             #region Init Angular
 
@@ -138,7 +139,7 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double angularLimit = RestoreCoefficient * hingeAngle;
+            double angularLimit = errorReduction * hingeAngle;
 
             angularConstraints.Add(JacobianCommon.GetDOF(
                 hingeAxis,
@@ -146,12 +147,12 @@ namespace SharpPhysicsEngine
                 simulationObjectA,
                 simulationObjectB,
                 0.0,
-                angularLimit,
-                SpringCoefficientHingeAxis,
+                angularLimit, 
+                springCoefficientHingeAxis,
                 0.0,
                 ConstraintType.Joint));
 
-            angularLimit = RestoreCoefficient * twistAngle;
+            angularLimit = errorReduction * twistAngle;
 
             angularConstraints.Add(JacobianCommon.GetDOF(
                 rotationAxis,
@@ -160,7 +161,7 @@ namespace SharpPhysicsEngine
                 simulationObjectB,
                 0.0,
                 angularLimit,
-                SpringCoefficientRotationAxis,
+                springCoefficientRotationAxis,
                 0.0,
                 ConstraintType.Joint));
             
@@ -175,7 +176,9 @@ namespace SharpPhysicsEngine
 
         public override Vector3 GetAnchorPosition()
         {
-            return AnchorPoint;
+            return (ShapeA.RotationMatrix *
+                   (StartAnchorPoint - ShapeA.StartPosition)) +
+                   ShapeA.Position;
         }
 
         public override JointType GetJointType()

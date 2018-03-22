@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
@@ -149,7 +148,7 @@ namespace SharpPhysicsEngine
 		{
 			SolverParameters = solverParameters;
 
-			SetSolver(SolverType.ProjectedGaussSeidel);
+			SetSolverType(SolverType.ProjectedGaussSeidel);
 
 			CollisionEngineParam = collisionEngineParameters;
 
@@ -356,7 +355,7 @@ namespace SharpPhysicsEngine
 			return solverError;
 		}
 
-		public void SetSolver(SolverType type)
+		public void SetSolverType(SolverType type)
 		{
 			switch (type)
 			{
@@ -533,12 +532,6 @@ namespace SharpPhysicsEngine
 
 		private void PhysicsExecutionFlow()
 		{
-			var stopwatch = new Stopwatch();
-
-			stopwatch.Reset();
-
-			stopwatch.Start();
-
 			#region Contact and Joint elaboration
 
 			solverError = 0.0;
@@ -555,57 +548,29 @@ namespace SharpPhysicsEngine
 
 					if (jacobianConstraints.Length > 0)
 					{
-                        //Contact sorting
-                        //JacobianConstraint[] jacobianConstraints1 = ContactSorting(jacobianConstraints);
-
-
                         double[] overallSolution = new double[jacobianConstraints.Length];
                         	                      
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
                                                                 jacobianConstraints);
-
-                        //LinearProblemProperties overallLCP1 = linearProblemBuilder.BuildLCP(
-                        //                                        jacobianConstraints1);
-
+                                                                        
                         if (overallLCP != null &&
 						   EngineParameters.OverallConstraintsIterations > 0)
-						{
-                            var stopwatch1 = new Stopwatch();
-
-                            stopwatch1.Reset();
-
-                            stopwatch1.Start();
-
-                            Solver.GetSolverParameters().SetSolverMaxIteration(EngineParameters.OverallConstraintsIterations);
-
-							overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
-
-                           //var overallSolution1 = Solver.Solve(overallLCP1, new double[overallLCP.Count]);
-
-                            stopwatch1.Stop();
-
-                            Console.WriteLine("Solver ={0}", stopwatch1.ElapsedMilliseconds);
-                            
-                        }
-                        
+						    overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
+                                                       
                         integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
-					}
+
+                    }
 				}
 			}
 
-			#endregion
+            #endregion
 
-			#region Position and Velocity integration
+            #region Position and Velocity integration
+                        
+            integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
-			integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
-
-			#endregion
-
-			stopwatch.Stop();
-
-			Console.WriteLine("Inner Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-
-		}
+            #endregion
+        	}
 
 		#region Collision Detection
 
@@ -630,12 +595,7 @@ namespace SharpPhysicsEngine
 			IShape[] simShapes = Array.ConvertAll (
 							Shapes, 
 							item => (item.ExcludeFromCollisionDetection) ? null : item);
-
-			var stopwatch = new Stopwatch();
-
-			stopwatch.Reset ();
-			stopwatch.Start ();
-
+            			
 			//Eseguo il motore che gestisce le collisioni
 			collisionPoints = CollisionEngine.Execute(simShapes).ToArray();
 
@@ -648,10 +608,6 @@ namespace SharpPhysicsEngine
 			//    WarmStarting(collisionPointsBuffer);
 
 			#endregion
-
-			stopwatch.Stop ();
-
-			Console.WriteLine("Collision Elapsed={0}",stopwatch.ElapsedMilliseconds);
 		}
 		
 		#endregion
@@ -740,23 +696,33 @@ namespace SharpPhysicsEngine
         {
             List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
 
-            var sync = new object();
+            if (collisionPointsStruct.Length > 0)
+            {
+                var rangePartitioner = Partitioner.Create(0, collisionPointsStruct.Length, Convert.ToInt32(collisionPointsStruct.Length / EngineParameters.MaxThreadNumber) + 1);
+                
+                var sync = new object();
 
-            Parallel.ForEach(
-                collisionPointsStruct, 
-                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                item =>
-                {
-                    IShape objectA = simulationObjs.First(x => x.ID == item.ObjectIndexA);
-                    IShape objectB = simulationObjs.First(x => x.ID == item.ObjectIndexB);
-
-                    List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, objectA, objectB);
-
-                    lock (sync)
+                Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                    (range, loopState) =>
                     {
-                        jacobianConstraints.AddRange(constraintsBuf);
-                    }
-                });
+                        for (int i = range.Item1; i < range.Item2; i++)
+                        {
+                            var item = collisionPointsStruct[i];
+
+                            IShape objectA = simulationObjs.First(x => x.ID == item.ObjectIndexA);
+                            IShape objectB = simulationObjs.First(x => x.ID == item.ObjectIndexB);
+
+                            List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, objectA, objectB);
+
+                            lock (sync)
+                            {
+                                jacobianConstraints.AddRange(constraintsBuf);
+                            }
+                        }
+                    });
+            }
            
            return jacobianConstraints;
         }
@@ -787,7 +753,7 @@ namespace SharpPhysicsEngine
                     (range, loopState) =>
                     {
                         for (int i = range.Item1; i < range.Item2; i++)
-                            jConstraints[i] = simulationJointList[i].BuildJacobian();
+                            jConstraints[i] = simulationJointList[i].BuildJacobian(TimeStep);
                     });
 
                 jacobianConstraints.AddRange(jConstraints.SelectMany(f => f));
@@ -803,7 +769,7 @@ namespace SharpPhysicsEngine
 			foreach (ISoftShape softShape in SoftShapes)
 			{
 				foreach (var item in softShape.SoftConstraint)
-					constraints.AddRange(item.BuildJacobian());
+					constraints.AddRange(item.BuildJacobian(TimeStep));
 			}
 
 			return constraints;
@@ -819,12 +785,12 @@ namespace SharpPhysicsEngine
 			if (stabilizationCoeff.HasValue)
 			{
 					foreach (var constraintItem in simulationJointList)
-					constraint.AddRange(constraintItem.BuildJacobian(stabilizationCoeff));
+					constraint.AddRange(constraintItem.BuildJacobian(TimeStep, stabilizationCoeff));
 			}
 			else
 			{
 				foreach (var constraintItem in simulationJointList)
-					constraint.AddRange(constraintItem.BuildJacobian());
+					constraint.AddRange(constraintItem.BuildJacobian(TimeStep));
 			}
 
 			return constraint;

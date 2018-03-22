@@ -92,7 +92,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The slider joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var sliderConstraints = new List<JacobianConstraint> ();
 
@@ -126,18 +126,22 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				RelativeOrientation);
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			#region Base Constraints
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            #region Base Constraints
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
-			double constraintLimit = RestoreCoefficient * 2.0 * angularError.x;
+			double constraintLimit = errorReduction * 2.0 * angularError.x;
 
 			//DOF 1
 
@@ -148,13 +152,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 2
 
-			constraintLimit = RestoreCoefficient * 2.0 * angularError.y;
+			constraintLimit = errorReduction * 2.0 * angularError.y;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
                 yVecNeg,
@@ -163,13 +167,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 3
 
-			constraintLimit = RestoreCoefficient * 2.0 * angularError.z;
+			constraintLimit = errorReduction * 2.0 * angularError.z;
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
                 zVecNeg,
@@ -178,13 +182,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 4
 
-			constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
+			constraintLimit = errorReduction * Vector3.Dot (t1,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				t1,
@@ -195,13 +199,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 5
 
-			constraintLimit = RestoreCoefficient * Vector3.Dot (t2,linearError);
+			constraintLimit = errorReduction * Vector3.Dot (t2,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				t2,
@@ -212,7 +216,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -232,7 +236,7 @@ namespace SharpPhysicsEngine
 						sliderAxis,
 						r1,
 						r2,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						LinearLimitMin.Value,
 						LinearLimitMax.Value));

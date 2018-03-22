@@ -267,7 +267,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolver(SolverType.RedBlackProjectedGaussSeidel);
+            physicsEngine.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -321,10 +321,11 @@ namespace TestPhysics
 			displayContact ();
 			//displayBaseContact();
 			displayJoint ();
-			//displaySphere(testConvexDecomp.basePoint);
-			//DisplayObject();
+            displaySoftJoint();
+            //displaySphere(testConvexDecomp.basePoint);
+            //DisplayObject();
 
-			displayPartitionedContact();
+            displayPartitionedContact();
 
 			//for (int i = 0; i < physicsEngine.ObjectCount(); i++)
 			//    displayVertex(i);
@@ -533,14 +534,38 @@ namespace TestPhysics
 				selectedObjIndex = Convert.ToInt32 (Console.ReadLine ());
 			}
 
-            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.M])
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadPlus])
             {
 
                 SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
-                softShape.SetConstraintsRestoreCoeff(60.0);
+                softShape.AddToConstraintsRestoreCoefficient(0.05);
                 
             }
-                       
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadMinus])
+            {
+
+                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                softShape.AddToConstraintsRestoreCoefficient(-0.05);
+
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.PageUp])
+            {
+
+                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                softShape.AddToConstraintsSpringCoefficient(0.05);
+
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.PageDown])
+            {
+
+                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                softShape.AddToConstraintsSpringCoefficient(-0.05);
+
+            }
+
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
                 pause = true;

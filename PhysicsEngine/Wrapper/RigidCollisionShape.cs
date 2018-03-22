@@ -208,7 +208,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetRestoreCoeff(double value)
+        public void SetDampingCoeff(double value)
         {
             convexShape.SetRestoreCoeff(value);
         }
@@ -251,6 +251,11 @@ namespace SharpPhysicsEngine.Wrapper
         public Vector3 GetMaxAABB()
         {
             return convexShape.ObjectGeometry.AABBox.Max;
+        }
+
+        public void AddToRestoreCoeff(double value)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

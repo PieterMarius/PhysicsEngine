@@ -29,6 +29,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
@@ -86,6 +87,36 @@ namespace SharpPhysicsEngine.LCPSolver
             ConstrGraph = constrGraph;
             Count = B.Length;
         }
+
+        public LinearProblemProperties(
+            LinearProblemBaseProperties baseProperties,
+            Graph constrGraph)
+        {
+            this.M = baseProperties.M;
+            this.B = baseProperties.B;
+            this.D = baseProperties.D;
+            this.InvD = baseProperties.InvD;
+            ConstraintLimit = baseProperties.ConstraintLimit;
+            ConstraintType = baseProperties.ConstraintType;
+            Constraints = baseProperties.ConstraintsArray;
+            ConstrGraph = constrGraph;
+            Count = B.Length;
+        }
+
+        //public LinearProblemProperties(
+        //    LinearProblemBaseProperties[] baseProperties,
+        //    Graph constrGraph)
+        //{
+        //    this.M = Array.ConvertAll(baseProperties, x => x.M);
+        //    this.B = Array.ConvertAll(baseProperties, x => x.B);
+        //    this.D = Array.ConvertAll(baseProperties, x => x.D);
+        //    this.InvD = Array.ConvertAll(baseProperties, x => x.InvD);
+        //    ConstraintLimit = Array.ConvertAll(baseProperties, x => x.ConstraintLimit);
+        //    ConstraintType = Array.ConvertAll(baseProperties, x => x.ConstraintType);
+        //    Constraints = Array.ConvertAll(baseProperties, x => x.ConstraintsArray);
+        //    ConstrGraph = constrGraph;
+        //    Count = B.Length;
+        //}
 
         #endregion
 

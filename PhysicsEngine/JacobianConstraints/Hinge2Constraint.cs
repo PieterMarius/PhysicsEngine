@@ -68,10 +68,10 @@ namespace SharpPhysicsEngine
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
             Vector3 rotationAxis,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficientHingeAxis,
             double springCoefficient)
-            : this(shapeA, shapeB, null, startAnchorPosition, hingeAxis, rotationAxis, restoreCoefficient, springCoefficientHingeAxis, springCoefficient)
+            : this(shapeA, shapeB, null, startAnchorPosition, hingeAxis, rotationAxis, errorReductionParam, springCoefficientHingeAxis, springCoefficient)
         { }
 
         public Hinge2Constraint(
@@ -81,10 +81,10 @@ namespace SharpPhysicsEngine
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
             Vector3 rotationAxis,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficientHingeAxis,
             double springCoefficient)
-            :base(shapeA,shapeB,restoreCoefficient,springCoefficient)
+            :base(shapeA,shapeB,errorReductionParam,springCoefficient)
         {
             ExternalSyncShape = externalSyncShape;
             SpringCoefficientHingeAxis = springCoefficientHingeAxis;
@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine
         /// </summary>
         /// <returns>The Universal joint.</returns>
         /// <param name="simulationObjs">Simulation objects.</param>
-        public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var hinge2Constraints = new List<JacobianConstraint> ();
 
@@ -137,20 +137,24 @@ namespace SharpPhysicsEngine
 			Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
 			Vector3 t1 = hingeAxis.Cross (tempPerpendicular).Normalize ();
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			#region Base Constraint
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            #region Base Constraint
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
 			//DOF 1
 
-			double constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
+			double constraintLimit = errorReduction * Vector3.Dot (t1,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
 				t1,
@@ -161,13 +165,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
             //DOF 2
 
-            constraintLimit = RestoreCoefficient * Vector3.Dot(tempPerpendicular, linearError);
+            constraintLimit = errorReduction * Vector3.Dot(tempPerpendicular, linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 tempPerpendicular,
@@ -178,7 +182,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -188,7 +192,7 @@ namespace SharpPhysicsEngine
 			if (SpringCoefficientHingeAxis > 0)
 				hingeAxisConstraintType = ConstraintType.SoftJoint;
 
-			constraintLimit = RestoreCoefficient * Vector3.Dot (hingeAxis,linearError);
+			constraintLimit = errorReduction * Vector3.Dot (hingeAxis,linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 hingeAxis,
@@ -205,7 +209,7 @@ namespace SharpPhysicsEngine
 			
 			//DOF 4
 
-			double angularLimit = RestoreCoefficient * (-k);
+			double angularLimit = errorReduction * (-k);
 
 			hinge2Constraints.Add (
 				JacobianCommon.GetDOF (
@@ -215,11 +219,14 @@ namespace SharpPhysicsEngine
 					simulationObjectB,
 					0.0,
 					angularLimit,
-					SpringCoefficient,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
-            hinge2Constraints.AddRange(GetSyncConstraintsExternalShape(hingeAxis, rotationAxis));
+            hinge2Constraints.AddRange(GetSyncConstraintsExternalShape(
+                hingeAxis, 
+                rotationAxis,
+                errorReduction));
             
             #endregion
 
@@ -229,7 +236,8 @@ namespace SharpPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
-				rotationAxis));
+				rotationAxis,
+                errorReduction));
 
 			#endregion
 
@@ -256,6 +264,7 @@ namespace SharpPhysicsEngine
 		{
 			return jointType;
 		}
+
         	public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
@@ -433,7 +442,8 @@ namespace SharpPhysicsEngine
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 hingeAxis,
-			Vector3 rotationAxis)
+			Vector3 rotationAxis,
+            double errorReduction)
 		{
 			var angularConstraint = new List<JacobianConstraint>();
 
@@ -450,7 +460,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
                         angle1,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA,
 						simulationObjectB,
@@ -475,7 +485,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
                         angle2,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA,
 						simulationObjectB,
@@ -540,7 +550,8 @@ namespace SharpPhysicsEngine
 
         private List<JacobianConstraint> GetSyncConstraintsExternalShape(
             Vector3 hingeAxis,
-            Vector3 rotationAxis)
+            Vector3 rotationAxis,
+            double errorReduction)
         {
             var syncConstraints = new List<JacobianConstraint>();
 
@@ -562,7 +573,7 @@ namespace SharpPhysicsEngine
 
                 var ax = hingeAxis.Cross(rotationAxis).Normalize();
                 var ax1 = hingeAxisExt.Cross(rotationAxisExt).Normalize();
-                double error = (ax - ax1).Length() * RestoreCoefficient;
+                double error = (ax - ax1).Length() * errorReduction;
 
                 syncConstraints.Add(JacobianCommon.GetDOF(
                     -1.0 * hingeAxis,

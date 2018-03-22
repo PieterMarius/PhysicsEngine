@@ -99,7 +99,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The piston joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var pistonConstraints = new List<JacobianConstraint> ();
 
@@ -129,18 +129,22 @@ namespace SharpPhysicsEngine
 			Vector3 angularError = sliderAxis.Cross (
 				                       (simulationObjectB.RotationMatrix * PistonAxis));
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			#region Base Constraints
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            #region Base Constraints
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
 			//DOF 1
 
-			double angularLimit = RestoreCoefficient *
+			double angularLimit = errorReduction *
 				t1.Dot (angularError);
 
 			pistonConstraints.Add (
@@ -151,13 +155,13 @@ namespace SharpPhysicsEngine
 					simulationObjectB,
 					0.0,
 					angularLimit,
-					SpringCoefficient,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
 			//DOF 2
 
-			angularLimit = RestoreCoefficient *
+			angularLimit = errorReduction *
 				t2.Dot (angularError);
 
 			pistonConstraints.Add (
@@ -168,13 +172,13 @@ namespace SharpPhysicsEngine
 					simulationObjectB,
 					0.0,
 					angularLimit,
-					SpringCoefficient,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
 			//DOF 3
 
-			double constraintLimit = RestoreCoefficient * Vector3.Dot (t1,linearError);
+			double constraintLimit = errorReduction * Vector3.Dot (t1,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t1,
@@ -185,13 +189,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 4
 
-			constraintLimit = RestoreCoefficient * Vector3.Dot (t2,linearError);
+			constraintLimit = errorReduction * Vector3.Dot (t2,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t2,
@@ -202,7 +206,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -215,12 +219,14 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				sliderAxis,
 				r1,
-				r2));
+				r2,
+                errorReduction));
 
 			pistonConstraints.AddRange(GetAnguarLimit(
 				simulationObjectA,
 				simulationObjectB,
-				sliderAxis));
+				sliderAxis,
+                errorReduction));
 
 			#endregion
 
@@ -315,7 +321,8 @@ namespace SharpPhysicsEngine
 			IShape simulationObjectB,
 			Vector3 sliderAxis,
 			Vector3 r1,
-			Vector3 r2)
+			Vector3 r2,
+            double errorReduction)
 		{
 			var linearConstraints = new List<JacobianConstraint>();
 
@@ -329,7 +336,7 @@ namespace SharpPhysicsEngine
 						sliderAxis,
 						r1,
 						r2,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						LinearLimitMin.Value,
 						LinearLimitMax.Value));
@@ -341,7 +348,8 @@ namespace SharpPhysicsEngine
 		List<JacobianConstraint> GetAnguarLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
-			Vector3 sliderAxis)
+			Vector3 sliderAxis,
+            double errorReduction)
 		{
 			var angularConstraints = new List<JacobianConstraint>();
 
@@ -357,7 +365,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
 						angle,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA,
 						simulationObjectB,

@@ -31,23 +31,12 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
-    internal sealed class UniversalConstraint: IConstraint
+    internal sealed class UniversalConstraint: Constraint 
 	{
 		#region Public Fields
 
 		const JointType jointType = JointType.Universal;
-
-        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
-        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
-        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
-        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
-        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
-        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
-
-        IShape ShapeA;
-		IShape ShapeB;
-		int KeyIndex;
-		double SpringCoefficient;
+                
 		readonly Vector3 StartAnchorPoint;
 		readonly Vector3 HingeAxis;
 		readonly Vector3 RotationAxis;
@@ -66,8 +55,7 @@ namespace SharpPhysicsEngine
 		double? SpeedRotationAxisLimit;
 		double? ForceRotationAxisLimit;
 		Vector3 AnchorPoint;
-		double RestoreCoefficient;
-
+		
 		#endregion
 
 		#region Constructor
@@ -78,15 +66,11 @@ namespace SharpPhysicsEngine
             Vector3 startAnchorPosition,
 			Vector3 hingeAxis,
 			Vector3 rotationAxis,
-			double restoreCoefficient,
+			double erroReductionParam,
 			double springCoefficient)
-		{
-            ShapeA = shapeA;
-            ShapeB = shapeB;
-            KeyIndex = this.GetHashCode();
-			RestoreCoefficient = restoreCoefficient;
-			SpringCoefficient = springCoefficient;
-			StartAnchorPoint = startAnchorPosition;
+            : base(shapeA, shapeB, erroReductionParam, springCoefficient)
+        {
+            	StartAnchorPoint = startAnchorPosition;
 			HingeAxis = hingeAxis.Normalize ();
 			RotationAxis = rotationAxis.Normalize ();
 
@@ -127,7 +111,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var universalConstraints = new List<JacobianConstraint> ();
 
@@ -165,20 +149,24 @@ namespace SharpPhysicsEngine
 			Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
 			Vector3 t1 = hingeAxis.Cross (tempPerpendicular).Normalize ();
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			#region Base Constraint
+            #region Base Constraint
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
 			//DOF 1
 
-			double constraintLimit = RestoreCoefficient * linearError.x;
+			double constraintLimit = errorReduction * linearError.x;
 
 			universalConstraints.Add (JacobianCommon.GetDOF(
                 xVec,
@@ -189,13 +177,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 2
 
-			constraintLimit = RestoreCoefficient * linearError.y;
+			constraintLimit = errorReduction * linearError.y;
 
 			universalConstraints.Add (JacobianCommon.GetDOF (
                 yVec,
@@ -206,13 +194,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 3
 
-			constraintLimit = RestoreCoefficient * linearError.z;
+			constraintLimit = errorReduction * linearError.z;
 
 			universalConstraints.Add (JacobianCommon.GetDOF (
                 zVec,
@@ -223,13 +211,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 4
 
-			double angularLimit = RestoreCoefficient * (-k);
+			double angularLimit = errorReduction * (-k);
 
 			universalConstraints.Add (
 				JacobianCommon.GetDOF (
@@ -239,7 +227,7 @@ namespace SharpPhysicsEngine
 					simulationObjectB,
 					0.0,
 					angularLimit,
-					SpringCoefficient,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
@@ -251,7 +239,8 @@ namespace SharpPhysicsEngine
 				simulationObjectA,
 				simulationObjectB,
 				hingeAxis,
-				rotationAxis));
+				rotationAxis,
+                errorReduction));
 
 			#endregion
 
@@ -260,67 +249,47 @@ namespace SharpPhysicsEngine
 			return universalConstraints;
 		}
 
-		#endregion
+        #endregion
 
-		#region IConstraint
+        #region IConstraint
 
-		public int GetObjectIndexA()
-		{
-			return ShapeA.ID;
-		}
+        public override JointType GetJointType()
+        {
+            return jointType;
+        }
 
-		public int GetObjectIndexB()
-		{
-			return ShapeB.ID;
-		}
-        		
-		public int GetKeyIndex()
-		{
-			return KeyIndex;
-		}
-
-		public JointType GetJointType()
-		{
-			return jointType;
-		}
-
-		public Vector3 GetAnchorPosition()
+        public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.StartPosition)) +
                    ShapeA.Position; 
 		}
 
-		public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			AngularLimitMin1 = angularLimitMin;
 			AngularLimitMax1 = angularLimitMax;
 		}
 
-		public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
 		{
 			AngularLimitMin2 = angularLimitMin;
 			AngularLimitMax2 = angularLimitMax;
 		}
 
-		public void SetAxis1Motor(double speedValue, double forceLimit)
+		public override void SetAxis1Motor(double speedValue, double forceLimit)
 		{
 			SpeedHingeAxisLimit = speedValue;
 			ForceHingeAxisLimit = forceLimit;
 		}
 
-		public void SetAxis2Motor(double speedValue, double forceLimit)
+		public override void SetAxis2Motor(double speedValue, double forceLimit)
 		{
 			SpeedRotationAxisLimit = speedValue;
 			ForceRotationAxisLimit = forceLimit;
 		}
-
-		public void SetRestoreCoefficient(double restoreCoefficient)
-		{
-			RestoreCoefficient = restoreCoefficient;
-		}
-
-		public void AddTorque( 
+        		
+		public override void AddTorque( 
 			double torqueAxis1, 
 			double torqueAxis2)
 		{
@@ -332,15 +301,10 @@ namespace SharpPhysicsEngine
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
-
-        public void SetSpringCoefficient(double springCoefficient)
-        {
-            SpringCoefficient = springCoefficient;
-        }
-
+        
         #region NotImplementedMethods
 
-        void IConstraint.SetLinearLimit(double linearLimitMin, double linearLimitMax)
+        public override void SetLinearLimit(double linearLimitMin, double linearLimitMax)
 		{
 			throw new NotSupportedException();
 		}
@@ -357,7 +321,8 @@ namespace SharpPhysicsEngine
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Vector3 hingeAxis,
-			Vector3 rotationAxis)
+			Vector3 rotationAxis,
+            double errorReduction)
 		{
 			var angularConstraint = new List<JacobianConstraint>();
 
@@ -374,7 +339,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
 						angle1,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA,
 						simulationObjectB,
@@ -400,7 +365,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
 						angle2,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA,
 						simulationObjectB,
@@ -456,8 +421,8 @@ namespace SharpPhysicsEngine
 
 			return Quaternion.Multiply1(bodyRotationStatus, rotationQ);
 		}
-
-		#endregion
-	}
+        
+        #endregion
+    }
 }
 

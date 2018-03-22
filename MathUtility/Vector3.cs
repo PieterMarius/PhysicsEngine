@@ -376,6 +376,16 @@ namespace SharpEngineMathUtility
 			return new Vector3(a, b, c);
 		}
 
+        public static bool CheckZeroWithTolerance(Vector3 input, double tolerance)
+        {
+            if (Math.Abs(input.x) < tolerance &&
+                Math.Abs(input.y) < tolerance &&
+                Math.Abs(input.z) < tolerance)
+                return true;
+
+            return false;
+        }
+
 		#region IComparable implementation
 
 		public int CompareTo (object obj)

@@ -127,7 +127,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            angularConstraint.SetRestoreCoefficient(restoreCoefficient);
+            angularConstraint.SetErrorReductionParam(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)

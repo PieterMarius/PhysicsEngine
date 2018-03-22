@@ -46,10 +46,10 @@ namespace SharpPhysicsEngine.Wrapper
             Vector3[] shapePoint,
             Vector3 startPosition,
             double decompositionParam,
-            double restoreCoefficient,
+            double dampingCoefficient,
             double springCoefficient)
         {
-            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, decompositionParam, restoreCoefficient, springCoefficient);
+            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, decompositionParam, dampingCoefficient, springCoefficient);
         }
 
         public SoftCollisionShape(
@@ -219,14 +219,14 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetRestoreCoeff(double value)
+        public void SetDampingCoeff(double value)
         {
             softShape.SetRestoreCoeff(value);
         }
 
         public void SetConstraintsRestoreCoeff(double value)
         {
-            softShape.SetConstraintsRestoreCoefficient(value);
+            softShape.SetConstraintsErrorReduction(value);
         }
 
         public void SetConstraintsSpringCoeff(double value)
@@ -297,6 +297,16 @@ namespace SharpPhysicsEngine.Wrapper
         public Vector3[] GetShapeConstraintsPosition()
         {
             return softShape.SoftConstraint.Select(x => x.GetAnchorPosition()).ToArray();
+        }
+
+        public void AddToConstraintsRestoreCoefficient(double value)
+        {
+            softShape.AddToConstraintsRestoreCoefficient(value);
+        }
+
+        public void AddToConstraintsSpringCoefficient(double value)
+        {
+            softShape.AddToConstraintsSpringCoefficient(value);
         }
 
         #endregion

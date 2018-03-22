@@ -63,7 +63,7 @@ namespace SharpPhysicsEngine.LCPSolver
 			MaxIteration = 10;
 			ErrorTolerance = 1E-20;
 			SOR = 1.0;
-			MaxThreadNumber = 6;
+			MaxThreadNumber = 8;
         }
 
 		public SolverParameters (

@@ -112,10 +112,10 @@ namespace SharpPhysicsEngine
 			Vector3 rotationAxis)
 		{
 			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
-				simulationObjectB.RotationStatus;
+				                                    simulationObjectB.RotationStatus;
 
 			Quaternion relativeOrientation = relativeRotation.Inverse () *
-				currentRelativeOrientation;
+				                             currentRelativeOrientation;
 
 			var quaternionVectorPart = new Vector3 (
 				relativeOrientation.b,

@@ -137,10 +137,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ShapePoints = shapePoint;
         }
         
-        public void SetConstraintsRestoreCoefficient(double restoreCoeff)
+        public void SetConstraintsErrorReduction(double restoreCoeff)
         {
             foreach (var item in SoftConstraint)
-                item.SetRestoreCoefficient(restoreCoeff);
+                item.SetErrorReductionParam(restoreCoeff);
         }
 
         public void SetConstraintsSpringCoefficient(double springCoeff)
@@ -169,6 +169,27 @@ namespace SharpPhysicsEngine.ShapeDefinition
             throw new NotImplementedException();
         }
 
+        public void AddToConstraintsRestoreCoefficient(double value)
+        {
+            foreach (var item in SoftConstraint)
+            {
+                double val = item.GetDampingCoefficient() + value;
+                    if (val > 0.0)
+                item.SetErrorReductionParam(val);
+            }
+        }
+
+        public void AddToConstraintsSpringCoefficient(double value)
+        {
+            foreach (var item in SoftConstraint)
+            {
+                double val = item.GetSpringCoefficient() + value;
+                if (val > 0.0)
+                    item.SetSpringCoefficient(val);
+            }
+        }
+
+
         #endregion
 
         #region Private Methods
@@ -182,7 +203,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             double inverseMass = 1.0 / mass;
 
             Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
-                                    (diameter * diameter * 0.4);
+                                      (diameter * diameter * 0.4);
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -271,6 +292,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[triangle.value.c].AddTrianglesIndex(triangle.i);
             }
         }
+
         
         #endregion
     }

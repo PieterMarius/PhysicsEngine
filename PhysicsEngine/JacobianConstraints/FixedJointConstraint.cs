@@ -51,17 +51,11 @@ namespace SharpPhysicsEngine
         public FixedJointConstraint(
             IShape shapeA,
             IShape shapeB,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficient)
-            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+            : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
-            //         ShapeA = shapeA;
-            //         ShapeB = shapeB;
-            //         KeyIndex = GetHashCode();
-            //SpringCoefficient = springCoefficient;
-            //RestoreCoefficient = restoreCoefficient;
-
-            StartAnchorPoint = (shapeB.Position - shapeA.Position) * 0.5;
+            StartAnchorPoint = (shapeB.Position + shapeA.Position) * 0.5;
 
             Vector3 relativePos = StartAnchorPoint - shapeA.StartPosition;
             relativePos = shapeA.RotationMatrix * relativePos;
@@ -89,7 +83,7 @@ namespace SharpPhysicsEngine
         /// </summary>
         /// <returns>The fixed joint.</returns>
         /// <param name="simulationObjs">Simulation objects.</param>
-        public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var fixedConstraints = new List<JacobianConstraint> ();
 
@@ -121,16 +115,20 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				RelativeOrientation);
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
-			double restoreCoeff = baumStabilization ?? RestoreCoefficient;
+			double restoreCoeff = baumStabilization ?? errorReduction;
 
 			double constraintLimit = restoreCoeff * linearError.x;
 
@@ -145,7 +143,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -162,7 +160,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -179,7 +177,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -194,7 +192,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -209,7 +207,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -224,7 +222,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 

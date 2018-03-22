@@ -232,7 +232,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetRestoreCoeff(double value)
+        public void SetDampingCoeff(double value)
         {
             compoundShape.SetRestoreCoeff(value);
         }
@@ -308,6 +308,11 @@ namespace SharpPhysicsEngine.Wrapper
             }
 
             return new Vector3(xMax, yMax, zMax);
+        }
+
+        public void AddToRestoreCoeff(double value)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

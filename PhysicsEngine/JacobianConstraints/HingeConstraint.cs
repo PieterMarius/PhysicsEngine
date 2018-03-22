@@ -93,7 +93,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The hinge joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var hingeConstraints = new List<JacobianConstraint> ();
 
@@ -130,20 +130,24 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				RelativeOrientation);
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			#region Base Constraint
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
 
-			ConstraintType constraintType = ConstraintType.Joint;
+            #region Base Constraint
+
+            ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
 			//DOF 1
 
-			double constraintLimit = RestoreCoefficient * linearError.x;
+			double constraintLimit = errorReduction * linearError.x;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF(
                 xVec,
@@ -154,13 +158,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 2
 
-			constraintLimit = RestoreCoefficient * linearError.y;
+			constraintLimit = errorReduction * linearError.y;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
                 yVec,
@@ -171,13 +175,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 3
 
-			constraintLimit = RestoreCoefficient * linearError.z;
+			constraintLimit = errorReduction * linearError.z;
 
 			hingeConstraints.Add (JacobianCommon.GetDOF (
                 zVec,
@@ -188,13 +192,13 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
 			//DOF 4
 
-			double angularLimit = RestoreCoefficient *
+			double angularLimit = errorReduction *
 				t1.Dot(angularError);
 
 			hingeConstraints.Add (
@@ -204,14 +208,14 @@ namespace SharpPhysicsEngine
 					simulationObjectA, 
 					simulationObjectB,
 					0.0,
-					angularLimit, 
-					SpringCoefficient,
+					angularLimit,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
 			//DOF 5
 
-			angularLimit = RestoreCoefficient *
+			angularLimit = errorReduction *
 				t2.Dot(angularError);
 
 			hingeConstraints.Add (
@@ -222,7 +226,7 @@ namespace SharpPhysicsEngine
 					simulationObjectB, 
 					0.0,
 					angularLimit,
-					SpringCoefficient,
+                    springCoefficient,
 					0.0,
 					constraintType));
 
@@ -242,7 +246,7 @@ namespace SharpPhysicsEngine
 				JacobianConstraint? jContact = 
 					JacobianCommon.GetAngularLimit (
                         angle,
-						RestoreCoefficient,
+                        errorReduction,
 						0.0,
 						simulationObjectA, 
 						simulationObjectB, 

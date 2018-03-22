@@ -79,7 +79,7 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolver(SolverType.ProjectedConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedConjugateGradient);
 
             return physicsEnvironment;
 		}
@@ -149,7 +149,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetRestoreCoeff(60.0);
+            objects0.SetDampingCoeff(60.0);
 
             objects.Add(objects0);
 
@@ -176,7 +176,7 @@ namespace TestPhysics
             objects_0.SetDynamicFrictionCoeff(0.8);
             objects_0.SetStaticFrictionCoeff(0.9);
             objects_0.ExcludeFromCollisionDetection(false);
-            objects_0.SetRestoreCoeff(30.0);
+            objects_0.SetDampingCoeff(30.0);
             objects.Add(objects_0);
 
             var objects1 = new RigidCollisionShape();
@@ -199,7 +199,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetRestoreCoeff(30.0);
+            objects1.SetDampingCoeff(30.0);
             objects.Add(objects1);
             
             position = new Vector3(3.5, 4.6, -1.9);
@@ -220,7 +220,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetRestoreCoeff(30.0);
+            objects1.SetDampingCoeff(30.0);
                 
             objects.Add(objects1);
 
@@ -242,7 +242,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetRestoreCoeff(30.0);
+            objects1.SetDampingCoeff(30.0);
 
             objects.Add(objects1);
 
@@ -264,7 +264,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetRestoreCoeff(30.0);
+            objects1.SetDampingCoeff(30.0);
 
             objects.Add(objects1);
             
@@ -296,7 +296,7 @@ namespace TestPhysics
             constraints[0] = new Hinge2Joint(
                                 shape[1],
                                 shape[2],
-                                //shape[3],
+                                shape[3],
                                 new Vector3(-3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -309,7 +309,7 @@ namespace TestPhysics
             constraints[1] = new Hinge2Joint(
                                 shape[1],
                                 shape[4],
-                                //shape[5],
+                                shape[5],
                                 new Vector3(3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -322,7 +322,7 @@ namespace TestPhysics
             constraints[2] = new Hinge2Joint(
                                 shape[1],
                                 shape[3],
-                                //shape[2],
+                                shape[2],
                                 new Vector3(3.5, -1.0, -1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),
@@ -335,7 +335,7 @@ namespace TestPhysics
             constraints[3] = new Hinge2Joint(
                                 shape[1],
                                 shape[5],
-                                //shape[4],
+                                shape[4],
                                 new Vector3(-3.5, -1.0, 1.9),
                                 new Vector3(0.0, 1.0, 0.0),
                                 new Vector3(1.0, 0.0, 0.0),

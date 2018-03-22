@@ -41,6 +41,8 @@ namespace SharpPhysicsEngine
         private const int frictionDirections = 2;
         private readonly PhysicsEngineParameters simulationParameters;
 
+        public int ConstraintsNumber { get { return 3; } } 
+
 		#endregion Fields
         
 		#region Constructor

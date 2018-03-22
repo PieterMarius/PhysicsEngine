@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            hingeConstraint.SetRestoreCoefficient(restoreCoefficient);
+            hingeConstraint.SetErrorReductionParam(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)

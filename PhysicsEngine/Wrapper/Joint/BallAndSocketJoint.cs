@@ -119,7 +119,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
 
         public void SetRestoreCoefficient(double restoreCoefficient)
         {
-            ballAndSocketConstraint.SetRestoreCoefficient(restoreCoefficient);
+            ballAndSocketConstraint.SetErrorReductionParam(restoreCoefficient);
         }
 
         public void SetSpringCoefficient(double springCoefficient)

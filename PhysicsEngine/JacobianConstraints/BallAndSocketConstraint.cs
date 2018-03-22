@@ -51,9 +51,9 @@ namespace SharpPhysicsEngine
             IShape shapeA,
             IShape shapeB,
             Vector3 startAnchorPosition,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficient)
-            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+            : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             StartAnchorPoint = startAnchorPosition;
 
@@ -80,7 +80,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The ball socket joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
 		{
 			var ballSocketConstraints = new List<JacobianConstraint>();
 
@@ -103,22 +103,26 @@ namespace SharpPhysicsEngine
 
 			Vector3 linearError = p2 - p1;
 
-			#endregion
+            #endregion
 
-			#region Jacobian Constraint
+            #region Jacobian Constraint
 
-			double restoreCoeff = baumStabilization ?? RestoreCoefficient;
-
-			double constraintLimit = restoreCoeff * linearError.x;
+            double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam * freq;
+            double springCoefficient = SpringCoefficient * freq;
 
             ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
-			//DOF 1
+            double restoreCoeff = baumStabilization ?? errorReduction;
 
-			ballSocketConstraints.Add(JacobianCommon.GetDOF(
+            double constraintLimit = restoreCoeff * linearError.x;
+
+            //DOF 1
+
+            ballSocketConstraints.Add(JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
                 new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
@@ -127,7 +131,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -144,7 +148,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
@@ -161,7 +165,7 @@ namespace SharpPhysicsEngine
 				simulationObjectB,
 				0.0,
 				constraintLimit,
-				SpringCoefficient,
+                springCoefficient,
 				0.0,
 				constraintType));
 
