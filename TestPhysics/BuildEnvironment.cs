@@ -97,8 +97,8 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedConjugateGradient);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
 
             return physicsEnvironment;
 		}
@@ -186,7 +186,7 @@ namespace TestPhysics
             objects[0].SetDynamicFrictionCoeff(1.0);
             objects[0].SetStaticFrictionCoeff(1.0);
             objects[0].ExcludeFromCollisionDetection(false);
-            objects[0].SetDampingCoeff(30.0);
+            objects[0].SetErrorReductionParam(30.0);
 
             #endregion
 
@@ -206,7 +206,7 @@ namespace TestPhysics
             objects[1].SetDynamicFrictionCoeff(0.8);
             objects[1].SetStaticFrictionCoeff(0.9);
             objects[1].ExcludeFromCollisionDetection(false);
-            objects[1].SetDampingCoeff(30.0);
+            objects[1].SetErrorReductionParam(30.0);
 
             ShapeFilename[2] = new string[1] { "sphere.obj" };
             ShapeScale[2] = new float[1] { 1 };
@@ -224,7 +224,7 @@ namespace TestPhysics
             objects[2].SetDynamicFrictionCoeff(0.8);
             objects[2].SetStaticFrictionCoeff(0.9);
             objects[2].ExcludeFromCollisionDetection(false);
-            objects[2].SetDampingCoeff(30.0);
+            objects[2].SetErrorReductionParam(30.0);
 
             ShapeFilename[3] = new string[1] { "sphere.obj" };
             ShapeScale[3] = new float[1] { 1 };
@@ -242,7 +242,7 @@ namespace TestPhysics
             objects[3].SetDynamicFrictionCoeff(0.8);
             objects[3].SetStaticFrictionCoeff(0.9);
             objects[3].ExcludeFromCollisionDetection(false);
-            objects[3].SetDampingCoeff(30.0);
+            objects[3].SetErrorReductionParam(30.0);
 
             return objects;
         }
@@ -269,7 +269,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetDampingCoeff(60.0);
+            objects0.SetErrorReductionParam(1.0);
 
             objects.Add(objects0);
 
@@ -293,7 +293,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetDampingCoeff(30.0);
+            objects1.SetErrorReductionParam(30.0);
 
             objects.Add(objects1);
 
@@ -313,20 +313,21 @@ namespace TestPhysics
             objects2.SetDynamicFrictionCoeff(0.8);
             objects2.SetStaticFrictionCoeff(0.9);
             objects2.ExcludeFromCollisionDetection(false);
-            objects2.SetDampingCoeff(30.0);
+            objects2.SetErrorReductionParam(30.0);
 
             objects.Add(objects2);
 
-			//TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
-			//TODO rimuovere
-			ShapeFilename[3] = new string[1] { "sphere.obj" };
+            //TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
+            //TODO rimuovere
+            string softObject = "sphere.obj";
+            ShapeFilename[3] = new string[1] { softObject };
 			ShapeScale[3] = new float[1] { 1 };
             
-			var objects3 = BuildSoftBody("sphere.obj", 1, new Vector3(0.0, 0.0, 0.0));
+			var objects3 = BuildSoftBody(softObject, 1, new Vector3(0.0, 0.0, 0.0));
             objects3.SetStaticFrictionCoeff(0.5);
             objects3.SetDynamicFrictionCoeff(0.5);
             objects3.SetRestitutionCoeff(1.0);
-            objects3.SetDampingCoeff(60.0);
+            objects3.SetErrorReductionParam(1.0);
 
             objects.Add(objects3);
 

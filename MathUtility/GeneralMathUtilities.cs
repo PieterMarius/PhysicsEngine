@@ -25,7 +25,9 @@
  *****************************************************************************/
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SharpEngineMathUtility
 {
@@ -44,7 +46,9 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[] Multiply(double scalar, double[] vector)
+        public static double[] Multiply(
+            double scalar, 
+            double[] vector)
         {
             double[] result = new double[vector.Length];
 
@@ -53,7 +57,28 @@ namespace SharpEngineMathUtility
             
             return result;
         }
-        
+
+        public static double[] ParallelMultiply(
+            double scalar,
+            double[] vector,
+            int maxThread)
+        {
+            double[] result = new double[vector.Length];
+            
+            var rangePartitioner = Partitioner.Create(0, vector.Length, Convert.ToInt32(vector.Length / maxThread) + 1);
+
+            Parallel.ForEach(
+                rangePartitioner,
+                new ParallelOptions() { MaxDegreeOfParallelism = maxThread },
+                (range, loopState) =>
+                {
+                    for (int i = range.Item1; i < range.Item2; i++)
+                        result[i] = vector[i] * scalar;
+                });
+
+            return result;
+        }
+
         public static double[] Minus(double[] a, double[] b)
         {
             if (a.Length != b.Length)

@@ -55,17 +55,17 @@ namespace SharpPhysicsEngine.Helper
         #region Public Methods
                 
         public LinearProblemProperties BuildLCP(
-            JacobianConstraint[] constraint)
+            JacobianConstraint[] constraints)
         {
-            if (constraint.Length > 0)
+            if (constraints.Length > 0)
             {
-                LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraint.Length);
+                LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
 
                 Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
 
-                for (int i = 0; i < constraint.Length; i++)
+                for (int i = 0; i < constraints.Length; i++)
                 {
-                    JacobianConstraint itemConstraint = constraint[i];
+                    JacobianConstraint itemConstraint = constraints[i];
 
                     HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.ID, itemConstraint.ObjectB.ID);
 
@@ -75,7 +75,7 @@ namespace SharpPhysicsEngine.Helper
                         constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
                 }
 
-                Graph graph = new Graph(constraint.Length);
+                Graph graph = new Graph(constraints.Length);
 
                 var dictionaryArray = constraintsDictionary.ToArray();
 

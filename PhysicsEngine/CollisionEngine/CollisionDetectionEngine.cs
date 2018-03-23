@@ -306,8 +306,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ISoftShape softShape)
 		{
 			List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
-		    
-            	List<ShapeDecompositionOutput> shapeOutput = softShape.ConvexDecomposition.GetIntersectedShape(
+
+            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(softShape.AABBox, softShape.Triangle);
+
+            List<ShapeDecompositionOutput> shapeOutput = convexDecomposition.GetIntersectedShape(
 				convexShape.ObjectGeometry.AABBox,
 				softShape.AABBox,
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
@@ -393,11 +395,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var result = new List<CollisionPointStructure>();
 
-			List<ShapeDecompositionOutput> decompConvexShapeA = softShapeA.ConvexDecomposition.GetConvexShapeList(
+            ShapeConvexDecomposition convexDecompositionA = new ShapeConvexDecomposition(softShapeA.AABBox, softShapeA.Triangle);
+            ShapeConvexDecomposition convexDecompositionB = new ShapeConvexDecomposition(softShapeB.AABBox, softShapeB.Triangle);
+
+            List<ShapeDecompositionOutput> decompConvexShapeA = convexDecompositionA.GetConvexShapeList(
 				Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShapeA.DecompositionParameter);
 
-			List<ShapeDecompositionOutput> decompConvexShapeB = softShapeB.ConvexDecomposition.GetConvexShapeList(
+			List<ShapeDecompositionOutput> decompConvexShapeB = convexDecompositionB.GetConvexShapeList(
 				Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShapeB.DecompositionParameter);
 

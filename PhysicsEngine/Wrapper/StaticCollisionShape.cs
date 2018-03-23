@@ -203,7 +203,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetDampingCoeff(double value)
+        public void SetErrorReductionParam(double value)
         {
             convexShape.SetRestoreCoeff(value);
         }

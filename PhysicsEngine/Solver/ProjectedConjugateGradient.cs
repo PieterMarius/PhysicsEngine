@@ -29,6 +29,8 @@ using static SharpEngineMathUtility.SparseElement;
 using static SharpEngineMathUtility.GeneralMathUtilities;
 using System.Linq;
 using SharpPhysicsEngine.ShapeDefinition;
+using System.Collections.Generic;
+using static SharpPhysicsEngine.LCPSolver.RedBlackProjectedGaussSeidel;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
@@ -36,7 +38,7 @@ namespace SharpPhysicsEngine.LCPSolver
     {
         #region Fields
 
-        ProjectedGaussSeidel gaussSeidelSolver;
+        RedBlackProjectedGaussSeidel gaussSeidelSolver;
         public readonly SolverParameters SolverParameters;
 
         #endregion
@@ -53,7 +55,7 @@ namespace SharpPhysicsEngine.LCPSolver
                                                           1.0,
                                                           SolverParameters.MaxThreadNumber);
 
-            gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
+            gaussSeidelSolver = new RedBlackProjectedGaussSeidel(gaussSeidelSolverParam);
         }
 
         #endregion
@@ -86,12 +88,16 @@ namespace SharpPhysicsEngine.LCPSolver
                 k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
             var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
                 k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
-            
+
+            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = null;
+            if (checkBoundConstraints)
+                redBlackDictionary = gaussSeidelSolver.GetRedBlackDictionary(linearProblemProperties);
+
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
                 if (checkUnboundConstraints)
                 {
-                    double[] Ap = Multiply(A, p);
+                    double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
 
                     double alphaCG = GetAlphaCG(Ap, r, p);
 
@@ -105,13 +111,12 @@ namespace SharpPhysicsEngine.LCPSolver
                     if (denom != 0.0)
                         beta = Dot(phiY, partialValue) / denom;
 
-                    p = Minus(phiY, Multiply(beta, p));
+                    p = Minus(phiY, ParallelMultiply(beta, p, SolverParameters.MaxThreadNumber));
                 }
 
                 if (checkBoundConstraints)
-                {
-                    x = gaussSeidelSolver.Solve(linearProblemProperties, x);
-                }
+                    x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+                
             }
 
             //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
@@ -168,7 +173,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] b,
             double[] x)
         {
-            return Minus(Multiply(A, x), b);
+            return Minus(Multiply(A, x, SolverParameters.MaxThreadNumber), b);
         }
 
         /// <summary>
@@ -204,7 +209,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] p,
             double alpha)
         {
-            return Minus(x, Multiply(alpha, p));
+            return Minus(x, ParallelMultiply(alpha, p, SolverParameters.MaxThreadNumber));
         }
 
         private double[] GetPhi(

@@ -58,7 +58,7 @@ namespace SharpPhysicsEngine.Wrapper
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
         void SetForce(Vector3 force);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
-        void SetDampingCoeff(double value);
+        void SetErrorReductionParam(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
         void ExcludeFromCollisionDetection(bool excludeFromCollisionDetection);
         void SetRestitutionCoeff(double restitutionCoeff);

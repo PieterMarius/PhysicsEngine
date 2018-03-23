@@ -27,16 +27,24 @@
 using System.Collections.Generic;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
+using SharpPhysicsEngine.ContactPartitioning;
 
 namespace SharpPhysicsEngine
 {
 	internal interface IContactPartitioningEngine
 	{
-		List<SpatialPartition> CalculateSpatialPartitioning (
-			CollisionPointStructure[] collisionPoints,
-			List<IConstraint> simulationJoint,
-			IShape[] simulationObjects);
+        //List<SpatialPartition> CalculateSpatialPartitioning (
+        //	CollisionPointStructure[] collisionPoints,
+        //	List<IConstraint> simulationJoint,
+        //	IShape[] simulationObjects);
 
-	}
+        List<Partition> GetPartitions(
+            CollisionPointStructure[] collisionPoints,
+            List<IConstraint> joints,
+            IShape[] shapes,
+            ISoftShape[] softShapes);
+
+
+    }
 }
 

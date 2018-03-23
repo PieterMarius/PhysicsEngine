@@ -203,7 +203,7 @@ namespace TestPhysics
 				objects[i].ExcludeFromCollisionDetection (Convert.ToBoolean(xmlList [i] [excludeFromCollisionDetection].InnerText));
 
 				//Baumgarte Stabilization value
-				objects[i].SetDampingCoeff(30.0);
+				objects[i].SetErrorReductionParam(0.5);
 
 			}
 
@@ -366,9 +366,9 @@ namespace TestPhysics
                                 startAnchorPosition,
                                 new Vector3(1.0, 0.0, 0.0),
                                 new Vector3(0.0, 1.0, 0.0),
-                                10.0,
-                                0.5,
-                                0.5);
+                                0.16,
+                                0.008,
+                                0.008);
 
                             break;
 

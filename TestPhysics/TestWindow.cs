@@ -219,9 +219,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                //LoadEngineByXml();
+                LoadEngineByXml();
             
-                LoadEngineByBuilder();
+                //LoadEngineByBuilder();
 
 
             }
@@ -267,7 +267,8 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
+            physicsEngine.SetSolverType(SolverType.ProjectedConjugateGradient);
+            physicsEngine.SolverParameters.SetSolverMaxIteration(50);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -279,7 +280,15 @@ namespace TestPhysics
                 physicsEngine.AddJoint(simulationJoints[i]);
             }
 
-            //physicsEngine.AddShape(AddSoftBody());
+            string softObject = "sph.obj";
+
+            var objects3 = BuildSoftBody(softObject, 1, new SharpEngineMathUtility.Vector3(0.0, 8.0, 1.5));
+            objects3.SetStaticFrictionCoeff(0.4);
+            objects3.SetDynamicFrictionCoeff(0.3);
+            objects3.SetRestitutionCoeff(1.0);
+            objects3.SetErrorReductionParam(1.0);
+
+            physicsEngine.AddShape(objects3);
 
             pause = true;
 
@@ -288,6 +297,23 @@ namespace TestPhysics
 
         }
 
+        private SoftCollisionShape BuildSoftBody(
+            string fileName,
+            double scale,
+            SharpEngineMathUtility.Vector3 position)
+        {
+            GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
+
+            //RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
+
+            return new SoftCollisionShape(
+                prop.triangleIndex,
+                prop.vertexPoint,
+                position,
+                0.2,
+                0.5,
+                20.0);
+        }
 
 
         #region OpenGL Windows Settings
@@ -321,7 +347,7 @@ namespace TestPhysics
 			displayContact ();
 			//displayBaseContact();
 			displayJoint ();
-            displaySoftJoint();
+            //displaySoftJoint();
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
@@ -339,7 +365,7 @@ namespace TestPhysics
 				SetOpenGLObjectMatrixAndDisplayObject(i);
             
             //displayOctree();
-            //displayConvexDecomposition();
+            displayConvexDecomposition();
             //displaySoftJoint();
 
             GL.Flush ();
@@ -392,34 +418,36 @@ namespace TestPhysics
 					elapsedTime += 0.016;
 					performaceValue += stopwatch.ElapsedMilliseconds;
 
-					Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
-					Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
-					Console.WriteLine("Partial " + stopwatch.ElapsedMilliseconds);
-					Console.WriteLine();
+                    Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+                    Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
+                    Console.WriteLine("Partial " + stopwatch.ElapsedMilliseconds);
+                    Console.WriteLine();
 
 
+                    collPoint = physicsEngine.GetCollisionPointStrucureList();
 
-					//pause = true;
-					//if (elapsedTime > 6.0)
-					//	Exit();
-					collPoint = physicsEngine.GetCollisionPointStrucureList();
-                    if (collPoint.Count > 0)
-                        Console.WriteLine();
-					//collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
 
-					//colorList = new List<List<double>>();
-					//if (collisionPartitionedPoints != null)
-					//{
-					//    for (int i = 0; i < collisionPartitionedPoints.Count; i++)
-					//    {
-					//        List<double> color = new List<double>();
-					//        color.Add(GetRandomNumber(0.0, 1.0));
-					//        color.Add(GetRandomNumber(0.0, 1.0));
-					//        color.Add(GetRandomNumber(0.0, 1.0));
-					//        colorList.Add(color);
-					//    }
-					//}
-				}
+                    //pause = true;
+                    //if (elapsedTime > 6.0)
+                    //	Exit();
+
+                    //if (collPoint.Count > 0)
+                    //    Console.WriteLine();
+                    //collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
+
+                    //colorList = new List<List<double>>();
+                    //if (collisionPartitionedPoints != null)
+                    //{
+                    //    for (int i = 0; i < collisionPartitionedPoints.Count; i++)
+                    //    {
+                    //        List<double> color = new List<double>();
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        color.Add(GetRandomNumber(0.0, 1.0));
+                    //        colorList.Add(color);
+                    //    }
+                    //}
+                }
 			} 
 			catch (Exception ex) 
 			{
@@ -539,6 +567,7 @@ namespace TestPhysics
 
                 SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
                 softShape.AddToConstraintsRestoreCoefficient(0.05);
+                Console.WriteLine("Rest coeff " + softShape.GetShapeErrorReductionParams()[0]);
                 
             }
 
@@ -547,6 +576,7 @@ namespace TestPhysics
 
                 SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
                 softShape.AddToConstraintsRestoreCoefficient(-0.05);
+                Console.WriteLine("Rest coeff " + softShape.GetShapeErrorReductionParams()[0]);
 
             }
 
@@ -1126,7 +1156,7 @@ namespace TestPhysics
 
 		private void displayConvexDecomposition()
 		{
-			SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+			SoftCollisionShape softShape = physicsEngine.GetShape(13) as SoftCollisionShape;
 
             //region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
             //region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);

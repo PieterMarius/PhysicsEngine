@@ -65,9 +65,9 @@ namespace SharpPhysicsEngine
             IShape shapeB,
             Vector3 startAnchorPosition,
             Vector3 pistonAxis,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficient)
-            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+            : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             StartAnchorPoint = startAnchorPosition;
 

@@ -219,14 +219,14 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetDampingCoeff(double value)
+        public void SetErrorReductionParam(double value)
         {
             softShape.SetRestoreCoeff(value);
         }
 
         public void SetConstraintsRestoreCoeff(double value)
         {
-            softShape.SetConstraintsErrorReduction(value);
+            softShape.SetConstraintsErrorReductionParam(value);
         }
 
         public void SetConstraintsSpringCoeff(double value)
@@ -299,9 +299,14 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.SoftConstraint.Select(x => x.GetAnchorPosition()).ToArray();
         }
 
+        public double[] GetShapeErrorReductionParams()
+        {
+            return softShape.SoftConstraint.Select(x => x.GetErrorReductionParam()).ToArray();
+        }
+
         public void AddToConstraintsRestoreCoefficient(double value)
         {
-            softShape.AddToConstraintsRestoreCoefficient(value);
+            softShape.AddToConstraintsErrorReductionParam(value);
         }
 
         public void AddToConstraintsSpringCoefficient(double value)

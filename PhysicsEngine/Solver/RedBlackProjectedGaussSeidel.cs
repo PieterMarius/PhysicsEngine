@@ -11,7 +11,7 @@ namespace SharpPhysicsEngine.LCPSolver
     {
         #region Fields
 
-        private enum RedBlackEnum
+        public enum RedBlackEnum
         {
             Red = 0,
             Black = 1,
@@ -38,56 +38,40 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x)
         {
             var redBlackDictionary = GetRedBlackDictionary(input);
-            redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> red);
-            redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> black);
+            return Execute(input, redBlackDictionary, x);
+        }
 
-            var rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);
-            var rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
-                        
-            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+        public double[] SolveExecute(
+            LinearProblemProperties input,
+            Dictionary<RedBlackEnum, List<int>> redBlackDictionary,
+            double[] x)
+        {
+            return Execute(input, redBlackDictionary, x);
+        }
+
+        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)
+        {
+            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = new Dictionary<RedBlackEnum, List<int>>
             {
-                //Execute Red
-                Parallel.ForEach(
-                    rangePartitionerRed,
-                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
-                    (range, loopState) =>
-                    {
-                        for (int i = range.Item1; i < range.Item2; i++)
-                            Execute(input, red[i], ref x);
-                    });
+                { RedBlackEnum.Red, new List<int>() },
+                { RedBlackEnum.Black, new List<int>() }
+            };
 
-                //Execute Black
-                Parallel.ForEach(
-                    rangePartitionerBlack,
-                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
-                    (range, loopState) =>
-                    {
-                        for (int i = range.Item1; i < range.Item2; i++)
-                            Execute(input, black[i], ref x);
-                    });
+            for (int i = 0; i < nodeDictionary.Count; i++)
+            {
+                if (nodeDictionary[i])
+                    redBlackDictionary[RedBlackEnum.Black].Add(i);
+                else
+                    redBlackDictionary[RedBlackEnum.Red].Add(i);
             }
 
-            return x;
+            return redBlackDictionary;
         }
 
-        public void SetSuccessiveOverRelaxation(double SOR)
-        {
-            SolverParameters.SetSOR(SOR);
-        }
-
-        public SolverParameters GetSolverParameters()
-        {
-            return SolverParameters;
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(LinearProblemProperties input)
+        public Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(LinearProblemProperties input)
         {
             var graph = input.ConstrGraph;
-            
+
             var nodeDictionary = BreadthFirstSearch.GetBoolLevelBFS(graph, 0);
 
             if (nodeDictionary.Count < input.Count)
@@ -107,30 +91,62 @@ namespace SharpPhysicsEngine.LCPSolver
             }
 
             var redBlackDictionary = GetRedBlackDictionary(nodeDictionary);
-            
-            return redBlackDictionary;
-        }
-        
-        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)
-        {
-            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = new Dictionary<RedBlackEnum, List<int>>
-            {
-                { RedBlackEnum.Red, new List<int>() },
-                { RedBlackEnum.Black, new List<int>() }
-            };
 
-            for (int i = 0; i < nodeDictionary.Count; i++)
-            {
-                if(nodeDictionary[i])
-                    redBlackDictionary[RedBlackEnum.Black].Add(i);
-                else
-                    redBlackDictionary[RedBlackEnum.Red].Add(i);
-            }
-            
             return redBlackDictionary;
         }
-        
-        private void Execute(
+
+        public void SetSuccessiveOverRelaxation(double SOR)
+        {
+            SolverParameters.SetSOR(SOR);
+        }
+
+        public SolverParameters GetSolverParameters()
+        {
+            return SolverParameters;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private double[] Execute(
+            LinearProblemProperties input,
+            Dictionary<RedBlackEnum, List<int>> redBlackDictionary,
+            double[] x)
+        {
+            redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> red);
+            redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> black);
+
+            var rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);
+            var rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
+
+            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+            {
+                //Execute Red
+                Parallel.ForEach(
+                    rangePartitionerRed,
+                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
+                    (range, loopState) =>
+                    {
+                        for (int i = range.Item1; i < range.Item2; i++)
+                            ExecuteKernel(input, red[i], ref x);
+                    });
+
+                //Execute Black
+                Parallel.ForEach(
+                    rangePartitionerBlack,
+                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
+                    (range, loopState) =>
+                    {
+                        for (int i = range.Item1; i < range.Item2; i++)
+                            ExecuteKernel(input, black[i], ref x);
+                    });
+            }
+
+            return x;
+        }
+               
+        private void ExecuteKernel(
             LinearProblemProperties input,
             int index,
             ref double[] x)

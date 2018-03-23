@@ -93,7 +93,7 @@ namespace SharpPhysicsEngine
             SpringCoefficient = springCoefficient;
         }
 
-        public double GetDampingCoefficient()
+        public double GetErrorReductionParam()
         {
             return ErrorReductionParam;
         }

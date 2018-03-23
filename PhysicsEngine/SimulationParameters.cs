@@ -170,7 +170,7 @@ namespace SharpPhysicsEngine
 			CFM = 1E-07;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
-			BaumStabilization = 60;
+			BaumStabilization = 1.0;
             OverallConstraintsIterations = 200;
 			LinearVelDisable = 0.2;
 			AngularVelDisable = 0.1;
@@ -182,7 +182,7 @@ namespace SharpPhysicsEngine
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;
-			MaxCorrectionValue = 100.0;
+			MaxCorrectionValue = 20.0;
 			SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;

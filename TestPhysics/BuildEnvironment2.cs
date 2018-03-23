@@ -149,7 +149,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetDampingCoeff(60.0);
+            objects0.SetErrorReductionParam(60.0);
 
             objects.Add(objects0);
 
@@ -176,7 +176,7 @@ namespace TestPhysics
             objects_0.SetDynamicFrictionCoeff(0.8);
             objects_0.SetStaticFrictionCoeff(0.9);
             objects_0.ExcludeFromCollisionDetection(false);
-            objects_0.SetDampingCoeff(30.0);
+            objects_0.SetErrorReductionParam(30.0);
             objects.Add(objects_0);
 
             var objects1 = new RigidCollisionShape();
@@ -199,7 +199,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetDampingCoeff(30.0);
+            objects1.SetErrorReductionParam(30.0);
             objects.Add(objects1);
             
             position = new Vector3(3.5, 4.6, -1.9);
@@ -220,7 +220,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetDampingCoeff(30.0);
+            objects1.SetErrorReductionParam(30.0);
                 
             objects.Add(objects1);
 
@@ -242,7 +242,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetDampingCoeff(30.0);
+            objects1.SetErrorReductionParam(30.0);
 
             objects.Add(objects1);
 
@@ -264,7 +264,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetDampingCoeff(30.0);
+            objects1.SetErrorReductionParam(30.0);
 
             objects.Add(objects1);
             

@@ -75,7 +75,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             AddSoftShapePoint(shapePoint);
             BuildSoftConstraints(softConstraints, restoreCoeff, springCoeff);
             SleepingFrameCount = 0;
-            ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
+            //ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
 
         public SoftShape(
@@ -102,7 +102,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             SetAABB();
 
-            ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
+            //ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
 
         #endregion
@@ -137,7 +137,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ShapePoints = shapePoint;
         }
         
-        public void SetConstraintsErrorReduction(double restoreCoeff)
+        public void SetConstraintsErrorReductionParam(double restoreCoeff)
         {
             foreach (var item in SoftConstraint)
                 item.SetErrorReductionParam(restoreCoeff);
@@ -169,11 +169,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             throw new NotImplementedException();
         }
 
-        public void AddToConstraintsRestoreCoefficient(double value)
+        public void AddToConstraintsErrorReductionParam(double value)
         {
             foreach (var item in SoftConstraint)
             {
-                double val = item.GetDampingCoefficient() + value;
+                double val = item.GetErrorReductionParam() + value;
                     if (val > 0.0)
                 item.SetErrorReductionParam(val);
             }

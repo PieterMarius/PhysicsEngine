@@ -59,6 +59,7 @@ namespace SharpPhysicsEngine
 
         public List<JacobianConstraint> BuildJoints(
             CollisionPointStructure collisionPointStr,
+            double timeStep,
             IShape objectA,
             IShape objectB)
         {
@@ -66,15 +67,15 @@ namespace SharpPhysicsEngine
 
             if (objectA is ISoftShape && !(objectB is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, 0));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, 0, timeStep));
             }
             else if (objectB is ISoftShape && !(objectA is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectB, objectA, 1));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectB, objectA, 1, timeStep));
             }
             else
             {
-                contactConstraints.AddRange(BuildRigidBodyCollisionConstraints(collisionPointStr, objectA, objectB));
+                contactConstraints.AddRange(BuildRigidBodyCollisionConstraints(collisionPointStr, objectA, objectB, timeStep));
             }
 
             return contactConstraints;
@@ -88,7 +89,8 @@ namespace SharpPhysicsEngine
             CollisionPointStructure collisionPointStr,
             ISoftShape softShape,
             IShape rigidShape,
-            int collisionIndex)
+            int collisionIndex,
+            double timeStep)
 		{
 			List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
 
@@ -101,6 +103,8 @@ namespace SharpPhysicsEngine
             double baumgarteStabilizationValue =
                     (iSoftShape.RestoreCoeff +
                      rigidShape.RestoreCoeff) * 0.5;
+
+            baumgarteStabilizationValue = baumgarteStabilizationValue / timeStep;
 
             double normalDirection = (collisionIndex == 1) ? -1.0 : 1.0;
             
@@ -201,9 +205,11 @@ namespace SharpPhysicsEngine
 
 		private List<JacobianConstraint> BuildRigidBodyCollisionConstraints(
 			CollisionPointStructure collisionPointStr,
-			IShape objectA,
-			IShape objectB)
-		{
+            IShape objectA,
+			IShape objectB,
+            double timeStep)
+
+        {
 			List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
 
 			double restitutionCoefficient =
@@ -213,6 +219,8 @@ namespace SharpPhysicsEngine
 			double baumgarteStabilizationValue =
 				(objectA.RestoreCoeff +
 				 objectB.RestoreCoeff) * 0.5;
+
+            baumgarteStabilizationValue = baumgarteStabilizationValue / timeStep;
 
 			for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
 			{

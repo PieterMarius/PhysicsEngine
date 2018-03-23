@@ -59,10 +59,10 @@ namespace SharpPhysicsEngine
             Vector3 startAnchorPosition,
             Vector3 hingeAxis,
             Vector3 rotationAxis,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficientHingeAxis,
             double springCoefficientRotationAxis)
-            : base(shapeA, shapeB, restoreCoefficient, 0.0)
+            : base(shapeA, shapeB, errorReductionParam, 0.0)
         {
             SpringCoefficientHingeAxis = springCoefficientHingeAxis;
             SpringCoefficientRotationAxis = springCoefficientRotationAxis;

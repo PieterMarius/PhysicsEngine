@@ -232,7 +232,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetRestitutionCoeff(restitutionCoeff);
         }
 
-        public void SetDampingCoeff(double value)
+        public void SetErrorReductionParam(double value)
         {
             compoundShape.SetRestoreCoeff(value);
         }

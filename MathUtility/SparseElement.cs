@@ -56,13 +56,25 @@ namespace SharpEngineMathUtility
 
         #region Public Methods
 
-        public static double[] Multiply(SparseElement[] matrix, double[] vector)
+        public static double[] Multiply(
+            SparseElement[] matrix, 
+            double[] vector,
+            int? maxThread = null)
         {
             double[] result = new double[matrix.Length];
-            
+
             var rangePartitioner = Partitioner.Create(0, matrix.Length);
+            ParallelOptions options = new ParallelOptions();
+
+            if (maxThread.HasValue)
+            {
+                options = new ParallelOptions() { MaxDegreeOfParallelism = maxThread.Value };
+                rangePartitioner = Partitioner.Create(0, matrix.Length, Convert.ToInt32(matrix.Length / maxThread.Value) + 1);
+            }
+            
             Parallel.ForEach(
                 rangePartitioner,
+                options,
                 (range, loopState) =>
                 {
                     for (int i = range.Item1; i < range.Item2; i++)

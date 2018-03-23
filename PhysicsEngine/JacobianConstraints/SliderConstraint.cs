@@ -59,9 +59,9 @@ namespace SharpPhysicsEngine
             IShape shapeB,
             Vector3 startAnchorPosition,
             Vector3 sliderAxis,
-            double restoreCoefficient,
+            double errorReductionParam,
             double springCoefficient)
-            : base(shapeA, shapeB, restoreCoefficient, springCoefficient)
+            : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             StartAnchorPoint = startAnchorPosition;
             SliderAxis = -1.0 * sliderAxis.Normalize();

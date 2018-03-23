@@ -51,7 +51,7 @@ namespace SharpPhysicsEngine
 		void AddTorque(double torqueAxis1, double torqueAxis2);
 		void SetErrorReductionParam(double restoreCoefficient);
         void SetSpringCoefficient(double springCoefficient);
-        double GetDampingCoefficient();
+        double GetErrorReductionParam();
         double GetSpringCoefficient();
         List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null);
 

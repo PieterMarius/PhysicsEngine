@@ -340,6 +340,8 @@ namespace SharpPhysicsEngine
 
 		public List<CollisionPointStructure> GetCollisionPointStrucureList()
 		{
+            CollisionDetection();
+
 			if (collisionPoints == null)
 				return new List<CollisionPointStructure>();
 			
@@ -535,30 +537,27 @@ namespace SharpPhysicsEngine
 			#region Contact and Joint elaboration
 
 			solverError = 0.0;
-            			
+                        
 			if (Partitions != null) 
 			{
-				for (int i = 0; i < Partitions.Count;i++)
+                for (int i = 0; i < Partitions.Count;i++)
 				{
                     JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
-																            Partitions[i].PartitionedCollisionPoints.ToArray(),
-																            Partitions[i].PartitionedJoints,
-																            Shapes,
-																            EngineParameters);
+																        Partitions[i].PartitionedCollisionPoints.ToArray(),
+																        Partitions[i].PartitionedJoints,
+																        Shapes,
+																        EngineParameters);
 
 					if (jacobianConstraints.Length > 0)
 					{
                         double[] overallSolution = new double[jacobianConstraints.Length];
                         	                      
-                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(
-                                                                jacobianConstraints);
+                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(jacobianConstraints);
                                                                         
-                        if (overallLCP != null &&
-						   EngineParameters.OverallConstraintsIterations > 0)
+                        if (overallLCP != null)
 						    overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
                                                        
                         integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
-
                     }
 				}
 			}
@@ -616,74 +615,11 @@ namespace SharpPhysicsEngine
 
 		private void PartitionEngineExecute()
 		{
-			Partitions = null;
-															
-			List<SpatialPartition> spatialPartitions = contactPartitioningEngine.CalculateSpatialPartitioning(
-													collisionPoints,
-													Joints,
-													Shapes);
-
-			if (spatialPartitions != null)
-			{
-				Partitions = new List<Partition>();
-
-				for (int i = 0; i < spatialPartitions.Count; i++)
-				{
-					Partition partitionItem = new Partition();
-                    HashSet<int> objectIndex = new HashSet<int>();
-										
-					for (int j = 0; j < spatialPartitions[i].ObjectList.Count; j++)
-					{
-						if (spatialPartitions[i].ObjectList[j].Type == ContactGroupType.Collision)
-						{
-							CollisionPointStructure cpStruct = ConstraintHelper.Find(
-								collisionPoints,
-								spatialPartitions[i].ObjectList[j]);
-
-							if (cpStruct != null)
-								partitionItem.PartitionedCollisionPoints.Add(cpStruct);
-
-                            objectIndex.Add(cpStruct.ObjectIndexA);
-                            objectIndex.Add(cpStruct.ObjectIndexB);
-
-                        }
-						else
-						{
-							IConstraint smJoint = Joints.Find(item =>
-												  item.GetObjectIndexA() == spatialPartitions[i].ObjectList[j].IndexA &&
-												  item.GetObjectIndexB() == spatialPartitions[i].ObjectList[j].IndexB &&
-												  item.GetKeyIndex() == spatialPartitions[i].ObjectList[j].KeyIndex);
-
-							partitionItem.PartitionedJoints.Add(smJoint);
-
-                            objectIndex.Add(smJoint.GetObjectIndexA());
-                            objectIndex.Add(smJoint.GetObjectIndexB());
-
-                        }
-					}
-
-                    ////Add Soft Body Constraints
-                    foreach (var item in objectIndex)
-                    {
-                        if (Shapes[item] is ISoftShape softShape)
-                            partitionItem.PartitionedJoints.AddRange(softShape.SoftConstraint);
-                    }
-                    
-					Partitions.Add(partitionItem);
-				}
-			}
-			else if(SoftShapes.Length > 0)
-			{
-				Partitions = new List<Partition>();
-
-				foreach (var softShape in SoftShapes)
-				{
-					Partition partitionItem = new Partition();
-
-					partitionItem.PartitionedJoints.AddRange(softShape.SoftConstraint);
-					Partitions.Add(partitionItem);
-				}
-			}
+			Partitions = contactPartitioningEngine.GetPartitions(
+													        collisionPoints,
+													        Joints,
+													        Shapes,
+                                                            this.SoftShapes);
 		}
 
 		#endregion
@@ -714,7 +650,7 @@ namespace SharpPhysicsEngine
                             IShape objectA = simulationObjs.First(x => x.ID == item.ObjectIndexA);
                             IShape objectB = simulationObjs.First(x => x.ID == item.ObjectIndexB);
 
-                            List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, objectA, objectB);
+                            List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, TimeStep, objectA, objectB);
 
                             lock (sync)
                             {
