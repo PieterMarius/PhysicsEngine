@@ -65,6 +65,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softConstraints,
+            double mass,
             double decompositionParam,
             double restoreCoeff,
             double springCoeff)
@@ -72,6 +73,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ObjectType = ObjectType.SoftBody;
             Triangle = triangleIndex;
             InertiaTensor = Matrix3x3.IdentityMatrix();
+            Mass = mass;
             AddSoftShapePoint(shapePoint);
             BuildSoftConstraints(softConstraints, restoreCoeff, springCoeff);
             SleepingFrameCount = 0;
@@ -82,15 +84,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
+            double mass,
             double decompositionParam,
             double restoreCoeff,
             double springCoeff)
         {
-            Mass = 1.0;
             Triangle = triangleIndex;
 
             DecompositionParameter = decompositionParam;
-                                    
+            Mass = mass;
             InertiaTensor = Matrix3x3.IdentityMatrix();
 
             Position = startPosition;
@@ -101,8 +103,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SleepingFrameCount = 0;
 
             SetAABB();
-
-            //ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
 
         #endregion

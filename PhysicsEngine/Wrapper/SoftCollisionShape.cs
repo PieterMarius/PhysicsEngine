@@ -45,23 +45,25 @@ namespace SharpPhysicsEngine.Wrapper
             TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
+            double mass,
             double decompositionParam,
             double dampingCoefficient,
             double springCoefficient)
         {
-            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, decompositionParam, dampingCoefficient, springCoefficient);
+            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, mass, decompositionParam, dampingCoefficient, springCoefficient);
         }
 
         public SoftCollisionShape(
             TriangleIndexes[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softJoint,
+            double mass,
             double decompositionParam,
             double restoreCoefficient,
             double springCoefficient)
         {
             
-            softShape = new SoftShape(triangleIndex, shapePoint, softJoint, decompositionParam, restoreCoefficient, springCoefficient);
+            softShape = new SoftShape(triangleIndex, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
         }
 
         #endregion

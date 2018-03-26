@@ -65,13 +65,15 @@ namespace SharpPhysicsEngine
         {
             var contactConstraints = new List<JacobianConstraint>();
 
-            if (objectA is ISoftShape && !(objectB is SoftShape))
+            if (objectA is ISoftShape && 
+                !(objectB is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, 0, timeStep));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, timeStep));
             }
-            else if (objectB is ISoftShape && !(objectA is SoftShape))
+            else if (objectB is ISoftShape && 
+                    !(objectA is SoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectB, objectA, 1, timeStep));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, objectA, (ISoftShape)objectB, timeStep));
             }
             else
             {
@@ -80,57 +82,67 @@ namespace SharpPhysicsEngine
 
             return contactConstraints;
         }
+
+        #endregion
+
+        #region Private Methods
         
-		#endregion
-
-		#region Private Methods
-
-		private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
+        private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
             CollisionPointStructure collisionPointStr,
-            ISoftShape softShape,
-            IShape rigidShape,
-            int collisionIndex,
+            ISoftShape objectA,
+            IShape objectB,
             double timeStep)
-		{
-			List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
+        {
+            List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
 
-            IShape iSoftShape = (IShape)softShape;
+            IShape iSoftShape = (IShape)objectA;
 
-            double restitutionCoefficient =
-                    (iSoftShape.RestitutionCoeff +
-                     rigidShape.RestitutionCoeff) * 0.5;
+            double restitutionCoeff = GetRestitutionCoeff(iSoftShape, objectB);
 
-            double baumgarteStabilizationValue =
-                    (iSoftShape.RestoreCoeff +
-                     rigidShape.RestoreCoeff) * 0.5;
-
-            baumgarteStabilizationValue = baumgarteStabilizationValue / timeStep;
-
-            double normalDirection = (collisionIndex == 1) ? -1.0 : 1.0;
-            
+            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectB, timeStep);
+                                    
             for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
             {
-                int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).LinkedID.Distinct().ToArray();
-                
+                int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.LinkedID.Distinct().ToArray();
+
+                //double distanceSum = GetSoftBodyPointDistanceSum(
+                //    collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex,
+                //    softShape,
+                //    collisionIndex,
+                //    h,
+                //    linkedID);
+
                 for (int i = 0; i < linkedID.Length; i++)
                 {
-                    SoftShapePoint softShapePoint = softShape.ShapePoints.First(x => x.ID == linkedID[i]);
+                    SoftShapePoint softShapePoint = objectA.ShapePoints.FirstOrDefault(x => x.ID == linkedID[i]);
 
-                    Vector3 r_rigidShape = softShapePoint.Position - rigidShape.Position;
+                    if (softShapePoint == null)
+                        continue;
+
+                    double distanceWeigth = 1.0;
+
+                    //if (distanceSum > 0.0)
+                    //    distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex) / distanceSum;
+                    //if (distanceWeigth < 1E-10)
+                    //    continue;
+
+                    Vector3 ra = Vector3.Zero();
+                    Vector3 rb = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex - objectB.Position;
 
                     ////Component
-                    Vector3 linearComponentSoftShape = (normalDirection * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
-                    Vector3 linearComponentRigidShape = -1.0 * linearComponentSoftShape;
+                    Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
+                    Vector3 linearComponentB = -1.0 * linearComponentA;
 
-                    Vector3 angularComponentRigidShape = -1.0 * r_rigidShape.Cross(linearComponentSoftShape);
-                    
+                    Vector3 angularComponentA = Vector3.Zero();
+                    Vector3 angularComponentB = -1.0 * rb.Cross(linearComponentA);
+
                     ////Velocity
-                    Vector3 softShapeVelocity = softShapePoint.LinearVelocity;
+                    Vector3 velocityA = softShapePoint.LinearVelocity;
 
-                    Vector3 rigidShapeVelocity = rigidShape.LinearVelocity +
-                                                 rigidShape.AngularVelocity.Cross(r_rigidShape);
+                    Vector3 velocityB = objectB.LinearVelocity +
+                                        objectB.AngularVelocity.Cross(rb);
 
-                    Vector3 relativeVelocity = softShapeVelocity - rigidShapeVelocity;
+                    Vector3 relativeVelocity = velocityB - velocityA;
 
 
                     if (relativeVelocity.Length() < 1E-12 &&
@@ -140,9 +152,9 @@ namespace SharpPhysicsEngine
 
                     #region Normal direction contact
 
-                    double linearComponent = linearComponentSoftShape.Dot(relativeVelocity);
+                    double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-                    double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
 
                     double correctionParameter = 0.0;
 
@@ -150,18 +162,19 @@ namespace SharpPhysicsEngine
                     {
                         //Limit the Baum stabilization jitter effect 
                         correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-                                                baumgarteStabilizationValue - uCollision, 0.0);
+                                                baumgarteStabValue - uCollision, 0.0);
                     }
 
-                    double correctedBounce = uCollision;
+                    double correctedBounce = uCollision * distanceWeigth;
+                    correctionParameter = correctionParameter * distanceWeigth;
 
                     JacobianConstraint normalContact = JacobianCommon.GetDOF(
-                        linearComponentSoftShape,
-                        linearComponentRigidShape,
-                        Vector3.Zero(),
-                        angularComponentRigidShape,
-                        (collisionIndex == 0) ? (IShapeCommon)softShapePoint : rigidShape,
-                        (collisionIndex == 0) ? rigidShape: (IShapeCommon)softShapePoint,
+                        linearComponentA,
+                        linearComponentB,
+                        angularComponentA,
+                        angularComponentB,
+                        softShapePoint,
+                        objectB,
                         correctedBounce,
                         correctionParameter,
                         simulationParameters.NormalCFM,
@@ -177,13 +190,13 @@ namespace SharpPhysicsEngine
 
                     JacobianConstraint[] frictionContact =
                         AddFrictionConstraints(
-                            (collisionIndex == 0) ? iSoftShape : rigidShape,
-                            (collisionIndex == 0) ? rigidShape : iSoftShape,
+                            iSoftShape,
+                            objectB,
                             simulationParameters,
-                            linearComponentSoftShape,
+                            linearComponentA,
                             relativeVelocity,
-                            (collisionIndex == 0) ? Vector3.Zero() : r_rigidShape,
-                            (collisionIndex == 0) ? r_rigidShape : Vector3.Zero(),
+                            ra,
+                            rb,
                             null,//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
                             softShapePoint);
 
@@ -199,11 +212,184 @@ namespace SharpPhysicsEngine
                     }
                 }
             }
-            
-            return contactConstraints;
-		}
 
-		private List<JacobianConstraint> BuildRigidBodyCollisionConstraints(
+            return contactConstraints;
+        }
+
+        private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
+            CollisionPointStructure collisionPointStr,
+            IShape objectA,
+            ISoftShape objectB,
+            double timeStep)
+        {
+            List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
+
+            IShape iSoftShape = (IShape)objectB;
+
+            double restitutionCoeff = GetRestitutionCoeff(iSoftShape, objectA);
+
+            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectA, timeStep);
+            
+            for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
+            {
+                int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.LinkedID.Distinct().ToArray();
+
+                //double distanceSum = GetSoftBodyPointDistanceSum(
+                //    collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex,
+                //    softShape,
+                //    collisionIndex,
+                //    h,
+                //    linkedID);
+
+                for (int i = 0; i < linkedID.Length; i++)
+                {
+                    SoftShapePoint softShapePoint = objectB.ShapePoints.FirstOrDefault(x => x.ID == linkedID[i]);
+
+                    if (softShapePoint == null)
+                        continue;
+
+                    double distanceWeigth = 1.0;
+
+                    //if (distanceSum > 0.0)
+                    //    distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex) / distanceSum;
+                    //if (distanceWeigth < 1E-10)
+                    //    continue;
+
+                    Vector3 ra = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex - objectA.Position;
+                    Vector3 rb = Vector3.Zero();
+
+                    Vector3 r_rigidShape = objectA.Position - softShapePoint.Position;
+
+                    ////Component
+                    Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
+                    Vector3 linearComponentB = -1.0 * linearComponentA;
+
+                    Vector3 angularComponentA = r_rigidShape.Cross(linearComponentA);
+                    Vector3 angularComponentB = Vector3.Zero();
+
+                    ////Velocity
+                    
+                    Vector3 velocityA = objectA.LinearVelocity +
+                                        objectA.AngularVelocity.Cross(r_rigidShape);
+
+                    Vector3 velocityB = softShapePoint.LinearVelocity;
+
+                    Vector3 relativeVelocity = velocityB - velocityA;
+                    
+                    if (relativeVelocity.Length() < 1E-12 &&
+                        collisionPointStr.CollisionPointBase[h].Intersection &&
+                        collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
+                        continue;
+
+                    #region Normal direction contact
+
+                    double linearComponent = linearComponentA.Dot(relativeVelocity);
+
+                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+
+                    double correctionParameter = 0.0;
+
+                    if (collisionPointStr.CollisionPointBase[h].Intersection)
+                    {
+                        //Limit the Baum stabilization jitter effect 
+                        correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+                                                baumgarteStabValue - uCollision, 0.0);
+                    }
+
+                    double correctedBounce = uCollision * distanceWeigth;
+                    correctionParameter = correctionParameter * distanceWeigth;
+
+                    JacobianConstraint normalContact = JacobianCommon.GetDOF(
+                        linearComponentA,
+                        linearComponentB,
+                        angularComponentA,
+                        angularComponentB,
+                        objectA,
+                        softShapePoint,
+                        correctedBounce,
+                        correctionParameter,
+                        simulationParameters.NormalCFM,
+                        0.0,
+                        ConstraintType.Collision,
+                        null,
+                        null//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue[0]
+                        );
+
+                    #endregion
+
+                    #region Friction Contact
+
+                    JacobianConstraint[] frictionContact =
+                        AddFrictionConstraints(
+                            objectA,
+                            iSoftShape,
+                            simulationParameters,
+                            linearComponentA,
+                            relativeVelocity,
+                            ra,
+                            rb,
+                            null,//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
+                            softShapePoint);
+
+                    #endregion
+
+                    contactConstraints.Add(normalContact);
+
+                    int normalIndex = contactConstraints.Count - 1;
+                    foreach (JacobianConstraint fjc in frictionContact)
+                    {
+                        fjc.SetContactReference(normalIndex);
+                        contactConstraints.Add(fjc);
+                    }
+                }
+            }
+
+            return contactConstraints;
+        }
+         
+        private static double GetSoftBodyPointDistanceSum(
+            Vector3 collisionPoint,
+            ISoftShape softShape, 
+            int collisionIndex, 
+            int h, 
+            int?[] linkedID)
+        {
+            double distanceSum = 0.0;
+
+            for (int i = 0; i < linkedID.Length; i++)
+            {
+                SoftShapePoint softShapePoint = softShape.ShapePoints.FirstOrDefault(x => x.ID == linkedID[i]);
+
+                if (softShapePoint == null)
+                    continue;
+
+                distanceSum += Vector3.Length(softShapePoint.Position - collisionPoint);
+            }
+
+            return distanceSum;
+        }
+
+        private double GetRestitutionCoeff(
+            IShape softShape,
+            IShape shape)
+        {
+            return (softShape.RestitutionCoeff +
+                   shape.RestitutionCoeff) * 0.5;
+        }
+
+        private double GetBaumgarteStabilizationValue(
+            IShape softShape,
+            IShape shape,
+            double timeStep)
+        {
+            double baumgarteStabilizationValue =
+                    (softShape.RestoreCoeff +
+                     shape.RestoreCoeff) * 0.5;
+
+            return baumgarteStabilizationValue / timeStep;
+        }
+
+        private List<JacobianConstraint> BuildRigidBodyCollisionConstraints(
 			CollisionPointStructure collisionPointStr,
             IShape objectA,
 			IShape objectB,

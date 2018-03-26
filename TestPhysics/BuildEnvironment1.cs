@@ -375,6 +375,7 @@ namespace TestPhysics
 				prop.triangleIndex, 
 				prop.vertexPoint, 
 				position,
+                1.0,
                 0.2,
                 2.0,
                 60.0);

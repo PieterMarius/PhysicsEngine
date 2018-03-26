@@ -287,7 +287,7 @@ namespace TestPhysics
             objects3.SetDynamicFrictionCoeff(0.3);
             objects3.SetRestitutionCoeff(1.0);
             objects3.SetErrorReductionParam(1.0);
-
+            
             physicsEngine.AddShape(objects3);
 
             pause = true;
@@ -310,9 +310,10 @@ namespace TestPhysics
                 prop.triangleIndex,
                 prop.vertexPoint,
                 position,
+                4.0,
                 0.2,
                 0.5,
-                20.0);
+                10.0);
         }
 
 
