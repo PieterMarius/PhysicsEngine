@@ -267,7 +267,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolverType(SolverType.ProjectedConjugateGradient);
+            physicsEngine.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
             physicsEngine.SolverParameters.SetSolverMaxIteration(50);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
@@ -312,8 +312,10 @@ namespace TestPhysics
                 position,
                 4.0,
                 0.2,
-                0.5,
-                10.0);
+                0.9,
+                0.01,
+                0.1,
+                0.1);
         }
 
 

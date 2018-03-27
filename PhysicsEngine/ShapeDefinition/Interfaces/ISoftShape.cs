@@ -36,8 +36,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
         AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
         List<SoftConstraint> SoftConstraint { get; }
-        //IShapeConvexDecomposition ConvexDecomposition { get; }
         double DecompositionParameter { get; }
+        double AngularErrorReductionParam { get; }
+        double AngularSpringCoeff { get; }
+
         
         void SetPointsMass(double mass);
         void SetShapePoint(SoftShapePoint[] shapePoint);

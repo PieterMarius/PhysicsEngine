@@ -38,8 +38,31 @@ namespace SharpPhysicsEngine.Wrapper
         SoftShape softShape;
 
         #endregion
-        
+
         #region Constructor
+
+        public SoftCollisionShape(
+            TriangleIndexes[] triangleIndex,
+            Vector3[] shapePoint,
+            Vector3 startPosition,
+            double mass,
+            double decompositionParam,
+            double dampingCoefficient,
+            double springCoeff,
+            double angularErrorReductionParam,
+            double angularSpringCoeff)
+        {
+            softShape = new SoftShape(
+                triangleIndex,
+                shapePoint,
+                startPosition,
+                mass,
+                decompositionParam,
+                dampingCoefficient,
+                springCoeff,
+                angularErrorReductionParam,
+                angularSpringCoeff);
+        }
 
         public SoftCollisionShape(
             TriangleIndexes[] triangleIndex,
@@ -50,7 +73,14 @@ namespace SharpPhysicsEngine.Wrapper
             double dampingCoefficient,
             double springCoefficient)
         {
-            softShape = new SoftShape(triangleIndex, shapePoint, startPosition, mass, decompositionParam, dampingCoefficient, springCoefficient);
+            softShape = new SoftShape(
+                triangleIndex, 
+                shapePoint, 
+                startPosition, 
+                mass, 
+                decompositionParam, 
+                dampingCoefficient, 
+                springCoefficient);
         }
 
         public SoftCollisionShape(
@@ -62,7 +92,6 @@ namespace SharpPhysicsEngine.Wrapper
             double restoreCoefficient,
             double springCoefficient)
         {
-            
             softShape = new SoftShape(triangleIndex, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
         }
 

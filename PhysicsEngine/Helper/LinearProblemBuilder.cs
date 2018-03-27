@@ -82,7 +82,10 @@ namespace SharpPhysicsEngine.Helper
                 var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
                 var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
 
-                var rangePartitioner = Partitioner.Create(0, dictionaryArray.Length, Convert.ToInt32(dictionaryArray.Length / EngineParameters.MaxThreadNumber) + 1);
+                var rangePartitioner = Partitioner.Create(
+                    0, 
+                    dictionaryArray.Length, 
+                    Convert.ToInt32(dictionaryArray.Length / EngineParameters.MaxThreadNumber) + 1);
 
                 Parallel.ForEach(
                     rangePartitioner,

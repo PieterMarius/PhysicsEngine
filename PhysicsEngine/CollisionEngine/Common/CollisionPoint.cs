@@ -55,20 +55,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         #endregion
 
         #region Public Methods
-
-        public VertexProperties GetCollisionVertex(int index)
-        {
-            switch (index)
-            {
-                case 0:
-                    return CollisionPointA;
-                case 1:
-                    return CollisionPointB;
-                default:
-                    throw new ArgumentException("Incorrect collision point");
-            }
-        }
-               
+                               
         #endregion Public Methods
 
     }

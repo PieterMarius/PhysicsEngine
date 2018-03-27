@@ -55,14 +55,14 @@
     <Compile Include="HashSetStruct.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="SIMDMathUtility.cs" />
-    <Compile Include="Vector2.cs" />
-    <Compile Include="Vector3.cs" />
+    <Compile Include="BaseStruct\Vector2.cs" />
+    <Compile Include="BaseStruct\Vector3.cs" />
     <Compile Include="ConstValues.cs" />
-    <Compile Include="Matrix3x3.cs" />
-    <Compile Include="Quaternion.cs" />
+    <Compile Include="BaseStruct\Matrix3x3.cs" />
+    <Compile Include="BaseStruct\Quaternion.cs" />
     <Compile Include="GeometryUtilities.cs" />
-    <Compile Include="Vertices.cs" />
-    <Compile Include="SparseElement.cs" />
+    <Compile Include="BaseStruct\Vertices.cs" />
+    <Compile Include="BaseStruct\SparseElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

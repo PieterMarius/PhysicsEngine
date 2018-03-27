@@ -51,6 +51,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public double DecompositionParameter { get; private set; }
 
+        public double AngularErrorReductionParam { get; private set; }
+
+        public double AngularSpringCoeff { get; private set; }
+
         #endregion
 
         #region Private Const
@@ -68,17 +72,29 @@ namespace SharpPhysicsEngine.ShapeDefinition
             double mass,
             double decompositionParam,
             double restoreCoeff,
-            double springCoeff)
+            double springCoeff,
+            double angularErrorReductionParam,
+            double angularSpringCoeff)
         {
             ObjectType = ObjectType.SoftBody;
             Triangle = triangleIndex;
             InertiaTensor = Matrix3x3.IdentityMatrix();
             Mass = mass;
             AddSoftShapePoint(shapePoint);
-            BuildSoftConstraints(softConstraints, restoreCoeff, springCoeff);
+            BuildSoftConstraints(softConstraints, restoreCoeff, springCoeff, angularErrorReductionParam, angularSpringCoeff);
             SleepingFrameCount = 0;
-            //ConvexDecomposition = new ShapeConvexDecomposition(AABBox, Triangle);
         }
+
+        public SoftShape(
+            TriangleIndexes[] triangleIndex,
+            Vector3[] shapePoint,
+            ConstraintIndex[] softConstraints,
+            double mass,
+            double decompositionParam,
+            double restoreCoeff,
+            double springCoeff) :
+            this(triangleIndex, shapePoint, softConstraints, mass, decompositionParam, restoreCoeff, springCoeff, 0.0, 0.0)
+        { }
 
         public SoftShape(
             TriangleIndexes[] triangleIndex,
@@ -86,8 +102,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Vector3 startPosition,
             double mass,
             double decompositionParam,
-            double restoreCoeff,
-            double springCoeff)
+            double errorReductionParam,
+            double springCoeff,
+            double angularErrorReductionParam,
+            double angularSpringCoeff)
         {
             Triangle = triangleIndex;
 
@@ -98,12 +116,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Position = startPosition;
 
             AddSoftShapePoint(shapePoint);
-            BuildSoftConstraints(restoreCoeff, springCoeff);
+            BuildSoftConstraints(errorReductionParam, springCoeff, angularErrorReductionParam, angularSpringCoeff);
                         
             SleepingFrameCount = 0;
 
             SetAABB();
         }
+
+        public SoftShape(
+            TriangleIndexes[] triangleIndex,
+            Vector3[] shapePoint,
+            Vector3 startPosition,
+            double mass,
+            double decompositionParam,
+            double errorReductionParam,
+            double springCoeff)
+            : this(triangleIndex, shapePoint, startPosition, mass, decompositionParam, errorReductionParam, springCoeff, 0.0, 0.0)
+        { }
 
         #endregion
 
@@ -251,8 +280,36 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         private void BuildSoftConstraints(
+            ConstraintIndex[] constraintIndex,
             double restoreCoeff,
-            double springCoeff)
+            double springCoeff,
+            double angularErrorReductionParam,
+            double angularSpringCoeff)
+        {
+            SoftConstraint = new List<SoftConstraint>();
+            HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
+
+            for (int i = 0; i < constraintIndex.Length; i++)
+            {
+                if (indexHashSet.Add(constraintIndex[i]))
+                {
+                    SoftConstraint.Add(new SoftConstraint(
+                        ShapePoints[constraintIndex[i].IndexA],
+                        ShapePoints[constraintIndex[i].IndexB],
+                        this,
+                        restoreCoeff,
+                        springCoeff,
+                        angularErrorReductionParam,
+                        angularSpringCoeff));
+                }
+            }
+        }
+
+        private void BuildSoftConstraints(
+            double restoreCoeff,
+            double springCoeff,
+            double angularErrReductionParam,
+            double angularSpringCoeff)
         {
             SoftConstraint = new List<SoftConstraint>();
             HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
@@ -266,7 +323,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.b],
                         this,
                         restoreCoeff,
-                        springCoeff));
+                        springCoeff,
+                        angularErrReductionParam,
+                        angularSpringCoeff));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.c)) &&
                     triangle.value.a != triangle.value.c)
@@ -275,7 +334,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.c],
                         this,
                         restoreCoeff,
-                        springCoeff));
+                        springCoeff,
+                        angularErrReductionParam,
+                        angularSpringCoeff));
 
                 if (indexHashSet.Add(new ConstraintIndex(triangle.value.b, triangle.value.c)) &&
                     triangle.value.b != triangle.value.c)
@@ -284,7 +345,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         ShapePoints[triangle.value.c],
                         this,
                         restoreCoeff,
-                        springCoeff));
+                        springCoeff,
+                        angularErrReductionParam,
+                        angularSpringCoeff));
 
                 //Add triangle index to shape points
                 ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.i);

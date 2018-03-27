@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
@@ -45,18 +44,21 @@ namespace SharpPhysicsEngine
         readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
         readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
 
+        readonly ISoftShape Shape;
         SoftShapePoint PointA;
         SoftShapePoint PointB;
         int KeyIndex;
-
-        readonly ISoftShape Shape;
-        double SpringCoefficient;
+        bool ActivateAngularConstraint;
+        
+        double SpringCoeff;
+        double AngularSpringCoeff;
         readonly Vector3 StartAnchorPoint;
 
         Vector3 AnchorPoint;
         Vector3 StartErrorAxis1;
         Vector3 StartErrorAxis2;
         double ErrorReductionParam;
+        double AngularErrorReductionParam;
         Quaternion RelativeOrientation;
 
         #endregion
@@ -68,15 +70,24 @@ namespace SharpPhysicsEngine
             SoftShapePoint pointB,
             ISoftShape shape,
             double errorReductionParam,
-            double springCoefficient)
+            double springCoefficient,
+            double angularErrorReductionParam,
+            double angularSpringCoeff)
         {
             PointA = pointA;
             PointB = pointB;
             KeyIndex = GetHashCode();
-            SpringCoefficient = springCoefficient;
+            SpringCoeff = springCoefficient;
+            AngularSpringCoeff = angularSpringCoeff;
             ErrorReductionParam = errorReductionParam;
+            AngularErrorReductionParam = angularErrorReductionParam;
             Shape = shape;
+            ActivateAngularConstraint = false;
 
+            if (angularErrorReductionParam != 0.0 && 
+                angularSpringCoeff != 0.0)
+                ActivateAngularConstraint = true;
+            
             StartAnchorPoint = (PointB.StartPosition + PointA.StartPosition) * 0.5;
 
             Vector3 relativePos = PointA.RotationMatrix * (StartAnchorPoint - PointA.StartPosition);
@@ -92,6 +103,15 @@ namespace SharpPhysicsEngine
             RelativeOrientation = pointB.RotationStatus.Inverse() *
                                   pointA.RotationStatus;
         }
+
+        public SoftConstraint(
+            SoftShapePoint pointA,
+            SoftShapePoint pointB,
+            ISoftShape shape,
+            double errorReductionParam,
+            double springCoefficient)
+            : this(pointA, pointB, shape, errorReductionParam, springCoefficient, 0.0, 0.0)
+        { }
 
         #endregion
 
@@ -139,7 +159,7 @@ namespace SharpPhysicsEngine
 
             double freq = 1.0 / timeStep;
             double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            double springCoefficient = SpringCoeff * freq;
             
             ConstraintType constraintType = ConstraintType.SoftJoint;
 
@@ -194,50 +214,56 @@ namespace SharpPhysicsEngine
                 0.0,
                 constraintType));
 
-            //DOF 4
+            if (ActivateAngularConstraint)
+            {
+                double angErrorReduction = AngularErrorReductionParam * freq;
+                double angSpringCoefficient = AngularSpringCoeff * freq;
 
-            constraintLimit = errorReduction * angularError.x;
+                //DOF 4
 
-            softConstraints.Add(JacobianCommon.GetDOF(
-                xVecNeg,
-                xVec,
-                PointA,
-                PointB,
-                0.0,
-                constraintLimit,
-                springCoefficient,
-                0.0,
-                constraintType));
+                constraintLimit = angErrorReduction * angularError.x;
 
-            //DOF 5
+                softConstraints.Add(JacobianCommon.GetDOF(
+                    xVecNeg,
+                    xVec,
+                    PointA,
+                    PointB,
+                    0.0,
+                    constraintLimit,
+                    angSpringCoefficient,
+                    0.0,
+                    constraintType));
 
-            constraintLimit = errorReduction * angularError.y;
+                //DOF 5
 
-            softConstraints.Add(JacobianCommon.GetDOF(
-                yVecNeg,
-                yVec,
-                PointA,
-                PointB,
-                0.0,
-                constraintLimit,
-                springCoefficient,
-                0.0,
-                constraintType));
+                constraintLimit = angErrorReduction * angularError.y;
 
-            //DOF 6
+                softConstraints.Add(JacobianCommon.GetDOF(
+                    yVecNeg,
+                    yVec,
+                    PointA,
+                    PointB,
+                    0.0,
+                    constraintLimit,
+                    angSpringCoefficient,
+                    0.0,
+                    constraintType));
 
-            constraintLimit = errorReduction * angularError.z;
+                //DOF 6
 
-            softConstraints.Add(JacobianCommon.GetDOF(
-                zVecNeg,
-                zVec,
-                PointA,
-                PointB,
-                0.0,
-                constraintLimit,
-                springCoefficient,
-                0.0,
-                constraintType));
+                constraintLimit = angErrorReduction * angularError.z;
+
+                softConstraints.Add(JacobianCommon.GetDOF(
+                    zVecNeg,
+                    zVec,
+                    PointA,
+                    PointB,
+                    0.0,
+                    constraintLimit,
+                    angSpringCoefficient,
+                    0.0,
+                    constraintType));
+            }
 
             #endregion
 
@@ -287,7 +313,7 @@ namespace SharpPhysicsEngine
 
         public void SetSpringCoefficient(double springCoefficient)
         {
-            SpringCoefficient = springCoefficient;
+            SpringCoeff = springCoefficient;
         }
 
         public double GetErrorReductionParam()
@@ -297,7 +323,7 @@ namespace SharpPhysicsEngine
 
         public double GetSpringCoefficient()
         {
-            return SpringCoefficient;
+            return SpringCoeff;
         }
 
         #region NotSupportedMethods

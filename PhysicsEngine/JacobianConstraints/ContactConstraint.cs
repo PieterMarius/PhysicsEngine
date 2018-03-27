@@ -105,12 +105,10 @@ namespace SharpPhysicsEngine
             {
                 int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.LinkedID.Distinct().ToArray();
 
-                //double distanceSum = GetSoftBodyPointDistanceSum(
-                //    collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex,
-                //    softShape,
-                //    collisionIndex,
-                //    h,
-                //    linkedID);
+                double distanceSum = GetSoftBodyPointDistanceSum(
+                    collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex,
+                    objectA,
+                    linkedID);
 
                 for (int i = 0; i < linkedID.Length; i++)
                 {
@@ -121,10 +119,10 @@ namespace SharpPhysicsEngine
 
                     double distanceWeigth = 1.0;
 
-                    //if (distanceSum > 0.0)
-                    //    distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex) / distanceSum;
-                    //if (distanceWeigth < 1E-10)
-                    //    continue;
+                    if (distanceSum > 0.0)
+                        distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex) / distanceSum;
+                    if (distanceWeigth < 1E-10)
+                        continue;
 
                     Vector3 ra = Vector3.Zero();
                     Vector3 rb = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex - objectB.Position;
@@ -234,12 +232,10 @@ namespace SharpPhysicsEngine
             {
                 int?[] linkedID = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.LinkedID.Distinct().ToArray();
 
-                //double distanceSum = GetSoftBodyPointDistanceSum(
-                //    collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex,
-                //    softShape,
-                //    collisionIndex,
-                //    h,
-                //    linkedID);
+                double distanceSum = GetSoftBodyPointDistanceSum(
+                    collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex,
+                    objectB,
+                    linkedID);
 
                 for (int i = 0; i < linkedID.Length; i++)
                 {
@@ -250,27 +246,25 @@ namespace SharpPhysicsEngine
 
                     double distanceWeigth = 1.0;
 
-                    //if (distanceSum > 0.0)
-                    //    distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.GetCollisionVertex(collisionIndex).Vertex) / distanceSum;
-                    //if (distanceWeigth < 1E-10)
-                    //    continue;
+                    if (distanceSum > 0.0)
+                        distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex) / distanceSum;
+                    if (distanceWeigth < 1E-10)
+                        continue;
 
                     Vector3 ra = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex - objectA.Position;
                     Vector3 rb = Vector3.Zero();
-
-                    Vector3 r_rigidShape = objectA.Position - softShapePoint.Position;
-
+                    
                     ////Component
                     Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
                     Vector3 linearComponentB = -1.0 * linearComponentA;
 
-                    Vector3 angularComponentA = r_rigidShape.Cross(linearComponentA);
+                    Vector3 angularComponentA = ra.Cross(linearComponentA);
                     Vector3 angularComponentB = Vector3.Zero();
 
                     ////Velocity
                     
                     Vector3 velocityA = objectA.LinearVelocity +
-                                        objectA.AngularVelocity.Cross(r_rigidShape);
+                                        objectA.AngularVelocity.Cross(ra);
 
                     Vector3 velocityB = softShapePoint.LinearVelocity;
 
@@ -350,8 +344,6 @@ namespace SharpPhysicsEngine
         private static double GetSoftBodyPointDistanceSum(
             Vector3 collisionPoint,
             ISoftShape softShape, 
-            int collisionIndex, 
-            int h, 
             int?[] linkedID)
         {
             double distanceSum = 0.0;
