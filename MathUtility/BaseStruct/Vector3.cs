@@ -26,7 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace SharpEngineMathUtility
 {
@@ -37,12 +36,12 @@ namespace SharpEngineMathUtility
 		public readonly double x;
 		public readonly double y;
 		public readonly double z;
+        
+        #endregion
+        
+        #region Constructors
 
-		#endregion
-
-		#region Constructors
-
-		public Vector3 (
+        public Vector3 (
 			double x, 
 			double y, 
 			double z)
@@ -50,7 +49,7 @@ namespace SharpEngineMathUtility
 			this.x = x;
 			this.y = y;
 			this.z = z;
-		}
+        }
 
 		public Vector3(double[] vec)
 		{
@@ -59,7 +58,7 @@ namespace SharpEngineMathUtility
 				x = vec [0];
 				y = vec [1];
 				z = vec [2];
-			} 
+            } 
 			else 
 			{
 				throw new ArgumentException(COMPONENT_EXCEPTION);
@@ -71,7 +70,7 @@ namespace SharpEngineMathUtility
 			x = v.x;
 			y = v.y;
 			z = v.z;
-		}
+        }
 
 
 		#endregion
@@ -120,14 +119,10 @@ namespace SharpEngineMathUtility
 
 		public static Vector3 operator/(Vector3 a, double d)
 		{
-			return new Vector3 (a.x / d, a.y / d, a.z / d);
+            var dp = 1.0 / d;
+			return new Vector3 (a.x * d, a.y * d, a.z * d);
 		}
-
-		public static Vector3 operator/(double d, Vector3 a)
-		{
-			return new Vector3 (a.x / d, a.y / d, a.z / d);
-		}
-
+        		
 		public double[] Array
 		{
 			get
@@ -292,9 +287,9 @@ namespace SharpEngineMathUtility
 			double s = Math.Sin (angle);
 			double t = 1.0 - angle;
 
-			double X = (a.x * (p.x + (1.0 - p.x) * c))+(a.y * ((t * versor.x * versor.y)-(s * versor.z)))+(a.z * ((t * versor.x * versor.z)+(s * versor.y)));
-			double Y = (a.x * ((t * versor.x * versor.y)+(s * versor.z)))+(a.y * (p.y + (1.0 - p.y) * c))+(a.z * ((t * versor.y * versor.z)-(s * versor.x)));
-			double Z = (a.x * ((t * versor.z * versor.x)-(s * versor.y)))+(a.y * ((t * versor.z * versor.y)+(s * versor.x)))+(a.z * (p.z + ( 1.0 - p.z) * c));
+            double X = (a.x * (p.x + (1.0 - p.x) * c)) + (a.y * ((t * versor.x * versor.y) - (s * versor.z))) + (a.z * ((t * versor.x * versor.z) + (s * versor.y)));
+            double Y = (a.x * ((t * versor.x * versor.y) + (s * versor.z))) + (a.y * (p.y + (1.0 - p.y) * c)) + (a.z * ((t * versor.y * versor.z) - (s * versor.x)));
+            double Z = (a.x * ((t * versor.z * versor.x) - (s * versor.y))) + (a.y * ((t * versor.z * versor.y) + (s * versor.x))) + (a.z * (p.z + (1.0 - p.z) * c));
 
 			return new Vector3 (X, Y, Z);
 		}
@@ -386,9 +381,71 @@ namespace SharpEngineMathUtility
             return false;
         }
 
-		#region IComparable implementation
+        #region Round
 
-		public int CompareTo (object obj)
+        public static Vector3 Round(Vector3 v1)
+        {
+            return new Vector3(Math.Round(v1.x), Math.Round(v1.y), Math.Round(v1.z));
+        }
+
+        public static Vector3 Round(Vector3 v1, MidpointRounding mode)
+        {
+            return new Vector3(
+                Math.Round(v1.x, mode),
+                Math.Round(v1.y, mode),
+                Math.Round(v1.z, mode));
+        }
+
+        public Vector3 Round()
+        {
+            return new Vector3(Math.Round(this.x), Math.Round(this.y), Math.Round(this.z));
+        }
+
+        public Vector3 Round(MidpointRounding mode)
+        {
+            return new Vector3(
+                Math.Round(this.x, mode),
+                Math.Round(this.y, mode),
+                Math.Round(this.z, mode));
+        }
+
+        public static Vector3 Round(Vector3 v1, int digits)
+        {
+            return new Vector3(
+                Math.Round(v1.x, digits),
+                Math.Round(v1.y, digits),
+                Math.Round(v1.z, digits));
+        }
+
+        public static Vector3 Round(Vector3 v1, int digits, MidpointRounding mode)
+        {
+            return new Vector3(
+                Math.Round(v1.x, digits, mode),
+                Math.Round(v1.y, digits, mode),
+                Math.Round(v1.z, digits, mode));
+        }
+
+        public Vector3 Round(int digits)
+        {
+            return new Vector3(
+                Math.Round(this.x, digits),
+                Math.Round(this.y, digits),
+                Math.Round(this.z, digits));
+        }
+
+        public Vector3 Round(int digits, MidpointRounding mode)
+        {
+            return new Vector3(
+                Math.Round(this.x, digits, mode),
+                Math.Round(this.y, digits, mode),
+                Math.Round(this.z, digits, mode));
+        }
+
+        #endregion
+
+        #region IComparable implementation
+
+        public int CompareTo (object obj)
 		{
 			if (obj is Vector3)
 			{

@@ -179,8 +179,7 @@ namespace SharpPhysicsEngine
                         0.0,
                         ConstraintType.Collision,
                         null,
-                        null//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue[0]
-                        );
+                        null);
 
                     #endregion
 
@@ -195,7 +194,7 @@ namespace SharpPhysicsEngine
                             relativeVelocity,
                             ra,
                             rb,
-                            null,//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
+                            null,
                             softShapePoint);
 
                     #endregion
@@ -440,7 +439,7 @@ namespace SharpPhysicsEngine
 					{
 						//Limit the Baum stabilization jitter effect 
 						correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
-												baumgarteStabilizationValue - uCollision, 0.0);
+												        baumgarteStabilizationValue - uCollision, 0.0);
 					}
 
 					double correctedBounce = uCollision;
@@ -458,8 +457,7 @@ namespace SharpPhysicsEngine
 						0.0,
 						ConstraintType.Collision,
 						null,
-						null//collisionPoint.StartImpulseValue[0]
-                        );
+                        (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue[0] : null);
 
                     #endregion
 
@@ -478,8 +476,7 @@ namespace SharpPhysicsEngine
                                 relativeVelocity,
                                 ra,
                                 rb,
-                                null//collisionPoint.StartImpulseValue
-                                );
+                                (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue.ToArray() : null);
 
                         #endregion
 
@@ -595,7 +592,7 @@ namespace SharpPhysicsEngine
                     constraintLimit,
                     ConstraintType.Friction,
                     null,
-                    startImpulseProperties?[i]);
+                    startImpulseProperties?[i + 1]);
             }
             
             return friction;

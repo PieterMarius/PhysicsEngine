@@ -51,7 +51,8 @@ namespace SharpEngineMathUtility
 
         public bool Equals(HashSetStruct p)
         {
-            return ID_A == p.ID_A && ID_B == p.ID_B;
+            return ID_A == p.ID_A && 
+                   ID_B == p.ID_B;
         }
     }
 }

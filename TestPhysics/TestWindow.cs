@@ -219,9 +219,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                LoadEngineByXml();
+                //LoadEngineByXml();
             
-                //LoadEngineByBuilder();
+                LoadEngineByBuilder();
 
 
             }
@@ -233,7 +233,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment();
+            var env = new BuildEnvironment1();
             
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -268,7 +268,7 @@ namespace TestPhysics
             physicsEngine = new SharpEngine();
 
             physicsEngine.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEngine.SolverParameters.SetSolverMaxIteration(50);
+            physicsEngine.SolverParameters.SetSolverMaxIteration(30);
 
             for (int i = 0; i < simulationObjects.Count(); i++)
             {
@@ -368,7 +368,7 @@ namespace TestPhysics
 				SetOpenGLObjectMatrixAndDisplayObject(i);
             
             //displayOctree();
-            displayConvexDecomposition();
+            //displayConvexDecomposition();
             //displaySoftJoint();
 
             GL.Flush ();

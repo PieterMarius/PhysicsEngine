@@ -88,7 +88,7 @@ namespace Utility
 		/// <param name="nObject">N object.</param>
 		public static int[][] LoadGLObjects(
 			ObjImporter.meshStruct[][] objects,
-			SharpEngineMathUtility.Vector3[][] translate,
+			Vector3[][] translate,
 			int nObject,
 			bool GLM_TEXTURE = false, 
 			bool GLM_FLAT = false,
@@ -206,7 +206,7 @@ namespace Utility
 			return scale;
 		}
 
-		public static double UnitizeObject(ref SharpEngineMathUtility.Vector3[] vertices)
+		public static double UnitizeObject(ref Vector3[] vertices)
 		{
 			double xMax, xMin, yMax, yMin, zMax, zMin;
 			double cx, cy, cz, w, h, d;
@@ -252,7 +252,7 @@ namespace Utility
 			/* translate around center then scale */
 			for (int i = 0; i < vertices.Length; i++)
 			{
-				var vertex = new SharpEngineMathUtility.Vector3(
+				var vertex = new Vector3(
 					(vertices[i].x - cx) * scale,
 					(vertices[i].y - cy) * scale,
 					(vertices[i].z - cz) * scale);
@@ -279,12 +279,12 @@ namespace Utility
 		}
 
 		public static void ScaleObject(
-			ref SharpEngineMathUtility.Vector3[] vertices,
+			ref Vector3[] vertices,
 			double scale)
 		{
 			for (int i = 0; i < vertices.Length; i++)
 			{
-				var vertex = new SharpEngineMathUtility.Vector3(
+				var vertex = new Vector3(
 					(vertices[i].x) * scale,
 					(vertices[i].y) * scale,
 					(vertices[i].z) * scale);
@@ -425,56 +425,57 @@ namespace Utility
 			GL.End ();
 		}
 
-		public static List<Line> BuildBoxLine(SharpEngineMathUtility.Vector3 Min, SharpEngineMathUtility.Vector3 Max)
+		public static List<Line> BuildBoxLine(Vector3 Min, Vector3 Max)
 		{
-			SharpEngineMathUtility.Vector3[] verts = new SharpEngineMathUtility.Vector3[8];
+			Vector3[] verts = new Vector3[8];
 			verts[0] = Min;
-			verts[1] = new SharpEngineMathUtility.Vector3(Min.x, Min.y, Max.z); //Z
-			verts[2] = new SharpEngineMathUtility.Vector3(Min.x, Max.y, Min.z); //Y
-			verts[3] = new SharpEngineMathUtility.Vector3(Max.x, Min.y, Min.z); //X
+			verts[1] = new Vector3(Min.x, Min.y, Max.z); //Z
+			verts[2] = new Vector3(Min.x, Max.y, Min.z); //Y
+			verts[3] = new Vector3(Max.x, Min.y, Min.z); //X
 
 			verts[7] = Max;
-			verts[4] = new SharpEngineMathUtility.Vector3(Max.x, Max.y, Min.z); //Z
-			verts[5] = new SharpEngineMathUtility.Vector3(Max.x, Min.y, Max.z); //Y
-			verts[6] = new SharpEngineMathUtility.Vector3(Min.x, Max.y, Max.z); //X
+			verts[4] = new Vector3(Max.x, Max.y, Min.z); //Z
+			verts[5] = new Vector3(Max.x, Min.y, Max.z); //Y
+			verts[6] = new Vector3(Min.x, Max.y, Max.z); //X
 
 
-			var boxLines = new List<Line>();
+            var boxLines = new List<Line>
+            {
+                new Line(verts[0], verts[1]),
+                new Line(verts[0], verts[2]),
+                new Line(verts[0], verts[3]),
+                new Line(verts[7], verts[4]),
+                new Line(verts[7], verts[5]),
+                new Line(verts[7], verts[6]),
 
-			boxLines.Add(new Line(verts[0], verts[1]));
-			boxLines.Add(new Line(verts[0], verts[2]));
-			boxLines.Add(new Line(verts[0], verts[3]));
-			boxLines.Add(new Line(verts[7], verts[4]));
-			boxLines.Add(new Line(verts[7], verts[5]));
-			boxLines.Add(new Line(verts[7], verts[6]));
+                new Line(verts[1], verts[6]),
+                new Line(verts[1], verts[5]),
+                new Line(verts[4], verts[2]),
+                new Line(verts[4], verts[3]),
+                new Line(verts[2], verts[6]),
+                new Line(verts[3], verts[5])
+            };
 
-			boxLines.Add(new Line(verts[1], verts[6]));
-			boxLines.Add(new Line(verts[1], verts[5]));
-			boxLines.Add(new Line(verts[4], verts[2]));
-			boxLines.Add(new Line(verts[4], verts[3]));
-			boxLines.Add(new Line(verts[2], verts[6]));
-			boxLines.Add(new Line(verts[3], verts[5]));
-
-			return boxLines;
+            return boxLines;
 
 		}
 
 		public static void glLookAt(
-			SharpEngineMathUtility.Vector3 eye,
-			SharpEngineMathUtility.Vector3 center,
-			SharpEngineMathUtility.Vector3 up)
+			Vector3 eye,
+			Vector3 center,
+			Vector3 up)
 		{
-			SharpEngineMathUtility.Vector3 forward = center - eye;
+			Vector3 forward = center - eye;
 
-			forward = SharpEngineMathUtility.Vector3.Normalize(forward);
+			forward = Vector3.Normalize(forward);
 
-			var upBuf = new SharpEngineMathUtility.Vector3(up.x, up.y, up.z);
+			var upBuf = new Vector3(up.x, up.y, up.z);
 
-			var side = SharpEngineMathUtility.Vector3.Cross(forward, upBuf);
+			var side = Vector3.Cross(forward, upBuf);
 
-			side = SharpEngineMathUtility.Vector3.Normalize(side);
+			side = Vector3.Normalize(side);
 
-			upBuf = SharpEngineMathUtility.Vector3.Cross(side, forward);
+			upBuf = Vector3.Cross(side, forward);
 
 			var matrix = new float[] {
 				Convert.ToSingle (side.x), Convert.ToSingle (up.x), Convert.ToSingle (-forward.x),
@@ -487,8 +488,8 @@ namespace Utility
 		}
 
 		public static void DrawLine(
-			SharpEngineMathUtility.Vector3 a,
-			SharpEngineMathUtility.Vector3 b)
+			Vector3 a,
+			Vector3 b)
 		{
 			GL.Begin(PrimitiveType.Lines);
 			GL.Vertex3(a.x, a.y, a.z);
@@ -618,8 +619,8 @@ namespace Utility
 		/// <param name="GLM_TEXTURE">If set to <c>true</c> GL add texture coordinates.</param>
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		public static void GLDrawSolid(
-			SharpEngineMathUtility.Vector3[][] faces,
-			SharpEngineMathUtility.Vector3 translate,
+			Vector3[][] faces,
+			Vector3 translate,
 			bool GLM_TEXTURE,
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)

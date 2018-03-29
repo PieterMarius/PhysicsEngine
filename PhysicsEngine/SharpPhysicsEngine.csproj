@@ -79,6 +79,7 @@
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="Helper\IntegrationHelper.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />
+    <Compile Include="Helper\StabilizationValues.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
     <Compile Include="JacobianConstraints\BallAndSocketConstraint.cs" />
     <Compile Include="JacobianConstraints\Constraint.cs" />

@@ -37,6 +37,7 @@ using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.Wrapper;
 using SharpPhysicsEngine.Wrapper.Joint;
 using System.Collections.Concurrent;
+using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine
 {
@@ -116,6 +117,8 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		private ISolver Solver;
 
+        private Dictionary<int, StabilizationValues> PreviousShapesProperties;
+
 		/// <summary>
 		/// The contact partitioning engine.
 		/// </summary>
@@ -166,7 +169,7 @@ namespace SharpPhysicsEngine
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
 			integrationHelper = new IntegrationHelper(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
-
+            
 			//int minWorker, minIOC;
 			//// Get the current settings.
 			//ThreadPool.GetMinThreads(out minWorker, out minIOC);
@@ -534,11 +537,11 @@ namespace SharpPhysicsEngine
 
 		private void PhysicsExecutionFlow()
 		{
-			#region Contact and Joint elaboration
+            #region Contact and Joint elaboration
 
-			solverError = 0.0;
-                        
-			if (Partitions != null) 
+            SaveShapePreviousProperties(collisionPoints);
+            
+            if (Partitions != null) 
 			{
                 for (int i = 0; i < Partitions.Count;i++)
 				{
@@ -551,11 +554,11 @@ namespace SharpPhysicsEngine
 					if (jacobianConstraints.Length > 0)
 					{
                         double[] overallSolution = new double[jacobianConstraints.Length];
-                        	                      
+                                                                        	                      
                         LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(jacobianConstraints);
                                                                         
                         if (overallLCP != null)
-						    overallSolution = Solver.Solve(overallLCP, new double[overallLCP.Count]);
+						    overallSolution = Solver.Solve(overallLCP, overallLCP.StartImpulse);
                                                        
                         integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
                     }
@@ -573,6 +576,36 @@ namespace SharpPhysicsEngine
 
 		#region Collision Detection
 
+        private void SaveShapePreviousProperties(CollisionPointStructure[] collisionPoints)
+        {
+            PreviousShapesProperties = new Dictionary<int, StabilizationValues>();
+
+            foreach (var item in collisionPoints)
+            {
+                var shapeA = Shapes.First(x => x.ID == item.ObjectIndexA);
+                var shapeB = Shapes.First(x => x.ID == item.ObjectIndexB);
+
+                if (!(shapeA is SoftShape) &&
+                    !(shapeB is SoftShape))
+                {
+
+                    if (!PreviousShapesProperties.ContainsKey(item.ObjectIndexA))
+                        PreviousShapesProperties.Add(item.ObjectIndexA, new StabilizationValues(
+                                                    shapeA.Position,
+                                                    shapeA.RotationStatus,
+                                                    shapeA.LinearVelocity,
+                                                    shapeA.AngularVelocity));
+
+                    if (!PreviousShapesProperties.ContainsKey(item.ObjectIndexB))
+                        PreviousShapesProperties.Add(item.ObjectIndexB, new StabilizationValues(
+                                                    shapeB.Position,
+                                                    shapeB.RotationStatus,
+                                                    shapeB.LinearVelocity,
+                                                    shapeB.AngularVelocity));
+                }
+            }
+        }
+
 		/// <summary>
 		/// Collisions detection.
 		/// </summary>
@@ -586,28 +619,90 @@ namespace SharpPhysicsEngine
 				collisionPoints.Length > 0)
 				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
 
-			#endregion
+            //Creo la lista delle coppie di shape di cui non voglio testare la collisione
+            Dictionary<HashSetStruct, CollisionPointStructure> activeOldCollisionPoint = new Dictionary<HashSetStruct, CollisionPointStructure>();
 
-			#region Find New Collision Points
+            HashSet<HashSetStruct> ignoreList = new HashSet<HashSetStruct>();
+            List<CollisionPointStructure> oldCollisionPoint = new List<CollisionPointStructure>();
+            double distTolerance = 1E-2;
+            double velTolerance = 0.2;
 
-			//Creo l'array contenente la geometria degli oggetti
-			IShape[] simShapes = Array.ConvertAll (
+            if (collisionPointsBuffer != null)
+            {
+                foreach (var item in collisionPointsBuffer)
+                {
+                    if (PreviousShapesProperties.TryGetValue(item.ObjectIndexA, out StabilizationValues objA) &&
+                        PreviousShapesProperties.TryGetValue(item.ObjectIndexB, out StabilizationValues objB))
+                    {
+                        var shapeA = Shapes.First(x => x.ID == item.ObjectIndexA);
+                        var shapeB = Shapes.First(x => x.ID == item.ObjectIndexB);
+
+                        var posDiffA = Vector3.Length(shapeA.Position - objA.Position);
+                        var posDiffB = Vector3.Length(shapeB.Position - objB.Position);
+
+                        var angDiffA = Quaternion.Length(shapeA.RotationStatus - objA.RotationStatus);
+                        var angDiffB = Quaternion.Length(shapeB.RotationStatus - objB.RotationStatus);
+
+                        var velDiffA = Vector3.Length(shapeA.LinearVelocity - objA.LinearVelocity);
+                        var velDiffB = Vector3.Length(shapeB.LinearVelocity - objB.LinearVelocity);
+
+                        var angVelDiffA = Vector3.Length(shapeA.AngularVelocity - objA.AngularVelocity);
+                        var angVelDiffB = Vector3.Length(shapeB.AngularVelocity - objB.AngularVelocity);
+
+                        if (posDiffA < distTolerance && posDiffB < distTolerance &&
+                            angDiffA < distTolerance && angDiffB < distTolerance &&
+                            velDiffA < velTolerance && velDiffB < velTolerance &&
+                            angVelDiffA < velTolerance && angVelDiffB < velTolerance)
+                        {
+                            activeOldCollisionPoint.Add(new HashSetStruct(item.ObjectIndexA, item.ObjectIndexB), item);
+                            //ignoreList.Add(new HashSetStruct(item.ObjectIndexA, item.ObjectIndexB));
+                            //oldCollisionPoint.Add(item);
+                        }
+                    }
+                }
+            }
+            
+            #endregion
+
+            #region Find New Collision Points
+
+            //Creo l'array contenente la geometria degli oggetti
+            IShape[] simShapes = Array.ConvertAll (
 							Shapes, 
 							item => (item.ExcludeFromCollisionDetection) ? null : item);
-            			
-			//Eseguo il motore che gestisce le collisioni
-			collisionPoints = CollisionEngine.Execute(simShapes).ToArray();
 
-			#endregion
+            //Eseguo il motore che gestisce le collisioni
+            var newCollisionPoints = CollisionEngine.Execute(simShapes, null);
 
-			#region WarmStarting
+            for (int i = 0; i < newCollisionPoints.Count; i++)
+            {
+                if (activeOldCollisionPoint.TryGetValue(
+                    new HashSetStruct(newCollisionPoints[i].ObjectIndexA, newCollisionPoints[i].ObjectIndexB),
+                    out CollisionPointStructure cPoint))
+                {
+                    if(cPoint.CollisionPointBase[0].CollisionPoints.Length >= newCollisionPoints[i].CollisionPointBase[0].CollisionPoints.Length)
+                    {
+                        CollisionPointStructure item = cPoint;
+                        item.CollisionPointBase[0].SetIntersection(newCollisionPoints[i].CollisionPointBase[0].Intersection);
+                        item.CollisionPointBase[0].SetObjectDistance(newCollisionPoints[i].CollisionPointBase[0].ObjectDistance);
+                        newCollisionPoints[i] = item;
+                    }
+                    
+                }
+            }
+                        
+            collisionPoints = newCollisionPoints.ToArray();
 
-			//if (collisionPointsBuffer != null &&
-			//    collisionPointsBuffer.Count > 0)
-			//    WarmStarting(collisionPointsBuffer);
+            #endregion
 
-			#endregion
-		}
+            #region WarmStarting
+
+            //if (collisionPointsBuffer != null &&
+            //    collisionPointsBuffer.Count > 0)
+            //    WarmStarting(collisionPointsBuffer);
+
+            #endregion
+        }
 		
 		#endregion
 

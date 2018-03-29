@@ -49,6 +49,9 @@ namespace SharpPhysicsEngine.LCPSolver
         //Diagonal of matrix A(N)
         public readonly double[] D;
 
+        //Start Values
+        public readonly double[] StartImpulse;
+
         //Constraint
         public readonly double[] ConstraintLimit;
 
@@ -75,7 +78,8 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] constraintLimit,
             ConstraintType[] constraintType,
             Graph constrGraph,
-            int?[] constraints)
+            int?[] constraints,
+            double[] startImpulse)
         {
             this.M = M;
             this.B = B;
@@ -86,6 +90,7 @@ namespace SharpPhysicsEngine.LCPSolver
             Constraints = constraints;
             ConstrGraph = constrGraph;
             Count = B.Length;
+            StartImpulse = startImpulse;
         }
 
         public LinearProblemProperties(
@@ -101,6 +106,7 @@ namespace SharpPhysicsEngine.LCPSolver
             Constraints = baseProperties.ConstraintsArray;
             ConstrGraph = constrGraph;
             Count = B.Length;
+            StartImpulse = baseProperties.StartValue;
         }
 
         //public LinearProblemProperties(

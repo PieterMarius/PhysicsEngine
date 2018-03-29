@@ -25,13 +25,14 @@
  *****************************************************************************/
 
 using System.Collections.Generic;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
 	internal interface ICollisionEngine
 	{
-        List<CollisionPointStructure> Execute(IShape[] objects);
+        List<CollisionPointStructure> Execute(IShape[] objects, HashSet<HashSetStruct> ignoreList);
 
         void SetCollisionDistance(double collisionDistance);
 	}

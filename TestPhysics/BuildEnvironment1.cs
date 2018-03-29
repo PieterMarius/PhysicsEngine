@@ -72,8 +72,8 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(70);
+            physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(40);
 
             return physicsEnvironment;
 		}
@@ -143,7 +143,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetErrorReductionParam(60.0);
+            objects0.SetErrorReductionParam(1.0);
 
             objects.Add(objects0);
 
@@ -172,7 +172,7 @@ namespace TestPhysics
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(30.0);
+                objects1.SetErrorReductionParam(0.5);
                 position = position + shift;
 
                 objects.Add(objects1);
@@ -198,7 +198,7 @@ namespace TestPhysics
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(30.0);
+                objects1.SetErrorReductionParam(0.5);
                 position = position + shift;
 
                 objects.Add(objects1);
@@ -223,7 +223,7 @@ namespace TestPhysics
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(30.0);
+                objects1.SetErrorReductionParam(0.5);
                 position = position + shift;
 
                 objects.Add(objects1);
@@ -249,7 +249,7 @@ namespace TestPhysics
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(30.0);
+                objects1.SetErrorReductionParam(0.5);
                 position = position + shift;
 
                 objects.Add(objects1);
@@ -275,7 +275,7 @@ namespace TestPhysics
                 objects1.SetDynamicFrictionCoeff(0.8);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(30.0);
+                objects1.SetErrorReductionParam(0.5);
                 position = position + shift;
 
                 objects.Add(objects1);

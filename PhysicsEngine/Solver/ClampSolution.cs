@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 case ConstraintType.Collision:
                 case ConstraintType.JointLimit:
-                    return (xValue < 0) ?
+                    return (xValue < 0.0) ?
                         0.0:
                         xValue;
 

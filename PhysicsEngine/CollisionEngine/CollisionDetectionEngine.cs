@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Linq;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
+using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -97,11 +98,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <returns>The test collision.</returns>
 		/// <param name="shapes">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
-		public List<CollisionPointStructure> Execute(IShape[] shapes)
+		public List<CollisionPointStructure> Execute(
+            IShape[] shapes,
+            HashSet<HashSetStruct> ignoreList)
 		{
+            if (ignoreList == null)
+                ignoreList = new HashSet<HashSetStruct>();
+
 			return (collisionEngineParameters.ActivateSweepAndPrune) ?
-					SweepAndPruneBroadPhase(shapes) :
-					BruteForceBroadPhase(shapes);
+					SweepAndPruneBroadPhase(shapes, ignoreList) :
+					BruteForceBroadPhase(shapes, ignoreList);
 		}
 
 		public void SetCollisionDistance(double collisionDistance)
@@ -151,7 +157,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return null;
 		}
 				
-		private List<CollisionPointStructure> BruteForceBroadPhase(IShape[] shapes)
+		private List<CollisionPointStructure> BruteForceBroadPhase(
+            IShape[] shapes,
+            HashSet<HashSetStruct> ignoreList)
 		{
 			var result = new List<CollisionPointStructure> ();
 
@@ -170,6 +178,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 							{
 								if (shapes[j] != null)
 								{
+                                    if (ignoreList.Contains(new HashSetStruct(shapes[i].ID, shapes[j].ID)))
+                                        continue;
+
 									CollisionPointStructure collisionPointStruct = NarrowPhase(
 																				  shapes[i],
 																				  shapes[j]);
@@ -188,7 +199,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return result;
 		}
 
-		private List<CollisionPointStructure> SweepAndPruneBroadPhase(IShape[] shapes)
+		private List<CollisionPointStructure> SweepAndPruneBroadPhase(
+            IShape[] shapes,
+            HashSet<HashSetStruct> ignoreList)
 		{
 			var result = new List<CollisionPointStructure> ();
 
@@ -203,17 +216,20 @@ namespace SharpPhysicsEngine.CollisionEngine
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
 				pair =>
 				{
-					CollisionPointStructure collisionPointStruct = NarrowPhase(
-						shapes[pair.objectIndexA],
-						shapes[pair.objectIndexB]);
+                    if (!ignoreList.Contains(new HashSetStruct(shapes[pair.objectIndexA].ID, shapes[pair.objectIndexB].ID)))
+                    {
+                        CollisionPointStructure collisionPointStruct = NarrowPhase(
+                            shapes[pair.objectIndexA],
+                            shapes[pair.objectIndexB]);
 
-					if (collisionPointStruct != null)
-					{
-						lock (lockMe)
-						{
-							result.Add(collisionPointStruct);
-						}
-					}
+                        if (collisionPointStruct != null)
+                        {
+                            lock (lockMe)
+                            {
+                                result.Add(collisionPointStruct);
+                            }
+                        }
+                    }
 				});
 
 			return result;

@@ -31,6 +31,7 @@ using System.Linq;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 using static SharpPhysicsEngine.LCPSolver.RedBlackProjectedGaussSeidel;
+using System;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
@@ -90,37 +91,55 @@ namespace SharpPhysicsEngine.LCPSolver
                 k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
 
             Dictionary<RedBlackEnum, List<int>> redBlackDictionary = null;
-            if (checkBoundConstraints)
-                redBlackDictionary = gaussSeidelSolver.GetRedBlackDictionary(linearProblemProperties);
+
+            //if (checkBoundConstraints)
+            redBlackDictionary = gaussSeidelSolver.GetRedBlackDictionary(linearProblemProperties);
+
+            x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+
+            double[] xOld = x;
 
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
-                if (checkUnboundConstraints)
-                {
-                    double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
+                double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
 
-                    double alphaCG = GetAlphaCG(Ap, r, p);
+                double alphaCG = GetAlphaCG(Ap, r, p);
 
-                    x = UpdateSolution(x, p, alphaCG);
-                    r = GetDirection(A, linearProblemProperties.B, x);
-                    
-                    double[] phiY = GetPhi(linearProblemProperties, x, r);
-                    double[] partialValue = Ap;
-                    double denom = Dot(p, partialValue);
-                    double beta = 0.0;
-                    if (denom != 0.0)
-                        beta = Dot(phiY, partialValue) / denom;
-
-                    p = Minus(phiY, ParallelMultiply(beta, p, SolverParameters.MaxThreadNumber));
-                }
-
-                if (checkBoundConstraints)
+                xOld = x;
+                x = UpdateSolution(x, p, alphaCG);
+                //for (int j = 0; j < x.Length; j++)
+                //{
+                    //x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
                     x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
-                
+                //}
+
+                r = GetDirection(A, linearProblemProperties.B, x);
+                                
+                //double[] phiY = GetPhi(linearProblemProperties, x, r);
+                double[] phiY = r;
+                double[] partialValue = Ap;
+                double denom = Dot(p, partialValue);
+                double beta = 0.0;
+                if (denom != 0.0)
+                    beta = Dot(phiY, partialValue) / denom;
+
+                p = Minus(phiY, ParallelMultiply(beta, p, SolverParameters.MaxThreadNumber));
             }
 
+            //double[] checkConvergence = Minus(x, xOld);
+
+            //if (Dot(checkConvergence, checkConvergence) > 1E-4)
+            //{
+            //    x = new double[x.Length];
+            //    x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+            //}
+
+            //Console.WriteLine("Error diff " + Dot(test, test));
+
+            
+            
             //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
-                        
+
             return x;
         }
 

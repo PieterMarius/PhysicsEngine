@@ -27,6 +27,7 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
+using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -35,7 +36,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public readonly VertexProperties CollisionPointA;
 		public readonly VertexProperties CollisionPointB;
 		public readonly Vector3 CollisionNormal;
-		//public List<StartImpulseProperties> StartImpulseValue { get; private set; }
+		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
 		#region Constructor
 
@@ -49,15 +50,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			CollisionNormal = collisionNormal;
 
             //Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
-            //StartImpulseValue = new List<StartImpulseProperties>();
-		}
+            StartImpulseValue = new List<StartImpulseProperties>()
+            {
+                new StartImpulseProperties(0.0),
+                new StartImpulseProperties(0.0),
+                new StartImpulseProperties(0.0),
+            };
+        }
 
         #endregion
-
-        #region Public Methods
-                               
-        #endregion Public Methods
-
     }
 }
 

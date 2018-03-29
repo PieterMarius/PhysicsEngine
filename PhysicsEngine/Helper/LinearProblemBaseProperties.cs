@@ -40,6 +40,7 @@ namespace SharpPhysicsEngine.Helper
         public double[] ConstraintLimit;
         public SparseElement[] M;
         public int?[] ConstraintsArray;
+        public double[] StartValue;
 
         #endregion
 
@@ -55,6 +56,7 @@ namespace SharpPhysicsEngine.Helper
             ConstraintLimit = new double[constraintLength];
             M = new SparseElement[constraintLength];
             ConstraintsArray = new int?[constraintLength];
+            StartValue = new double[constraintLength];
         }
 
         #endregion

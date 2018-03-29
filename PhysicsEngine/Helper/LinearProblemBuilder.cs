@@ -117,6 +117,7 @@ namespace SharpPhysicsEngine.Helper
                                 baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
                                 baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
                                 baseProperties.ConstraintType[indexVal] = contactA.Type;
+                                baseProperties.StartValue[indexVal] = contactA.StartImpulse.StartImpulseValue;
 
                                 //Diagonal value
                                 double mValue = GetLCPDiagonalValue(contactA) +
@@ -293,6 +294,7 @@ namespace SharpPhysicsEngine.Helper
                 ConstraintType[] constraintsType = new ConstraintType[constraint.Length];
                 double[] constraintsLimit = new double[constraint.Length];
                 int?[] constraints = new int?[constraint.Length];
+                double[] startImpulse = new double[constraint.Length];
 
                 List<int>[] index = new List<int>[constraint.Length];
                 List<double>[] value = new List<double>[constraint.Length];
@@ -324,6 +326,7 @@ namespace SharpPhysicsEngine.Helper
 
                         constraintsLimit[i] = contactA.ConstraintLimit;
                         constraintsType[i] = contactA.Type;
+                        startImpulse[i] = contactA.StartImpulse.StartImpulseValue;
 
                         double mValue = GetLCPDiagonalValue(contactA);
 
@@ -419,7 +422,8 @@ namespace SharpPhysicsEngine.Helper
                     constraintsLimit,
                     constraintsType,
                     null,
-                    constraints);
+                    constraints,
+                    startImpulse);
             }
 
             return null;
@@ -462,11 +466,20 @@ namespace SharpPhysicsEngine.Helper
 
                     JacobianConstraint contactB = constraintCheckItem.Value[i].Constraint;
 
+                    var lComponent = contactB.LinearComponentB;
+                    var aComponent = contactB.AngularComponentB;
+
+                    if (componentA)
+                    {
+                        lComponent = contactB.LinearComponentA;
+                        aComponent = contactB.AngularComponentA;
+                    }
+
                     mValue = GetLCPMatrixValue(
                         linearComponentA,
-                        (componentA) ? contactB.LinearComponentA : contactB.LinearComponentB,
+                        lComponent,
                         angularComponentA,
-                        (componentA) ? contactB.AngularComponentA : contactB.AngularComponentB,
+                        aComponent,
                         inverseMass,
                         inertiaTensor);
 
@@ -503,17 +516,17 @@ namespace SharpPhysicsEngine.Helper
 
             if (contact.LinearComponentA.HasValue)
                 LCPvalue += contact.LinearComponentA.Value.Dot(
-                          contact.LinearComponentA.Value * contact.ObjectA.InverseMass);
+                            contact.LinearComponentA.Value * contact.ObjectA.InverseMass);
 
             LCPvalue += contact.AngularComponentA.Dot(
-                     contact.ObjectA.InertiaTensor * contact.AngularComponentA);
+                        contact.ObjectA.InertiaTensor * contact.AngularComponentA);
 
             if (contact.LinearComponentB.HasValue)
                 LCPvalue += contact.LinearComponentB.Value.Dot(
-                          contact.LinearComponentB.Value * contact.ObjectB.InverseMass);
+                            contact.LinearComponentB.Value * contact.ObjectB.InverseMass);
 
             LCPvalue += contact.AngularComponentB.Dot(
-                    contact.ObjectB.InertiaTensor * contact.AngularComponentB);
+                        contact.ObjectB.InertiaTensor * contact.AngularComponentB);
 
             return LCPvalue;
         }
@@ -528,6 +541,10 @@ namespace SharpPhysicsEngine.Helper
             {
                 index.Add(innerIndex);
                 values.Add(mValue);
+            }
+            else
+            {
+                bool test = true;
             }
         }
 

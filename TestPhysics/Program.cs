@@ -28,6 +28,7 @@ using OpenTK;
 using SharpEngineMathUtility;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace TestPhysics
 {
@@ -37,12 +38,49 @@ namespace TestPhysics
 		{
 			using (TestWindow test = new TestWindow ()) 
 			{
-
+                //Test();
                 //TestBFS();
 				//test.VSync = VSyncMode.Adaptive;
 				test.Run(0.0, 0.0);
 				
 			}
 		}
-	}
+
+        private static void Test()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+
+            int nvalue = 38000000;
+
+            Random rnd = new Random();
+
+            SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
+
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble());
+
+            stopwatch.Reset();
+            stopwatch.Start();
+
+            double test1 = 0.0;
+            for (int i = 0; i < nvalue; i++)
+                test1 = SharpEngineMathUtility.Vector3.Dot(testVector1[i], testVector1[i]);
+
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+            //stopwatch.Reset();
+            //stopwatch.Start();
+
+            //for (int i = 0; i < nvalue; i++)
+            //    test1 = SharpEngineMathUtility.Vector3.SimdDot(testVector1[i], testVector1[i]);
+
+            //stopwatch.Stop();
+            //Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+            Console.ReadLine();
+        }
+    }
+
+    
 }

@@ -256,29 +256,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetRotationMatrix(Quaternion.ConvertToMatrix(RotationStatus));
             }
         }
-
-        private void BuildSoftConstraints(
-            ConstraintIndex[] constraintIndex,
-            double restoreCoeff,
-            double springCoeff)
-        {
-            SoftConstraint = new List<SoftConstraint>();
-            HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
-
-            for (int i = 0; i < constraintIndex.Length; i++)
-            {
-                if (indexHashSet.Add(constraintIndex[i]))
-                {
-                    SoftConstraint.Add(new SoftConstraint(
-                        ShapePoints[constraintIndex[i].IndexA],
-                        ShapePoints[constraintIndex[i].IndexB],
-                        this,
-                        restoreCoeff,
-                        springCoeff));
-                }
-            }
-        }
-
+                
         private void BuildSoftConstraints(
             ConstraintIndex[] constraintIndex,
             double restoreCoeff,
