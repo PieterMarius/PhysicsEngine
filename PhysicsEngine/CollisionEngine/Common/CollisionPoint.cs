@@ -31,23 +31,23 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	public struct CollisionPoint
-	{
-		public readonly VertexProperties CollisionPointA;
-		public readonly VertexProperties CollisionPointB;
-		public readonly Vector3 CollisionNormal;
-		public List<StartImpulseProperties> StartImpulseValue { get; private set; }
+    public struct CollisionPoint
+    {
+        public readonly VertexProperties CollisionPointA;
+        public readonly VertexProperties CollisionPointB;
+        public readonly Vector3 CollisionNormal;
+        public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
-		#region Constructor
+        #region Constructor
 
-		public CollisionPoint (
-			VertexProperties collisionPointA,
-			VertexProperties collisionPointB,
-			Vector3 collisionNormal)
-		{
-			CollisionPointA = collisionPointA;
-			CollisionPointB = collisionPointB;
-			CollisionNormal = collisionNormal;
+        public CollisionPoint(
+            VertexProperties collisionPointA,
+            VertexProperties collisionPointB,
+            Vector3 collisionNormal)
+        {
+            CollisionPointA = collisionPointA;
+            CollisionPointB = collisionPointB;
+            CollisionNormal = collisionNormal;
 
             //Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
             StartImpulseValue = new List<StartImpulseProperties>()
@@ -56,6 +56,17 @@ namespace SharpPhysicsEngine.CollisionEngine
                 new StartImpulseProperties(0.0),
                 new StartImpulseProperties(0.0),
             };
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void RegularizeStartImpulseProperties(double regParam)
+        {
+            foreach (var item in StartImpulseValue)
+                item.SetStartValue(item.StartImpulseValue * regParam);
+            
         }
 
         #endregion

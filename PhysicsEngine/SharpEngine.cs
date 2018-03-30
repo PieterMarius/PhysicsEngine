@@ -169,6 +169,7 @@ namespace SharpPhysicsEngine
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
 			integrationHelper = new IntegrationHelper(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
+            persistentCollisionCounter = new Dictionary<HashSetStruct, Tuple<bool, int>>();
             
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -606,6 +607,8 @@ namespace SharpPhysicsEngine
             }
         }
 
+        private Dictionary<HashSetStruct, Tuple<bool,int>> persistentCollisionCounter;
+
 		/// <summary>
 		/// Collisions detection.
 		/// </summary>
@@ -619,9 +622,62 @@ namespace SharpPhysicsEngine
 				collisionPoints.Length > 0)
 				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
 
+            //Creo l'array contenente la geometria degli oggetti
+            IShape[] simShapes = Array.ConvertAll(
+                            Shapes,
+                            item => (item.ExcludeFromCollisionDetection) ? null : item);
+
+            //Eseguo il motore che gestisce le collisioni
+            var newCollisionPoints = CollisionEngine.Execute(simShapes, null);
+
+            //Check persistent collision
+            var pCounter =  persistentCollisionCounter.ToArray();
+            for (int i = 0; i < pCounter.Length; i++)
+            {
+                var tupleVal = new Tuple<bool, int>(false, pCounter[i].Value.Item2);
+                pCounter[i] = new KeyValuePair<HashSetStruct, Tuple<bool, int>>(pCounter[i].Key, tupleVal);
+            }
+            persistentCollisionCounter = pCounter.ToDictionary(x => x.Key, x => x.Value);
+            
+            for (int i = 0; i < collisionPointsBuffer.Count; i++)
+            {
+                int indexA = collisionPointsBuffer[i].ObjectIndexA;
+                int indexB = collisionPointsBuffer[i].ObjectIndexB;
+
+                if (newCollisionPoints.FirstOrDefault(x => x.ObjectIndexA == indexA) != null &&
+                    newCollisionPoints.FirstOrDefault(x => x.ObjectIndexB == indexB) != null)
+                {
+                    HashSetStruct hash = new HashSetStruct(indexA, indexB);
+                    if (persistentCollisionCounter.TryGetValue(hash, out Tuple<bool, int> counter))
+                    {
+                        counter = new Tuple<bool, int>(true, counter.Item2);
+
+                    }
+                    else
+                    {
+                        persistentCollisionCounter.Add(hash, new Tuple<bool, int>(true, 0));
+                    }
+                    
+                }
+            }
+
+            pCounter = persistentCollisionCounter.ToArray();
+            List<HashSetStruct> indexToRemove = new List<HashSetStruct>();
+            for (int i = 0; i < pCounter.Length; i++)
+            {
+                if (!pCounter[i].Value.Item1)
+                    indexToRemove.Add(pCounter[i].Key);
+            }
+
+            foreach (var item in indexToRemove)
+            {
+                if (persistentCollisionCounter.ContainsKey(item))
+                    persistentCollisionCounter.Remove(item);
+            }
+            
             //Creo la lista delle coppie di shape di cui non voglio testare la collisione
             Dictionary<HashSetStruct, CollisionPointStructure> activeOldCollisionPoint = new Dictionary<HashSetStruct, CollisionPointStructure>();
-
+            
             HashSet<HashSetStruct> ignoreList = new HashSet<HashSetStruct>();
             List<CollisionPointStructure> oldCollisionPoint = new List<CollisionPointStructure>();
             double distTolerance = 1E-2;
@@ -666,13 +722,7 @@ namespace SharpPhysicsEngine
 
             #region Find New Collision Points
 
-            //Creo l'array contenente la geometria degli oggetti
-            IShape[] simShapes = Array.ConvertAll (
-							Shapes, 
-							item => (item.ExcludeFromCollisionDetection) ? null : item);
-
-            //Eseguo il motore che gestisce le collisioni
-            var newCollisionPoints = CollisionEngine.Execute(simShapes, null);
+            
 
             for (int i = 0; i < newCollisionPoints.Count; i++)
             {
@@ -685,9 +735,14 @@ namespace SharpPhysicsEngine
                         CollisionPointStructure item = cPoint;
                         item.CollisionPointBase[0].SetIntersection(newCollisionPoints[i].CollisionPointBase[0].Intersection);
                         item.CollisionPointBase[0].SetObjectDistance(newCollisionPoints[i].CollisionPointBase[0].ObjectDistance);
+                        
+                        foreach (var value in item.CollisionPointBase[0].CollisionPoints)
+                        {
+                            value.RegularizeStartImpulseProperties(EngineParameters.WarmStartingValue);
+                        }
+
                         newCollisionPoints[i] = item;
                     }
-                    
                 }
             }
                         

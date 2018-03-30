@@ -27,6 +27,7 @@
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -61,48 +62,55 @@ namespace SharpPhysicsEngine.Helper
             JacobianConstraint[] contact,
             double[] x)
         {
+            var rangePartitioner = Partitioner.Create(0, contact.Length, Convert.ToInt32(contact.Length / EngineParameters.MaxThreadNumber) + 1);
+            
             //Critical section variable
             var sync = new object();
 
-            Parallel.For(0, contact.Length, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                i =>
+            Parallel.ForEach(
+                rangePartitioner,
+                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                (range, loopState) =>
                 {
-                    if (Math.Abs(x[i]) > 1E-50)
+                    for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        double impulse = x[i];
+                        if (Math.Abs(x[i]) > 1E-50)
+                        {
+                            double impulse = x[i];
 
-                        JacobianConstraint ct = contact[i];
+                            JacobianConstraint ct = contact[i];
 
-                        if (ct.LinearComponentA.HasValue)
-                            UpdateObjectVelocity(
-                                ct.ObjectA,
-                                ct.LinearComponentA.Value,
-                                ct.AngularComponentA,
-                                impulse,
-                                sync);
-                        else
-                            UpdateObjectVelocity(
-                                ct.ObjectA,
-                                ct.AngularComponentA,
-                                impulse,
-                                sync);
+                            if (ct.LinearComponentA.HasValue)
+                                UpdateObjectVelocity(
+                                    ct.ObjectA,
+                                    ct.LinearComponentA.Value,
+                                    ct.AngularComponentA,
+                                    impulse,
+                                    sync);
+                            else
+                                UpdateObjectVelocity(
+                                    ct.ObjectA,
+                                    ct.AngularComponentA,
+                                    impulse,
+                                    sync);
 
-                        if (ct.LinearComponentB.HasValue)
-                            UpdateObjectVelocity(
-                                ct.ObjectB,
-                                ct.LinearComponentB.Value,
-                                ct.AngularComponentB,
-                                impulse,
-                                sync);
-                        else
-                            UpdateObjectVelocity(
-                                ct.ObjectB,
-                                ct.AngularComponentB,
-                                impulse,
-                                sync);
+                            if (ct.LinearComponentB.HasValue)
+                                UpdateObjectVelocity(
+                                    ct.ObjectB,
+                                    ct.LinearComponentB.Value,
+                                    ct.AngularComponentB,
+                                    impulse,
+                                    sync);
+                            else
+                                UpdateObjectVelocity(
+                                    ct.ObjectB,
+                                    ct.AngularComponentB,
+                                    impulse,
+                                    sync);
 
-                        if (ct.StartImpulse != null)
-                            ct.StartImpulse.SetStartValue(impulse * EngineParameters.WarmStartingValue);
+                            if (ct.StartImpulse != null)
+                                ct.StartImpulse.SetStartValue(impulse);
+                        }
                     }
                 });
         }
