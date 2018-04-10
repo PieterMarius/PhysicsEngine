@@ -140,6 +140,8 @@ namespace SharpPhysicsEngine
 
 		private readonly ContactConstraintBuilder contactConstraintBuilder;
 
+        private readonly WarmStartEngine warmStartEngine;
+
 		#endregion
 
 		#region Constructor
@@ -169,7 +171,7 @@ namespace SharpPhysicsEngine
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
 			integrationHelper = new IntegrationHelper(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
-            persistentCollisionCounter = new Dictionary<HashSetStruct, Tuple<bool, int>>();
+            warmStartEngine = new WarmStartEngine(EngineParameters);
             
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -577,11 +579,11 @@ namespace SharpPhysicsEngine
 
 		#region Collision Detection
 
-        private void SaveShapePreviousProperties(CollisionPointStructure[] collisionPoints)
+        private void SaveShapePreviousProperties(CollisionPointStructure[] collisionPointsStruct)
         {
             PreviousShapesProperties = new Dictionary<int, StabilizationValues>();
 
-            foreach (var item in collisionPoints)
+            foreach (var item in collisionPointsStruct)
             {
                 var shapeA = Shapes.First(x => x.ID == item.ObjectIndexA);
                 var shapeB = Shapes.First(x => x.ID == item.ObjectIndexB);
@@ -607,20 +609,16 @@ namespace SharpPhysicsEngine
             }
         }
 
-        private Dictionary<HashSetStruct, Tuple<bool,int>> persistentCollisionCounter;
-
 		/// <summary>
 		/// Collisions detection.
 		/// </summary>
 		private void CollisionDetection()
 		{
-			#region Init WarmStarting
-
-			List<CollisionPointStructure> collisionPointsBuffer = null;
+			List<CollisionPointStructure> previousCollisionPoints = null;
 
 			if (collisionPoints != null &&
 				collisionPoints.Length > 0)
-				collisionPointsBuffer = new List<CollisionPointStructure>(collisionPoints);
+                previousCollisionPoints = new List<CollisionPointStructure>(collisionPoints);
 
             //Creo l'array contenente la geometria degli oggetti
             IShape[] simShapes = Array.ConvertAll(
@@ -628,137 +626,17 @@ namespace SharpPhysicsEngine
                             item => (item.ExcludeFromCollisionDetection) ? null : item);
 
             //Eseguo il motore che gestisce le collisioni
-            var newCollisionPoints = CollisionEngine.Execute(simShapes, null);
+            var actualCollisionPoints = CollisionEngine.Execute(simShapes, null);
 
-            //Check persistent collision
-            var pCounter =  persistentCollisionCounter.ToArray();
-            for (int i = 0; i < pCounter.Length; i++)
-            {
-                var tupleVal = new Tuple<bool, int>(false, pCounter[i].Value.Item2);
-                pCounter[i] = new KeyValuePair<HashSetStruct, Tuple<bool, int>>(pCounter[i].Key, tupleVal);
-            }
-            persistentCollisionCounter = pCounter.ToDictionary(x => x.Key, x => x.Value);
+            var warmStartedPoints = warmStartEngine.GetWarmStartedCollisionPoints(
+                Shapes, 
+                previousCollisionPoints, 
+                actualCollisionPoints, 
+                PreviousShapesProperties);
             
-            for (int i = 0; i < collisionPointsBuffer.Count; i++)
-            {
-                int indexA = collisionPointsBuffer[i].ObjectIndexA;
-                int indexB = collisionPointsBuffer[i].ObjectIndexB;
-
-                if (newCollisionPoints.FirstOrDefault(x => x.ObjectIndexA == indexA) != null &&
-                    newCollisionPoints.FirstOrDefault(x => x.ObjectIndexB == indexB) != null)
-                {
-                    HashSetStruct hash = new HashSetStruct(indexA, indexB);
-                    if (persistentCollisionCounter.TryGetValue(hash, out Tuple<bool, int> counter))
-                    {
-                        counter = new Tuple<bool, int>(true, counter.Item2);
-
-                    }
-                    else
-                    {
-                        persistentCollisionCounter.Add(hash, new Tuple<bool, int>(true, 0));
-                    }
-                    
-                }
-            }
-
-            pCounter = persistentCollisionCounter.ToArray();
-            List<HashSetStruct> indexToRemove = new List<HashSetStruct>();
-            for (int i = 0; i < pCounter.Length; i++)
-            {
-                if (!pCounter[i].Value.Item1)
-                    indexToRemove.Add(pCounter[i].Key);
-            }
-
-            foreach (var item in indexToRemove)
-            {
-                if (persistentCollisionCounter.ContainsKey(item))
-                    persistentCollisionCounter.Remove(item);
-            }
-            
-            //Creo la lista delle coppie di shape di cui non voglio testare la collisione
-            Dictionary<HashSetStruct, CollisionPointStructure> activeOldCollisionPoint = new Dictionary<HashSetStruct, CollisionPointStructure>();
-            
-            HashSet<HashSetStruct> ignoreList = new HashSet<HashSetStruct>();
-            List<CollisionPointStructure> oldCollisionPoint = new List<CollisionPointStructure>();
-            double distTolerance = 1E-2;
-            double velTolerance = 0.2;
-
-            if (collisionPointsBuffer != null)
-            {
-                foreach (var item in collisionPointsBuffer)
-                {
-                    if (PreviousShapesProperties.TryGetValue(item.ObjectIndexA, out StabilizationValues objA) &&
-                        PreviousShapesProperties.TryGetValue(item.ObjectIndexB, out StabilizationValues objB))
-                    {
-                        var shapeA = Shapes.First(x => x.ID == item.ObjectIndexA);
-                        var shapeB = Shapes.First(x => x.ID == item.ObjectIndexB);
-
-                        var posDiffA = Vector3.Length(shapeA.Position - objA.Position);
-                        var posDiffB = Vector3.Length(shapeB.Position - objB.Position);
-
-                        var angDiffA = Quaternion.Length(shapeA.RotationStatus - objA.RotationStatus);
-                        var angDiffB = Quaternion.Length(shapeB.RotationStatus - objB.RotationStatus);
-
-                        var velDiffA = Vector3.Length(shapeA.LinearVelocity - objA.LinearVelocity);
-                        var velDiffB = Vector3.Length(shapeB.LinearVelocity - objB.LinearVelocity);
-
-                        var angVelDiffA = Vector3.Length(shapeA.AngularVelocity - objA.AngularVelocity);
-                        var angVelDiffB = Vector3.Length(shapeB.AngularVelocity - objB.AngularVelocity);
-
-                        if (posDiffA < distTolerance && posDiffB < distTolerance &&
-                            angDiffA < distTolerance && angDiffB < distTolerance &&
-                            velDiffA < velTolerance && velDiffB < velTolerance &&
-                            angVelDiffA < velTolerance && angVelDiffB < velTolerance)
-                        {
-                            activeOldCollisionPoint.Add(new HashSetStruct(item.ObjectIndexA, item.ObjectIndexB), item);
-                            //ignoreList.Add(new HashSetStruct(item.ObjectIndexA, item.ObjectIndexB));
-                            //oldCollisionPoint.Add(item);
-                        }
-                    }
-                }
-            }
-            
-            #endregion
-
-            #region Find New Collision Points
-
-            
-
-            for (int i = 0; i < newCollisionPoints.Count; i++)
-            {
-                if (activeOldCollisionPoint.TryGetValue(
-                    new HashSetStruct(newCollisionPoints[i].ObjectIndexA, newCollisionPoints[i].ObjectIndexB),
-                    out CollisionPointStructure cPoint))
-                {
-                    if(cPoint.CollisionPointBase[0].CollisionPoints.Length >= newCollisionPoints[i].CollisionPointBase[0].CollisionPoints.Length)
-                    {
-                        CollisionPointStructure item = cPoint;
-                        item.CollisionPointBase[0].SetIntersection(newCollisionPoints[i].CollisionPointBase[0].Intersection);
-                        item.CollisionPointBase[0].SetObjectDistance(newCollisionPoints[i].CollisionPointBase[0].ObjectDistance);
-                        
-                        foreach (var value in item.CollisionPointBase[0].CollisionPoints)
-                        {
-                            value.RegularizeStartImpulseProperties(EngineParameters.WarmStartingValue);
-                        }
-
-                        newCollisionPoints[i] = item;
-                    }
-                }
-            }
-                        
-            collisionPoints = newCollisionPoints.ToArray();
-
-            #endregion
-
-            #region WarmStarting
-
-            //if (collisionPointsBuffer != null &&
-            //    collisionPointsBuffer.Count > 0)
-            //    WarmStarting(collisionPointsBuffer);
-
-            #endregion
+            collisionPoints = actualCollisionPoints.ToArray();
         }
-		
+
 		#endregion
 
 		#region Contact Partitioning
@@ -769,7 +647,7 @@ namespace SharpPhysicsEngine
 													        collisionPoints,
 													        Joints,
 													        Shapes,
-                                                            this.SoftShapes);
+                                                            SoftShapes);
 		}
 
 		#endregion

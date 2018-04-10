@@ -357,15 +357,15 @@ namespace SharpEngineMathUtility
 			double c = input.z;
 
 			if (Math.Sign(input.x) != Math.Sign(sign.x) && 
-			   Math.Sign(sign.x) != 0)
+			    Math.Sign(sign.x) != 0)
 				a = -input.x;
 			
 			if (Math.Sign(input.y) != Math.Sign(sign.y) &&
-			   Math.Sign(sign.y) != 0)
+			    Math.Sign(sign.y) != 0)
 				b = -input.y;
 
 			if (Math.Sign(input.z) != Math.Sign(sign.z) &&
-			   Math.Sign(sign.z) != 0)
+			    Math.Sign(sign.z) != 0)
 				c = -input.z;
 
 			return new Vector3(a, b, c);

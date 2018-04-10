@@ -75,11 +75,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 			List<CollisionPoint> collisionPointsList = FindCollisionPoints (
 				collisionA.ToArray (),
 				collisionB.ToArray (),
-				collisionPoint.CollisionNormal,
 				collisionPoint);
 
 			collisionA.Clear ();
 			collisionB.Clear ();
+
+            SetIntersectionDistance(collisionPoint, collisionPointsList);
+            SetCollisionNormal(collisionPointsList, collisionPoint.CollisionNormal);
 
 			return collisionPointsList;
 		}
@@ -87,6 +89,44 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#endregion
 
 		#region Private Methods
+
+        private void SetIntersectionDistance(
+            CollisionPoint collisionPoint,
+            List<CollisionPoint> collisionPoints)
+        {
+            if (collisionPoint.Intersection)
+            {
+                foreach (var item in collisionPoints)
+                {
+                    var dist = item.CollisionPointA.Vertex - item.CollisionPointB.Vertex;
+                    var nn = dist.Normalize();
+                    if(Vector3.Cross(nn, collisionPoint.CollisionNormal).Length() > 0.1 )
+                    {
+                        item.SetIntersection(false);
+
+                    }
+
+                    //if()
+                    //if(item.CollisionPointA - item.CollisionPointB)
+                }
+            }
+        }
+
+        private void SetCollisionNormal(
+            List<CollisionPoint> collisionPoints,
+            Vector3 cNormal)
+        {
+            if(collisionPoints.Count > 2)
+            {
+                var normal = GeometryUtilities.CalculateNormal(
+                    collisionPoints[0].CollisionPointA.Vertex, 
+                    collisionPoints[1].CollisionPointA.Vertex,
+                    collisionPoints[2].CollisionPointA.Vertex);
+
+                foreach (var point in collisionPoints)
+                    point.SetNormal(Vector3.UniformSign(normal, cNormal));
+            }
+        }
 
 		/// <summary>
 		/// Gets the nearest point from collision point.
@@ -101,11 +141,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var collisionPoints = new List<Vector3> ();
 
-			Vector3 normal = Vector3.Normalize(planeNormal);
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
 				Vector3 nt = Vector3.Normalize(vertexObj[i] - collisionPoint);
-				if (Math.Abs(Vector3.Dot(nt, normal)) < ManifoldPlaneTolerance)
+                if (Math.Abs(Vector3.Dot(nt, planeNormal)) < ManifoldPlaneTolerance)
 					collisionPoints.Add(vertexObj[i]);
 			}
 
@@ -115,7 +154,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private List<CollisionPoint> FindCollisionPoints(
 			Vector3[] ca,
 			Vector3[] cb,
-			Vector3 normal,
 			CollisionPoint cp)
 		{
 			var result = new List<CollisionPoint> ();
@@ -127,7 +165,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 					ca [1],
 					cb [0],
 					cb [1],
-					cp.CollisionNormal);
+					cp);
 
 				if (collisionP != null)
 					result.Add (collisionP.Value);
@@ -137,13 +175,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				ca = GeometryUtilities.TurnVectorClockWise (
 					ca,
-					normal);
+                    cp.CollisionNormal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					normal));
+                    cp.CollisionNormal));
 
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
@@ -153,7 +191,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							ca [(i + 1) % ca.Length],
 							cb [0],
 							cb [1],
-							cp.CollisionNormal);
+							cp);
 
 						if (collisionP != null)
 							result.Add (collisionP.Value);
@@ -164,13 +202,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				cb = GeometryUtilities.TurnVectorClockWise (
 					cb,
-					normal);
+                    cp.CollisionNormal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					normal));
+                    cp.CollisionNormal));
 
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
@@ -180,7 +218,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							ca [1],
 							cb [i],
 							cb [(i + 1) % cb.Length],
-							cp.CollisionNormal);
+							cp);
 
 						if (collisionP != null)
 							result.Add (collisionP.Value);
@@ -191,17 +229,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				ca = GeometryUtilities.TurnVectorClockWise (
 					ca,
-					normal);
+                    cp.CollisionNormal);
 
 				cb = GeometryUtilities.TurnVectorClockWise (
 					cb,
-					normal);
+                    cp.CollisionNormal);
 
 				result.AddRange(TestPointIsOnPlane (
 					ca,
 					cb,
 					cp,
-					normal));
+                    cp.CollisionNormal));
 
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
@@ -211,7 +249,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							ca [(i + 1) % ca.Length],
 							cb [j],
 							cb [(j + 1) % cb.Length],
-							cp.CollisionNormal);
+							cp);
 						
 						if (collisionP != null)
 							result.Add (collisionP.Value);
@@ -263,7 +301,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 						var cp = new CollisionPoint(
 							new VertexProperties(ca[i]),
 							new VertexProperties(project),
-							na);
+							na,
+                            initPoint.Distance,
+                            initPoint.Intersection);
 						result.Add(cp);
 					}
 				}
@@ -288,7 +328,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 						var cp = new CollisionPoint(
 							new VertexProperties(project),
 							new VertexProperties(cb[i]),
-							na);
+							na, 
+                            initPoint.Distance,
+                            initPoint.Intersection);
 						result.Add(cp);
 					}
 				}
@@ -335,7 +377,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3 p2,
 			Vector3 p3,
 			Vector3 p4,
-			Vector3 normal)
+			CollisionPoint point)
 		{
 			var a = new Vector3 ();
 			var b = new Vector3 ();
@@ -356,7 +398,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 					return new CollisionPoint (
 						new VertexProperties(a),
 						new VertexProperties(b),
-						normal);
+						point.CollisionNormal,
+                        point.Distance,
+                        point.Intersection);
 			}
 
 			return null;

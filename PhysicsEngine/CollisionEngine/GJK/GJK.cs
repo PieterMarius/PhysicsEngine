@@ -270,7 +270,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			cp = new CollisionPoint(
 				result.A,
 				result.B,
-				collisionNormal);
+				collisionNormal,
+                0.0,
+                false);
 			
 			return minDistance;
 		}

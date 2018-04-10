@@ -191,7 +191,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			var collisionPoint = new CollisionPoint (
 				epaCollisionPoint.A,
 				epaCollisionPoint.B,
-				epaCollisionPoint.Normal);
+				epaCollisionPoint.Normal,
+                Vector3.Length(epaCollisionPoint.Dist),
+                true);
 
 			return new EPAOutput (
 				Vector3.Length (epaCollisionPoint.Dist),

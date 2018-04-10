@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  *  
  *****************************************************************************/
+using System.Linq;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -96,16 +97,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Fields
 
 		/// <summary>
-		/// The object distance.
-		/// </summary>
-		public double ObjectDistance { get; private set; }
-
-		/// <summary>
-		/// Check intersection.
-		/// </summary>
-		public bool Intersection { get; private set; }
-
-		/// <summary>
 		/// The collision point.
 		/// </summary>
 		public CollisionPoint CollisionPoint;
@@ -120,13 +111,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Constructor
 
 		public CollisionPointBaseStructure(
-			double objectDistance,
-			bool intersection,
 			CollisionPoint collisionPoint,
 			CollisionPoint[] collisionPoints)
 		{
-			ObjectDistance = objectDistance;
-			Intersection = intersection;
 			CollisionPoint = collisionPoint;
 			CollisionPoints = collisionPoints;
 		}
@@ -135,15 +122,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#region Public Methods
 
-		public void SetIntersection(bool value)
-		{
-			Intersection = value;
-		}
-
-		public void SetObjectDistance(double value)
-		{
-			ObjectDistance = value;
-		}
+        public void AddCollisionPoint(CollisionPoint point)
+        {
+            var lst = CollisionPoints.ToList();
+            lst.Add(point);
+            CollisionPoints = lst.ToArray();
+        }
 
 		#endregion
 

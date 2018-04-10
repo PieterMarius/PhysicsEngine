@@ -546,8 +546,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 					ID_A,
 					ID_B,
 					new CollisionPointBaseStructure(
-						gjkOutput.CollisionDistance,
-						gjkOutput.Intersection,
 						gjkOutput.CollisionPoint,
 						collisionPointsList.ToArray()));
 			}
@@ -572,8 +570,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 					ID_A,
 					ID_B,
 					new CollisionPointBaseStructure(
-						epaOutput.CompenetrationDistance,
-						gjkOutput.Intersection,
 						epaOutput.CollisionPoint,
 						collisionPointsList.ToArray()));
 			}

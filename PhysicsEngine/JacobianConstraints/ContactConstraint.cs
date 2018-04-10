@@ -144,8 +144,8 @@ namespace SharpPhysicsEngine
 
 
                     if (relativeVelocity.Length() < 1E-12 &&
-                        collisionPointStr.CollisionPointBase[h].Intersection &&
-                        collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
+                        collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection &&
+                        collisionPointStr.CollisionPointBase[h].CollisionPoint.Distance < 1E-10)
                         continue;
 
                     #region Normal direction contact
@@ -156,10 +156,10 @@ namespace SharpPhysicsEngine
 
                     double correctionParameter = 0.0;
 
-                    if (collisionPointStr.CollisionPointBase[h].Intersection)
+                    if (collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection)
                     {
                         //Limit the Baum stabilization jitter effect 
-                        correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+                        correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].CollisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *
                                                 baumgarteStabValue - uCollision, 0.0);
                     }
 
@@ -270,8 +270,8 @@ namespace SharpPhysicsEngine
                     Vector3 relativeVelocity = velocityB - velocityA;
                     
                     if (relativeVelocity.Length() < 1E-12 &&
-                        collisionPointStr.CollisionPointBase[h].Intersection &&
-                        collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
+                        collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection &&
+                        collisionPointStr.CollisionPointBase[h].CollisionPoint.Distance < 1E-10)
                         continue;
 
                     #region Normal direction contact
@@ -282,10 +282,10 @@ namespace SharpPhysicsEngine
 
                     double correctionParameter = 0.0;
 
-                    if (collisionPointStr.CollisionPointBase[h].Intersection)
+                    if (collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection)
                     {
                         //Limit the Baum stabilization jitter effect 
-                        correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+                        correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].CollisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *
                                                 baumgarteStabValue - uCollision, 0.0);
                     }
 
@@ -423,8 +423,8 @@ namespace SharpPhysicsEngine
 					Vector3 relativeVelocity = velocityB - velocityA;
 
 					if (relativeVelocity.Length() < 1E-12 &&
-						collisionPointStr.CollisionPointBase[h].Intersection &&
-						collisionPointStr.CollisionPointBase[h].ObjectDistance < 1E-10)
+						collisionPoint.Intersection &&
+						collisionPoint.Distance < 1E-10)
 						continue;
 
 					#region Normal direction contact
@@ -435,10 +435,10 @@ namespace SharpPhysicsEngine
 
 					double correctionParameter = 0.0;
 
-					if (collisionPointStr.CollisionPointBase[h].Intersection)
+					if (collisionPoint.Intersection)
 					{
 						//Limit the Baum stabilization jitter effect 
-						correctionParameter = Math.Max(Math.Max(collisionPointStr.CollisionPointBase[h].ObjectDistance - simulationParameters.CompenetrationTolerance, 0.0) *
+						correctionParameter = Math.Max(Math.Max(collisionPoint.Distance- simulationParameters.CompenetrationTolerance, 0.0) *
 												        baumgarteStabilizationValue - uCollision, 0.0);
 					}
 
@@ -463,30 +463,28 @@ namespace SharpPhysicsEngine
 
                     contactConstraints.Add(normalContact);
 
-                    if (frictionDirections > 0)
+                    #region Friction Contact
+
+                    JacobianConstraint[] frictionContact =
+                        AddFrictionConstraints(
+                            objectA,
+                            objectB,
+                            simulationParameters,
+                            linearComponentA,
+                            relativeVelocity,
+                            ra,
+                            rb,
+                            (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue.ToArray() : null);
+
+                    #endregion
+
+                    int normalIndex = contactConstraints.Count - 1;
+                    foreach (JacobianConstraint fjc in frictionContact)
                     {
-                        #region Friction Contact
-
-                        JacobianConstraint[] frictionContact =
-                            AddFrictionConstraints(
-                                objectA,
-                                objectB,
-                                simulationParameters,
-                                linearComponentA,
-                                relativeVelocity,
-                                ra,
-                                rb,
-                                (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue.ToArray() : null);
-
-                        #endregion
-
-                        int normalIndex = contactConstraints.Count - 1;
-                        foreach (JacobianConstraint fjc in frictionContact)
-                        {
-                            fjc.SetContactReference(normalIndex);
-                            contactConstraints.Add(fjc);
-                        }
+                        fjc.SetContactReference(normalIndex);
+                        contactConstraints.Add(fjc);
                     }
+
 				}
 			}
 

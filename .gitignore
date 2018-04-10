@@ -63,3 +63,5 @@ TestPhysics/bin/*
 .suo
 *.vspx
 packages/*
+
+PhysicsEngine/bin/Debug/System.Numerics.Vectors.xml

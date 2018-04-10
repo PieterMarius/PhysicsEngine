@@ -26,7 +26,6 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
-using System;
 using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -35,7 +34,9 @@ namespace SharpPhysicsEngine.CollisionEngine
     {
         public readonly VertexProperties CollisionPointA;
         public readonly VertexProperties CollisionPointB;
-        public readonly Vector3 CollisionNormal;
+        public double Distance { get; private set; }
+        public bool Intersection { get; private set; }
+        public Vector3 CollisionNormal { get; private set; }
         public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
         #region Constructor
@@ -43,11 +44,15 @@ namespace SharpPhysicsEngine.CollisionEngine
         public CollisionPoint(
             VertexProperties collisionPointA,
             VertexProperties collisionPointB,
-            Vector3 collisionNormal)
+            Vector3 collisionNormal,
+            double distance,
+            bool intersection)
         {
             CollisionPointA = collisionPointA;
             CollisionPointB = collisionPointB;
             CollisionNormal = collisionNormal;
+            Distance = distance;
+            Intersection = intersection;
 
             //Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
             StartImpulseValue = new List<StartImpulseProperties>()
@@ -64,9 +69,24 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public void RegularizeStartImpulseProperties(double regParam)
         {
-            foreach (var item in StartImpulseValue)
-                item.SetStartValue(item.StartImpulseValue * regParam);
-            
+            StartImpulseValue[0].SetStartValue(StartImpulseValue[0].StartImpulseValue * regParam);
+            StartImpulseValue[1].SetStartValue(StartImpulseValue[1].StartImpulseValue * regParam);
+            StartImpulseValue[2].SetStartValue(StartImpulseValue[2].StartImpulseValue * regParam);
+        }
+
+        public void SetNormal(Vector3 normal)
+        {
+            CollisionNormal = normal;
+        }
+
+        public void SetDistance(double distance)
+        {
+            Distance = distance;
+        }
+
+        public void SetIntersection(bool intersection)
+        {
+            Intersection = intersection;
         }
 
         #endregion

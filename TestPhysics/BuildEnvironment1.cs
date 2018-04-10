@@ -73,7 +73,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
 
             physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(40);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(60);
 
             return physicsEnvironment;
 		}
@@ -154,7 +154,7 @@ namespace TestPhysics
             Vector3 shift = new Vector3(0.0, 2.1, 0.0);
             Vector3 position = new Vector3(0.0, 1.7, 0.0);
             
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -177,7 +177,7 @@ namespace TestPhysics
 
                 objects.Add(objects1);
             }
-
+            /*
             position = new Vector3(3.0, 1.7, 0.0);
 
             for (int i = 0; i < 10; i++)
@@ -205,7 +205,7 @@ namespace TestPhysics
             }
             position = new Vector3(-3.0, 1.7, 0.0);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 5; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
@@ -228,6 +228,7 @@ namespace TestPhysics
 
                 objects.Add(objects1);
             }
+
 
             position = new Vector3(0.0, 1.7, -3.0);
 
@@ -280,7 +281,7 @@ namespace TestPhysics
 
                 objects.Add(objects1);
             }
-
+            */
 
             //TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
             //TODO rimuovere
