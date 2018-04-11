@@ -634,7 +634,7 @@ namespace SharpPhysicsEngine
                 actualCollisionPoints, 
                 PreviousShapesProperties);
             
-            collisionPoints = actualCollisionPoints.ToArray();
+            collisionPoints = warmStartedPoints.ToArray();
         }
 
 		#endregion

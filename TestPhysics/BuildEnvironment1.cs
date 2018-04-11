@@ -73,7 +73,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
 
             physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(60);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(40);
 
             return physicsEnvironment;
 		}

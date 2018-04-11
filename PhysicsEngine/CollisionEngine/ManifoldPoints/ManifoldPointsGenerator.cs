@@ -80,7 +80,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 			collisionA.Clear ();
 			collisionB.Clear ();
 
-            SetIntersectionDistance(collisionPoint, collisionPointsList);
             SetCollisionNormal(collisionPointsList, collisionPoint.CollisionNormal);
 
 			return collisionPointsList;
@@ -89,28 +88,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#endregion
 
 		#region Private Methods
-
-        private void SetIntersectionDistance(
-            CollisionPoint collisionPoint,
-            List<CollisionPoint> collisionPoints)
-        {
-            if (collisionPoint.Intersection)
-            {
-                foreach (var item in collisionPoints)
-                {
-                    var dist = item.CollisionPointA.Vertex - item.CollisionPointB.Vertex;
-                    var nn = dist.Normalize();
-                    if(Vector3.Cross(nn, collisionPoint.CollisionNormal).Length() > 0.1 )
-                    {
-                        item.SetIntersection(false);
-
-                    }
-
-                    //if()
-                    //if(item.CollisionPointA - item.CollisionPointB)
-                }
-            }
-        }
 
         private void SetCollisionNormal(
             List<CollisionPoint> collisionPoints,
@@ -133,7 +110,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// </summary>
 		/// <returns>The nearest point.</returns>
 		/// <param name="shape">Shape.</param>
-		/// <param name="collisionPoint">Collision point.</param>
+		/// <param name="collisionPoint">Collision point.</param>z
 		private List<Vector3> GetNearestPoint(
 			Vector3[] vertexObj,
 			Vector3 collisionPoint,
@@ -143,7 +120,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
-				Vector3 nt = Vector3.Normalize(vertexObj[i] - collisionPoint);
+                Vector3 diff = vertexObj[i] - collisionPoint;
+                if (diff == Vector3.Zero())
+                    continue;
+
+				Vector3 nt = Vector3.Normalize(diff);
+
                 if (Math.Abs(Vector3.Dot(nt, planeNormal)) < ManifoldPlaneTolerance)
 					collisionPoints.Add(vertexObj[i]);
 			}
@@ -259,8 +241,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			result = PruneCollisionPoints (result);
 
-			if (result.Count < 1)
-				result.Add(cp);
+			result.Add(cp);
 
 			return result;
 		}
@@ -296,14 +277,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 						initPoint.CollisionPointB.Vertex);
 
 					//Inserito il minore per gestire problemi di approssimazione
-					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
+					if (angle + ManifoldStabilizeValue >= ConstValues.PI2)
 					{
 						var cp = new CollisionPoint(
 							new VertexProperties(ca[i]),
 							new VertexProperties(project),
 							na,
-                            initPoint.Distance,
-                            initPoint.Intersection);
+                            0.0,
+                            false);
 						result.Add(cp);
 					}
 				}
@@ -323,14 +304,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 						na,
 						initPoint.CollisionPointA.Vertex);
 
-					if (angle + ManifoldStabilizeValue >= 2.0 * Math.PI)
+					if (angle + ManifoldStabilizeValue >= ConstValues.PI2)
 					{
 						var cp = new CollisionPoint(
 							new VertexProperties(project),
 							new VertexProperties(cb[i]),
 							na, 
-                            initPoint.Distance,
-                            initPoint.Intersection);
+                            0.0,
+                            false);
 						result.Add(cp);
 					}
 				}
@@ -344,7 +325,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private List<CollisionPoint> PruneCollisionPoints(
 			List<CollisionPoint> cpList)
 		{
-			if (cpList.Count > ManifoldPointNumber) 
+			if (cpList.Count > ManifoldPointNumber - 1) 
 			{
 				var center = new Vector3();
 				for (int i = 0; i < cpList.Count; i++)
@@ -352,7 +333,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 				center = center / Convert.ToDouble(cpList.Count);
 
-				while (cpList.Count > ManifoldPointNumber) 
+				while (cpList.Count > ManifoldPointNumber - 1) 
 				{
 					int index = 0;
 					double min = Vector3.Length (cpList [0].CollisionPointA.Vertex - center);
@@ -399,8 +380,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 						new VertexProperties(a),
 						new VertexProperties(b),
 						point.CollisionNormal,
-                        point.Distance,
-                        point.Intersection);
+                        0.0,
+                        false);
 			}
 
 			return null;

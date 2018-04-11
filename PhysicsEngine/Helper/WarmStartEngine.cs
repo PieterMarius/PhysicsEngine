@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.Helper
 
             Dictionary<WarmStartHashSet, CollisionPointStructure> warmStartedCollisionPoints = new Dictionary<WarmStartHashSet, CollisionPointStructure>();
 
-            int warmStartCounter = 5;
+            int warmStartCounter = 20;
 
 
             foreach (var item in actualCollisionPoints)
@@ -52,8 +52,7 @@ namespace SharpPhysicsEngine.Helper
                     item.ObjectIndexB);
 
                 if (collisionPointsCounterDictionary.TryGetValue(hashset, out Tuple<bool, int, CollisionPointStructure> value) &&
-                    value.Item2 >= warmStartCounter && 
-                    value.Item3.CollisionPointBase[0].CollisionPoints.Length >= 4)
+                    value.Item2 >= warmStartCounter)
                 {
                     
                         /*
@@ -81,6 +80,8 @@ namespace SharpPhysicsEngine.Helper
                             angVelDiffA < velTolerance && angVelDiffB < velTolerance)
                         {
                         */
+                        
+
                         warmStartedCollisionPoints.Add(new WarmStartHashSet(item.ObjectIndexA, item.ObjectIndexB), value.Item3);
                         //}
 
@@ -107,6 +108,8 @@ namespace SharpPhysicsEngine.Helper
                     foreach (var value in item.CollisionPointBase[0].CollisionPoints)
                     {
                         value.RegularizeStartImpulseProperties(EngineParameters.WarmStartingValue);
+                        value.SetIntersection(false);
+                        value.SetDistance(0.0);
                         //value.SetNormal(outputCollisionPoints[i].CollisionPointBase[0].CollisionPoint.CollisionNormal);
                         k++;
                     }
@@ -150,16 +153,25 @@ namespace SharpPhysicsEngine.Helper
                         actualCollisionPoints[i].ObjectIndexA,
                         actualCollisionPoints[i].ObjectIndexB);
 
+
+
                     if (collisionPointsCounterDictionary.TryGetValue(hash, out Tuple<bool, int, CollisionPointStructure> value))
                     {
                         if (previousShapesProperties.TryGetValue(hash.ID_A, out StabilizationValues objA) &&
                             previousShapesProperties.TryGetValue(hash.ID_B, out StabilizationValues objB))
                         {
                             //TODO Check position and velocity
+
                             var previousPoint = previousCollisionPoints.FirstOrDefault(x => x.ObjectIndexA == hash.ID_A && x.ObjectIndexB == hash.ID_B);
                             if (previousPoint == null)
+                            {
                                 previousPoint = previousCollisionPoints.FirstOrDefault(x => x.ObjectIndexA == hash.ID_B && x.ObjectIndexB == hash.ID_A);
-                            
+                                hash = new WarmStartHashSet(
+                                    actualCollisionPoints[i].ObjectIndexB,
+                                    actualCollisionPoints[i].ObjectIndexA);
+                            }
+
+                            /*
                             var shapeA = shapes.First(x => x.ID == hash.ID_A);
                             var shapeB = shapes.First(x => x.ID == hash.ID_B);
 
@@ -169,7 +181,7 @@ namespace SharpPhysicsEngine.Helper
                             var angDiffA = Quaternion.Length(shapeA.RotationStatus - objA.RotationStatus);
                             var angDiffB = Quaternion.Length(shapeB.RotationStatus - objB.RotationStatus);
 
-                            /*
+
                             if (previousPoint.CollisionPointBase[0].CollisionPoints.Length < 10)
                             {
                                 var cPoint = actualCollisionPoints[i].CollisionPointBase[0].CollisionPoint;
@@ -197,8 +209,11 @@ namespace SharpPhysicsEngine.Helper
                         }
                     }
                     else
-                        collisionPointsCounterDictionary.Add(hash, new Tuple<bool, int, CollisionPointStructure>(true, 0, actualCollisionPoints[i]));
+                    {
 
+
+                        collisionPointsCounterDictionary.Add(hash, new Tuple<bool, int, CollisionPointStructure>(true, 0, actualCollisionPoints[i]));
+                    }
                 }
 
                 var itemToDelete = collisionPointsCounterDictionary.ToArray().Where(x => !x.Value.Item1);

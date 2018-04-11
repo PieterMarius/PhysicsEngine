@@ -481,10 +481,8 @@ namespace SharpEngineMathUtility
 
 		public override bool Equals(object obj)
 		{
-			if(obj is Vector3)
+			if (obj is Vector3 otherVector)
 			{
-				var otherVector = (Vector3)obj;
-
 				return otherVector.Equals(this);
 			}
 			else

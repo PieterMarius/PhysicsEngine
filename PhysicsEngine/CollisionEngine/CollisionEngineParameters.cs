@@ -96,7 +96,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			GJKManifoldTolerance = 0.009;
 			EPAManifoldTolerance = 0.009;
 			ManifoldProjectionTolerance = 0.005;
-			ManifoldPointNumber = 4;
+			ManifoldPointNumber = 5;
 			MaxThreadNumber = 2;
 			ActivateSweepAndPrune = true;
 		}
