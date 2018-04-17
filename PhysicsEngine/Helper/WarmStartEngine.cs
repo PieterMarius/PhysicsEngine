@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.Helper
 
             Dictionary<WarmStartHashSet, CollisionPointStructure> warmStartedCollisionPoints = new Dictionary<WarmStartHashSet, CollisionPointStructure>();
 
-            int warmStartCounter = 20;
+            int warmStartCounter = 15;
 
 
             foreach (var item in actualCollisionPoints)
@@ -54,34 +54,6 @@ namespace SharpPhysicsEngine.Helper
                 if (collisionPointsCounterDictionary.TryGetValue(hashset, out Tuple<bool, int, CollisionPointStructure> value) &&
                     value.Item2 >= warmStartCounter)
                 {
-                    
-                        /*
-                        var shapeA = shapes.First(x => x.ID == hashset.ID_A);
-                        var shapeB = shapes.First(x => x.ID == hashset.ID_B);
-
-                        var posDiffA = Vector3.Length(shapeA.Position - objA.Position);
-                        var posDiffB = Vector3.Length(shapeB.Position - objB.Position);
-
-                        var angDiffA = Quaternion.Length(shapeA.RotationStatus - objA.RotationStatus);
-                        var angDiffB = Quaternion.Length(shapeB.RotationStatus - objB.RotationStatus);
-
-
-                        var velDiffA = Vector3.Length(shapeA.LinearVelocity - objA.LinearVelocity);
-                        var velDiffB = Vector3.Length(shapeB.LinearVelocity - objB.LinearVelocity);
-
-                        var angVelDiffA = Vector3.Length(shapeA.AngularVelocity - objA.AngularVelocity);
-                        var angVelDiffB = Vector3.Length(shapeB.AngularVelocity - objB.AngularVelocity);
-                        */
-
-                        /*
-                         if (posDiffA < distTolerance && posDiffB < distTolerance &&
-                            angDiffA < distTolerance && angDiffB < distTolerance /*&&
-                            velDiffA < velTolerance && velDiffB < velTolerance &&
-                            angVelDiffA < velTolerance && angVelDiffB < velTolerance)
-                        {
-                        */
-                        
-
                         warmStartedCollisionPoints.Add(new WarmStartHashSet(item.ObjectIndexA, item.ObjectIndexB), value.Item3);
                         //}
 
@@ -96,22 +68,56 @@ namespace SharpPhysicsEngine.Helper
 
                 if (warmStartedCollisionPoints.TryGetValue(hashSet, out CollisionPointStructure cPoint))
                 {
-                    //if (cPoint.CollisionPointBase[0].CollisionPoints.Length >= outputCollisionPoints[i].CollisionPointBase[0].CollisionPoints.Length)
-                    //{
-                    CollisionPointStructure item = cPoint;
-                    //item.CollisionPointBase[0].SetIntersection(outputCollisionPoints[i].CollisionPointBase[0].Intersection);
-                    //item.CollisionPointBase[0].SetObjectDistance(outputCollisionPoints[i].CollisionPointBase[0].ObjectDistance);
-                    //item.CollisionPointBase[0].SetIntersection(false);
-                    //item.CollisionPointBase[0].SetObjectDistance(0.0);
+                    CollisionPointStructure item = outputCollisionPoints[i];
 
                     int k = 0;
+
                     foreach (var value in item.CollisionPointBase[0].CollisionPoints)
                     {
-                        value.RegularizeStartImpulseProperties(EngineParameters.WarmStartingValue);
-                        value.SetIntersection(false);
-                        value.SetDistance(0.0);
+                        //if (!value.Intersection)
+                        //{
+                            List<StartImpulseProperties> startImpulse = new List<StartImpulseProperties>
+                            {
+                                new StartImpulseProperties(0.0),
+                                new StartImpulseProperties(0.0),
+                                new StartImpulseProperties(0.0)
+                            };
+
+                            //CollisionPoint val = value;
+
+                            //Get nearest
+                            double minDistance = double.MaxValue;
+                            foreach (var point in cPoint.CollisionPointBase[0].CollisionPoints)
+                            {
+                                double distAA = Vector3.Length(point.CollisionPointA.Vertex - value.CollisionPointA.Vertex);
+                                double distBA = Vector3.Length(point.CollisionPointB.Vertex - value.CollisionPointA.Vertex);
+
+                                if(distAA < minDistance ||
+                                   distBA < minDistance)
+                                {
+                                    minDistance = (distAA < distBA) ? distAA : distBA;
+                                    startImpulse = point.StartImpulseValue;
+                                }
+
+                                /*
+                                if (
+                                    (CheckCollisionPointDistance(point.CollisionPointA.Vertex, value.CollisionPointA.Vertex, 1E-2) &&
+                                     CheckCollisionPointDistance(point.CollisionPointB.Vertex, value.CollisionPointB.Vertex, 1E-2)) ||
+                                    (CheckCollisionPointDistance(point.CollisionPointA.Vertex, value.CollisionPointB.Vertex, 1E-2) &&
+                                     CheckCollisionPointDistance(point.CollisionPointB.Vertex, value.CollisionPointA.Vertex, 1E-2)))
+                                {
+                                    startImpulse = point.StartImpulseValue;
+                                    break;
+                                }
+                                */
+
+                            }
+
+                            value.SetStartImpulseValues(startImpulse, EngineParameters.WarmStartingValue);
+                            k++;
+                        //}
+                       
                         //value.SetNormal(outputCollisionPoints[i].CollisionPointBase[0].CollisionPoint.CollisionNormal);
-                        k++;
                     }
 
                     outputCollisionPoints[i] = item;
@@ -125,6 +131,17 @@ namespace SharpPhysicsEngine.Helper
         #endregion
 
         #region Private Methods
+
+        private bool CheckCollisionPointDistance(
+            Vector3 a,
+            Vector3 b,
+            double tolerance)
+        {
+            if (Vector3.Length(a - b) < tolerance)
+                return true;
+
+            return false;
+        }
 
         private void UpdatePersistentCollisionCounter(
             List<CollisionPointStructure> previousCollisionPoints,

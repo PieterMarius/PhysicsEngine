@@ -74,6 +74,15 @@ namespace SharpPhysicsEngine.CollisionEngine
             StartImpulseValue[2].SetStartValue(StartImpulseValue[2].StartImpulseValue * regParam);
         }
 
+        public void SetStartImpulseValues(
+            List<StartImpulseProperties> startImpulses, 
+            double regParam)
+        {
+            StartImpulseValue[0].SetStartValue(startImpulses[0].StartImpulseValue * regParam);
+            StartImpulseValue[1].SetStartValue(startImpulses[1].StartImpulseValue * regParam);
+            StartImpulseValue[2].SetStartValue(startImpulses[2].StartImpulseValue * regParam);
+        }
+
         public void SetNormal(Vector3 normal)
         {
             CollisionNormal = normal;
