@@ -42,6 +42,7 @@ namespace SharpPhysicsEngine.Wrapper
         double Mass { get; }
         double InverseMass { get; }
         Vector3 ForceValue { get; }
+        bool IsStatic { get; }
 
         int GetID();
         void SetGeometry(
@@ -66,5 +67,6 @@ namespace SharpPhysicsEngine.Wrapper
         void SetSleepingFrameCount(int frameCount);
         void SetStaticFrictionCoeff(double staticFrictionCoeff);
         void SetTorque(Vector3 torque);
+        void SetIsStatic(bool isStatic);
     }
 }

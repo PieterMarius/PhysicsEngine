@@ -137,8 +137,11 @@ namespace TestPhysics
                 {
                     if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
                         objects[i] = new RigidCollisionShape();
-                    else if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.StaticBody)
-                        objects[i] = new StaticCollisionShape();
+                    else if (Convert.ToInt32(xmlList[i][objectType].InnerText) == 1)
+                    {
+                        objects[i] = new RigidCollisionShape();
+                        objects[i].SetIsStatic(true);
+                    }
                 }
 					
 				

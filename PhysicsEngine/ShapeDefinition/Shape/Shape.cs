@@ -76,6 +76,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public Vector3 ForceValue { get; protected set; }
 
+        public bool IsStatic { get; protected set; }
+
         #endregion
 
         #region Public Methods
@@ -174,6 +176,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public void SetTorque(Vector3 torque)
         {
             TorqueValue = torque;
+        }
+
+        public void SetIsStatic(bool isStatic)
+        {
+            IsStatic = isStatic;
         }
 
         #endregion

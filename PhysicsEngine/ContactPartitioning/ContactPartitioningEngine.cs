@@ -29,6 +29,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
 using System.Linq;
 using SharpPhysicsEngine.ContactPartitioning;
+using System;
 
 namespace SharpPhysicsEngine
 {
@@ -163,7 +164,9 @@ namespace SharpPhysicsEngine
                         smj.GetKeyIndex()));
                 }
 
-                Dictionary<int, ObjectType> objectsTypeDic = simulationObjects.ToDictionary(x => x.ID, x => x.ObjectType);
+                Dictionary<int, Tuple<ObjectType, bool>> objectsTypeDic = simulationObjects.ToDictionary(
+                    x => x.ID, 
+                    x => new Tuple<ObjectType, bool>(x.ObjectType, x.IsStatic));
 
                 while (contactIndex.Count != 0)
                 {
@@ -213,7 +216,7 @@ namespace SharpPhysicsEngine
 			ContactIndex searchPoint,
 			List<ContactIndex> readList,
 			List<ContactIndex> partition,
-            Dictionary<int, ObjectType> objectsTypeDic)
+            Dictionary<int, Tuple<ObjectType, bool>> objectsTypeDic)
 		{
 			for (int i = 0; i < readList.Count; i++) 
 			{
@@ -224,11 +227,11 @@ namespace SharpPhysicsEngine
 				    searchPoint.KeyIndex == collisionValue.KeyIndex)
 					continue;
 
-				if (objectsTypeDic[searchPoint.IndexA] == ObjectType.StaticBody &&
-                    objectsTypeDic[searchPoint.IndexB] == ObjectType.StaticBody)
+				if (objectsTypeDic[searchPoint.IndexA].Item2 &&
+                    objectsTypeDic[searchPoint.IndexB].Item2)
 					break;
 
-				if (objectsTypeDic[searchPoint.IndexA] == ObjectType.StaticBody &&
+				if (objectsTypeDic[searchPoint.IndexA].Item2 &&
 				           (searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexB == collisionValue.IndexB)) {
 
@@ -243,7 +246,7 @@ namespace SharpPhysicsEngine
                             objectsTypeDic);
 					}
 
-				} else if (objectsTypeDic[searchPoint.IndexB] == ObjectType.StaticBody &&
+				} else if (objectsTypeDic[searchPoint.IndexB].Item2 &&
 				           (searchPoint.IndexA == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexB)) {
 
@@ -258,8 +261,8 @@ namespace SharpPhysicsEngine
                             objectsTypeDic);
 					}
 
-				} else if ((objectsTypeDic[searchPoint.IndexA] == ObjectType.RigidBody &&
-                           objectsTypeDic[searchPoint.IndexB] == ObjectType.RigidBody) &&
+				} else if ((objectsTypeDic[searchPoint.IndexA].Item1 == ObjectType.RigidBody &&
+                           objectsTypeDic[searchPoint.IndexB].Item1 == ObjectType.RigidBody) &&
 						   (searchPoint.IndexA == collisionValue.IndexB ||
 				           searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexA ||

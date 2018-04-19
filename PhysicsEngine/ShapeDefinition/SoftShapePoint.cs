@@ -52,6 +52,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public Matrix3x3 BaseInertiaTensor { get; private set; }
         public Vector3 ForceValue { get; private set; }
         public HashSet<int> TriangleIndex { get; private set; }
+        public bool IsStatic { get; private set; }
 
         #endregion
 
@@ -142,6 +143,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public void SetStartPosition(Vector3 startPosition)
         {
             StartPosition = startPosition;
+        }
+
+        public void SetIsStatic(bool isStatic)
+        {
+            IsStatic = isStatic;
         }
 
         #endregion

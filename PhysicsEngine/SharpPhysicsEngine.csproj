@@ -106,6 +106,7 @@
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="Wrapper\CompoundRigidCollisionShape.cs" />
+    <Compile Include="Wrapper\EngineObjectType.cs" />
     <Compile Include="Wrapper\Joint\AngularJoint.cs" />
     <Compile Include="Wrapper\Joint\BallAndSocketJoint.cs" />
     <Compile Include="Wrapper\Joint\FixedJoint.cs" />
@@ -120,7 +121,6 @@
     <Compile Include="Wrapper\Joint\UniversalJoint.cs" />
     <Compile Include="Wrapper\RigidCollisionShape.cs" />
     <Compile Include="Wrapper\SoftCollisionShape.cs" />
-    <Compile Include="Wrapper\StaticCollisionShape.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\Shape\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintIndex.cs" />

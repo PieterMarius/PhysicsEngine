@@ -194,6 +194,14 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
+        public bool IsStatic
+        {
+            get
+            {
+                return softShape.IsStatic;
+            }
+        }
+
         public void ExcludeFromCollisionDetection(bool excludeFromCollisionDetection)
         {
             softShape.SetExcludeFromCollisionDetection(excludeFromCollisionDetection);
@@ -242,6 +250,12 @@ namespace SharpPhysicsEngine.Wrapper
         public void SetPosition(Vector3 inputPosition)
         {
             
+            throw new NotSupportedException();
+        }
+
+        public void SetIsStatic(bool isStatic)
+        {
+
             throw new NotSupportedException();
         }
 

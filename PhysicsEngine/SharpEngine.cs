@@ -575,7 +575,8 @@ namespace SharpPhysicsEngine
             integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
             #endregion
-        	}
+
+        }
 
 		#region Collision Detection
 
@@ -634,7 +635,7 @@ namespace SharpPhysicsEngine
                 actualCollisionPoints, 
                 PreviousShapesProperties);
             
-            collisionPoints = warmStartedPoints.ToArray();
+            collisionPoints = actualCollisionPoints.ToArray();
         }
 
 		#endregion

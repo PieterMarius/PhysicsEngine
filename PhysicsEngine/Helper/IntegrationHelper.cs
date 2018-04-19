@@ -123,7 +123,7 @@ namespace SharpPhysicsEngine.Helper
             double timeStep)
         {
             
-            var dynamicShapes = shapes.Where(x => x.ObjectType != ObjectType.StaticBody);
+            var dynamicShapes = shapes.Where(x => !x.IsStatic);
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
                 IntegrateSoftShapePosition(shape, timeStep);
@@ -147,7 +147,7 @@ namespace SharpPhysicsEngine.Helper
             double X,
             object sync)
         {
-            if (simObj.ObjectType != ObjectType.StaticBody)
+            if (!simObj.IsStatic)
             {
                 Vector3 linearImpulse = X * linearComponent;
                 Vector3 angularImpuse = X * angularComponent;
@@ -173,7 +173,7 @@ namespace SharpPhysicsEngine.Helper
             double X,
             object sync)
         {
-            if (simObj.ObjectType != ObjectType.StaticBody)
+            if (!simObj.IsStatic)
             {
                 Vector3 angularImpuse = X * angularComponent;
 

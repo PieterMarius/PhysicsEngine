@@ -31,9 +31,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 {
 	internal sealed class ConvexShape : Shape, IShapeCommon, IConvexShape
     {
-
         #region Object status properties
-                
+        
 		public IGeometry ObjectGeometry { get; private set; }
 
         #endregion
@@ -62,7 +61,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             Mass = mass;
             
-            if (ObjectType == ObjectType.StaticBody)
+            if (IsStatic)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;

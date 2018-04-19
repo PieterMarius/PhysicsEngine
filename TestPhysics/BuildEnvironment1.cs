@@ -73,7 +73,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
 
             physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(40);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(10);
 
             return physicsEnvironment;
 		}
@@ -131,7 +131,8 @@ namespace TestPhysics
 			ShapeScale.Add(25);
 			TextureFilename.Add("texture/woodbox.bmp");
 
-			var objects0 = new StaticCollisionShape();
+			var objects0 = new RigidCollisionShape();
+            objects0.SetIsStatic(true);
             objects0.SetMass(0.0);
             objects0.SetPosition(new Vector3(0.0, -0.7, 0.0));
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));

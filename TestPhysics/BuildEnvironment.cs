@@ -174,7 +174,8 @@ namespace TestPhysics
             ShapeScale[0] = new float[1] { 25 };
             TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
-            objects[0] = new StaticCollisionShape();
+            objects[0] = new RigidCollisionShape();
+            objects[0].SetIsStatic(true);
             objects[0].SetMass(0.0);
             objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
             objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
@@ -257,7 +258,8 @@ namespace TestPhysics
 			ShapeScale[0] = new float[1] { 25 };
 			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
-			var objects0 = new StaticCollisionShape();
+			var objects0 = new RigidCollisionShape();
+            objects0.SetIsStatic(true);
             objects0.SetMass(0.0);
             objects0.SetPosition(new Vector3(0.0, -4.0, 0.0));
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));

@@ -172,6 +172,14 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
+        public bool IsStatic
+        {
+            get
+            {
+                return compoundShape.IsStatic;
+            }
+        }
+
         public void ExcludeFromCollisionDetection(bool excludeFromCollisionDetection)
         {
             compoundShape.SetExcludeFromCollisionDetection(excludeFromCollisionDetection);
@@ -260,6 +268,11 @@ namespace SharpPhysicsEngine.Wrapper
         public void SetTorque(Vector3 torque)
         {
             compoundShape.SetTorque(torque);
+        }
+
+        public void SetIsStatic(bool isStatic)
+        {
+            compoundShape.SetIsStatic(isStatic);
         }
 
         public void SetGeometry(Vector3[] inputVertexPosition, TriangleIndexes[] inputTriangle)

@@ -43,6 +43,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 TempAngularVelocity { get; }
         Vector3 TempLinearVelocity { get; }
         Vector3 ForceValue { get; }
+        bool IsStatic { get; }
 
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
@@ -54,5 +55,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetTempAngularVelocity(Vector3 inputAngularVelocity);
         void SetTempLinearVelocity(Vector3 inputLinearVelocity);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
+        void SetIsStatic(bool isStatic);
     }
 }

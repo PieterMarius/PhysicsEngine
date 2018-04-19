@@ -152,7 +152,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             Mass = mass;
             
-            if (ObjectType == ObjectType.StaticBody)
+            if (IsStatic)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;

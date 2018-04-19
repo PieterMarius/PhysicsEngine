@@ -153,6 +153,14 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
+        public bool IsStatic
+        {
+            get
+            {
+                return convexShape.IsStatic;
+            }
+        }
+
         public int GetID()
         {
             return convexShape.ID;
@@ -251,6 +259,11 @@ namespace SharpPhysicsEngine.Wrapper
         public Vector3 GetMaxAABB()
         {
             return convexShape.ObjectGeometry.AABBox.Max;
+        }
+
+        public void SetIsStatic(bool isStatic)
+        {
+            convexShape.SetIsStatic(isStatic);
         }
 
         public void AddToRestoreCoeff(double value)

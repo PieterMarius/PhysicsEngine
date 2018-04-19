@@ -39,6 +39,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 StartPosition { get; }
         double StaticFrictionCoeff { get; }
         Vector3 TorqueValue { get; }
+        
 
         void SetAABB();
         void SetRestoreCoeff(double value);
