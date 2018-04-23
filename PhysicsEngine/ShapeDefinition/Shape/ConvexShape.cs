@@ -61,14 +61,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ShapeInit();
         }
 
-        public ConvexShape(
-            TriangleMesh[] triangleMeshes,
-            Vector3[] inputVertexPosition,
-            Vector3 position,
-            double mass)
-            : this(triangleMeshes, inputVertexPosition, position, mass, false)
-        { }
-
         #endregion
 
         #region Public methods
@@ -165,7 +157,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
 
             InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
-                            Matrix3x3.Transpose(RotationMatrix);
+                             Matrix3x3.Transpose(RotationMatrix);
         }
 
         #endregion

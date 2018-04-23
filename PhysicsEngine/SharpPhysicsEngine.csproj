@@ -166,6 +166,7 @@
     <Compile Include="Helper\WarmStartEngine.cs" />
     <Compile Include="Helper\WarmStartHashSet.cs" />
     <Compile Include="Wrapper\WrapperUtilities.cs" />
+    <Compile Include="ShapeDefinition\Shape\ConcaveShape.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
