@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public CompoundRigidCollisionShape()
         {
-            compoundShape = new CompoundShape(ObjectType.CompoundShape);
+            compoundShape = new CompoundShape();
         }
 
         #endregion
@@ -63,13 +63,15 @@ namespace SharpPhysicsEngine.Wrapper
 
         public void SetGeometry(
             List<Vector3[]> inputVertexPosition,
-            List<TriangleIndexes[]> inputTriangle)
+            List<int[][]> inputTriangle)
         {
             IGeometry[] geometry = new IGeometry[inputVertexPosition.Count];
 
             for (int i = 0; i < inputVertexPosition.Count; i++)
             {
-                geometry[i] = new Geometry(compoundShape, inputVertexPosition[i], inputTriangle[i], ObjectGeometryType.ConvexBody, true);
+                TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(inputTriangle[i]);
+
+                geometry[i] = new Geometry(compoundShape, inputVertexPosition[i], triangleMeshes, ObjectGeometryType.ConvexBody, true);
             }
 
             compoundShape.SetObjectGeometry(geometry);
@@ -275,7 +277,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetIsStatic(isStatic);
         }
 
-        public void SetGeometry(Vector3[] inputVertexPosition, TriangleIndexes[] inputTriangle)
+        public void SetGeometry(Vector3[] inputVertexPosition, int[][] inputTriangle)
         {
             throw new NotImplementedException();
         }

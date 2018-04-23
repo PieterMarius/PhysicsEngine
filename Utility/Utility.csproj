@@ -57,7 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CjClutter.ObjLoader.Loader">
-      <HintPath>..\ObjLoader-master\CjClutter.ObjLoader.Loader.dll</HintPath>
+      <HintPath>..\DLL\CjClutter.ObjLoader.Loader.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
       <HintPath>..\opentk\Binaries\OpenTK\Release\OpenTK.dll</HintPath>

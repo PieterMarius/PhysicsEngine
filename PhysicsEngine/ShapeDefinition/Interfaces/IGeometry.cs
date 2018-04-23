@@ -33,7 +33,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         AABB AABBox { get; }
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
-        TriangleIndexes[] Triangle { get; }
+        TriangleMesh[] Triangle { get; }
         VertexProperties[] VertexPosition { get; }
         Vector3[] RelativePosition { get; }
 

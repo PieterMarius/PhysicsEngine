@@ -41,7 +41,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SoftShapePoint[] ShapePoints { get; private set; }
 
-        public TriangleIndexes[] Triangle { get; private set; }
+        public TriangleMesh[] Triangle { get; private set; }
 
         public SoftPoint[] Sphere { get; private set; }
 
@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Constructor
 
         public SoftShape(
-            TriangleIndexes[] triangleIndex,
+            TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softConstraints,
             double mass,
@@ -86,7 +86,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public SoftShape(
-            TriangleIndexes[] triangleIndex,
+            TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softConstraints,
             double mass,
@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         { }
 
         public SoftShape(
-            TriangleIndexes[] triangleIndex,
+            TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
             double mass,
@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public SoftShape(
-            TriangleIndexes[] triangleIndex,
+            TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
             double mass,

@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.Wrapper
         #region Constructor
 
         public SoftCollisionShape(
-            TriangleIndexes[] triangleIndex,
+            int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
             double mass,
@@ -52,8 +52,10 @@ namespace SharpPhysicsEngine.Wrapper
             double angularErrorReductionParam,
             double angularSpringCoeff)
         {
+            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+
             softShape = new SoftShape(
-                triangleIndex,
+                triangleMeshes,
                 shapePoint,
                 startPosition,
                 mass,
@@ -65,7 +67,7 @@ namespace SharpPhysicsEngine.Wrapper
         }
 
         public SoftCollisionShape(
-            TriangleIndexes[] triangleIndex,
+            int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
             double mass,
@@ -73,8 +75,10 @@ namespace SharpPhysicsEngine.Wrapper
             double dampingCoefficient,
             double springCoefficient)
         {
+            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+
             softShape = new SoftShape(
-                triangleIndex, 
+                triangleMeshes, 
                 shapePoint, 
                 startPosition, 
                 mass, 
@@ -84,7 +88,7 @@ namespace SharpPhysicsEngine.Wrapper
         }
 
         public SoftCollisionShape(
-            TriangleIndexes[] triangleIndex,
+            int[][] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softJoint,
             double mass,
@@ -92,7 +96,9 @@ namespace SharpPhysicsEngine.Wrapper
             double restoreCoefficient,
             double springCoefficient)
         {
-            softShape = new SoftShape(triangleIndex, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
+            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+
+            softShape = new SoftShape(triangleMeshes, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
         }
 
         #endregion
@@ -101,7 +107,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public void SetGeometry(
             Vector3[] inputVertexPosition,
-            TriangleIndexes[] inputTriangle)
+            int[][] inputTriangle)
         {
             throw new NotImplementedException();
         }

@@ -39,18 +39,40 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
         #region Constructor
 
-        public ConvexShape(ObjectType type)
+        public ConvexShape(
+            TriangleMesh[] triangleMeshes,
+            Vector3[] inputVertexPosition,
+            Vector3 position,
+            double mass,
+            bool isStatic)
         {
-            ObjectType = type;
+            ObjectType = ObjectType.RigidBody;
 
-            InertiaTensor = Matrix3x3.IdentityMatrix();
-            SleepingFrameCount = 0;
+            ObjectGeometry = new Geometry(
+                    this,
+                    inputVertexPosition,
+                    triangleMeshes,
+                    ObjectGeometryType.ConvexBody,
+                    true);
+
+            SetIsStatic(isStatic);
+            SetMass(mass);
+            SetPosition(position);
+            ShapeInit();
         }
+
+        public ConvexShape(
+            TriangleMesh[] triangleMeshes,
+            Vector3[] inputVertexPosition,
+            Vector3 position,
+            double mass)
+            : this(triangleMeshes, inputVertexPosition, position, mass, false)
+        { }
 
         #endregion
 
         #region Public methods
-                       
+
         public override void SetAABB()
         {
             if (ObjectGeometry != null)
@@ -60,22 +82,19 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public override void SetMass(double mass)
         {
             Mass = mass;
-            
+
             if (IsStatic)
             {
                 Mass = 0.0;
                 InverseMass = 0.0;
             }
             else if (Mass > 0.0)
+            {
                 InverseMass = 1.0 / Mass;
-        }
-
-        public void SetGeometry(IGeometry geometry)
-        {
-            ObjectGeometry = geometry;
-            
-            SetObjectProperties();
-            SetAABB();
+                SetInertiaTensor();
+            }
+            else
+                throw new Exception("Invalid mass value " + mass);
         }
 
         public override void Rotate(Vector3 versor, double angle)
@@ -95,41 +114,20 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Private Methods
 
+        private void ShapeInit()
+        {
+            SetObjectProperties();
+            SetAABB();
+
+            SleepingFrameCount = 0;
+        }
+
         private void SetObjectProperties()
         {
-            Matrix3x3 baseTensors = new Matrix3x3();
+            SetRotationMatrix();
+            SetInertiaTensor();
 
-            int totalVertex = 0;
-
-            StartPosition = CalculateMassCenter();
-                        
-            ////TODO Mass check
-            Vector3[] vertexPosition = Array.ConvertAll(
-                                    ObjectGeometry.VertexPosition,
-                                    item => item.Vertex);
-
-            var inertiaTensor = new InertiaTensor(
-                    vertexPosition,
-                    ObjectGeometry.Triangle,
-                    Mass,
-                    true);
-
-            var normalizedInertiaTensor = inertiaTensor;
-
-            totalVertex += ObjectGeometry.VertexPosition.Length;
-
-            Vector3 r = inertiaTensor.GetMassCenter() - StartPosition;
-            baseTensors += inertiaTensor.GetInertiaTensor() +
-                            (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
-                            Mass;
-            
-            RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
-
-            SetRelativePosition(totalVertex);
-
-            BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
-            InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
-                            Matrix3x3.Transpose(RotationMatrix);
+            SetRelativePosition(ObjectGeometry.VertexPosition.Length);
         }
 
         private void SetRelativePosition(int totalVertex)
@@ -146,19 +144,28 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ObjectGeometry.SetRelativePosition(relativePositions);
         }
 
-        private Vector3 CalculateMassCenter()
+        private void SetRotationMatrix()
         {
-            Vector3[] vertexPosition = Array.ConvertAll(
-                                        ObjectGeometry.VertexPosition,
-                                        item => item.Vertex);
+            RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
+        }
 
-            var inertiaTensor = new InertiaTensor(
-                    vertexPosition,
+        private void SetInertiaTensor()
+        {
+            StartPosition = ShapeCommonUtilities.CalculateCenterOfMass(
+                ObjectGeometry.VertexPosition,
+                ObjectGeometry.Triangle,
+                Mass);
+
+            Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
+                    ObjectGeometry.VertexPosition,
                     ObjectGeometry.Triangle,
-                    Mass,
-                    false);
+                    StartPosition,
+                    Mass);
 
-            return inertiaTensor.GetMassCenter();
+            BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+
+            InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
+                            Matrix3x3.Transpose(RotationMatrix);
         }
 
         #endregion

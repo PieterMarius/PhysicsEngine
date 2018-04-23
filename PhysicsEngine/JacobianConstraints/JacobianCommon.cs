@@ -94,13 +94,9 @@ namespace SharpPhysicsEngine
 			double angle = 0.0;
 
 			if (rotationStatus.Dot (rotationAxis) >= 0.0) 
-			{
 				angle = 2.0 * Math.Atan2 (rotationStatus.Length (), rotationValue);
-			} 
 			else 
-			{
 				angle = 2.0 * Math.Atan2 (rotationStatus.Length (), -rotationValue);
-			}
 
 			return (angle > Math.PI) ? angle - 2.0 * Math.PI : angle;
 		}

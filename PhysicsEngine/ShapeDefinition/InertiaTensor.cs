@@ -28,7 +28,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	public sealed class InertiaTensor
+	internal sealed class InertiaTensor
 	{
 		#region Private properties
 
@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		readonly double objMass;
 
 		readonly Vector3[] vertexStartPosition;
-		readonly TriangleIndexes[] triangleVertexIndex;
+		readonly TriangleMesh[] triangleVertexIndex;
                 
 		readonly double[] mult =
 		{
@@ -64,9 +64,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		public InertiaTensor (
 			Vector3[] vertexStartPosition,
-            TriangleIndexes[] triangleVertexIndex,
+            TriangleMesh[] triangleVertexIndex,
 			double mass,
-            bool bodyCoords = true)
+            bool bodyCoords)
 		{
 			this.vertexStartPosition = vertexStartPosition;
 			this.triangleVertexIndex = triangleVertexIndex;
@@ -79,8 +79,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			ComputeInertiaTensor ();
 		}
 
+        public InertiaTensor(
+            Vector3[] vertexStartPosition,
+            TriangleMesh[] triangleVertexIndex,
+            double mass) :
+            this(vertexStartPosition, triangleVertexIndex, mass, true)
+        { }
+
         #endregion
-        
+
         #region Public Methods
 
         public Vector3 GetMassCenter()

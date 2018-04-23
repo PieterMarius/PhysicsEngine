@@ -26,17 +26,13 @@
 
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.Wrapper
 {
     public sealed class RigidCollisionShape: ICollisionShape, IMapper
     {
-        #region Fileds
+        #region Fields
 
         ConvexShape convexShape;
 
@@ -44,11 +40,30 @@ namespace SharpPhysicsEngine.Wrapper
 
         #region Constructor
 
-        public RigidCollisionShape()
+        public RigidCollisionShape(
+            Vector3[] inputVertexPosition,
+            int[][] inputTriangle,
+            Vector3 position,
+            double mass,
+            bool isStatic)
         {
-            convexShape = new ConvexShape(ObjectType.RigidBody);
+            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(inputTriangle);
+            
+            convexShape = new ConvexShape(
+                triangleMeshes, 
+                inputVertexPosition, 
+                position,
+                mass, 
+                isStatic);
         }
-
+        public RigidCollisionShape(
+            Vector3[] inputVertexPosition,
+            int[][] inputTriangle,
+            Vector3 position,
+            double mass) :
+            this(inputVertexPosition, inputTriangle, position, mass, false)
+        { }
+        
         #endregion
 
         #region Public Methods
@@ -57,14 +72,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             return convexShape;
         }
-
-        public void SetGeometry(
-            Vector3[] inputVertexPosition,
-            TriangleIndexes[] inputTriangle)
-        {
-            convexShape.SetGeometry(new Geometry(convexShape, inputVertexPosition, inputTriangle, ObjectGeometryType.ConvexBody, true));
-        }
-
+                
         public Vector3 AngularVelocity
         {
             get

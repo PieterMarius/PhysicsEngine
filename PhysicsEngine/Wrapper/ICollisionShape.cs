@@ -45,9 +45,6 @@ namespace SharpPhysicsEngine.Wrapper
         bool IsStatic { get; }
 
         int GetID();
-        void SetGeometry(
-            Vector3[] inputVertexPosition,
-            TriangleIndexes[] inputTriangle);
         int GetGeometryCount();
         Vector3 GetMinAABB();
         Vector3 GetMaxAABB();

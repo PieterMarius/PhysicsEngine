@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		/// <summary>
 		/// Triangle Index
 		/// </summary>
-		public TriangleIndexes[] Triangle { get; private set; }
+		public TriangleMesh[] Triangle { get; private set; }
 		/// <summary>
 		/// Bounding Box
 		/// </summary>
@@ -67,7 +67,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		public Geometry (
 			IShape shape,
 			Vector3[] inputVertexPosition,
-			TriangleIndexes[] inputTriangle,
+			TriangleMesh[] inputTriangle,
 			ObjectGeometryType geometryType,
 			bool getAdjacencyList)
 		{

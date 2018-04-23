@@ -62,9 +62,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
         #region Constructor
 
-        public CompoundShape(ObjectType type)
+        public CompoundShape()
         {
-            ObjectType = type;
+            ObjectType = ObjectType.CompoundShape;
 
             if (IsStatic)
             {
@@ -164,28 +164,21 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             int totalVertex = 0;
 
-            StartPosition = CalculateMassCenter();
+            StartPosition = CalculateCenterOfMass();
 
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
+                baseTensors += ShapeCommonUtilities.GetInertiaTensor(
+                    ObjectGeometry[i].VertexPosition,
+                    ObjectGeometry[i].Triangle,
+                    StartPosition,
+                    PartialMass[i]);
+
                 Vector3[] vertexPosition = Array.ConvertAll(
                                         ObjectGeometry[i].VertexPosition,
                                         item => item.Vertex);
 
-                var inertiaTensor = new InertiaTensor(
-                        vertexPosition,
-                        ObjectGeometry[i].Triangle,
-                        PartialMass[i],
-                        true);
-
-                var normalizedInertiaTensor = inertiaTensor;
-
                 totalVertex += ObjectGeometry[i].VertexPosition.Length;
-
-                Vector3 r = inertiaTensor.GetMassCenter() - StartPosition;
-                baseTensors += inertiaTensor.GetInertiaTensor() +
-                               (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
-                               PartialMass[i];
             }
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
@@ -214,29 +207,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
-        private Vector3 CalculateMassCenter()
+        private Vector3 CalculateCenterOfMass()
         {
             Vector3 startPosition = new Vector3();
 
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
-                Vector3[] vertexPosition = Array.ConvertAll(
-                                        ObjectGeometry[i].VertexPosition,
-                                        item => item.Vertex);
-
-                var inertiaTensor = new InertiaTensor(
-                        vertexPosition,
-                        ObjectGeometry[i].Triangle,
-                        PartialMass[i],
-                        false);
-
-                startPosition += inertiaTensor.GetMassCenter() * PartialMass[i];
+                var centerOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
+                    ObjectGeometry[i].VertexPosition,
+                    ObjectGeometry[i].Triangle,
+                    PartialMass[i]);
+                                
+                startPosition += centerOfMass * PartialMass[i];
             }
 
-            if (Mass > 0)
+            if (Mass > 0.0)
                 return startPosition / Mass;
 
-            return new Vector3();
+            return Vector3.ToZero();
         }
 
         #endregion

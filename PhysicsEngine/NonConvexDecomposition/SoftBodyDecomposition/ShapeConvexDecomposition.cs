@@ -51,7 +51,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         private Vertex3Index[] BaseVertexPosition;
 
-        private readonly TriangleIndexes[] triangleIndexes;
+        private readonly TriangleMesh[] triangleIndexes;
         
         #endregion
 
@@ -60,7 +60,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         private ShapeConvexDecomposition(
             AABB region,
             List<Vertex3Index> vertexPosition,
-            TriangleIndexes[] triangleIndexes,
+            TriangleMesh[] triangleIndexes,
             double precisionSize)
         {
             DecompositionValue = precisionSize;
@@ -71,14 +71,14 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         public ShapeConvexDecomposition(
             AABB region,
-            TriangleIndexes[] triangleIndexes)
+            TriangleMesh[] triangleIndexes)
         {
             this.region = region;
             this.triangleIndexes = triangleIndexes;            
         }
 
         public ShapeConvexDecomposition(
-            TriangleIndexes[] triangleIndexes)
+            TriangleMesh[] triangleIndexes)
         {
             this.triangleIndexes = triangleIndexes;
         }

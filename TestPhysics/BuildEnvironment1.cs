@@ -131,13 +131,9 @@ namespace TestPhysics
 			ShapeScale.Add(25);
 			TextureFilename.Add("texture/woodbox.bmp");
 
-			var objects0 = new RigidCollisionShape();
-            objects0.SetIsStatic(true);
-            objects0.SetMass(0.0);
-            objects0.SetPosition(new Vector3(0.0, -0.7, 0.0));
+            GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
+            var objects0 = new RigidCollisionShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -0.7, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            GeometryProperties geom0= GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
-            objects0.SetGeometry(geom0.VertexPoint, geom0.TriagleIdx);
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetRestitutionCoeff(0.1);
@@ -160,13 +156,10 @@ namespace TestPhysics
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);
                 TextureFilename.Add("texture/woodbox.bmp");
-                
-                var objects1 = new RigidCollisionShape();
-                objects1.SetMass(1.0);
-                objects1.SetPosition(position);
-                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+
                 GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                var objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
@@ -305,11 +298,11 @@ namespace TestPhysics
         public class GeometryProperties
         {
             public Vector3[] VertexPoint { get; private set; }
-            public TriangleIndexes[] TriagleIdx { get; private set; }
+            public int[][] TriagleIdx { get; private set; }
 
             public GeometryProperties(
                 Vector3[] vertexPoint,
-                TriangleIndexes[] triangleIndexes)
+                int[][] triangleIndexes)
             {
                 VertexPoint = vertexPoint;
                 TriagleIdx = triangleIndexes;

@@ -46,9 +46,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 
         private readonly Vector3[] VertexPosition;
 
-        private readonly List<TriangleIndexes> baseTriangles;
+        private readonly List<TriangleMesh> baseTriangles;
 
-        private List<TriangleIndexes> triangles;
+        private List<TriangleMesh> triangles;
 
         private OctTree parent;
 
@@ -62,12 +62,12 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 
         public OctTree(
             AABB region, 
-            List<TriangleIndexes> triangles, 
+            List<TriangleMesh> triangles, 
             Vector3[] vertexPosition)
         {
             this.region = region;
             baseTriangles = triangles;
-            this.triangles = new List<TriangleIndexes>(triangles);
+            this.triangles = new List<TriangleMesh>(triangles);
             VertexPosition = vertexPosition;
         }
 
@@ -116,7 +116,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
         public void GetConvexShapeList(IShape shape, ref List<IGeometry> geometry)
         {
             HashSet<Vector3> convexPoint = new HashSet<Vector3>();
-            List<TriangleIndexes> inputTriangle = new List<TriangleIndexes>();
+            List<TriangleMesh> inputTriangle = new List<TriangleMesh>();
 
             foreach (var triangle in triangles)
             {
@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
                 convexPoint.Add(VertexPosition[triangle.b]);
                 convexPoint.Add(VertexPosition[triangle.c]);
 
-                inputTriangle.Add(new TriangleIndexes(triangle.a, triangle.b, triangle.c));
+                inputTriangle.Add(new TriangleMesh(triangle.a, triangle.b, triangle.c));
             }
 
             if (inputTriangle.Count > 0)
@@ -180,7 +180,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
                 BuildTree();
             else
             {
-                triangles = new List<TriangleIndexes>(triangles);
+                triangles = new List<TriangleMesh>(triangles);
                 BuildTree();
             }
         }
@@ -224,19 +224,19 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             octant[7] = new AABB(new Vector3(region.Min.x, center.y, center.z), new Vector3(center.x, region.Max.y, region.Max.z));
 
             //This will contain all of our objects which fit within each respective octant.
-            List<TriangleIndexes>[] octList = new List<TriangleIndexes>[8];
-            HashSet<TriangleIndexes> delist = new HashSet<TriangleIndexes>();
+            List<TriangleMesh>[] octList = new List<TriangleMesh>[8];
+            HashSet<TriangleMesh> delist = new HashSet<TriangleMesh>();
 
             for (int i = 0; i < 8; i++)
             {
-                octList[i] = new List<TriangleIndexes>();
+                octList[i] = new List<TriangleMesh>();
                 
             }
 
             //this list contains all of the objects which got moved down the tree and can be delisted from this node.
             //TODO da modificare per gestire il numero max di oggetti in ogni bounding box
 
-            foreach (TriangleIndexes triangle in triangles)
+            foreach (TriangleMesh triangle in triangles)
             {
                 AABB boundingBox = AABB.GetTriangleAABB(new Vector3[3] {
                     VertexPosition[triangle.a],
@@ -259,7 +259,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
                         
 
             //delist every moved object from this node.
-            foreach (TriangleIndexes obj in delist)
+            foreach (TriangleMesh obj in delist)
                 triangles.Remove(obj);
 
             //foreach (TriangleIndexes triangle in triangles)
@@ -300,7 +300,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             treeBuilt = true;
         }
 
-        private OctTree CreateNode(AABB region, List<TriangleIndexes> objList)  //complete & tested
+        private OctTree CreateNode(AABB region, List<TriangleMesh> objList)  //complete & tested
         {
             if (objList.Count == 0)
                 return null;
@@ -313,9 +313,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
             return ret;
         }
 
-        private OctTree CreateNode(AABB region, TriangleIndexes Item)
+        private OctTree CreateNode(AABB region, TriangleMesh Item)
         {
-            List<TriangleIndexes> objList = new List<TriangleIndexes>(1)
+            List<TriangleMesh> objList = new List<TriangleMesh>(1)
             {
                 Item
             }; //sacrifice potential CPU time for a smaller memory footprint

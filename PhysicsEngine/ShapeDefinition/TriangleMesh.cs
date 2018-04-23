@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    public sealed class TriangleIndexes : IEquatable<TriangleIndexes>
+    internal sealed class TriangleMesh : IEquatable<TriangleMesh>
     {
         #region Fields
 
@@ -41,7 +41,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Constructor
 
-        public TriangleIndexes(int[] indexes)
+        public TriangleMesh(int[] indexes)
         {
             if (indexes.Length < 3)
                 throw new Exception("Wrong triangle indexes");
@@ -51,7 +51,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             c = indexes[2];
         }
 
-        public TriangleIndexes(int a, int b, int c)
+        public TriangleMesh(int a, int b, int c)
         {
             this.a = a;
             this.b = b;
@@ -87,13 +87,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
                    c == index;
         }
 
-        public static TriangleIndexes[] GenerateTriangleIndexes(int[][] trianglesIndexes)
+        public static TriangleMesh[] GenerateTriangleIndexes(int[][] trianglesIndexes)
         {
-            TriangleIndexes[] result = new TriangleIndexes[trianglesIndexes.Length];
+            TriangleMesh[] result = new TriangleMesh[trianglesIndexes.Length];
 
             foreach (var triangle in trianglesIndexes.Select((value, i) => new { value, i }))
             {
-                result[triangle.i] = new TriangleIndexes(triangle.value);
+                result[triangle.i] = new TriangleMesh(triangle.value);
             }
 
             return result;
@@ -110,10 +110,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as TriangleIndexes);
+            return Equals(obj as TriangleMesh);
         }
 
-        public bool Equals(TriangleIndexes triangleIndexes)
+        public bool Equals(TriangleMesh triangleIndexes)
         {
             return triangleIndexes != null &&
                    triangleIndexes.a == a &&

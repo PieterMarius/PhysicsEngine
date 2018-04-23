@@ -32,7 +32,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
     internal interface ISoftShape
     {
         SoftShapePoint[] ShapePoints { get; }
-        TriangleIndexes[] Triangle { get; }
+        TriangleMesh[] Triangle { get; }
         AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
         List<SoftConstraint> SoftConstraint { get; }

@@ -174,13 +174,14 @@ namespace TestPhysics
             ShapeScale[0] = new float[1] { 25 };
             TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
-            objects[0] = new RigidCollisionShape();
-            objects[0].SetIsStatic(true);
-            objects[0].SetMass(0.0);
-            objects[0].SetPosition(new Vector3(0.0, -4.0, 0.0));
-            objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
-            objects[0].SetGeometry(geom0.VertexPoint, geom0.TriagleIdx);
+            objects[0] = new RigidCollisionShape(
+                geom0.VertexPoint, 
+                geom0.TriagleIdx, 
+                new Vector3(0.0, -4.0, 0.0), 0.0,
+                true);
+            
+            objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[0].SetRestitutionCoeff(0.1);
@@ -195,12 +196,9 @@ namespace TestPhysics
             ShapeScale[1] = new float[1] { 1 };
             TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
-            objects[1] = new RigidCollisionShape();
-            objects[1].SetMass(1.0);
-            objects[1].SetPosition(new Vector3(3.0, 4.0, 7.0));
-            objects[1].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            objects[1].SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+            objects[1] = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(3.0, 4.0, 7.0), 1.0);
+            objects[1].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[1].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[1].SetRestitutionCoeff(0.1);
@@ -213,12 +211,9 @@ namespace TestPhysics
             ShapeScale[2] = new float[1] { 1 };
             TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
-            objects[2] = new RigidCollisionShape();
-            objects[2].SetMass(1.0);
-            objects[2].SetPosition(new Vector3(0.0, 1.2, 7.0));
-            objects[2].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            objects[2].SetGeometry(geom2.VertexPoint, geom2.TriagleIdx);
+            objects[2] = new RigidCollisionShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
+            objects[2].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[2].SetRestitutionCoeff(0.1);
@@ -231,12 +226,9 @@ namespace TestPhysics
             ShapeScale[3] = new float[1] { 1 };
             TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 
-            objects[3] = new RigidCollisionShape();
-            objects[3].SetMass(1.0);
-            objects[3].SetPosition(new Vector3(-3.0, 1.2, 7.0));
-            objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             GeometryProperties geom3 = GetObjectGeometry(ShapeFilename[3][0], ShapeScale[3][0]);
-            objects[3].SetGeometry(geom3.VertexPoint, geom3.TriagleIdx);
+            objects[3] = new RigidCollisionShape(geom3.VertexPoint, geom3.TriagleIdx, new Vector3(-3.0, 1.2, 7.0), 1.0);
+            objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[3].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[3].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[3].SetRestitutionCoeff(0.5);
@@ -258,13 +250,9 @@ namespace TestPhysics
 			ShapeScale[0] = new float[1] { 25 };
 			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
-			var objects0 = new RigidCollisionShape();
-            objects0.SetIsStatic(true);
-            objects0.SetMass(0.0);
-            objects0.SetPosition(new Vector3(0.0, -4.0, 0.0));
+            GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
+            var objects0 = new RigidCollisionShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            GeometryProperties geom0= GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
-            objects0.SetGeometry(geom0.VertexPoint, geom0.TriagleIdx);
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetRestitutionCoeff(0.1);
@@ -283,12 +271,9 @@ namespace TestPhysics
 			ShapeScale[1] = new float[1] { 1 };
 			TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
-			var objects1 = new RigidCollisionShape();
-            objects1.SetMass(1.0);
-            objects1.SetPosition(new Vector3(0.0, 1.2, 9.5));
-            objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+            var objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(0.0, 1.2, 9.5), 1.0);
+            objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
             objects1.SetRestitutionCoeff(0.5);
@@ -303,12 +288,9 @@ namespace TestPhysics
 			ShapeScale[2] = new float[1] { 1 };
 			TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
-			var objects2 = new RigidCollisionShape();
-            objects2.SetMass(1.0);
-            objects2.SetPosition(new Vector3(0.0, 1.2, 7.0));
-            objects2.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            objects2.SetGeometry(geom2.VertexPoint, geom2.TriagleIdx);
+            var objects2 = new RigidCollisionShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
+            objects2.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects2.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects2.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
             objects2.SetRestitutionCoeff(0.1);
@@ -345,11 +327,11 @@ namespace TestPhysics
         public class GeometryProperties
         {
             public Vector3[] VertexPoint { get; private set; }
-            public TriangleIndexes[] TriagleIdx { get; private set; }
+            public int[][] TriagleIdx { get; private set; }
 
             public GeometryProperties(
                 Vector3[] vertexPoint,
-                TriangleIndexes[] triangleIndexes)
+                int[][] triangleIndexes)
             {
                 VertexPoint = vertexPoint;
                 TriagleIdx = triangleIndexes;

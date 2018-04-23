@@ -37,7 +37,7 @@ namespace Utility
         public struct ObjProperties
         {
             public Vector3[] vertexPoint;
-            public TriangleIndexes[] triangleIndex;
+            public int[][] triangleIndex;
         }
 
         public static double InvariantCultureDoubleConverter(string value)
@@ -63,13 +63,15 @@ namespace Utility
             OpenGLUtilities.ScaleObject(ref vertexPoint, scale);
 
             int nTriangle = mesh.faceData.Length / 3;
-            TriangleIndexes[] triangleIndex = new TriangleIndexes[nTriangle];
+            int[][] triangleIndex = new int[nTriangle][];
 
             for (int i = 0; i < nTriangle; i++)
-                triangleIndex[i] = new TriangleIndexes(
+            {
+                triangleIndex[i] = new int[] {
                     (int)mesh.faceData[i * 3].x - 1,
                     (int)mesh.faceData[(i * 3) + 1].x - 1,
-                    (int)mesh.faceData[(i * 3) + 2].x - 1);
+                    (int)mesh.faceData[(i * 3) + 2].x - 1 };
+            }
             
             return new ObjProperties { vertexPoint = vertexPoint, triangleIndex = triangleIndex };
         }

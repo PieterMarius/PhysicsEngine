@@ -103,6 +103,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
+    <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="Wrapper\CompoundRigidCollisionShape.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="ShapeDefinition\Shape\SoftShape.cs" />
     <Compile Include="ShapeDefinition\SoftShapePoint.cs" />
     <Compile Include="ShapeDefinition\StartImpulseProperties.cs" />
-    <Compile Include="ShapeDefinition\TriangleIndexes.cs" />
+    <Compile Include="ShapeDefinition\TriangleMesh.cs" />
     <Compile Include="ShapeDefinition\VertexProperties.cs" />
     <Compile Include="SimulationParameters.cs" />
     <Compile Include="SharpEngine.cs" />
@@ -164,6 +165,7 @@
     <Compile Include="Solver\SolverType.cs" />
     <Compile Include="Helper\WarmStartEngine.cs" />
     <Compile Include="Helper\WarmStartHashSet.cs" />
+    <Compile Include="Wrapper\WrapperUtilities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

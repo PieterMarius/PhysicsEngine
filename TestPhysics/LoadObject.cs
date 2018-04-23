@@ -131,18 +131,7 @@ namespace TestPhysics
 				double[] mass = new double[xmlGeometryList.Count];
 				Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
                 
-				if (xmlGeometryList.Count > 1)
-					objects[i] = new CompoundRigidCollisionShape();
-				else
-                {
-                    if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
-                        objects[i] = new RigidCollisionShape();
-                    else if (Convert.ToInt32(xmlList[i][objectType].InnerText) == 1)
-                    {
-                        objects[i] = new RigidCollisionShape();
-                        objects[i].SetIsStatic(true);
-                    }
-                }
+				
 					
 				
 				for (int j = 0; j < xmlGeometryList.Count; j++)
@@ -164,7 +153,19 @@ namespace TestPhysics
 						Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["z"].Value));
 				}
 
-				objects[i].SetPosition(position);
+                if (xmlGeometryList.Count > 1)
+                    objects[i] = new CompoundRigidCollisionShape();
+                else
+                {
+                    if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
+                        objects[i] = new RigidCollisionShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0]);
+                    else if (Convert.ToInt32(xmlList[i][objectType].InnerText) == 1)
+                    {
+                        objects[i] = new RigidCollisionShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0], true);
+                    }
+                }
+
+                objects[i].SetPosition(position);
 				objects[i].SetRotationStatus(new Quaternion(versor, angle));
 
 				if (xmlGeometryList.Count > 1)
@@ -174,11 +175,6 @@ namespace TestPhysics
                     ((CompoundRigidCollisionShape)objects[i]).SetGeometry(
                                     objGeometry.Select(x => x.VertexPoint).ToList(),
                                     objGeometry.Select(x => x.TriagleIdx).ToList());
-				}
-				else
-				{
-					objects[i].SetMass(mass[0]);
-                    objects[i].SetGeometry(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx);
 				}
 										   
 				//Linear Velocity
@@ -504,11 +500,11 @@ namespace TestPhysics
         public class GeometryProperties
         {
             public Vector3[] VertexPoint { get; private set; }
-            public TriangleIndexes[] TriagleIdx { get; private set; }
+            public int[][] TriagleIdx { get; private set; }
 
             public GeometryProperties(
                 Vector3[] vertexPoint,
-                TriangleIndexes[] triangleIndexes)
+                int[][] triangleIndexes)
             {
                 VertexPoint = vertexPoint;
                 TriagleIdx = triangleIndexes;
