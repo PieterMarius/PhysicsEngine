@@ -136,13 +136,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			Parallel.For(0,
 				VertexPosition.Length,
-				new ParallelOptions { MaxDegreeOfParallelism = 4 },
 				i =>
 				{
 					VertexPosition[i] = new VertexProperties(inputVertexPosition[i]);
 
-					if (getAdjacencyList  && 
-                        Triangle != null	)
+					if (getAdjacencyList && Triangle != null)
 					{
 						HashSet<int> adjacencyList = new HashSet<int>();
 

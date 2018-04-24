@@ -1170,13 +1170,12 @@ namespace TestPhysics
             //		0.2);
 
             //AABB region = softShape.AABBox;
-            ConvexDecompositionEngine shapeConvexDec = new ConvexDecompositionEngine(softShape);
-                        
+                                   
 			//AABB testRegion = new AABB(
 			//	new SharpEngineMathUtility.Vector3(-0.5,-0.3,-0.8),
 			//	new SharpEngineMathUtility.Vector3(0.5, 0.7, 0.8));
 
-			var convexShape = shapeConvexDec.GetConvexShapeList(0.2);
+			var convexShape = ConvexDecompositionEngine.GetConvexShapeList(softShape);
 
 			List<Line> ll = OpenGLUtilities.BuildBoxLine(softShape.GetMaxAABB(), softShape.GetMinAABB());
 
@@ -1192,7 +1191,7 @@ namespace TestPhysics
 			{
 				GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
 
-				IVertex[] vtx = Array.ConvertAll(shape.ToArray(), x => new DefaultVertex() { Position = x.Vector3.Array });
+				IVertex[] vtx = Array.ConvertAll(shape, x => new DefaultVertex() { Position = x });
 
                 try
                 {

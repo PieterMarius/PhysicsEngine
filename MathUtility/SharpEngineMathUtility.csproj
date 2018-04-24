@@ -81,4 +81,10 @@
   <ItemGroup>
     <None Include="MathUtility.licenseheader" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ConvexHullUtilities\ConvexHullUtilities.csproj">
+      <Project>{594ec440-b5f1-4bc5-bb0d-97585fe39754}</Project>
+      <Name>ConvexHullUtilities</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>

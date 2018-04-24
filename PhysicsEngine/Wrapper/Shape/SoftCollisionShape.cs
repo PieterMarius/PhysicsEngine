@@ -365,6 +365,11 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.AddToConstraintsSpringCoefficient(value);
         }
 
+        public double GetDecompositionParam()
+        {
+            return softShape.DecompositionParameter;
+        }
+
         #endregion
     }
 }

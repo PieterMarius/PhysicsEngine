@@ -30,7 +30,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    public sealed class RigidCollisionShape: ICollisionShape, IMapper
+    public sealed class ConvexHullShape: ICollisionShape, IMapper
     {
         #region Fields
 
@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         #region Constructor
 
-        public RigidCollisionShape(
+        public ConvexHullShape(
             Vector3[] inputVertexPosition,
             int[][] inputTriangle,
             Vector3 position,
@@ -56,7 +56,7 @@ namespace SharpPhysicsEngine.Wrapper
                 mass, 
                 isStatic);
         }
-        public RigidCollisionShape(
+        public ConvexHullShape(
             Vector3[] inputVertexPosition,
             int[][] inputTriangle,
             Vector3 position,

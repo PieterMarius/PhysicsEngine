@@ -26,6 +26,7 @@
 
 using System;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.ConvexHullWrapper;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -47,6 +48,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
             bool isStatic)
         {
             ObjectType = ObjectType.RigidBody;
+
+            //TEST
+            ConvexHullEngine engine = new ConvexHullEngine();
+            engine.GetConvexHull(inputVertexPosition);
 
             ObjectGeometry = new Geometry(
                     this,

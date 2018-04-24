@@ -29,7 +29,7 @@ using System;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    public sealed class Vertex3Index: IEquatable<Vertex3Index>
+    internal sealed class Vertex3Index: IEquatable<Vertex3Index>
     {
         #region Fields
 

@@ -175,7 +175,7 @@ namespace TestPhysics
             TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
-            objects[0] = new RigidCollisionShape(
+            objects[0] = new ConvexHullShape(
                 geom0.VertexPoint, 
                 geom0.TriagleIdx, 
                 new Vector3(0.0, -4.0, 0.0), 0.0,
@@ -197,7 +197,7 @@ namespace TestPhysics
             TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            objects[1] = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(3.0, 4.0, 7.0), 1.0);
+            objects[1] = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(3.0, 4.0, 7.0), 1.0);
             objects[1].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[1].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -212,7 +212,7 @@ namespace TestPhysics
             TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            objects[2] = new RigidCollisionShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
+            objects[2] = new ConvexHullShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
             objects[2].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -227,7 +227,7 @@ namespace TestPhysics
             TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom3 = GetObjectGeometry(ShapeFilename[3][0], ShapeScale[3][0]);
-            objects[3] = new RigidCollisionShape(geom3.VertexPoint, geom3.TriagleIdx, new Vector3(-3.0, 1.2, 7.0), 1.0);
+            objects[3] = new ConvexHullShape(geom3.VertexPoint, geom3.TriagleIdx, new Vector3(-3.0, 1.2, 7.0), 1.0);
             objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
             objects[3].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects[3].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -251,7 +251,7 @@ namespace TestPhysics
 			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
-            var objects0 = new RigidCollisionShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
+            var objects0 = new ConvexHullShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -272,7 +272,7 @@ namespace TestPhysics
 			TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            var objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(0.0, 1.2, 9.5), 1.0);
+            var objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(0.0, 1.2, 9.5), 1.0);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
@@ -289,7 +289,7 @@ namespace TestPhysics
 			TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            var objects2 = new RigidCollisionShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
+            var objects2 = new ConvexHullShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
             objects2.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects2.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects2.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));

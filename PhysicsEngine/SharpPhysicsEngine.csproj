@@ -50,6 +50,10 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\ConvexHullUtilities\ConvexHullUtilities.csproj">
+      <Project>{594EC440-B5F1-4BC5-BB0D-97585FE39754}</Project>
+      <Name>ConvexHullUtilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MathUtility\SharpEngineMathUtility.csproj">
       <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
       <Name>SharpEngineMathUtility</Name>
@@ -75,6 +79,8 @@
     <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
+    <Compile Include="ConvexHullWrapper\ConvexHullData.cs" />
+    <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="Helper\IntegrationHelper.cs" />
@@ -106,7 +112,7 @@
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
-    <Compile Include="Wrapper\CompoundRigidCollisionShape.cs" />
+    <Compile Include="Wrapper\Shape\CompoundRigidCollisionShape.cs" />
     <Compile Include="Wrapper\EngineObjectType.cs" />
     <Compile Include="Wrapper\Joint\AngularJoint.cs" />
     <Compile Include="Wrapper\Joint\BallAndSocketJoint.cs" />
@@ -114,14 +120,14 @@
     <Compile Include="Wrapper\Joint\Hinge2Joint.cs" />
     <Compile Include="Wrapper\Joint\HingeJoint.cs" />
     <Compile Include="Wrapper\Joint\ICollisionJoint.cs" />
-    <Compile Include="Wrapper\ICollisionShape.cs" />
-    <Compile Include="Wrapper\IMapper.cs" />
+    <Compile Include="Wrapper\Shape\ICollisionShape.cs" />
+    <Compile Include="Wrapper\Shape\IMapper.cs" />
     <Compile Include="Wrapper\Joint\IMapperJoint.cs" />
     <Compile Include="Wrapper\Joint\PistonJoint.cs" />
     <Compile Include="Wrapper\Joint\SliderJoint.cs" />
     <Compile Include="Wrapper\Joint\UniversalJoint.cs" />
-    <Compile Include="Wrapper\RigidCollisionShape.cs" />
-    <Compile Include="Wrapper\SoftCollisionShape.cs" />
+    <Compile Include="Wrapper\Shape\ConvexHullShape.cs" />
+    <Compile Include="Wrapper\Shape\SoftCollisionShape.cs" />
     <Compile Include="ShapeDefinition\AABB.cs" />
     <Compile Include="ShapeDefinition\Shape\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintIndex.cs" />

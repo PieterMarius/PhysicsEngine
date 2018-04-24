@@ -138,7 +138,7 @@ namespace TestPhysics
 			TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
-            var objects0 = new RigidCollisionShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
+            var objects0 = new ConvexHullShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -161,7 +161,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom1 = GetObjectGeometry("cube1.obj", 2);
-            var objects_0 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 40.0);
+            var objects_0 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 40.0);
                       
             objects_0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects_0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -174,7 +174,7 @@ namespace TestPhysics
             objects.Add(objects_0);
 
             geom1 = GetObjectGeometry("wheel.obj", 1);
-            var objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+            var objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
 
             position = new Vector3(-3.5, 4.6, -1.9);
 
@@ -200,7 +200,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             geom1 = GetObjectGeometry("wheel.obj", 1);
-            objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+            objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -219,7 +219,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             geom1 = GetObjectGeometry("wheel.obj", 1);
-            objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+            objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -238,7 +238,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             geom1 = GetObjectGeometry("wheel.obj", 1);
-            objects1 = new RigidCollisionShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+            objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
             objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));

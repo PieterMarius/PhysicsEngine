@@ -31,7 +31,6 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
     internal sealed class ShapeDecompositionOutput
     {
-
         #region Fields
 
         public HashSet<Vertex3Index> Vertex3Idx { get; private set; }
