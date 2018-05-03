@@ -71,12 +71,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             ObjectType = ObjectType.RigidBody;
                         
-            TriangleMesh[] triangleMeshes = convexHullEngine.GetConvexHull(inputVertexPosition);
+            ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
             
             ObjectGeometry = new Geometry(
                     this,
-                    inputVertexPosition,
-                    triangleMeshes,
+                    convexHullData.Vertices,
+                    convexHullData.TriangleMeshes,
                     ObjectGeometryType.ConvexBody,
                     true);
 
@@ -92,8 +92,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetAABB()
         {
-            if (ObjectGeometry != null)
-                ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
+            ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
         }
 
         public override void SetMass(double mass)
@@ -155,7 +154,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
                     relativePositions[j] =
                         ObjectGeometry.VertexPosition[j].Vertex -
-                        StartPosition;
+                        InitCenterOfMass;
             }
 
             ObjectGeometry.SetRelativePosition(relativePositions);
@@ -168,15 +167,19 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetInertiaTensor()
         {
-            StartPosition = ShapeCommonUtilities.CalculateCenterOfMass(
-                ObjectGeometry.VertexPosition,
+            Vector3[] vertices = Array.ConvertAll(
+                                        ObjectGeometry.VertexPosition,
+                                        item => item.Vertex);
+
+            InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
+                vertices,
                 ObjectGeometry.Triangle,
                 Mass);
 
             Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
                     ObjectGeometry.VertexPosition,
                     ObjectGeometry.Triangle,
-                    StartPosition,
+                    InitCenterOfMass,
                     Mass);
 
             BaseInertiaTensor = Matrix3x3.Invert(baseTensors);

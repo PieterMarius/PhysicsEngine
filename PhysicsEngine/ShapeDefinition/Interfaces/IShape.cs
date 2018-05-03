@@ -36,7 +36,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         double RestitutionCoeff { get; }
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
-        Vector3 StartPosition { get; }
+        Vector3 InitCenterOfMass { get; }
         double StaticFrictionCoeff { get; }
         Vector3 TorqueValue { get; }
         

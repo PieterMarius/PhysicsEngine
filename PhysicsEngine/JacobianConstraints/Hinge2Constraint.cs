@@ -268,7 +268,7 @@ namespace SharpPhysicsEngine
         	public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
-                   (StartAnchorPoint - ShapeA.StartPosition)) +
+                   (StartAnchorPoint - ShapeA.InitCenterOfMass)) +
                    ShapeA.Position;
         }
         		
@@ -371,7 +371,7 @@ namespace SharpPhysicsEngine
 
         private void InitConstraint()
         {
-            Vector3 relativePos = StartAnchorPoint - ShapeA.StartPosition;
+            Vector3 relativePos = StartAnchorPoint - ShapeA.InitCenterOfMass;
             relativePos = ShapeA.RotationMatrix * relativePos;
 
             AnchorPoint = relativePos + ShapeA.Position;

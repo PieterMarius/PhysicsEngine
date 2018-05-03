@@ -67,7 +67,7 @@ namespace SharpPhysicsEngine
             SliderAxis = -1.0 * sliderAxis.Normalize();
 
             Vector3 relativePos = ShapeA.RotationMatrix *
-                (startAnchorPosition - ShapeA.StartPosition);
+                (startAnchorPosition - ShapeA.InitCenterOfMass);
 
             AnchorPoint = relativePos + ShapeA.Position;
 
@@ -282,7 +282,7 @@ namespace SharpPhysicsEngine
 		public override Vector3 GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
-                    (StartAnchorPoint - ShapeA.StartPosition)) +
+                    (StartAnchorPoint - ShapeA.InitCenterOfMass)) +
                     ShapeA.Position; 
         }
 

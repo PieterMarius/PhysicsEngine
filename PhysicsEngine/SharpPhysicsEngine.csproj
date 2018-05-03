@@ -75,9 +75,11 @@
     <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
     <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
+    <Compile Include="ConvexHullWrapper\ConvexHullData.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullVertex.cs" />
     <Compile Include="ConvexHullWrapper\IConvexHullEngine.cs" />
+    <Compile Include="ExternalUtilities\SharpEngineUtilities.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="Helper\IntegrationHelper.cs" />

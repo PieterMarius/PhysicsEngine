@@ -8,16 +8,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Public Methods
 
         public static Vector3 CalculateCenterOfMass(
-            VertexProperties[] vertex,
+            Vector3[] vertices,
             TriangleMesh[] triangleMeshes,
             double mass)
         {
-            Vector3[] vertexPosition = Array.ConvertAll(
-                                        vertex,
-                                        item => item.Vertex);
-
             var inertiaTensor = new InertiaTensor(
-                    vertexPosition,
+                    vertices,
                     triangleMeshes,
                     mass,
                     false);

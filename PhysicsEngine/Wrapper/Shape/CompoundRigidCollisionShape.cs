@@ -166,11 +166,11 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 StartPosition
+        public Vector3 InitCenterOfMass
         {
             get
             {
-                return compoundShape.StartPosition;
+                return compoundShape.InitCenterOfMass;
             }
         }
 

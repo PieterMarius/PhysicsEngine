@@ -33,7 +33,7 @@ namespace SharpPhysicsEngine.Wrapper
     {
         ObjectType ObjectType { get; }
         Vector3 Position { get; }
-        Vector3 StartPosition { get; }
+        Vector3 InitCenterOfMass { get; }
         Vector3 LinearVelocity { get; }
         Vector3 AngularVelocity { get; }
         Matrix3x3 InertiaTensor { get; }

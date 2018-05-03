@@ -694,7 +694,7 @@ namespace TestPhysics
                 DisplaySoftPoint(softShape);
             else
             {
-                SharpEngineMathUtility.Matrix3x3 rotatioMatrix = shape.RotationMatrix;
+                Matrix3x3 rotatioMatrix = shape.RotationMatrix;
                 SharpEngineMathUtility.Vector3 position = shape.Position;
 
                 ObjectType type = shape.ObjectType;
@@ -708,9 +708,6 @@ namespace TestPhysics
 
                     if (shape is CompoundRigidCollisionShape)
                         compoundPos = ((CompoundRigidCollisionShape)shape).StartCompoundPositionObjects[i];
-
-                    SharpEngineMathUtility.Vector3 positionMt = position + compoundPos -
-                                                                  shape.StartPosition;
 
                     Matrix4 positionMatrix = new Matrix4(
                                                 Convert.ToSingle(rotatioMatrix.r1c1),
@@ -740,13 +737,15 @@ namespace TestPhysics
                     mView.M21, mView.M22, mView.M23, mView.M24,
                     mView.M31, mView.M32, mView.M33, mView.M34,
                     mView.M41, mView.M42, mView.M43, mView.M44
-                };
+                    };
 
                     //Traslo sull'origine
                     GL.Translate(position.x, position.y, position.z);
                     //Ruoto
                     GL.MultMatrix(dmviewData);
                     //Traslo nella posizione desiderata
+                    SharpEngineMathUtility.Vector3 positionMt = position + compoundPos;
+
                     GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z - position.z);
 
 

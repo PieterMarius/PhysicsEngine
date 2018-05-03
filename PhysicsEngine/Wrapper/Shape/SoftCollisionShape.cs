@@ -192,11 +192,11 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 StartPosition
+        public Vector3 InitCenterOfMass
         {
             get
             {
-                return softShape.StartPosition;
+                return softShape.InitCenterOfMass;
             }
         }
 

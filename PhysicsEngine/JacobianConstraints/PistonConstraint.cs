@@ -74,7 +74,7 @@ namespace SharpPhysicsEngine
             PistonAxis = -1.0 * pistonAxis.Normalize();
 
             Vector3 relativePos = ShapeA.RotationMatrix *
-                (startAnchorPosition - ShapeA.StartPosition);
+                (startAnchorPosition - ShapeA.InitCenterOfMass);
 
             AnchorPoint = relativePos + ShapeA.Position;
 
@@ -257,7 +257,7 @@ namespace SharpPhysicsEngine
 		{
 			return (ShapeA.RotationMatrix *
                     (StartAnchorPoint -
-                    ShapeA.StartPosition)) +
+                    ShapeA.InitCenterOfMass)) +
                     ShapeA.Position;
         }
 

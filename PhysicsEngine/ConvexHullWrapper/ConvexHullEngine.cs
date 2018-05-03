@@ -10,7 +10,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
     {        
         #region Public Methods
 
-        public TriangleMesh[] GetConvexHull(Vector3[] points)
+        public ConvexHullData GetConvexHull(Vector3[] points)
         {
             ConvexHullVertex[] vtx = new ConvexHullVertex[points.Length];
 
@@ -23,14 +23,17 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
                 var faces = cHull.Faces.ToArray();
 
                 TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
+                Vector3[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x=> new Vector3(x.Position));
 
                 foreach (var face in faces.Select((value, i) => new { value, i }))
+                {
                     triangleMeshes[face.i] = new TriangleMesh(
                         face.value.Vertices[0].Index,
                         face.value.Vertices[1].Index,
                         face.value.Vertices[2].Index);
+                }
                     
-                return triangleMeshes;
+                return new ConvexHullData(vertices,triangleMeshes);
             }
             catch (Exception ex)
             {

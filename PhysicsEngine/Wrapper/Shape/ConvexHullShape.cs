@@ -72,11 +72,11 @@ namespace SharpPhysicsEngine.Wrapper
         {
             IConvexHullEngine convexHullEngine = new ConvexHullEngine();
 
-            TriangleMesh[] triangleMeshes = convexHullEngine.GetConvexHull(inputVertexPosition);
+            ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
 
             convexShape = new ConvexShape(
-                inputVertexPosition,
-                triangleMeshes,
+                convexHullData.Vertices,
+                convexHullData.TriangleMeshes,
                 position,
                 mass,
                 false);
@@ -159,7 +159,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.Position;
+                return convexShape.Position - convexShape.InitCenterOfMass;
             }
         }
 
@@ -171,11 +171,11 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 StartPosition
+        public Vector3 InitCenterOfMass
         {
             get
             {
-                return convexShape.StartPosition;
+                return convexShape.InitCenterOfMass;
             }
         }
 

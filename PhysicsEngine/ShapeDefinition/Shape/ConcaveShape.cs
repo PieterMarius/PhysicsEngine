@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -13,6 +14,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// <value>The object geometry.</value>
         public IGeometry[] ObjectGeometry { get; private set; }
 
+        /// <summary>
+        /// Axis Aligned Bounding Box
+        /// </summary>
+        public AABB AABBox { get; private set; }
+
         #endregion
 
         #region Constructor
@@ -25,6 +31,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
             bool isStatic)
         {
             ObjectType = ObjectType.RigidBody;
+            Mass = mass;
+
+           // ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(AABBox, softShape.Triangle);
 
         }
 
@@ -39,12 +48,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetAABB()
         {
-            throw new NotImplementedException();
+            //AABBox = AABB.GetShapePointAABB(ShapePoints);
         }
 
         public override void SetMass(double mass)
         {
-            throw new NotImplementedException();
+            Mass = mass;
         }
 
         #endregion

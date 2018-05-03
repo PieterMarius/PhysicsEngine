@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public int SleepingFrameCount { get; protected set; }
 
-        public Vector3 StartPosition { get; protected set; }
+        public Vector3 InitCenterOfMass { get; protected set; }
 
         public double StaticFrictionCoeff { get; protected set; }
 

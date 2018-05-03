@@ -84,7 +84,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
         public override void SetAABB()
         {
-            if (ObjectGeometry != null && ObjectGeometry.Length == 1)
+            if (ObjectGeometry.Length == 1)
                 ObjectGeometry[0].SetAABB(AABB.GetGeometryAABB(ObjectGeometry[0]));
             else if (ObjectGeometry.Length > 1)
             {
@@ -108,10 +108,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             PartialMass = new double[mass.Length];
             Array.Copy(mass, PartialMass, mass.Length);
+
             for (int i = 0; i < mass.Length; i++)
-            {
                 Mass += mass[i];
-            }
 
             if (IsStatic)
             {
@@ -164,14 +163,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             int totalVertex = 0;
 
-            StartPosition = CalculateCenterOfMass();
+            InitCenterOfMass = CalculateCenterOfMass();
 
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
                 baseTensors += ShapeCommonUtilities.GetInertiaTensor(
                     ObjectGeometry[i].VertexPosition,
                     ObjectGeometry[i].Triangle,
-                    StartPosition,
+                    InitCenterOfMass,
                     PartialMass[i]);
 
                 Vector3[] vertexPosition = Array.ConvertAll(
@@ -200,7 +199,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     for (int j = 0; j < ObjectGeometry[i].VertexPosition.Length; j++)
                         relativePositions[j] =
                             ObjectGeometry[i].VertexPosition[j].Vertex -
-                            StartPosition;
+                            InitCenterOfMass;
                 }
 
                 ObjectGeometry[i].SetRelativePosition(relativePositions);
@@ -213,8 +212,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 0; i < ObjectGeometry.Length; i++)
             {
+                Vector3[] vertices = Array.ConvertAll(
+                                        ObjectGeometry[i].VertexPosition,
+                                        item => item.Vertex);
+
                 var centerOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
-                    ObjectGeometry[i].VertexPosition,
+                    vertices,
                     ObjectGeometry[i].Triangle,
                     PartialMass[i]);
                                 
