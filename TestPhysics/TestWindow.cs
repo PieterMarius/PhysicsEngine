@@ -38,11 +38,11 @@ using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 using SharpEngineMathUtility;
-using ConvexHullGenerator;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.Wrapper;
 using SharpPhysicsEngine.Wrapper.Joint;
 using SharpPhysicsEngine.NonConvexDecomposition;
+using MIConvexHull;
 
 namespace TestPhysics
 {

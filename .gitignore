@@ -65,3 +65,6 @@ TestPhysics/bin/*
 packages/*
 
 PhysicsEngine/bin/Debug/System.Numerics.Vectors.xml
+PhysicsEngine/MIConvexHull.xml
+TestPhysics/MIConvexHull.xml
+MathUtility/bin/x64/Debug/System.Numerics.Vectors.xml

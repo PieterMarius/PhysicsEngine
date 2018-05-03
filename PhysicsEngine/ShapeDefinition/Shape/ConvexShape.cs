@@ -41,18 +41,38 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Constructor
 
         public ConvexShape(
-            TriangleMesh[] triangleMeshes,
             Vector3[] inputVertexPosition,
+            TriangleMesh[] triangleMeshes,
             Vector3 position,
             double mass,
             bool isStatic)
         {
             ObjectType = ObjectType.RigidBody;
 
-            //TEST
-            ConvexHullEngine engine = new ConvexHullEngine();
-            engine.GetConvexHull(inputVertexPosition);
+            ObjectGeometry = new Geometry(
+                    this,
+                    inputVertexPosition,
+                    triangleMeshes,
+                    ObjectGeometryType.ConvexBody,
+                    true);
 
+            SetIsStatic(isStatic);
+            SetMass(mass);
+            SetPosition(position);
+            ShapeInit();
+        }
+
+        public ConvexShape(
+            Vector3[] inputVertexPosition,
+            IConvexHullEngine convexHullEngine,
+            Vector3 position,
+            double mass,
+            bool isStatic)
+        {
+            ObjectType = ObjectType.RigidBody;
+                        
+            TriangleMesh[] triangleMeshes = convexHullEngine.GetConvexHull(inputVertexPosition);
+            
             ObjectGeometry = new Geometry(
                     this,
                     inputVertexPosition,
