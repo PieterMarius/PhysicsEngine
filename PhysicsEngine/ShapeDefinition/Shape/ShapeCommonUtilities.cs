@@ -27,8 +27,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Vector3 position,
             double mass)
         {
-            Matrix3x3 baseTensors = new Matrix3x3();
-
             Vector3[] vertexPosition = Array.ConvertAll(
                                     vertex,
                                     item => item.Vertex);
@@ -42,7 +40,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             var normalizedInertiaTensor = inertiaTensor;
 
             Vector3 r = inertiaTensor.GetMassCenter() - position;
-            baseTensors += inertiaTensor.GetInertiaTensor() +
+            Matrix3x3 baseTensors= inertiaTensor.GetInertiaTensor() +
                             (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
                             mass;
 

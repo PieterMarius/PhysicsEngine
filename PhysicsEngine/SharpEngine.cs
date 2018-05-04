@@ -629,11 +629,11 @@ namespace SharpPhysicsEngine
             //Eseguo il motore che gestisce le collisioni
             var actualCollisionPoints = CollisionEngine.Execute(simShapes, null);
 
-            var warmStartedPoints = warmStartEngine.GetWarmStartedCollisionPoints(
-                Shapes, 
-                previousCollisionPoints, 
-                actualCollisionPoints, 
-                PreviousShapesProperties);
+            //var warmStartedPoints = warmStartEngine.GetWarmStartedCollisionPoints(
+            //    Shapes, 
+            //    previousCollisionPoints, 
+            //    actualCollisionPoints, 
+            //    PreviousShapesProperties);
             
             collisionPoints = actualCollisionPoints.ToArray();
         }

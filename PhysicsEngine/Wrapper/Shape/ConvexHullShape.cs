@@ -28,6 +28,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ConvexHullWrapper;
+using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.Wrapper
 {
@@ -159,7 +160,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.Position - convexShape.InitCenterOfMass;
+                return convexShape.Position;
             }
         }
 

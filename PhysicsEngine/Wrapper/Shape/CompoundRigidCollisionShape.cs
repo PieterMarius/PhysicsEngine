@@ -174,6 +174,18 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
+        //public Vector3[] GetVertices()
+        //{
+        //    List<Vector3> vertices = new List<Vector3>();
+        //    for (int i = 0; i < compoundShape.CompoundingConvexObjectCount; i++)
+        //    {
+        //        for (int j = 0; j < compoundShape.ge; j++)
+        //        {
+
+        //        }
+        //    }
+        //}
+
         public bool IsStatic
         {
             get

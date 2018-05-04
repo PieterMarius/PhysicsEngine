@@ -209,7 +209,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
                 return;
             }
 
-            Vector3 half = dimensions / 2.0f;
+            Vector3 half = dimensions / 2.0;
             Vector3 center = region.Min + half;
 
             //Create subdivided regions for each octant

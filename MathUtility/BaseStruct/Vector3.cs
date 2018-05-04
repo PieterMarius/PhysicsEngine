@@ -120,7 +120,7 @@ namespace SharpEngineMathUtility
 		public static Vector3 operator/(Vector3 a, double d)
 		{
             var dp = 1.0 / d;
-			return new Vector3 (a.x * d, a.y * d, a.z * d);
+			return new Vector3 (a.x * dp, a.y * dp, a.z * dp);
 		}
         		
 		public double[] Array

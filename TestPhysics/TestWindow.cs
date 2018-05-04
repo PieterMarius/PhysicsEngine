@@ -219,9 +219,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
                 
-                //LoadEngineByXml();
+                LoadEngineByXml();
             
-                LoadEngineByBuilder();
+                //LoadEngineByBuilder();
 
 
             }
@@ -249,8 +249,8 @@ namespace TestPhysics
             //LoadObject loadObject = new LoadObject("configJoint.xml");
             //var loadObject = new LoadObject("startConfig.xml");
             //var loadObject = new LoadObject("carConfig.xml");
-            var loadObject = new LoadObject("testJointBridge.xml");
-            //var loadObject = new LoadObject("compositeObjectConfig.xml");
+            //var loadObject = new LoadObject("testJointBridge.xml");
+            var loadObject = new LoadObject("compositeObjectConfig.xml");
             //var loadObject = new LoadObject("frictionTestConfig.xml");
 
             //var loadObject = new LoadObject("softBodyConfig.xml");
@@ -280,15 +280,15 @@ namespace TestPhysics
                 physicsEngine.AddJoint(simulationJoints[i]);
             }
 
-            string softObject = "sph.obj";
+            //string softObject = "sph.obj";
 
-            var objects3 = BuildSoftBody(softObject, 1, new SharpEngineMathUtility.Vector3(0.0, 8.0, 1.5));
-            objects3.SetStaticFrictionCoeff(0.4);
-            objects3.SetDynamicFrictionCoeff(0.3);
-            objects3.SetRestitutionCoeff(1.0);
-            objects3.SetErrorReductionParam(1.0);
+            //var objects3 = BuildSoftBody(softObject, 1, new SharpEngineMathUtility.Vector3(0.0, 8.0, 1.5));
+            //objects3.SetStaticFrictionCoeff(0.4);
+            //objects3.SetDynamicFrictionCoeff(0.3);
+            //objects3.SetRestitutionCoeff(1.0);
+            //objects3.SetErrorReductionParam(1.0);
             
-            physicsEngine.AddShape(objects3);
+            //physicsEngine.AddShape(objects3);
 
             pause = true;
 
@@ -663,7 +663,7 @@ namespace TestPhysics
 
 		#endregion
 			
-		#region "Private Methods"
+		#region Private Methods
 
 		//private void DisplayObject()
 		//{
@@ -744,8 +744,9 @@ namespace TestPhysics
                     //Ruoto
                     GL.MultMatrix(dmviewData);
                     //Traslo nella posizione desiderata
-                    SharpEngineMathUtility.Vector3 positionMt = position + compoundPos;
+                    SharpEngineMathUtility.Vector3 positionMt = position - shape.InitCenterOfMass + compoundPos;
 
+                    //TODO Verificare che la rotazione sia corretta
                     GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z - position.z);
 
 
@@ -1006,40 +1007,40 @@ namespace TestPhysics
 			}
 		}
 
-		//private void displayVertex(int index)
-		//{
+        //private void displayVertex(int index)
+        //{
 
-		//	for (int i = 0; i < physicsEngine.GetShape (index).GetGeometryCount(); i++) 
-		//	{
-		//		for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
-		//		{
-		//			SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
-		//							(physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
+        //    for (int i = 0; i < physicsEngine.GetShape(index).GetGeometryCount(); i++)
+        //    {
+        //        for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
+        //        {
+        //            SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
+        //                            (physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
 
-		//			GL.PushMatrix();
+        //            GL.PushMatrix();
 
-		//			Matrix4 mView = Matrix4.CreateTranslation(
-		//				Convert.ToSingle(relativePosition.x),
-		//				Convert.ToSingle(relativePosition.y),
-		//				Convert.ToSingle(relativePosition.z));
+        //            Matrix4 mView = Matrix4.CreateTranslation(
+        //                Convert.ToSingle(relativePosition.x),
+        //                Convert.ToSingle(relativePosition.y),
+        //                Convert.ToSingle(relativePosition.z));
 
-		//			var dmviewData = new float[] {
-		//			mView.M11, mView.M12, mView.M13, mView.M14,
-		//			mView.M21, mView.M22, mView.M23, mView.M24,
-		//			mView.M31, mView.M32, mView.M33, mView.M34,
-		//			mView.M41, mView.M42, mView.M43, mView.M44
-		//		};
+        //            var dmviewData = new float[] {
+        //            mView.M11, mView.M12, mView.M13, mView.M14,
+        //            mView.M21, mView.M22, mView.M23, mView.M24,
+        //            mView.M31, mView.M32, mView.M33, mView.M34,
+        //            mView.M41, mView.M42, mView.M43, mView.M44
+        //        };
 
-		//			GL.MultMatrix(dmviewData);
+        //            GL.MultMatrix(dmviewData);
 
-		//			OpenGLUtilities.drawSolidCube(0.04f);
+        //            OpenGLUtilities.drawSolidCube(0.04f);
 
-		//			GL.PopMatrix();
-		//		}
-		//	}
-		//}
+        //            GL.PopMatrix();
+        //        }
+        //    }
+        //}
 
-		private void displayJoint()
+        private void displayJoint()
 		{
 			for (int i = 0; i < physicsEngine.JointsCount(); i++) 
 			{
