@@ -46,113 +46,79 @@ using MIConvexHull;
 
 namespace TestPhysics
 {
-	public class TestWindow: GameWindow
-	{
-		public TestWindow () : base (512, 512, new GraphicsMode (32, 24, 0, 4))
-		{
-		}
+    public class TestWindow : GameWindow
+    {
+        public TestWindow() : base(512, 512, new GraphicsMode(32, 24, 0, 4))
+        {
+        }
 
-		Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatch = new Stopwatch();
 
-		int[][] textureID;
+        int[][] textureID;
 
-		int[][] displayList;
+        int[][] displayList;
 
-		double elapsedTime = 0.0;
-		long performaceValue = 0;
+        double elapsedTime = 0.0;
+        long performaceValue = 0;
 
-		List<CollisionPointStructure> collPoint;
-		List<List<CollisionPointStructure>> collisionPartitionedPoints;
+        List<CollisionPointStructure> collPoint;
+        List<List<CollisionPointStructure>> collisionPartitionedPoints;
 
-		ICollisionShape[] simulationObjects;
-		ICollisionJoint[] simulationJoints;
+        ICollisionShape[] simulationObjects;
+        ICollisionJoint[] simulationJoints;
 
-		SharpEngine physicsEngine;
+        SharpEngine physicsEngine;
 
-		List<List<double>> colorList = new List<List<double>>();
+        List<List<double>> colorList = new List<List<double>>();
 
-		bool pause = false;
+        bool pause = false;
 
-		int redTexture;
+        int redTexture;
 
-		#region Keyboard and mouse variables
+        #region Keyboard and mouse variables
 
-		OpenTK.Input.MouseState current, previous;
-		float xrot = 0.0f;
-		float yrot = 0.0f;
-		float xpos = 0.0f;
-		float ypos = 0.0f;
-		float zpos = -7.0f;
+        OpenTK.Input.MouseState current, previous;
+        float xrot = 0.0f;
+        float yrot = 0.0f;
+        float xpos = 0.0f;
+        float ypos = 0.0f;
+        float zpos = -7.0f;
 
-		#endregion
+        #endregion
 
-		void TestNumeric()
-		{
-			int nvalue = 30000000;
-			stopwatch.Reset();
-			stopwatch.Start();
-			
-			System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
+        void TestNumeric()
+        {
+            int nvalue = 30000000;
+            stopwatch.Reset();
+            stopwatch.Start();
 
-			//double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
-			for (int i = 0; i < nvalue; i++)
-				testVector[i] = new System.Numerics.Vector3(2, 3, 5);
+            System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
 
-			System.Numerics.Vector3 test;
-			for (int i = 0; i < nvalue; i++)
-				test = testVector[i] * 2.0f;
+            //double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
+            for (int i = 0; i < nvalue; i++)
+                testVector[i] = new System.Numerics.Vector3(2, 3, 5);
 
-			stopwatch.Stop();
-			Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            System.Numerics.Vector3 test;
+            for (int i = 0; i < nvalue; i++)
+                test = testVector[i] * 2.0f;
 
-			stopwatch.Reset();
-			stopwatch.Start();
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-			SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
+            stopwatch.Reset();
+            stopwatch.Start();
 
-			for (int i = 0; i < nvalue; i++)
-				testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+            SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
 
-			SharpEngineMathUtility.Vector3 test1;
-			for (int i = 0; i < nvalue; i++)
-				test1 = testVector1[i] * 2.0;
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
 
-			stopwatch.Stop();
-			Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            SharpEngineMathUtility.Vector3 test1;
+            for (int i = 0; i < nvalue; i++)
+                test1 = testVector1[i] * 2.0;
 
-			stopwatch.Reset();
-			stopwatch.Start();
-
-			//System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
-
-			for (int i = 0; i < nvalue; i++)
-				testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
-
-			//{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
-
-			double[] test2;
-			//System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
-			List<double> test3 = new List<double>();
-			//double[] test4 = new double[nvalue * 3];
-
-			for (int i = 0; i < nvalue; i++)
-			{
-			   // int index = (i * 3);
-				test3.AddRange(testVector1[i].ToList);
-				//test4[index] = testVector1[i].x;
-				//test4[index +1] = testVector1[i].y;
-				//test4[index +2] = testVector1[i].z;
-
-				//test3.AddRange(testVector1[i].Array);
-				//test3.Add(0);
-
-
-			}
-
-			test2 = SIMDMathUtility.SIMDArrayProductScalar(test3.ToArray(), 2.0);
-
-			stopwatch.Stop();
-			Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
             stopwatch.Start();
@@ -164,7 +130,41 @@ namespace TestPhysics
 
             //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
 
-            
+            double[] test2;
+            //System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
+            List<double> test3 = new List<double>();
+            //double[] test4 = new double[nvalue * 3];
+
+            for (int i = 0; i < nvalue; i++)
+            {
+                // int index = (i * 3);
+                test3.AddRange(testVector1[i].ToList);
+                //test4[index] = testVector1[i].x;
+                //test4[index +1] = testVector1[i].y;
+                //test4[index +2] = testVector1[i].z;
+
+                //test3.AddRange(testVector1[i].Array);
+                //test3.Add(0);
+
+
+            }
+
+            test2 = SIMDMathUtility.SIMDArrayProductScalar(test3.ToArray(), 2.0);
+
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+
+            stopwatch.Reset();
+            stopwatch.Start();
+
+            //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
+
+            for (int i = 0; i < nvalue; i++)
+                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+
+            //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
+
+
             //System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
             List<double> test4 = new List<double>();
             //double[] test4 = new double[nvalue * 3];
@@ -186,7 +186,7 @@ namespace TestPhysics
             for (int i = 0; i < test4.Count; i++)
             {
                 // int index = (i * 3);
-                out4=test4[i]*2.0;
+                out4 = test4[i] * 2.0;
                 //test4[index] = testVector1[i].x;
                 //test4[index +1] = testVector1[i].y;
                 //test4[index +2] = testVector1[i].z;
@@ -196,7 +196,7 @@ namespace TestPhysics
 
 
             }
-                        
+
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
@@ -204,37 +204,37 @@ namespace TestPhysics
 
         }
 
-		NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
-		
-		List<Line> octTreeLine = new List<Line>();
-		void initProgram()
-		{
-			//TestNumeric();
-			try
-			{
+        NonConvexSphereDecomposition testConvexDecomp = new NonConvexSphereDecomposition();
+
+        List<Line> octTreeLine = new List<Line>();
+        void initProgram()
+        {
+            //TestNumeric();
+            try
+            {
 
                 //testConvexDecomp.Decompose(0.08);
 
                 //TestNumeric();
 
                 //env.GetPhysicsEnvironment();
-                
+
                 LoadEngineByXml();
-            
+
                 //LoadEngineByBuilder();
 
 
             }
-			catch (Exception e) 
-			{
-				throw new Exception (e.StackTrace);
-			}
-		}
+            catch (Exception e)
+            {
+                throw new Exception(e.StackTrace);
+            }
+        }
 
         private void LoadEngineByBuilder()
         {
             var env = new BuildEnvironment1();
-            
+
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
             textureID = env.LoadTexture();
@@ -258,9 +258,9 @@ namespace TestPhysics
 
             simulationObjects = loadObject.LoadSimulationObjects();
             simulationJoints = loadObject.LoadSimulationJoints(simulationObjects);
-            
+
             displayList = loadObject.GetOpenGLObjectList();
-                        
+
             ////Carico le texture
             textureID = loadObject.LoadTexture();
             redTexture = OpenGLUtilities.LoadTexture("red.bmp");
@@ -287,7 +287,7 @@ namespace TestPhysics
             //objects3.SetDynamicFrictionCoeff(0.3);
             //objects3.SetRestitutionCoeff(1.0);
             //objects3.SetErrorReductionParam(1.0);
-            
+
             //physicsEngine.AddShape(objects3);
 
             pause = true;
@@ -322,104 +322,104 @@ namespace TestPhysics
         #region OpenGL Windows Settings
 
         protected override void OnLoad(EventArgs e)
-		{
-			base.OnLoad (e);
+        {
+            base.OnLoad(e);
 
-			initProgram ();
-				
-			Title = "Physics Window";
+            initProgram();
 
-			//OpenGL Windows properties settings
-			GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		}
-			
-		protected override void OnRenderFrame(FrameEventArgs e)
-		{
-			base.OnRenderFrame (e);
+            Title = "Physics Window";
 
-			GL.Clear (ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-			GL.Enable (EnableCap.DepthTest);
-			GL.BlendFunc (BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
-			GL.DepthFunc (DepthFunction.Lequal);
+            //OpenGL Windows properties settings
+            GL.ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        }
 
-			GL.LoadIdentity ();
+        protected override void OnRenderFrame(FrameEventArgs e)
+        {
+            base.OnRenderFrame(e);
 
-			MoveCamera ();
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+            GL.DepthFunc(DepthFunction.Lequal);
 
-			//displayOrigin ();
-			displayContact ();
-			//displayBaseContact();
-			displayJoint ();
+            GL.LoadIdentity();
+
+            MoveCamera();
+
+            //displayOrigin ();
+            displayContact();
+            //displayBaseContact();
+            displayJoint();
             //displaySoftJoint();
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
             displayPartitionedContact();
 
-			//for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-			//    displayVertex(i);
+            //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
+            //    displayVertex(i);
 
-			//displayAABB();
-			//displayVertex (0);
-			//displayVertex (1);
-			//displayVertex (2);
+            //displayAABB();
+            displayVertex (0);
+            //displayVertex (1);
+            //displayVertex (2);
 
-			for (int i = 0; i < physicsEngine.ShapesCount(); i++)
-				SetOpenGLObjectMatrixAndDisplayObject(i);
-            
+            for (int i = 0; i < physicsEngine.ShapesCount(); i++)
+                SetOpenGLObjectMatrixAndDisplayObject(i);
+
             //displayOctree();
             //displayConvexDecomposition();
             //displaySoftJoint();
 
-            GL.Flush ();
-			SwapBuffers ();
+            GL.Flush();
+            SwapBuffers();
 
 
-		}
+        }
 
-		protected override void OnUpdateFrame(FrameEventArgs e)
-		{
-			base.OnUpdateFrame (e);
+        protected override void OnUpdateFrame(FrameEventArgs e)
+        {
+            base.OnUpdateFrame(e);
 
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.Escape])
-				Exit ();
-			
-			GL.Viewport (0, 0, Width, Height);
-			GL.MatrixMode (MatrixMode.Projection);
-			GL.LoadIdentity ();
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Escape])
+                Exit();
 
-			OpenGLUtilities.GluPerspective (
-				60, 
-				Convert.ToDouble (Width) / Convert.ToDouble (Height), 
-				1.0, 
-				100.0);
+            GL.Viewport(0, 0, Width, Height);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
 
-			GL.MatrixMode (MatrixMode.Modelview);
+            OpenGLUtilities.GluPerspective(
+                60,
+                Convert.ToDouble(Width) / Convert.ToDouble(Height),
+                1.0,
+                100.0);
 
-			//Physics
-			UpdateMouse ();
+            GL.MatrixMode(MatrixMode.Modelview);
+
+            //Physics
+            UpdateMouse();
             UpdateKeyboard();
 
             try {
-				
-				if (!pause)
-				{
-					stopwatch.Reset();
-					stopwatch.Start();
 
-					collPoint.Clear();
+                if (!pause)
+                {
+                    stopwatch.Reset();
+                    stopwatch.Start();
 
-					physicsEngine.Simulate();
+                    collPoint.Clear();
 
-					//for (int i = 0; i < physicsEngine.JointsCount(); i++)
-					//{
-					//    physicsEngine.GetJoints(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
-					//}
+                    physicsEngine.Simulate();
 
-					stopwatch.Stop();
+                    //for (int i = 0; i < physicsEngine.JointsCount(); i++)
+                    //{
+                    //    physicsEngine.GetJoints(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
+                    //}
 
-					elapsedTime += 0.016;
-					performaceValue += stopwatch.ElapsedMilliseconds;
+                    stopwatch.Stop();
+
+                    elapsedTime += 0.016;
+                    performaceValue += stopwatch.ElapsedMilliseconds;
 
                     Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
                     Console.WriteLine("ElapsedTime " + elapsedTime + " performanceValue " + performaceValue);
@@ -451,119 +451,119 @@ namespace TestPhysics
                     //    }
                     //}
                 }
-			} 
-			catch (Exception ex) 
-			{
-				throw new Exception ("Physics engine error. " + ex.StackTrace);
-			}
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Physics engine error. " + ex.StackTrace);
+            }
 
-			
-		}
-			
-		#region TEST
 
-		protected void setOrthographicProjection()
-		{
-			GL.MatrixMode (MatrixMode.Projection);
+        }
 
-			GL.PushMatrix ();
+        #region TEST
 
-			GL.LoadIdentity ();
+        protected void setOrthographicProjection()
+        {
+            GL.MatrixMode(MatrixMode.Projection);
 
-		}
+            GL.PushMatrix();
 
-		#endregion
+            GL.LoadIdentity();
 
-		#endregion
+        }
 
-		protected void MoveCamera () 
-		{
-			GL.Rotate (xrot, 1.0, 0.0, 0.0);  //rotate 
-			GL.Rotate (yrot, 0.0, 1.0, 0.0);  //rotate 
-			GL.Translate (xpos, ypos, zpos); //translate the screen
-		}
-			
-		#region Mouse Input
+        #endregion
 
-		public void UpdateMouse()
-		{
-			current = OpenTK.Input.Mouse.GetCursorState();
-			
-			if (current != previous) 
-			{
-				int xdelta = current.X - previous.X;
-				int ydelta = current.Y - previous.Y;
-				xrot += Convert.ToSingle (ydelta);
-				yrot += Convert.ToSingle (xdelta);
-			}
-			previous = current;
-		}
+        #endregion
 
-		#endregion
+        protected void MoveCamera()
+        {
+            GL.Rotate(xrot, 1.0, 0.0, 0.0);  //rotate 
+            GL.Rotate(yrot, 0.0, 1.0, 0.0);  //rotate 
+            GL.Translate(xpos, ypos, zpos); //translate the screen
+        }
 
-		#region Keyboard input
+        #region Mouse Input
 
-		int selectedObjIndex = -1;
+        public void UpdateMouse()
+        {
+            current = OpenTK.Input.Mouse.GetCursorState();
 
-		protected void UpdateKeyboard ()
-		{
-			if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.W])
-			{
-				float xrotrad, yrotrad;
-				yrotrad = (yrot / 180 * 3.141592654f);
-				xrotrad = (xrot / 180 * 3.141592654f); 
-				xpos += Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
-				zpos -= Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
-				ypos -= Convert.ToSingle(Math.Sin(xrotrad)) * 0.1f;
-			}
-			if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.S])
-			{
-				float xrotrad, yrotrad;
-				yrotrad = (yrot / 180 * 3.141592654f);
-				xrotrad = (xrot / 180 * 3.141592654f); 
-				xpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
-				zpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
-				ypos += Convert.ToSingle(Math.Sin(xrotrad)) * 0.1f;
-			}
+            if (current != previous)
+            {
+                int xdelta = current.X - previous.X;
+                int ydelta = current.Y - previous.Y;
+                xrot += Convert.ToSingle(ydelta);
+                yrot += Convert.ToSingle(xdelta);
+            }
+            previous = current;
+        }
 
-			if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.D])
-			{
-				float yrotrad;
-				yrotrad = (yrot / 180 * 3.141592654f);
-				xpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
-				zpos += Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
-			}
+        #endregion
 
-			if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.A])
-			{
-				float yrotrad;
-				yrotrad = (yrot / 180 * 3.141592654f);
-				xpos -= Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
-				zpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
-			}
+        #region Keyboard input
 
-			// pause
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.P]) 
-			{
-				selectedObjIndex = -1;
-				if (pause) {
-					pause = false;
-				} else {
-					pause = true;
-				}
-			}
+        int selectedObjIndex = -1;
 
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.R]) 
-			{
-				physicsEngine.Dispose();
-				OnLoad(null);
-			}
+        protected void UpdateKeyboard()
+        {
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.W])
+            {
+                float xrotrad, yrotrad;
+                yrotrad = (yrot / 180 * 3.141592654f);
+                xrotrad = (xrot / 180 * 3.141592654f);
+                xpos += Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
+                zpos -= Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
+                ypos -= Convert.ToSingle(Math.Sin(xrotrad)) * 0.1f;
+            }
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.S])
+            {
+                float xrotrad, yrotrad;
+                yrotrad = (yrot / 180 * 3.141592654f);
+                xrotrad = (xrot / 180 * 3.141592654f);
+                xpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
+                zpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
+                ypos += Convert.ToSingle(Math.Sin(xrotrad)) * 0.1f;
+            }
 
-			if (OpenTK.Input.Keyboard.GetState () [OpenTK.Input.Key.F]) 
-			{
-				pause = true;
-				selectedObjIndex = Convert.ToInt32 (Console.ReadLine ());
-			}
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.D])
+            {
+                float yrotrad;
+                yrotrad = (yrot / 180 * 3.141592654f);
+                xpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
+                zpos += Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.A])
+            {
+                float yrotrad;
+                yrotrad = (yrot / 180 * 3.141592654f);
+                xpos -= Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
+                zpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
+            }
+
+            // pause
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.P])
+            {
+                selectedObjIndex = -1;
+                if (pause) {
+                    pause = false;
+                } else {
+                    pause = true;
+                }
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.R])
+            {
+                physicsEngine.Dispose();
+                OnLoad(null);
+            }
+
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.F])
+            {
+                pause = true;
+                selectedObjIndex = Convert.ToInt32(Console.ReadLine());
+            }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadPlus])
             {
@@ -571,7 +571,7 @@ namespace TestPhysics
                 SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
                 softShape.AddToConstraintsRestoreCoefficient(0.05);
                 Console.WriteLine("Rest coeff " + softShape.GetShapeErrorReductionParams()[0]);
-                
+
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadMinus])
@@ -602,7 +602,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
                 pause = true;
-                
+
                 for (int i = 0; i < physicsEngine.JointsCount(); i++)
                 {
                     physicsEngine.GetJoints(i).AddTorque(0.0, 2.5);
@@ -628,67 +628,67 @@ namespace TestPhysics
 
                 physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
                 physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
-                
+
                 physicsEngine.Simulate();
-                
+
                 pause = false;
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Right])
             {
                 pause = true;
-                               
+
                 physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
                 physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
-               
+
                 physicsEngine.Simulate();
-                
+
                 pause = false;
             }
 
         }
 
-		//private void UpdateVertexPosition(int index)
-		//{
-		//	simulationObjects[index].SetRotationMatrix (
-		//		PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
+        //private void UpdateVertexPosition(int index)
+        //{
+        //	simulationObjects[index].SetRotationMatrix (
+        //		PhysicsEngineMathUtility.Quaternion.ConvertToMatrix (PhysicsEngineMathUtility.Quaternion.Normalize (simulationObjects[index].RotationStatus)));
 
-		//	for (int i = 0; i < simulationObjects[index].ObjectGeometry[0].VertexPosition.Length; i++) 
-		//	{
-		//		PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
-		//		simulationObjects [index].ObjectGeometry[0].SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
-		//	}
-		//}
-			
+        //	for (int i = 0; i < simulationObjects[index].ObjectGeometry[0].VertexPosition.Length; i++) 
+        //	{
+        //		PhysicsEngineMathUtility.Vector3 relPositionRotate = simulationObjects [index].RotationMatrix * simulationObjects [index].RelativePositions [i];
+        //		simulationObjects [index].ObjectGeometry[0].SetVertexPosition (simulationObjects [index].Position + relPositionRotate, i);
+        //	}
+        //}
 
-		#endregion
-			
-		#region Private Methods
 
-		//private void DisplayObject()
-		//{
-		//    for (int i = 0; i < displayList.Length; i++)
-		//    {
-		//        for (int j = 0; j < displayList[i].Length; j++)
-		//        {
-		//            GL.PushMatrix();
-		//            GL.Enable(EnableCap.Texture2D);
+        #endregion
 
-		//            GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
+        #region Private Methods
 
-		//            GL.CallList(displayList[i][j]);
-		//            GL.Disable(EnableCap.Texture2D);
+        //private void DisplayObject()
+        //{
+        //    for (int i = 0; i < displayList.Length; i++)
+        //    {
+        //        for (int j = 0; j < displayList[i].Length; j++)
+        //        {
+        //            GL.PushMatrix();
+        //            GL.Enable(EnableCap.Texture2D);
 
-		//            GL.PopMatrix();
-		//        }
-		//    }
-		//}
+        //            GL.BindTexture(TextureTarget.Texture2D, textureID[id][i]);
 
-		private void SetOpenGLObjectMatrixAndDisplayObject(int id)
-		{
-			// TODO parte da modificare
-			//Matrice da utilizzare come costante
-			ICollisionShape shape = physicsEngine.GetShapes()[id];
+        //            GL.CallList(displayList[i][j]);
+        //            GL.Disable(EnableCap.Texture2D);
+
+        //            GL.PopMatrix();
+        //        }
+        //    }
+        //}
+
+        private void SetOpenGLObjectMatrixAndDisplayObject(int id)
+        {
+            // TODO parte da modificare
+            //Matrice da utilizzare come costante
+            ICollisionShape shape = physicsEngine.GetShapes()[id];
 
             if (shape is SoftCollisionShape softShape)
                 DisplaySoftPoint(softShape);
@@ -706,8 +706,8 @@ namespace TestPhysics
 
                     SharpEngineMathUtility.Vector3 compoundPos = new SharpEngineMathUtility.Vector3();
 
-                    if (shape is CompoundRigidCollisionShape)
-                        compoundPos = ((CompoundRigidCollisionShape)shape).StartCompoundPositionObjects[i];
+                    if (shape is CompoundRigidShape)
+                        compoundPos = ((CompoundRigidShape)shape).StartCompoundPositionObjects[i];
 
                     Matrix4 positionMatrix = new Matrix4(
                                                 Convert.ToSingle(rotatioMatrix.r1c1),
@@ -741,13 +741,15 @@ namespace TestPhysics
 
                     //Traslo sull'origine
                     GL.Translate(position.x, position.y, position.z);
+                    //GL.Translate(-testTranslate.x, -testTranslate.y, -testTranslate.z);
                     //Ruoto
                     GL.MultMatrix(dmviewData);
                     //Traslo nella posizione desiderata
-                    SharpEngineMathUtility.Vector3 positionMt = position - shape.InitCenterOfMass + compoundPos;
+                    SharpEngineMathUtility.Vector3 positionMt = shape.GetCenterOfMassShiftValue(i);
+                    //SharpEngineMathUtility.Vector3 positionMt = compoundPos;
 
                     //TODO Verificare che la rotazione sia corretta
-                    GL.Translate(positionMt.x - position.x, positionMt.y - position.y, positionMt.z - position.z);
+                    GL.Translate(positionMt.x , positionMt.y , positionMt.z);
 
 
                     //Inserire il textire ID
@@ -765,8 +767,8 @@ namespace TestPhysics
 
         }
 
-		private void DisplaySoftPoint(SoftCollisionShape softShape)
-		{
+        private void DisplaySoftPoint(SoftCollisionShape softShape)
+        {
             //GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
             //GL.CallList(displayList[3][0]);
@@ -774,7 +776,7 @@ namespace TestPhysics
 
             //GL.PopMatrix();
             int i = 0;
-            foreach (var item in softShape.GetShapePointsPosition())
+            foreach (var item in softShape.GetVertices())
             {
                 SharpEngineMathUtility.Vector3 relativePosition = item;
 
@@ -807,238 +809,235 @@ namespace TestPhysics
                     OpenGLUtilities.drawSolidCube(0.02f);
                 }
 
-                
+
 
                 GL.PopMatrix();
                 i++;
             }
         }
 
-		private void displayContact()
-		{
+        private void displayContact()
+        {
             //Console.WriteLine("NContact " + collPoint.Count);
             for (int i = 0; i < collPoint.Count; i++)
-			{
-				for (int h = 0; h < collPoint[i].CollisionPointBase.Length; h++)
-				{
-					for (int j = 0; j < collPoint[i].CollisionPointBase[h].CollisionPoints.Length; j++)
-					{
+            {
+                for (int h = 0; h < collPoint[i].CollisionPointBase.Length; h++)
+                {
+                    for (int j = 0; j < collPoint[i].CollisionPointBase[h].CollisionPoints.Length; j++)
+                    {
 
-						GL.PushMatrix();
+                        GL.PushMatrix();
 
-						Matrix4 mView = Matrix4.CreateTranslation(
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.x),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.y),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.z));
+                        Matrix4 mView = Matrix4.CreateTranslation(
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.x),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.y),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointA.Vertex.z));
 
-						var dmviewData = new float[] {
-						mView.M11, mView.M12, mView.M13, mView.M14,
-						mView.M21, mView.M22, mView.M23, mView.M24,
-						mView.M31, mView.M32, mView.M33, mView.M34,
-						mView.M41, mView.M42, mView.M43, mView.M44
-					};
+                        var dmviewData = new float[] {
+                        mView.M11, mView.M12, mView.M13, mView.M14,
+                        mView.M21, mView.M22, mView.M23, mView.M24,
+                        mView.M31, mView.M32, mView.M33, mView.M34,
+                        mView.M41, mView.M42, mView.M43, mView.M44
+                    };
 
-						GL.MultMatrix(dmviewData);
+                        GL.MultMatrix(dmviewData);
 
-						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.05f);
+                        GL.Color3(1.0f, 0.0, 0.0);
+                        OpenGLUtilities.drawSolidCube(0.05f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();
 
-						GL.PushMatrix();
+                        GL.PushMatrix();
 
-						Matrix4 mView1 = Matrix4.CreateTranslation(
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.x),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.y),
-							Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.z));
+                        Matrix4 mView1 = Matrix4.CreateTranslation(
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.x),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.y),
+                            Convert.ToSingle(collPoint[i].CollisionPointBase[h].CollisionPoints[j].CollisionPointB.Vertex.z));
 
-						var dmviewData1 = new float[] {
-						mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-						mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-						mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-						mView1.M41, mView1.M42, mView1.M43, mView1.M44
-					};
+                        var dmviewData1 = new float[] {
+                        mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                        mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                        mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                        mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                    };
 
-						GL.MultMatrix(dmviewData1);
+                        GL.MultMatrix(dmviewData1);
 
 
-						GL.Color3 (1.0f, 0.0, 0.0);
-						OpenGLUtilities.drawSolidCube(0.05f);
+                        GL.Color3(1.0f, 0.0, 0.0);
+                        OpenGLUtilities.drawSolidCube(0.05f);
                         GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 
                         GL.PopMatrix();
 
-					}
-				}
-			}
-		}
+                    }
+                }
+            }
+        }
 
-		Random random = new Random();
+        Random random = new Random();
 
-		public double GetRandomNumber(double minimum, double maximum)
-		{
-			
-			return random.NextDouble() * (maximum - minimum) + minimum;
-		}
+        public double GetRandomNumber(double minimum, double maximum)
+        {
 
-		
-		private void displayPartitionedContact()
-		{
-			//List<List<CollisionPointStructure>> collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
-
-			double[] color = new double[3];
-			if (collisionPartitionedPoints != null)
-			{
-				for (int h = 0; h < collisionPartitionedPoints.Count; h++)
-				{
-					color[0] = colorList[h][0]; color[1] = colorList[h][1]; color[2] = colorList[h][2];
-					List<CollisionPointStructure> collPointStr = collisionPartitionedPoints[h];
-
-                    	for (int i = 0; i < collPointStr.Count; i++)
-					{
-						for (int n = 0; n < collPointStr[i].CollisionPointBase.Length; n++)
-						{
-							for (int j = 0; j < collPointStr[i].CollisionPointBase[n].CollisionPoints.Length; j++)
-							{
-
-								GL.PushMatrix();
-
-								Matrix4 mView = Matrix4.CreateTranslation(
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.x),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.y),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.z));
-
-								var dmviewData = new float[] {
-									mView.M11, mView.M12, mView.M13, mView.M14,
-									mView.M21, mView.M22, mView.M23, mView.M24,
-									mView.M31, mView.M32, mView.M33, mView.M34,
-									mView.M41, mView.M42, mView.M43, mView.M44
-									};
-
-								GL.MultMatrix(dmviewData);
-
-								GL.Color3(color);
-								OpenGLUtilities.drawSolidCube(0.08f);
-								GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
-
-								GL.PopMatrix();
-
-								GL.PushMatrix();
-
-								Matrix4 mView1 = Matrix4.CreateTranslation(
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.x),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.y),
-									Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.z));
-
-								var dmviewData1 = new float[] {
-									mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-									mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-									mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-									mView1.M41, mView1.M42, mView1.M43, mView1.M44
-									};
-
-								GL.MultMatrix(dmviewData1);
-
-								GL.Color3(color);
-
-								OpenGLUtilities.drawSolidCube(0.08f);
-								GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
-
-								GL.PopMatrix();
-
-							}
-						}
-					}
-				}
-			}
-		}
-
-		private void displayBaseContact()
-		{
-			for (int i = 0; i < collPoint.Count; i++)
-			{
-				for (int n = 0; n < collPoint[i].CollisionPointBase.Length; n++)
-				{
-					GL.PushMatrix();
-
-					Matrix4 mView = Matrix4.CreateTranslation(
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.x),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.y),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.z));
-
-					var dmviewData = new float[] {
-					mView.M11, mView.M12, mView.M13, mView.M14,
-					mView.M21, mView.M22, mView.M23, mView.M24,
-					mView.M31, mView.M32, mView.M33, mView.M34,
-					mView.M41, mView.M42, mView.M43, mView.M44
-				};
-
-					GL.MultMatrix(dmviewData);
-
-					//GL.Color3 (1.0f, 0.0, 0.0);
-					OpenGLUtilities.drawSolidCube(0.08f);
-
-					GL.PopMatrix();
-
-					GL.PushMatrix();
-
-					Matrix4 mView1 = Matrix4.CreateTranslation(
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.x),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.y),
-						Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.z));
-
-					var dmviewData1 = new float[] {
-					mView1.M11, mView1.M12, mView1.M13, mView1.M14,
-					mView1.M21, mView1.M22, mView1.M23, mView1.M24,
-					mView1.M31, mView1.M32, mView1.M33, mView1.M34,
-					mView1.M41, mView1.M42, mView1.M43, mView1.M44
-				};
-
-					GL.MultMatrix(dmviewData1);
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
 
 
-					OpenGLUtilities.drawSolidCube(0.08f);
+        private void displayPartitionedContact()
+        {
+            //List<List<CollisionPointStructure>> collisionPartitionedPoints = physicsEngine.GetPartitionedCollisionPoints();
+
+            double[] color = new double[3];
+            if (collisionPartitionedPoints != null)
+            {
+                for (int h = 0; h < collisionPartitionedPoints.Count; h++)
+                {
+                    color[0] = colorList[h][0]; color[1] = colorList[h][1]; color[2] = colorList[h][2];
+                    List<CollisionPointStructure> collPointStr = collisionPartitionedPoints[h];
+
+                    for (int i = 0; i < collPointStr.Count; i++)
+                    {
+                        for (int n = 0; n < collPointStr[i].CollisionPointBase.Length; n++)
+                        {
+                            for (int j = 0; j < collPointStr[i].CollisionPointBase[n].CollisionPoints.Length; j++)
+                            {
+
+                                GL.PushMatrix();
+
+                                Matrix4 mView = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.x),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.y),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointA.Vertex.z));
+
+                                var dmviewData = new float[] {
+                                    mView.M11, mView.M12, mView.M13, mView.M14,
+                                    mView.M21, mView.M22, mView.M23, mView.M24,
+                                    mView.M31, mView.M32, mView.M33, mView.M34,
+                                    mView.M41, mView.M42, mView.M43, mView.M44
+                                    };
+
+                                GL.MultMatrix(dmviewData);
+
+                                GL.Color3(color);
+                                OpenGLUtilities.drawSolidCube(0.08f);
+                                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                                GL.PopMatrix();
+
+                                GL.PushMatrix();
+
+                                Matrix4 mView1 = Matrix4.CreateTranslation(
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.x),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.y),
+                                    Convert.ToSingle(collPointStr[i].CollisionPointBase[n].CollisionPoints[j].CollisionPointB.Vertex.z));
+
+                                var dmviewData1 = new float[] {
+                                    mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                                    mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                                    mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                                    mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                                    };
+
+                                GL.MultMatrix(dmviewData1);
+
+                                GL.Color3(color);
+
+                                OpenGLUtilities.drawSolidCube(0.08f);
+                                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+                                GL.PopMatrix();
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void displayBaseContact()
+        {
+            for (int i = 0; i < collPoint.Count; i++)
+            {
+                for (int n = 0; n < collPoint[i].CollisionPointBase.Length; n++)
+                {
+                    GL.PushMatrix();
+
+                    Matrix4 mView = Matrix4.CreateTranslation(
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.x),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.y),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointA.Vertex.z));
+
+                    var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                };
+
+                    GL.MultMatrix(dmviewData);
+
+                    //GL.Color3 (1.0f, 0.0, 0.0);
+                    OpenGLUtilities.drawSolidCube(0.08f);
+
+                    GL.PopMatrix();
+
+                    GL.PushMatrix();
+
+                    Matrix4 mView1 = Matrix4.CreateTranslation(
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.x),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.y),
+                        Convert.ToSingle(collPoint[i].CollisionPointBase[n].CollisionPoint.CollisionPointB.Vertex.z));
+
+                    var dmviewData1 = new float[] {
+                    mView1.M11, mView1.M12, mView1.M13, mView1.M14,
+                    mView1.M21, mView1.M22, mView1.M23, mView1.M24,
+                    mView1.M31, mView1.M32, mView1.M33, mView1.M34,
+                    mView1.M41, mView1.M42, mView1.M43, mView1.M44
+                };
+
+                    GL.MultMatrix(dmviewData1);
 
 
-					GL.PopMatrix();
-				}
+                    OpenGLUtilities.drawSolidCube(0.08f);
 
-			}
-		}
 
-        //private void displayVertex(int index)
-        //{
+                    GL.PopMatrix();
+                }
 
-        //    for (int i = 0; i < physicsEngine.GetShape(index).GetGeometryCount(); i++)
-        //    {
-        //        for (int j = 0; j < SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition.Length; j++)
-        //        {
-        //            SharpEngineMathUtility.Vector3 relativePosition = physicsEngine.GetShape(index).Position +
-        //                            (physicsEngine.GetShape(index).RotationMatrix * SharpPhysicsEngine.ShapeDefinition.Helper.GetGeometry(physicsEngine.GetShape(index))[i].RelativePosition[j]);
+            }
+        }
 
-        //            GL.PushMatrix();
+        private void displayVertex(int index)
+        {
+            var shape = physicsEngine.GetShape(index);
+            var vertices = shape.GetVertices();
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                var relativePosition = vertices[i];
 
-        //            Matrix4 mView = Matrix4.CreateTranslation(
-        //                Convert.ToSingle(relativePosition.x),
-        //                Convert.ToSingle(relativePosition.y),
-        //                Convert.ToSingle(relativePosition.z));
+                GL.PushMatrix();
 
-        //            var dmviewData = new float[] {
-        //            mView.M11, mView.M12, mView.M13, mView.M14,
-        //            mView.M21, mView.M22, mView.M23, mView.M24,
-        //            mView.M31, mView.M32, mView.M33, mView.M34,
-        //            mView.M41, mView.M42, mView.M43, mView.M44
-        //        };
+                Matrix4 mView = Matrix4.CreateTranslation(
+                    Convert.ToSingle(relativePosition.x),
+                    Convert.ToSingle(relativePosition.y),
+                    Convert.ToSingle(relativePosition.z));
 
-        //            GL.MultMatrix(dmviewData);
+                var dmviewData = new float[] {
+                    mView.M11, mView.M12, mView.M13, mView.M14,
+                    mView.M21, mView.M22, mView.M23, mView.M24,
+                    mView.M31, mView.M32, mView.M33, mView.M34,
+                    mView.M41, mView.M42, mView.M43, mView.M44
+                    };
 
-        //            OpenGLUtilities.drawSolidCube(0.04f);
+                GL.MultMatrix(dmviewData);
 
-        //            GL.PopMatrix();
-        //        }
-        //    }
-        //}
+                OpenGLUtilities.drawSolidCube(0.04f);
+
+                GL.PopMatrix();
+            }
+        }
 
         private void displayJoint()
 		{

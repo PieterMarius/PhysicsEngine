@@ -27,6 +27,7 @@
 using System;
 using System.Linq;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Wrapper
@@ -52,7 +53,7 @@ namespace SharpPhysicsEngine.Wrapper
             double angularErrorReductionParam,
             double angularSpringCoeff)
         {
-            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+            TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
             softShape = new SoftShape(
                 triangleMeshes,
@@ -75,7 +76,7 @@ namespace SharpPhysicsEngine.Wrapper
             double dampingCoefficient,
             double springCoefficient)
         {
-            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+            TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
             softShape = new SoftShape(
                 triangleMeshes, 
@@ -96,7 +97,7 @@ namespace SharpPhysicsEngine.Wrapper
             double restoreCoefficient,
             double springCoefficient)
         {
-            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(triangleIndex);
+            TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
             softShape = new SoftShape(triangleMeshes, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
         }
@@ -335,7 +336,7 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.ShapePoints.Length;
         }
 
-        public Vector3[] GetShapePointsPosition()
+        public Vector3[] GetVertices()
         {
             return Array.ConvertAll(softShape.ShapePoints, x => x.Position);
         }
@@ -368,6 +369,11 @@ namespace SharpPhysicsEngine.Wrapper
         public double GetDecompositionParam()
         {
             return softShape.DecompositionParameter;
+        }
+
+        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

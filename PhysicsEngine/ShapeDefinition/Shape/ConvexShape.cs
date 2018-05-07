@@ -53,7 +53,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     this,
                     inputVertexPosition,
                     triangleMeshes,
-                    ObjectGeometryType.ConvexBody,
+                    ObjectGeometryType.ConvexShape,
                     true);
 
             SetIsStatic(isStatic);
@@ -77,7 +77,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     this,
                     convexHullData.Vertices,
                     convexHullData.TriangleMeshes,
-                    ObjectGeometryType.ConvexBody,
+                    ObjectGeometryType.ConvexShape,
                     true);
 
             SetIsStatic(isStatic);

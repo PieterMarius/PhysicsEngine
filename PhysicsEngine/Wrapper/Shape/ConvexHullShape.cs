@@ -29,6 +29,7 @@ using System;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ConvexHullWrapper;
 using System.Collections.Generic;
+using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.Wrapper
 {
@@ -49,7 +50,7 @@ namespace SharpPhysicsEngine.Wrapper
             double mass,
             bool isStatic)
         {
-            TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(inputTriangle);
+            TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle);
             
             convexShape = new ConvexShape(
                 inputVertexPosition,
@@ -288,6 +289,15 @@ namespace SharpPhysicsEngine.Wrapper
             return convexShape.ObjectGeometry.AABBox.Max;
         }
 
+        public Vector3[] GetVertices()
+        {
+            Vector3[] vertices = new Vector3[convexShape.ObjectGeometry.VertexPosition.Length];
+            for (int i = 0; i < convexShape.ObjectGeometry.VertexPosition.Length; i++)
+                vertices[i] = CommonUtilities.GetVertexPosition(convexShape.ObjectGeometry, i).Vertex;
+
+            return vertices;
+        }
+
         public void SetIsStatic(bool isStatic)
         {
             convexShape.SetIsStatic(isStatic);
@@ -296,6 +306,11 @@ namespace SharpPhysicsEngine.Wrapper
         public void AddToRestoreCoeff(double value)
         {
             throw new NotImplementedException();
+        }
+
+        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        {
+            return convexShape.InitCenterOfMass;
         }
 
         #endregion

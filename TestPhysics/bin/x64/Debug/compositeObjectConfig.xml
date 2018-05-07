@@ -21,10 +21,10 @@
     </Parameters>
     
    <ObjectsSettings>
-		<!-- <Object>
+		 <Object>
             <Position x="0,0" y="0,7" z="0,0" />
-            <LinearVelocity x="0,0" y="0,0" z="-8,0" />
-            <AngularVelocity x="0,0" y="0,0" z="0,0" />
+            <LinearVelocity x="0,0" y="0,0" z="0,0" />
+            <AngularVelocity x="0,0" y="0,0" z="1,0" />
             <RotationStatus x="0,0" y="0,0" z="0,0" angle="0,0" />
             <ObjectType>0</ObjectType>
             
@@ -47,7 +47,7 @@
 				<Texture>texture/woodbox.bmp</Texture>
 			</ObjectGeometry>
         </Object>
-		
+		<!--
 		<Object>
             <Position x="0,0" y="0,0" z="-7,0" />
             <LinearVelocity x="0,0" y="0,0" z="8,0" />

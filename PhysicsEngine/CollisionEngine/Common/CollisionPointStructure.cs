@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  *  
  *****************************************************************************/
+
 using System.Linq;
 
 namespace SharpPhysicsEngine.CollisionEngine

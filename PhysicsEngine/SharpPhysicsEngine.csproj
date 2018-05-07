@@ -81,6 +81,7 @@
     <Compile Include="ConvexHullWrapper\IConvexHullEngine.cs" />
     <Compile Include="ExternalUtilities\SharpEngineUtilities.cs" />
     <Compile Include="HashGenerator.cs" />
+    <Compile Include="Helper\CommonUtilities.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="Helper\IntegrationHelper.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />
@@ -111,7 +112,7 @@
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
-    <Compile Include="Wrapper\Shape\CompoundRigidCollisionShape.cs" />
+    <Compile Include="Wrapper\Shape\CompoundRigidShape.cs" />
     <Compile Include="Wrapper\EngineObjectType.cs" />
     <Compile Include="Wrapper\Joint\AngularJoint.cs" />
     <Compile Include="Wrapper\Joint\BallAndSocketJoint.cs" />
@@ -181,7 +182,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MathUtility.licenseheader" />
+    <None Include="PhysicsEngine.licenseheader" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

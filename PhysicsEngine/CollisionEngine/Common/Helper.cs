@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -60,15 +61,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return GetFarthestPointWithOutAdj(vertexObj, direction);
 		}
 
-		public static VertexProperties GetVertexPosition(
-			IGeometry obj,
-			int vertexIndex)
-		{
-			return new VertexProperties(
-				obj.Shape.Position +
-				(obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]),
-				obj.VertexPosition[vertexIndex].Adjacency);
-		}
+		
 
 		public static int GetFarthestPointWithOutAdj(
 			VertexProperties[] vertexObj,
@@ -321,7 +314,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             for (int i = 0; i < obj.VertexPosition.Length; i++)
             {
-                vertexPosition[i] = GetVertexPosition(obj, i);
+                vertexPosition[i] = CommonUtilities.GetVertexPosition(obj, i);
             }
 
 			return vertexPosition;

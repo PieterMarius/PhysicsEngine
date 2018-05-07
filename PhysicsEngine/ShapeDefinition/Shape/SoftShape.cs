@@ -292,7 +292,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SoftConstraint = new List<SoftConstraint>();
             HashSet<ConstraintIndex> indexHashSet = new HashSet<ConstraintIndex>();
             
-            foreach (var triangle in Triangle.Select((value, i) => new { value, i }))
+            foreach (var triangle in Triangle.Select((value, index) => new { value, index }))
             {
                 if(indexHashSet.Add(new ConstraintIndex(triangle.value.a, triangle.value.b)) &&
                    triangle.value.a != triangle.value.b)
@@ -328,9 +328,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                         angularSpringCoeff));
 
                 //Add triangle index to shape points
-                ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.i);
-                ShapePoints[triangle.value.b].AddTrianglesIndex(triangle.i);
-                ShapePoints[triangle.value.c].AddTrianglesIndex(triangle.i);
+                ShapePoints[triangle.value.a].AddTrianglesIndex(triangle.index);
+                ShapePoints[triangle.value.b].AddTrianglesIndex(triangle.index);
+                ShapePoints[triangle.value.c].AddTrianglesIndex(triangle.index);
             }
         }
 

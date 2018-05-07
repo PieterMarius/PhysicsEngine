@@ -129,7 +129,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Octree
 
             if (inputTriangle.Count > 0)
             {
-                geometry.Add(new Geometry(shape, convexPoint.ToArray(), inputTriangle.ToArray(), ObjectGeometryType.ConvexBody, false));
+                geometry.Add(new Geometry(shape, convexPoint.ToArray(), inputTriangle.ToArray(), ObjectGeometryType.ConvexShape, false));
             }
 
             for (int a = 0; a < 8; a++)

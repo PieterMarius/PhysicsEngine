@@ -48,6 +48,8 @@ namespace SharpPhysicsEngine.Wrapper
         int GetGeometryCount();
         Vector3 GetMinAABB();
         Vector3 GetMaxAABB();
+        Vector3[] GetVertices();
+        Vector3 GetCenterOfMassShiftValue(int index = 0);
         void SetMass(double mass);
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);

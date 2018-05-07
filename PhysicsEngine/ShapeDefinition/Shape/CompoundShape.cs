@@ -25,7 +25,9 @@
  *****************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -47,7 +49,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// <summary>
         /// Get the number of convex objects made the main object.
         /// </summary>
-        public int CompoundingConvexObjectCount { get; private set; }
+        public int CompoundingConvexObjCount { get; private set; }
 
         #endregion
 
@@ -62,7 +64,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
         #region Constructor
 
-        public CompoundShape()
+        public CompoundShape(
+            List<Vector3[]> inputVertexPosition,
+            List<int[][]> inputTriangle,
+            Vector3[] compoundPosition,
+            double[] mass)
         {
             ObjectType = ObjectType.CompoundShape;
 
@@ -76,6 +82,19 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             InertiaTensor = Matrix3x3.IdentityMatrix();
             SleepingFrameCount = 0;
+            StartCompoundPositionObjects = compoundPosition;
+            SetPartialMass(mass);
+
+            IGeometry[] geometry = new IGeometry[inputVertexPosition.Count];
+
+            for (int i = 0; i < inputVertexPosition.Count; i++)
+            {
+                TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle[i]);
+
+                geometry[i] = new Geometry(this, inputVertexPosition[i], triangleMeshes, ObjectGeometryType.ConvexShape, true);
+            }
+
+            SetObjectGeometry(geometry);
         }
 
         #endregion
@@ -126,7 +145,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
             StartCompoundPositionObjects = compoundPosition;
         }
 
-        public void SetObjectGeometry(IGeometry[] geometry)
+        public override void Rotate(Vector3 versor, double angle)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void SetObjectGeometry(IGeometry[] geometry)
         {
             ObjectGeometry = geometry;
 
@@ -142,20 +170,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
                                                                                   StartCompoundPositionObjects[i]);
                     }
                 }
+                CompoundingConvexObjCount = ObjectGeometry.Length;
             }
 
             SetObjectProperties();
             SetAABB();
         }
-
-        public override void Rotate(Vector3 versor, double angle)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region Private Methods
 
         private void SetObjectProperties()
         {

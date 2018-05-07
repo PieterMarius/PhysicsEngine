@@ -131,9 +131,6 @@ namespace TestPhysics
 				double[] mass = new double[xmlGeometryList.Count];
 				Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
                 
-				
-					
-				
 				for (int j = 0; j < xmlGeometryList.Count; j++)
 				{
 					//Scale
@@ -154,7 +151,11 @@ namespace TestPhysics
 				}
 
                 if (xmlGeometryList.Count > 1)
-                    objects[i] = new CompoundRigidCollisionShape();
+                    objects[i] = new CompoundRigidShape(
+                        objGeometry.Select(x => x.VertexPoint).ToList(), 
+                        objGeometry.Select(x => x.TriagleIdx).ToList(),
+                        startCompositePosition,
+                        mass);
                 else
                 {
                     if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
@@ -168,15 +169,6 @@ namespace TestPhysics
                 objects[i].SetPosition(position);
 				objects[i].SetRotationStatus(new Quaternion(versor, angle));
 
-				if (xmlGeometryList.Count > 1)
-				{
-					((CompoundRigidCollisionShape)objects[i]).SetPartialMass(mass);
-					((CompoundRigidCollisionShape)objects[i]).SetCompoundPosition(startCompositePosition);
-                    ((CompoundRigidCollisionShape)objects[i]).SetGeometry(
-                                    objGeometry.Select(x => x.VertexPoint).ToList(),
-                                    objGeometry.Select(x => x.TriagleIdx).ToList());
-				}
-										   
 				//Linear Velocity
 				objects [i].SetLinearVelocity (new Vector3 (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),

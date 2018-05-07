@@ -30,6 +30,8 @@ CollisionEngine/bin/Debug/MathUtility.dll
 
 *.cache
 
+PhysicsUnitTest/bin/*
+PhysicsUnitTest/obj/*
 CollisionEngine/obj/*
 LCPSolver/obj/*
 CollisionEngine/bin/*
@@ -68,3 +70,5 @@ PhysicsEngine/bin/Debug/System.Numerics.Vectors.xml
 PhysicsEngine/MIConvexHull.xml
 TestPhysics/MIConvexHull.xml
 MathUtility/bin/x64/Debug/System.Numerics.Vectors.xml
+TestPhysics/bin/x64/Debug/OpenTK.xml
+TestPhysics/bin/x64/Debug/OpenTK.xml

@@ -156,7 +156,40 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
 		}
 
-		public static AABB GetShapePointAABB(SoftShapePoint[] shapePoint)
+        public static AABB GetGeometryAABB(Vector3[] vertices)
+        {
+            Vector3 vertexPos = vertices[0];
+            double xMax = vertexPos.x;
+            double xMin = vertexPos.x;
+            double yMax = vertexPos.y;
+            double yMin = vertexPos.y;
+            double zMax = vertexPos.z;
+            double zMin = vertexPos.z;
+
+            for (int i = 1; i < vertices.Length; i++)
+            {
+                Vector3 vertex = vertices[i];
+
+                if (vertex.x < xMin)
+                    xMin = vertex.x;
+                else if (vertex.x > xMax)
+                    xMax = vertex.x;
+
+                if (vertex.y < yMin)
+                    yMin = vertex.y;
+                else if (vertex.y > yMax)
+                    yMax = vertex.y;
+
+                if (vertex.z < zMin)
+                    zMin = vertex.z;
+                else if (vertex.z > zMax)
+                    zMax = vertex.z;
+            }
+
+            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+        }
+
+        public static AABB GetShapePointAABB(SoftShapePoint[] shapePoint)
 		{
 			Vector3 vertexPos = shapePoint[0].Position;
 			double xMax = vertexPos.x;

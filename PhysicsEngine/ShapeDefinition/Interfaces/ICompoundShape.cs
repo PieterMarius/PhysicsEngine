@@ -33,9 +33,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         IGeometry[] ObjectGeometry { get; }
         double[] PartialMass { get; }
         Vector3[] StartCompoundPositionObjects { get; }
-        int CompoundingConvexObjectCount { get; }
-
-        void SetObjectGeometry(IGeometry[] geometry);
+        int CompoundingConvexObjCount { get; }
+                
         void SetPartialMass(double[] mass);
         void SetCompoundPosition(Vector3[] compoundPosition);
     }

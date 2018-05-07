@@ -27,11 +27,12 @@
 using System;
 using System.Collections.Generic;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    public sealed class CompoundRigidCollisionShape : ICollisionShape, IMapper
+    public sealed class CompoundRigidShape : ICollisionShape, IMapper
     {
         #region Fields
 
@@ -41,9 +42,17 @@ namespace SharpPhysicsEngine.Wrapper
 
         #region Constructor
 
-        public CompoundRigidCollisionShape()
+        public CompoundRigidShape(
+            List<Vector3[]> inputVertexPosition,
+            List<int[][]> inputTriangle,
+            Vector3[] compoundPosition,
+            double[] mass)
         {
-            compoundShape = new CompoundShape();
+            compoundShape = new CompoundShape(
+                inputVertexPosition, 
+                inputTriangle,
+                compoundPosition,
+                mass);
         }
 
         #endregion
@@ -59,22 +68,6 @@ namespace SharpPhysicsEngine.Wrapper
         public void SetCompoundPosition(Vector3[] compoundPosition)
         {
             compoundShape.SetCompoundPosition(compoundPosition);
-        }
-
-        public void SetGeometry(
-            List<Vector3[]> inputVertexPosition,
-            List<int[][]> inputTriangle)
-        {
-            IGeometry[] geometry = new IGeometry[inputVertexPosition.Count];
-
-            for (int i = 0; i < inputVertexPosition.Count; i++)
-            {
-                TriangleMesh[] triangleMeshes = WrapperUtilities.GetTriangleMeshes(inputTriangle[i]);
-
-                geometry[i] = new Geometry(compoundShape, inputVertexPosition[i], triangleMeshes, ObjectGeometryType.ConvexBody, true);
-            }
-
-            compoundShape.SetObjectGeometry(geometry);
         }
 
         public Vector3[] StartCompoundPositionObjects
@@ -174,17 +167,17 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        //public Vector3[] GetVertices()
-        //{
-        //    List<Vector3> vertices = new List<Vector3>();
-        //    for (int i = 0; i < compoundShape.CompoundingConvexObjectCount; i++)
-        //    {
-        //        for (int j = 0; j < compoundShape.ge; j++)
-        //        {
+        public Vector3[] GetVertices()
+        {
+            List<Vector3> vertices = new List<Vector3>();
+            for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
+            {
+                for (int j = 0; j < compoundShape.ObjectGeometry[i].VertexPosition.Length; j++)
+                    vertices.Add(CommonUtilities.GetVertexPosition(compoundShape.ObjectGeometry[i], j).Vertex);
+            }
 
-        //        }
-        //    }
-        //}
+            return vertices.ToArray();
+        }
 
         public bool IsStatic
         {
@@ -340,6 +333,11 @@ namespace SharpPhysicsEngine.Wrapper
         public void AddToRestoreCoeff(double value)
         {
             throw new NotImplementedException();
+        }
+
+        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        {
+            return compoundShape.StartCompoundPositionObjects[index] - compoundShape.InitCenterOfMass;
         }
 
         #endregion
