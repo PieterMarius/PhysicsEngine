@@ -248,9 +248,16 @@ namespace SharpPhysicsEngine.CollisionEngine
                     continue;
                 }
 
+                if (item.shape is IConcaveShape concaveShape)
+                {
+                    boxs[item.i] = new AABB[1];
+                    boxs[item.i][0] = concaveShape.ObjectGeometry.AABBox;
+                    continue;
+                }
+
                 if (item.shape is ICompoundShape compoundShape)
                 {
-                    AABB[] bufBox = Array.ConvertAll(compoundShape.ObjectGeometry, x => x.AABBox);
+                    AABB[] bufBox = Array.ConvertAll(compoundShape.ShapesGeometry, x => x.AABBox);
                     boxs[item.i] = bufBox;
                     continue;
                 }

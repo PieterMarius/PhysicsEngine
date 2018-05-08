@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public static IGeometry[] GetGeometry(IShape shape)
         {
             if (shape is ICompoundShape compoundShape)
-                return compoundShape.ObjectGeometry;
+                return compoundShape.ShapesGeometry;
 
             if (shape is IConvexShape convexShape)
                 return new IGeometry[] { convexShape.ObjectGeometry };

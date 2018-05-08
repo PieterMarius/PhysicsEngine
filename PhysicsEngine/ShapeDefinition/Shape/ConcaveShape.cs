@@ -32,7 +32,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal class ConcaveShape : Shape
+    internal class ConcaveShape : Shape, IConcaveShape
     {
         #region Fields
 

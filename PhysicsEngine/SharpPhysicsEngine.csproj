@@ -108,6 +108,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
+    <Compile Include="ShapeDefinition\Shape\IConcaveShape.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />

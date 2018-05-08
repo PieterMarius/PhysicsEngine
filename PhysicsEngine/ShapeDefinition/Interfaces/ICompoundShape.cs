@@ -30,7 +30,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 {
     internal interface ICompoundShape
     {
-        IGeometry[] ObjectGeometry { get; }
+        IGeometry[] ShapesGeometry { get; }
         double[] PartialMass { get; }
         Vector3[] StartCompoundPositionObjects { get; }
         int CompoundingConvexObjCount { get; }

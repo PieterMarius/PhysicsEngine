@@ -172,8 +172,8 @@ namespace SharpPhysicsEngine.Wrapper
             List<Vector3> vertices = new List<Vector3>();
             for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
             {
-                for (int j = 0; j < compoundShape.ObjectGeometry[i].VertexPosition.Length; j++)
-                    vertices.Add(CommonUtilities.GetVertexPosition(compoundShape.ObjectGeometry[i], j).Vertex);
+                for (int j = 0; j < compoundShape.ShapesGeometry[i].VertexPosition.Length; j++)
+                    vertices.Add(CommonUtilities.GetVertexPosition(compoundShape.ShapesGeometry[i], j).Vertex);
             }
 
             return vertices.ToArray();
@@ -289,7 +289,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public int GetGeometryCount()
         {
-            return compoundShape.ObjectGeometry.Length;
+            return compoundShape.ShapesGeometry.Length;
         }
 
         public Vector3 GetMinAABB()
@@ -298,7 +298,7 @@ namespace SharpPhysicsEngine.Wrapper
             double yMin = double.MaxValue;
             double zMin = double.MaxValue;
             
-            foreach (var item in compoundShape.ObjectGeometry)
+            foreach (var item in compoundShape.ShapesGeometry)
             {
                 if (item.AABBox.Min.x < xMin)
                     xMin = item.AABBox.Min.x;
@@ -317,7 +317,7 @@ namespace SharpPhysicsEngine.Wrapper
             double yMax = double.MinValue;
             double zMax = double.MinValue;
             
-            foreach (var item in compoundShape.ObjectGeometry)
+            foreach (var item in compoundShape.ShapesGeometry)
             {
                 if (item.AABBox.Max.x > xMax)
                     xMax = item.AABBox.Max.x;
