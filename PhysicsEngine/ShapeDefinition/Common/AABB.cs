@@ -31,7 +31,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 {
 	internal class AABB
 	{
-		#region Object fields
+		#region Fields
 
 		public Vector3 Min;
 		public Vector3 Max;

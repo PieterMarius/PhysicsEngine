@@ -101,7 +101,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
             StartCompoundPositionObjects = compoundPosition;
             SetPartialMass(mass);
                                                 
-            SetObjectGeometry(GetShapesGeometry(inputVertexPosition, inputTriangle));
+            SetShapesGeometry(GetShapesGeometry(inputVertexPosition, inputTriangle));
+
         }
 
         #endregion
@@ -121,6 +122,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     geometryIndex++;
                 }
             }
+            //ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
+            AABBox = AABB.GetGeometryAABB(ObjectGeometry);
+
         }
 
         public override void SetMass(double mass)
@@ -160,15 +164,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #endregion
 
         #region Private Methods
-
+        
         private IGeometry[] GetShapesGeometry(
             List<Vector3[]> inputVertexPosition,
             List<int[][]> inputTriangle)
         {
             IGeometry[] geometry = new IGeometry[inputVertexPosition.Count];
             List<Vector3> verticesSum = new List<Vector3>();
-            List<TriangleMesh> triangleMeshSum = new List<TriangleMesh>();
-
+            
             for (int i = 0; i < inputVertexPosition.Count; i++)
             {
                 TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle[i]);
@@ -176,16 +179,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 geometry[i] = new Geometry(this, inputVertexPosition[i], triangleMeshes, ObjectGeometryType.ConvexShape, true);
 
                 verticesSum.AddRange(inputVertexPosition[i].ToList());
-                triangleMeshSum.AddRange(triangleMeshes.ToList());
             }
 
-            TriangleMeshes = triangleMeshSum.ToArray();
             InputVertexPosition = verticesSum.ToArray();
+
+            SetGeometry();
 
             return geometry;
         }
 
-        private void SetObjectGeometry(IGeometry[] geometry)
+        private void SetGeometry()
+        {
+            ObjectGeometry = new Geometry(
+                this,
+                InputVertexPosition,
+                ObjectGeometryType.ConvexShape);
+        }
+
+        private void SetShapesGeometry(IGeometry[] geometry)
         {
             ShapesGeometry = geometry;
 
@@ -204,11 +215,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 CompoundingConvexObjCount = ShapesGeometry.Length;
             }
 
-            SetObjectProperties();
+            SetShapesProperties();
             SetAABB();
         }
 
-        private void SetObjectProperties()
+        private void SetShapesProperties()
         {
             Matrix3x3 baseTensors = new Matrix3x3();
 
@@ -242,19 +253,28 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition(int totalVertex)
         {
+            List<Vector3> objectRelativePosition = new List<Vector3>();
+
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
                 Vector3[] relativePositions = new Vector3[ShapesGeometry[i].VertexPosition.Length];
+
                 if (ShapesGeometry[i].VertexPosition.Length > 0)
                 {
                     for (int j = 0; j < ShapesGeometry[i].VertexPosition.Length; j++)
+                    {
                         relativePositions[j] =
                             ShapesGeometry[i].VertexPosition[j].Vertex -
                             InitCenterOfMass;
+
+                        objectRelativePosition.Add(relativePositions[j]);
+                    } 
                 }
 
                 ShapesGeometry[i].SetRelativePosition(relativePositions);
             }
+
+            ObjectGeometry.SetRelativePosition(objectRelativePosition.ToArray());
         }
 
         private Vector3 CalculateCenterOfMass()

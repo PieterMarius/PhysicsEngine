@@ -92,7 +92,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetAABB()
         {
-            ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
+            AABBox = AABB.GetGeometryAABB(ObjectGeometry);
+            ObjectGeometry.SetAABB(AABBox);
         }
 
         public override void SetMass(double mass)

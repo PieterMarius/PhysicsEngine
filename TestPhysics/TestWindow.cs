@@ -219,9 +219,9 @@ namespace TestPhysics
 
                 //env.GetPhysicsEnvironment();
 
-                LoadEngineByXml();
+                //LoadEngineByXml();
 
-                //LoadEngineByBuilder();
+                LoadEngineByBuilder();
 
 
             }

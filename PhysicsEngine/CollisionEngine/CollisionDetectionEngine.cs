@@ -205,7 +205,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var result = new List<CollisionPointStructure> ();
 
-			AABB[][] boxs = GetAABB(shapes);
+			AABB[] boxs = GetAABB(shapes);
 			
 			List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute (boxs, CollisionDistance);
 
@@ -235,42 +235,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return result;
 		}
 
-		private AABB[][] GetAABB(IShape[] shapes)
+		private AABB[] GetAABB(IShape[] shapes)
 		{
-			AABB[][] boxs = new AABB[shapes.Length][];
-
-			foreach (var item in shapes.Select((shape, i) => new { shape, i }))
-			{
-                if (item.shape is IConvexShape shape)
-                {
-                    boxs[item.i] = new AABB[1];
-                    boxs[item.i][0] = shape.ObjectGeometry.AABBox;
-                    continue;
-                }
-
-                if (item.shape is IConcaveShape concaveShape)
-                {
-                    boxs[item.i] = new AABB[1];
-                    boxs[item.i][0] = concaveShape.ObjectGeometry.AABBox;
-                    continue;
-                }
-
-                if (item.shape is ICompoundShape compoundShape)
-                {
-                    AABB[] bufBox = Array.ConvertAll(compoundShape.ShapesGeometry, x => x.AABBox);
-                    boxs[item.i] = bufBox;
-                    continue;
-                }
-
-                if (item.shape is ISoftShape softShape)
-                {
-                    boxs[item.i] = new AABB[1];
-                    boxs[item.i][0] = softShape.AABBox;
-                    continue;
-                }
-            }
-
-			return boxs;
+            return Array.ConvertAll(shapes, x => x.AABBox);
 		}
 
 		private List<CollisionPointStructure> GetCollisionPointStructure(
@@ -383,32 +350,43 @@ namespace SharpPhysicsEngine.CollisionEngine
 			IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
 			IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
 
+            List<CollisionPair> collisionPair = CheckGeometryAABB(
+                geometryA,
+                geometryB);
+
             int ID_A = A.ID;
             int ID_B = B.ID;
 
-            foreach (var shapeA in geometryA)
+            foreach(var collidingPair in collisionPair)
             {
-                foreach (var shapeB in geometryB)
-                {
-                    VertexProperties[] vertexObjA = Helper.SetVertexPosition(shapeA);
-                    VertexProperties[] vertexObjB = Helper.SetVertexPosition(shapeB);
+                VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA]);
+                VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB]);
 
-                    GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
+                GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
 
-                    CollisionPointStructure collision = NarrowPhaseCollisionDetection(
-                        gjkOutput,
-                        vertexObjA,
-                        vertexObjB,
-                        ID_A,
-                        ID_B);
+                CollisionPointStructure collision = NarrowPhaseCollisionDetection(
+                    gjkOutput,
+                    vertexObjA,
+                    vertexObjB,
+                    ID_A,
+                    ID_B);
 
-                    if (collision != null)
-                        collisionPointStructure.Add(collision);
-                }
+                if (collision != null)
+                    collisionPointStructure.Add(collision);
             }
-            
+                       
 			return collisionPointStructure;
 		}
+
+        private List<CollisionPair> CheckGeometryAABB(
+            IGeometry[] geometryA,
+            IGeometry[] geometryB)
+        {
+            var geometryBoxesA = Array.ConvertAll(geometryA, x => x.AABBox);
+            var geometryBoxesB = Array.ConvertAll(geometryB, x => x.AABBox);
+
+            return sweepAndPruneEngine.Execute(geometryBoxesA, geometryBoxesB, CollisionDistance);
+        }
 
 		#region Soft Body Collision Detection
 

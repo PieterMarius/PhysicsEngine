@@ -78,6 +78,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public bool IsStatic { get; protected set; }
 
+        public AABB AABBox { get; protected set; }
+
         #endregion
 
         #region Public Methods

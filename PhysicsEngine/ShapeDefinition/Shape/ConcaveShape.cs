@@ -48,11 +48,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public IGeometry ObjectGeometry { get; private set; }
 
         /// <summary>
-        /// Axis Aligned Bounding Box
-        /// </summary>
-        public AABB AABBox { get; private set; }
-
-        /// <summary>
         /// Object triangle mesh index
         /// </summary>
         public TriangleMesh[] TriangleMeshes { get; private set; }
@@ -103,6 +98,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public override void SetAABB()
         {
             AABBox = AABB.GetGeometryAABB(ObjectGeometry);
+            
+            foreach (var shape in ConvexShapesGeometry)
+                shape.SetAABB(AABB.GetGeometryAABB(shape));
         }
 
         public override void SetMass(double mass)

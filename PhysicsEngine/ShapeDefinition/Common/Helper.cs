@@ -43,11 +43,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public static IGeometry[] GetGeometry(IShape shape)
         {
-            if (shape is ICompoundShape compoundShape)
-                return compoundShape.ShapesGeometry;
-
             if (shape is IConvexShape convexShape)
                 return new IGeometry[] { convexShape.ObjectGeometry };
+
+            if (shape is ICompoundShape compoundShape)
+                return compoundShape.ShapesGeometry;
+                        
+            if (shape is IConcaveShape concaveShape)
+                return concaveShape.ConvexShapesGeometry;
 
             throw new ArgumentException("Unexpected type: " + shape.GetType());
         }

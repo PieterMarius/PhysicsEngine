@@ -37,8 +37,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
      
         #region Simulation Properties
                 
-        public AABB AABBox { get; private set; }
-
         public SoftShapePoint[] ShapePoints { get; private set; }
 
         public TriangleMesh[] Triangle { get; private set; }

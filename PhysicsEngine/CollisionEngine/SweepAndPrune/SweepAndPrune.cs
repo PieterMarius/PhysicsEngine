@@ -50,7 +50,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public List<CollisionPair> Execute(
-			AABB[][] boxs,
+			AABB[] boxs,
 			double distanceTolerance)
 		{
 			var collisionPairs = new List<CollisionPair> ();
@@ -61,41 +61,90 @@ namespace SharpPhysicsEngine.CollisionEngine
 				boxs.Length, 
 				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
 				i => {
+                    AABB box1 = boxs[i];
 
-					for (int k = 0; k < boxs[i].Length; k++)
-					{
-						AABB box1 = boxs[i][k];
+                    for (int k = i + 1; k < boxs.Length; k++)
+                    {
+                        AABB box2 = boxs[k];
 
-						for (int j = i + 1; j < boxs.Length; j++)
-						{
-							for (int w = 0; w < boxs[j].Length; w++)
-							{
-								AABB box2 = boxs[j][w];
+                        if (box1 != null && box2 != null &&
+                            TestBoxes(box1, box2, 0, distanceTolerance) &&
+                            TestBoxes(box1, box2, 1, distanceTolerance) &&
+                            TestBoxes(box1, box2, 2, distanceTolerance))
+                        {
+                            lock (lockMe)
+                            {
+                                collisionPairs.Add(new CollisionPair(i, k));
+                            }
+                        }
+                    }
+						
 
-								if (boxs[i] != null && boxs[j] != null &&
-									TestBoxes(box1, box2, 0, distanceTolerance) &&
-									TestBoxes(box1, box2, 1, distanceTolerance) &&
-									TestBoxes(box1, box2, 2, distanceTolerance))
-								{
-									lock (lockMe)
-									{
-										collisionPairs.Add(new CollisionPair(i, j));
-									}
-								}
-							}
-						}
-					}
+					//	for (int j = i + 1; j < boxs.Length; j++)
+					//	{
+					//		for (int w = 0; w < boxs[j].Length; w++)
+					//		{
+					//			AABB box2 = boxs[j][w];
+
+					//			if (boxs[i] != null && boxs[j] != null &&
+					//				TestBoxes(box1, box2, 0, distanceTolerance) &&
+					//				TestBoxes(box1, box2, 1, distanceTolerance) &&
+					//				TestBoxes(box1, box2, 2, distanceTolerance))
+					//			{
+					//				lock (lockMe)
+					//				{
+					//					collisionPairs.Add(new CollisionPair(i, j));
+					//				}
+					//			}
+					//		}
+					//	}
+					//}
 					
 				});
 
 			return collisionPairs;
 		}
 
-		#endregion
+        public List<CollisionPair> Execute(
+            AABB[] objectBoxesA,
+            AABB[] objectBoxesB,
+            double distanceTolerance)
+        {
+            var collisionPairs = new List<CollisionPair>();
 
-		#region Private Methods
+            var lockMe = new object();
 
-		private bool TestBoxes(
+            Parallel.For(0,
+                objectBoxesA.Length,
+                new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
+                i => {
+                    AABB box1 = objectBoxesA[i];
+
+                    for (int k = 0; k < objectBoxesB.Length; k++)
+                    {
+                        AABB box2 = objectBoxesB[k];
+
+                        if (box1 != null && box2 != null &&
+                            TestBoxes(box1, box2, 0, distanceTolerance) &&
+                            TestBoxes(box1, box2, 1, distanceTolerance) &&
+                            TestBoxes(box1, box2, 2, distanceTolerance))
+                        {
+                            lock (lockMe)
+                            {
+                                collisionPairs.Add(new CollisionPair(i, k));
+                            }
+                        }
+                    }
+                });
+
+            return collisionPairs;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private bool TestBoxes(
 			AABB a, 
 			AABB b,
 			int axisIndex,

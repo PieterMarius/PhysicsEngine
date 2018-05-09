@@ -39,8 +39,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 InitCenterOfMass { get; }
         double StaticFrictionCoeff { get; }
         Vector3 TorqueValue { get; }
+        AABB AABBox { get; }
         
-
         void SetAABB();
         void SetRestoreCoeff(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
