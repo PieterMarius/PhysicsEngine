@@ -30,7 +30,7 @@ using SharpPhysicsEngine.ConvexHullWrapper;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	internal sealed class ConvexShape : Shape, IShapeCommon, IConvexShape
+	internal sealed class ConvexShape : Shape, IConvexShape
     {
         #region Object status properties
         

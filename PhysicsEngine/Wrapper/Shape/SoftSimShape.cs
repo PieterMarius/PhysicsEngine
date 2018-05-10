@@ -32,7 +32,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    public sealed class SoftCollisionShape : ICollisionShape, IMapper
+    public sealed class SoftSimShape : ICollisionShape, IMapper
     {
         #region Fields
 
@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         #region Constructor
 
-        public SoftCollisionShape(
+        public SoftSimShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
@@ -67,7 +67,7 @@ namespace SharpPhysicsEngine.Wrapper
                 angularSpringCoeff);
         }
 
-        public SoftCollisionShape(
+        public SoftSimShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
@@ -88,7 +88,7 @@ namespace SharpPhysicsEngine.Wrapper
                 springCoefficient);
         }
 
-        public SoftCollisionShape(
+        public SoftSimShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softJoint,

@@ -132,7 +132,7 @@ namespace TestPhysics
 			TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
-            var objects0 = new ConvexHullShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -0.7, 0.0), 0.0, true);
+            var objects0 = new ConvexShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -0.7, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
             objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -158,7 +158,7 @@ namespace TestPhysics
                 TextureFilename.Add("texture/woodbox.bmp");
 
                 GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                var objects1 = new ConvexHullShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -357,7 +357,7 @@ namespace TestPhysics
 			return mesh;
 		}
 
-		private SoftCollisionShape BuildSoftBody(
+		private SoftSimShape BuildSoftBody(
 			string fileName,
 			double scale,
 			Vector3 position)
@@ -366,7 +366,7 @@ namespace TestPhysics
 
             RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
 
-			return new SoftCollisionShape(
+			return new SoftSimShape(
 				prop.triangleIndex, 
 				prop.vertexPoint, 
 				position,

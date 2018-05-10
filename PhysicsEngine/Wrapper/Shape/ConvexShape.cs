@@ -28,22 +28,21 @@ using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ConvexHullWrapper;
-using System.Collections.Generic;
 using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    public sealed class ConvexHullShape: ICollisionShape, IMapper
+    public sealed class ConvexShape: ICollisionShape, IMapper
     {
         #region Fields
 
-        ConvexShape convexShape;
+        ShapeDefinition.ConvexShape convexShape;
 
         #endregion
 
         #region Constructor
 
-        public ConvexHullShape(
+        public ConvexShape(
             Vector3[] inputVertexPosition,
             int[][] inputTriangle,
             Vector3 position,
@@ -51,15 +50,15 @@ namespace SharpPhysicsEngine.Wrapper
             bool isStatic)
         {
             TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle);
-            
-            convexShape = new ConvexShape(
+
+            convexShape = new ShapeDefinition.ConvexShape(
                 inputVertexPosition,
                 triangleMeshes,
                 position,
                 mass, 
                 isStatic);
         }
-        public ConvexHullShape(
+        public ConvexShape(
             Vector3[] inputVertexPosition,
             int[][] inputTriangle,
             Vector3 position,
@@ -67,7 +66,7 @@ namespace SharpPhysicsEngine.Wrapper
             this(inputVertexPosition, inputTriangle, position, mass, false)
         { }
 
-        public ConvexHullShape(
+        public ConvexShape(
             Vector3[] inputVertexPosition,
             Vector3 position,
             double mass)
@@ -76,7 +75,7 @@ namespace SharpPhysicsEngine.Wrapper
 
             ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
 
-            convexShape = new ConvexShape(
+            convexShape = new ShapeDefinition.ConvexShape(
                 convexHullData.Vertices,
                 convexHullData.TriangleMeshes,
                 position,

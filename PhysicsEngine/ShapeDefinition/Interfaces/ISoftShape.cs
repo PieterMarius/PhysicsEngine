@@ -33,7 +33,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         SoftShapePoint[] ShapePoints { get; }
         TriangleMesh[] Triangle { get; }
-        AABB AABBox { get; }
         SoftPoint[] Sphere { get; }
         List<SoftConstraint> SoftConstraint { get; }
         double DecompositionParameter { get; }

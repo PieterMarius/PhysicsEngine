@@ -24,6 +24,7 @@
  *  
  *****************************************************************************/
 
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Helper
@@ -51,6 +52,44 @@ namespace SharpPhysicsEngine.Helper
                     inputTriangle[i][2]);
 
             return triangleMeshes;
+        }
+
+        public static Vector3 GetAABBMinValue(IGeometry[] geometry)
+        {
+            double xMin = double.MaxValue;
+            double yMin = double.MaxValue;
+            double zMin = double.MaxValue;
+
+            foreach (var item in geometry)
+            {
+                if (item.AABBox.Min.x < xMin)
+                    xMin = item.AABBox.Min.x;
+                if (item.AABBox.Min.y < yMin)
+                    yMin = item.AABBox.Min.y;
+                if (item.AABBox.Min.z < zMin)
+                    zMin = item.AABBox.Min.z;
+            }
+
+            return new Vector3(xMin, yMin, zMin);
+        }
+
+        public static Vector3 GetAABBMaxValue(IGeometry[] geometry)
+        {
+            double xMax = double.MinValue;
+            double yMax = double.MinValue;
+            double zMax = double.MinValue;
+
+            foreach (var item in geometry)
+            {
+                if (item.AABBox.Max.x > xMax)
+                    xMax = item.AABBox.Max.x;
+                if (item.AABBox.Max.y < yMax)
+                    yMax = item.AABBox.Max.y;
+                if (item.AABBox.Max.z < zMax)
+                    zMax = item.AABBox.Max.z;
+            }
+
+            return new Vector3(xMax, yMax, zMax);
         }
     }
 }

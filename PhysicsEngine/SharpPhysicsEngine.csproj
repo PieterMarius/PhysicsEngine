@@ -108,7 +108,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
-    <Compile Include="ShapeDefinition\Shape\IConcaveShape.cs" />
+    <Compile Include="ShapeDefinition\Interfaces\IConcaveShape.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />
@@ -121,14 +121,15 @@
     <Compile Include="Wrapper\Joint\Hinge2Joint.cs" />
     <Compile Include="Wrapper\Joint\HingeJoint.cs" />
     <Compile Include="Wrapper\Joint\ICollisionJoint.cs" />
+    <Compile Include="Wrapper\Shape\ConcaveShape.cs" />
     <Compile Include="Wrapper\Shape\ICollisionShape.cs" />
     <Compile Include="Wrapper\Shape\IMapper.cs" />
     <Compile Include="Wrapper\Joint\IMapperJoint.cs" />
     <Compile Include="Wrapper\Joint\PistonJoint.cs" />
     <Compile Include="Wrapper\Joint\SliderJoint.cs" />
     <Compile Include="Wrapper\Joint\UniversalJoint.cs" />
-    <Compile Include="Wrapper\Shape\ConvexHullShape.cs" />
-    <Compile Include="Wrapper\Shape\SoftCollisionShape.cs" />
+    <Compile Include="Wrapper\Shape\ConvexShape.cs" />
+    <Compile Include="Wrapper\Shape\SoftSimShape.cs" />
     <Compile Include="ShapeDefinition\Common\AABB.cs" />
     <Compile Include="ShapeDefinition\Shape\CompoundShape.cs" />
     <Compile Include="ShapeDefinition\ConstraintIndex.cs" />

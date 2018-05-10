@@ -340,6 +340,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                      }
                      shape.AddVertex3Index(bufVertex);
                  }
+
+                 var vertices = bufVertex.Select(x => x.Vector3).ToArray();
+                 shape.SetRegion(AABB.GetGeometryAABB(vertices));
              });
         }
 

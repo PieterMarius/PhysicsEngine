@@ -134,9 +134,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			IShape A,
 			IShape B)
 		{
-			List<CollisionPointStructure> collisionPointStructure = GetCollisionPointStructure(
-				A, 
-				B);
+			List<CollisionPointStructure> collisionPointStructure = GetCollisionPointStructure(A, B);
 			
 			if (collisionPointStructure.Count > 1)
 			{
@@ -263,14 +261,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			else if (softShapeB != null && 
 					 softShapeA == null)
 			{
-				//Manca gestione compuondShape
-				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection((IConvexShape)A, softShapeB));
+				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection(A, softShapeB));
 			}
 			else if (softShapeA != null && 
 					 softShapeB == null)
 			{
-				///Manca gestione compuondShape
-				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection((IConvexShape)B, softShapeA));
+				collisionPointStructure.AddRange(Rigid_SoftBodyCollisionDetection(B, softShapeA));
 			}
 
 			//Self collision detection
@@ -292,26 +288,25 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		//Manca gestione compuondShape
 		private List<CollisionPointStructure> Rigid_SoftBodyCollisionDetection(
-			IConvexShape convexShape,
+			IShape rigidShape,
 			ISoftShape softShape)
 		{
+            var shapeSoft = (IShape)softShape;
+            
 			List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(softShape.AABBox, softShape.Triangle);
+            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(shapeSoft.AABBox, softShape.Triangle);
 
             List<ShapeDecompositionOutput> shapeOutput = convexDecomposition.GetIntersectedShape(
-				convexShape.ObjectGeometry.AABBox,
-				softShape.AABBox,
+				rigidShape.AABBox,
+                shapeSoft.AABBox,
 				Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
 				softShape.DecompositionParameter,
                 CollisionDistance);
 
             if (shapeOutput != null)
             {
-                IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry((IShape)convexShape);
-
-                var ID_A = ((IShape)convexShape).ID;
-                var ID_B = ((IShape)softShape).ID;
+                IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry(rigidShape);
 
                 foreach (var convexGeometry in convexShapeGeometry)
                 {
@@ -323,7 +318,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                         GJKOutput gjkOutput = collisionEngine.Execute(convexVertexObj, vertexObjSoftShape);
 
-                        var cps = NarrowPhaseCollisionDetection(gjkOutput, convexVertexObj, vertexObjSoftShape, ID_A, ID_B);
+                        var cps = NarrowPhaseCollisionDetection(
+                            gjkOutput, 
+                            convexVertexObj, 
+                            vertexObjSoftShape,
+                            rigidShape.ID,
+                            shapeSoft.ID);
 
                         if (cps != null)
                             collisionPointStructure.Add(cps);
@@ -353,10 +353,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             List<CollisionPair> collisionPair = CheckGeometryAABB(
                 geometryA,
                 geometryB);
-
-            int ID_A = A.ID;
-            int ID_B = B.ID;
-
+                        
             foreach(var collidingPair in collisionPair)
             {
                 VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA]);
@@ -368,8 +365,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                     gjkOutput,
                     vertexObjA,
                     vertexObjB,
-                    ID_A,
-                    ID_B);
+                    A.ID,
+                    B.ID);
 
                 if (collision != null)
                     collisionPointStructure.Add(collision);
@@ -385,6 +382,10 @@ namespace SharpPhysicsEngine.CollisionEngine
             var geometryBoxesA = Array.ConvertAll(geometryA, x => x.AABBox);
             var geometryBoxesB = Array.ConvertAll(geometryB, x => x.AABBox);
 
+            if(geometryBoxesA.Length == 1 &&
+               geometryBoxesB.Length == 1)
+                return new List<CollisionPair>() { new CollisionPair(0, 0) };
+            
             return sweepAndPruneEngine.Execute(geometryBoxesA, geometryBoxesB, CollisionDistance);
         }
 
@@ -396,8 +397,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var result = new List<CollisionPointStructure>();
 
-            ShapeConvexDecomposition convexDecompositionA = new ShapeConvexDecomposition(softShapeA.AABBox, softShapeA.Triangle);
-            ShapeConvexDecomposition convexDecompositionB = new ShapeConvexDecomposition(softShapeB.AABBox, softShapeB.Triangle);
+            var shapeA = (IShape)softShapeA;
+            var shapeB = (IShape)softShapeB;
+
+            ShapeConvexDecomposition convexDecompositionA = new ShapeConvexDecomposition(shapeA.AABBox, softShapeA.Triangle);
+            ShapeConvexDecomposition convexDecompositionB = new ShapeConvexDecomposition(shapeB.AABBox, softShapeB.Triangle);
 
             List<ShapeDecompositionOutput> decompConvexShapeA = convexDecompositionA.GetConvexShapeList(
 				Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex.ToArray(), item.ID)),
@@ -412,25 +416,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			boxCollision[0] = Array.ConvertAll(decompConvexShapeA.ToArray(), x => x.Region);
 			boxCollision[1] = Array.ConvertAll(decompConvexShapeB.ToArray(), x => x.Region);
 
-			List<CollisionPair> collisionPair = new List<CollisionPair>();
-
-            //TODO Utilizzare la funzione qui descritta
-            //List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute(boxCollision, CollisionDistance);
-
-            for (int i = 0; i < boxCollision[0].Length; i++)
-			{
-				for (int j = 0; j < boxCollision[1].Length; j++)
-				{
-					if (AABB.Intersect(boxCollision[0][i], boxCollision[1][j], CollisionDistance))
-						collisionPair.Add(new CollisionPair(i, j));
-				}
-			}
+            List<CollisionPair> collisionPair = sweepAndPruneEngine.Execute(
+                boxCollision[0], 
+                boxCollision[1], 
+                CollisionDistance);
 
 			var lockMe = new object();
-
-            int ID_A = ((IShape)softShapeA).ID;
-            int ID_B = ((IShape)softShapeB).ID;
-
 
             Parallel.ForEach(
 				collisionPair,
@@ -440,8 +431,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 					CollisionPointStructure collisionPointStruct = SoftBodyNarrowPhase(
 						decompConvexShapeA[pair.objectIndexA],
 						decompConvexShapeB[pair.objectIndexB],
-						ID_A,
-						ID_B);
+						shapeA.ID,
+						shapeB.ID);
 
 					if (collisionPointStruct != null)
 					{
@@ -492,20 +483,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexObjB = Array.ConvertAll(B.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
 			GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
-
-            #region Narrow Phase
-
+                        
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
             var cps = NarrowPhaseCollisionDetection(gjkOutput, vertexObjA, vertexObjB, ID_A, ID_B);
 
             if (cps != null)
                 collisionPointStructure.Add(cps);
-            
-            #endregion
-			
+                        			
 			return collisionPointStructure;
-
 		}
 
 		private CollisionPointStructure NarrowPhaseCollisionDetection(
@@ -515,27 +501,27 @@ namespace SharpPhysicsEngine.CollisionEngine
 			int ID_A,
 			int ID_B)
 		{
-
-			if (!gjkOutput.Intersection &&
+            if (!gjkOutput.Intersection &&
 				gjkOutput.CollisionDistance <= CollisionDistance)
 			{
 				if (gjkOutput.CollisionNormal.Length() < normalTolerance)
 					return null;
 
-				List<CollisionPoint> collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
+                List<CollisionPoint> collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
 					Array.ConvertAll(vertexObjA, x => x.Vertex),
 					Array.ConvertAll(vertexObjB, x => x.Vertex),
 					gjkOutput.CollisionPoint);
 
-				return new CollisionPointStructure(
+                var collisionPointBaseStr = new CollisionPointBaseStructure(
+                        gjkOutput.CollisionPoint,
+                        collisionPointsList.ToArray());
+                
+                return new CollisionPointStructure(
 					ID_A,
 					ID_B,
-					new CollisionPointBaseStructure(
-						gjkOutput.CollisionPoint,
-						collisionPointsList.ToArray()));
+                    collisionPointBaseStr);
 			}
-
-			if (gjkOutput.Intersection)
+			else if (gjkOutput.Intersection)
 			{
 				EPAOutput epaOutput = compenetrationCollisionEngine.Execute(
 												vertexObjA,
@@ -551,21 +537,23 @@ namespace SharpPhysicsEngine.CollisionEngine
 															   Array.ConvertAll(vertexObjB, x => x.Vertex),
 															   epaOutput.CollisionPoint);
 
-				return new CollisionPointStructure(
+                var collisionPointBaseStr = new CollisionPointBaseStructure(
+                        epaOutput.CollisionPoint,
+                        collisionPointsList.ToArray());
+                
+                return new CollisionPointStructure(
 					ID_A,
 					ID_B,
-					new CollisionPointBaseStructure(
-						epaOutput.CollisionPoint,
-						collisionPointsList.ToArray()));
+                    collisionPointBaseStr);
 			}
 
 			return null;
 		}
+        
+        #endregion
 
-		#endregion
+        #endregion
 
-		#endregion
-
-	}
+    }
 }
 

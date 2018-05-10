@@ -37,7 +37,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition
     {
         #region Public Methods
 
-        public static List<double[][]> GetConvexShapeList(SoftCollisionShape softShape)
+        public static List<double[][]> GetConvexShapeList(SoftSimShape softShape)
         {
             var baseSoftShape = (SoftShape)((IMapper)softShape).GetShape();
             var shapeConvexDecomposition = new ShapeConvexDecomposition(baseSoftShape.AABBox, baseSoftShape.Triangle);

@@ -57,6 +57,11 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             Vertex3Idx.UnionWith(vertex3Index);
         }
 
+        public void SetRegion(AABB region)
+        {
+            Region = region;
+        }
+
         #endregion
     }
 }

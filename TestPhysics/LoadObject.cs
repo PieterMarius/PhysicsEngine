@@ -159,10 +159,10 @@ namespace TestPhysics
                 else
                 {
                     if ((ObjectType)Convert.ToInt32(xmlList[i][objectType].InnerText) == ObjectType.RigidBody)
-                        objects[i] = new ConvexHullShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0]);
+                        objects[i] = new ConvexShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0]);
                     else if (Convert.ToInt32(xmlList[i][objectType].InnerText) == 1)
                     {
-                        objects[i] = new ConvexHullShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0], true);
+                        objects[i] = new ConvexShape(objGeometry[0].VertexPoint, objGeometry[0].TriagleIdx, position, mass[0], true);
                     }
                 }
 

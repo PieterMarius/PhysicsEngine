@@ -32,7 +32,7 @@ using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal sealed class CompoundShape : Shape, IShapeCommon, ICompoundShape, IDentity
+    internal sealed class CompoundShape : Shape, ICompoundShape, IDentity
     {
         #region Object status properties
                 

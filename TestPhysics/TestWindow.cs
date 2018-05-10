@@ -297,7 +297,7 @@ namespace TestPhysics
 
         }
 
-        private SoftCollisionShape BuildSoftBody(
+        private SoftSimShape BuildSoftBody(
             string fileName,
             double scale,
             SharpEngineMathUtility.Vector3 position)
@@ -306,7 +306,7 @@ namespace TestPhysics
 
             //RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
 
-            return new SoftCollisionShape(
+            return new SoftSimShape(
                 prop.triangleIndex,
                 prop.vertexPoint,
                 position,
@@ -568,7 +568,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadPlus])
             {
 
-                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                SoftSimShape softShape = physicsEngine.GetShape(3) as SoftSimShape;
                 softShape.AddToConstraintsRestoreCoefficient(0.05);
                 Console.WriteLine("Rest coeff " + softShape.GetShapeErrorReductionParams()[0]);
 
@@ -577,7 +577,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadMinus])
             {
 
-                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                SoftSimShape softShape = physicsEngine.GetShape(3) as SoftSimShape;
                 softShape.AddToConstraintsRestoreCoefficient(-0.05);
                 Console.WriteLine("Rest coeff " + softShape.GetShapeErrorReductionParams()[0]);
 
@@ -586,7 +586,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.PageUp])
             {
 
-                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                SoftSimShape softShape = physicsEngine.GetShape(3) as SoftSimShape;
                 softShape.AddToConstraintsSpringCoefficient(0.05);
 
             }
@@ -594,7 +594,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.PageDown])
             {
 
-                SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+                SoftSimShape softShape = physicsEngine.GetShape(3) as SoftSimShape;
                 softShape.AddToConstraintsSpringCoefficient(-0.05);
 
             }
@@ -690,7 +690,7 @@ namespace TestPhysics
             //Matrice da utilizzare come costante
             ICollisionShape shape = physicsEngine.GetShapes()[id];
 
-            if (shape is SoftCollisionShape softShape)
+            if (shape is SoftSimShape softShape)
                 DisplaySoftPoint(softShape);
             else
             {
@@ -767,7 +767,7 @@ namespace TestPhysics
 
         }
 
-        private void DisplaySoftPoint(SoftCollisionShape softShape)
+        private void DisplaySoftPoint(SoftSimShape softShape)
         {
             //GL.BindTexture(TextureTarget.Texture2D, textureID[3][0]);
 
@@ -1070,7 +1070,7 @@ namespace TestPhysics
 
         private void displaySoftJoint()
         {
-            SoftCollisionShape softShape = physicsEngine.GetShape(3) as SoftCollisionShape;
+            SoftSimShape softShape = physicsEngine.GetShape(3) as SoftSimShape;
 
             foreach (var item in softShape.GetShapeConstraintsPosition())
             {
@@ -1158,7 +1158,7 @@ namespace TestPhysics
 
 		private void displayConvexDecomposition()
 		{
-			SoftCollisionShape softShape = physicsEngine.GetShape(13) as SoftCollisionShape;
+			SoftSimShape softShape = physicsEngine.GetShape(13) as SoftSimShape;
 
             //region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
             //region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);

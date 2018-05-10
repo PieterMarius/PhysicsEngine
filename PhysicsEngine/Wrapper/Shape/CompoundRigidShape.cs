@@ -281,12 +281,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             compoundShape.SetIsStatic(isStatic);
         }
-
-        public void SetGeometry(Vector3[] inputVertexPosition, int[][] inputTriangle)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public int GetGeometryCount()
         {
             return compoundShape.ShapesGeometry.Length;
@@ -294,40 +289,12 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3 GetMinAABB()
         {
-            double xMin = double.MaxValue;
-            double yMin = double.MaxValue;
-            double zMin = double.MaxValue;
-            
-            foreach (var item in compoundShape.ShapesGeometry)
-            {
-                if (item.AABBox.Min.x < xMin)
-                    xMin = item.AABBox.Min.x;
-                if (item.AABBox.Min.y < yMin)
-                    yMin = item.AABBox.Min.y;
-                if (item.AABBox.Min.z < zMin)
-                    zMin = item.AABBox.Min.z;
-            }
-
-            return new Vector3(xMin, yMin, zMin);
+            return CommonUtilities.GetAABBMinValue(compoundShape.ShapesGeometry);
         }
 
         public Vector3 GetMaxAABB()
         {
-            double xMax = double.MinValue;
-            double yMax = double.MinValue;
-            double zMax = double.MinValue;
-            
-            foreach (var item in compoundShape.ShapesGeometry)
-            {
-                if (item.AABBox.Max.x > xMax)
-                    xMax = item.AABBox.Max.x;
-                if (item.AABBox.Max.y < yMax)
-                    yMax = item.AABBox.Max.y;
-                if (item.AABBox.Max.z < zMax)
-                    zMax = item.AABBox.Max.z;
-            }
-
-            return new Vector3(xMax, yMax, zMax);
+            return CommonUtilities.GetAABBMaxValue(compoundShape.ShapesGeometry);
         }
 
         public void AddToRestoreCoeff(double value)
