@@ -39,16 +39,18 @@ namespace SharpPhysicsEngine.Terrain
             Stream imageStreamSource = new FileStream(heightMapFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             BitmapSource bitmapSource = decoder.Frames[0];
-            Image img = Image.FromFile("");
+            //Alternativa a pngbitmap decoder            
+            Image img = Image.FromFile(heightMapFile);
             
             //PNGDecoder decoder = new PNGDecoder(getClass().getResourceAsStream(heightMapFile));
             int height = bitmapSource.PixelHeight;
             int width = bitmapSource.PixelWidth;
+            //ByteBuffer buf = ByteBuffer.allocateDirect(
+            //        4 * decoder.getWidth() * decoder.getHeight());
             MemoryStream buf = new MemoryStream(4 * bitmapSource.PixelHeight * bitmapSource.PixelWidth);
                         
             img.Save(buf, ImageFormat.Png);
-            //ByteBuffer buf = ByteBuffer.allocateDirect(
-            //        4 * decoder.getWidth() * decoder.getHeight());
+            
             //decoder.
             //decoder.decode(buf, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
             //buf.flip();
