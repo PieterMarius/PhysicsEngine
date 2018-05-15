@@ -75,6 +75,9 @@ namespace TestPhysics
 
         int redTexture;
 
+        double[][][] TerrainPositions;
+        double[][][] TerrainTexture;
+
         #region Keyboard and mouse variables
 
         OpenTK.Input.MouseState current, previous;
@@ -238,6 +241,11 @@ namespace TestPhysics
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
             textureID = env.LoadTexture();
+            TerrainMesh terrain = new TerrainMesh();
+            TerrainPositions = terrain.GetPositions();
+            TerrainTexture = terrain.GetTextureCoordMatrix();
+
+            pause = true;
 
             collPoint = new List<CollisionPointStructure>();
             collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
@@ -345,7 +353,7 @@ namespace TestPhysics
             GL.LoadIdentity();
 
             MoveCamera();
-
+            displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
             displayContact();
             //displayBaseContact();
@@ -364,8 +372,8 @@ namespace TestPhysics
             //displayVertex (1);
             //displayVertex (2);
 
-            for (int i = 0; i < physicsEngine.ShapesCount(); i++)
-                SetOpenGLObjectMatrixAndDisplayObject(i);
+            //for (int i = 0; i < physicsEngine.ShapesCount(); i++)
+            //    SetOpenGLObjectMatrixAndDisplayObject(i);
 
             //displayOctree();
             //displayConvexDecomposition();
@@ -1268,25 +1276,69 @@ namespace TestPhysics
 			
 		}
 
-		#endregion
+
+        private void displayTerrain(double[][][] spherePoint,double[][][] textureCoord, int height, int width)
+        {
+            GL.Enable(EnableCap.Texture2D);
+
+            GL.BindTexture(TextureTarget.Texture2D, textureID[0][0]);
+
+            OpenGLUtilities.DrawTerrain(spherePoint,textureCoord, height, width);
+
+            GL.Disable(EnableCap.Texture2D);
+
+            //int index = 0;
+            //for (int row = 0; row < height; row++)
+            //{
+            //    for (int col = 0; col < width; col++)
+            //    {
+            //        GL.PushMatrix();
+
+            //        Matrix4 mView = Matrix4.CreateTranslation(
+            //                            Convert.ToSingle(spherePoint[index]),
+            //                            Convert.ToSingle(spherePoint[index+1]),
+            //                            Convert.ToSingle(spherePoint[index+2]));
+
+            //        var dmviewData = new float[] {
+            //            mView.M11, mView.M12, mView.M13, mView.M14,
+            //            mView.M21, mView.M22, mView.M23, mView.M24,
+            //            mView.M31, mView.M32, mView.M33, mView.M34,
+            //            mView.M41, mView.M42, mView.M43, mView.M44
+            //        };
+
+            //        GL.MultMatrix(dmviewData);
+
+            //        GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
+            //        OpenGLUtilities.drawPoint(1.0f);
+            //        GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+
+            //        GL.PopMatrix();
+            //        index += 3;
+            //    }
+            //}
+
+        }
+
+
+        #endregion
 
 
 
-		//		protected override void OnResize(EventArgs e)
-		//		{
-		//			base.OnResize (e);
-		//			GL.Viewport (ClientRectangle.X, 
-		//				ClientRectangle.Y, 
-		//				ClientRectangle.Width, 
-		//				ClientRectangle.Height);
-		//
-		//			GL.MatrixMode (MatrixMode.Projection);
-		//			openGLUtilities.gluPerspective (
-		//				60, 
-		//				Convert.ToDouble(Width) / Convert.ToDouble(Height), 
-		//				1.0, 
-		//				100.0);
-		//		}
-	}
+        //		protected override void OnResize(EventArgs e)
+        //		{
+        //			base.OnResize (e);
+        //			GL.Viewport (ClientRectangle.X, 
+        //				ClientRectangle.Y, 
+        //				ClientRectangle.Width, 
+        //				ClientRectangle.Height);
+        //
+        //			GL.MatrixMode (MatrixMode.Projection);
+        //			openGLUtilities.gluPerspective (
+        //				60, 
+        //				Convert.ToDouble(Width) / Convert.ToDouble(Height), 
+        //				1.0, 
+        //				100.0);
+        //		}
+    }
 }
 

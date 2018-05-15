@@ -69,6 +69,18 @@ namespace SharpEngineMathUtility
 
         #endregion
 
+        #region Public Methods
+
+        public double[] Array
+        {
+            get
+            {
+                return new[] { x, y };
+            }
+        }
+
+        #endregion
+
         #region Const
 
         private const string COMPONENT_EXCEPTION = "Vector must contain three components (x,y,z)";

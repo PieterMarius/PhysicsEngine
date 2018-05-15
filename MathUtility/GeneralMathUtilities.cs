@@ -151,5 +151,44 @@ namespace SharpEngineMathUtility
             }
         }
 
+        public static double[][] GetArrayFromVector3(Vector3[] array)
+        {
+            var result = new double[array.Length][];
+
+            for (int i = 0; i < array.Length; i++)
+                result[i] = array[i].Array;
+
+            return result;
+        }
+
+        public static double[][][] GetMatrixFromVector3Matrix(Vector3[][] matrix)
+        {
+            var result = new double[matrix.Length][][];
+
+            for (int i = 0; i < matrix.Length; i++)
+                result[i] = GetArrayFromVector3(matrix[i]);
+
+            return result;
+        }
+
+        public static double[][] GetArrayFromVector2(Vector2[] array)
+        {
+            var result = new double[array.Length][];
+
+            for (int i = 0; i < array.Length; i++)
+                result[i] = array[i].Array;
+            
+            return result;
+        }
+
+        public static double[][][] GetMatrixFromVector2Matrix(Vector2[][] matrix)
+        {
+            var result = new double[matrix.Length][][];
+
+            for (int i = 0; i < matrix.Length; i++)
+                result[i] = GetArrayFromVector2(matrix[i]);
+            
+            return result;
+        }
     }
 }

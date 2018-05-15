@@ -2,12 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace SharpPhysicsEngine.Terrain
 {
@@ -16,12 +12,17 @@ namespace SharpPhysicsEngine.Terrain
         #region Fields
 
         private static readonly int MAX_COLOUR = 255 * 255 * 255;
-        private static readonly double STARTX = -0.5;
-        private static readonly double STARTZ = -0.5;
+        private static readonly double STARTX = -10.0;
+        private static readonly double STARTZ = -10.0;
 
         private readonly double minY;
         private readonly double maxY;
-        
+
+        private readonly Vector3[][] position;
+        private readonly Vector3[][] normalsArr;
+        private readonly Vector2[][] textureCoords;
+        private readonly int[] indicesArr;
+
         #endregion
 
         #region Constructor
@@ -29,8 +30,7 @@ namespace SharpPhysicsEngine.Terrain
         public HeightMapMesh(
             double minY, 
             double maxY, 
-            String heightMapFile, 
-            String textureFile, 
+            String heightMapFile,
             int textInc)
         {
             this.minY = minY;
@@ -39,42 +39,40 @@ namespace SharpPhysicsEngine.Terrain
             Stream imageStreamSource = new FileStream(heightMapFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             BitmapSource bitmapSource = decoder.Frames[0];
-            //Alternativa a pngbitmap decoder            
-            Image img = Image.FromFile(heightMapFile);
-            
-            //PNGDecoder decoder = new PNGDecoder(getClass().getResourceAsStream(heightMapFile));
+                       
             int height = bitmapSource.PixelHeight;
             int width = bitmapSource.PixelWidth;
-            //ByteBuffer buf = ByteBuffer.allocateDirect(
-            //        4 * decoder.getWidth() * decoder.getHeight());
-            MemoryStream buf = new MemoryStream(4 * bitmapSource.PixelHeight * bitmapSource.PixelWidth);
-                        
-            img.Save(buf, ImageFormat.Png);
+           
+            Byte[] bufferStream = new Byte[4 * bitmapSource.PixelHeight * bitmapSource.PixelWidth];
             
-            //decoder.
-            //decoder.decode(buf, decoder.getWidth() * 4, PNGDecoder.Format.RGBA);
-            //buf.flip();
+            bitmapSource.CopyPixels(bufferStream, width * 4, 0);
 
             double incx = GetXLength() / (width - 1);
             double incz = GetZLength() / (height - 1);
 
-            List<double> positions = new List<double>();
-            List<double> textCoords = new List<double>();
+            Vector2[][] textCoords = new Vector2[height][];
+            Vector3[][] positions = new Vector3[height][];
+
             List<int> indices = new List<int>();
 
             for (int row = 0; row < height; row++)
             {
+                positions[row] = new Vector3[width];
+                textCoords[row] = new Vector2[width];
+
                 for (int col = 0; col < width; col++)
                 {
                     // Create vertex for current position
-                    positions.Add(STARTX + col * incx); // x
-                    positions.Add(GetHeight(col, row, width, buf)); //y
-                    positions.Add(STARTZ + row * incz); //z
-
+                    positions[row][col] = new Vector3(
+                        STARTX + col * incx,
+                        GetHeight(col, row, width, bufferStream),
+                        STARTZ + row * incz);
+                                        
                     // Set texture coordinates
-                    textCoords.Add((float)textInc * (float)col / (float)width);
-                    textCoords.Add((float)textInc * (float)row / (float)height);
-
+                    textCoords[row][col] = new Vector2(
+                        (double)textInc * (double)col / (double)width,
+                        (double)textInc * (double)row / (double)height);
+                    
                     // Create indices
                     if (col < width - 1 && row < height - 1)
                     {
@@ -93,11 +91,46 @@ namespace SharpPhysicsEngine.Terrain
                     }
                 }
             }
+
+            position = positions;
+            indicesArr = indices.ToArray();
+            normalsArr = CalcNormals(position, width, height);
+            textureCoords = textCoords;
+        }
+
+        public Vector3[][] GetPosition()
+        {
+            return position;
+        }
+
+        public Vector3[][] GetNormalArray()
+        {
+            return normalsArr;
+        }
+
+        public Vector2[][] GetTextureCoords()
+        {
+            return textureCoords;
         }
 
         #endregion
 
         #region Private Methods
+
+        private byte[] ImageToByteArray(Image imageIn)
+        {
+            using (var ms = new MemoryStream())
+            {
+                imageIn.Save(ms, imageIn.RawFormat);
+                return ms.ToArray();
+            }
+        }
+
+        private static byte[] ImageToByte(Image img)
+        {
+            ImageConverter converter = new ImageConverter();
+            return (byte[])converter.ConvertTo(img, typeof(byte[]));
+        }
 
         private static double GetXLength()
         {
@@ -106,22 +139,33 @@ namespace SharpPhysicsEngine.Terrain
 
         private static double GetZLength()
         {
-            return Math.Abs(-STARTX * 2);
+            return Math.Abs(-STARTZ * 2);
         }
 
-        private double GetHeight(int x, int z, int width, MemoryStream buffer)
+        private double GetHeight(int x, int z, int width, byte[] bufferStream)
         {
-            var bufferStream = buffer.ToArray();
-            byte r = bufferStream[x * 4 + 0 + z * 4 * width];
-            byte g = bufferStream[x * 4 + 1 + z * 4 * width];
-            byte b = bufferStream[x * 4 + 2 + z * 4 * width];
-            byte a = bufferStream[x * 4 + 3 + z * 4 * width];
-            int argb = ((0xFF & a) << 24) | ((0xFF & r) << 16)
-                    | ((0xFF & g) << 8) | (0xFF & b);
-            return minY + Math.Abs(maxY - minY) * ((double)argb / (double)MAX_COLOUR);
+            int index = (z * width + x) * 4;
+            var r = bufferStream[index];
+            var g = bufferStream[index + 1];
+            var b = bufferStream[index + 2];
+            var a = bufferStream[index + 3];
+            long rgb = MakeRgb(r, g, b);
+            return minY + Math.Abs(maxY - minY) * ((double)rgb / (double)MAX_COLOUR);
         }
 
-        private double[] CalcNormals(double[] posArr, int width, int height)
+        private static long MakeArgb(byte alpha, byte red, byte green, byte blue)
+        {
+            return (long)(((ulong)((((red << 0x10) | (green << 8))
+                | blue) | (alpha << 0x18))) & 0xffffffffL);
+        }
+
+        private static long MakeRgb(byte red, byte green, byte blue)
+        {
+            return (long)(((ulong)((((red << 0x10) | (green << 8))
+                | blue))) & 0xffffffffL);
+        }
+
+        private Vector3[][] CalcNormals(Vector3[][] posArr, int width, int height)
         {
             Vector3 v0 = new Vector3();
             Vector3 v1 = new Vector3();
@@ -132,50 +176,36 @@ namespace SharpPhysicsEngine.Terrain
             Vector3 v23 = new Vector3();
             Vector3 v34 = new Vector3();
             Vector3 v41 = new Vector3();
-            List<double> normals = new List<double>();
+            Vector3[][] normals = new Vector3[height][];
             Vector3 normal = new Vector3();
             for (int row = 0; row < height; row++)
             {
+                normals[row] = new Vector3[width];
                 for (int col = 0; col < width; col++)
                 {
                     if (row > 0 && row < height - 1 && col > 0 && col < width - 1)
                     {
-                        int i0 = row * width * 3 + col * 3;
-                        v0 = new Vector3(posArr[i0], posArr[i0 + 1], posArr[i0 + 2]);
-                        //v0.x = posArr[i0];
-                        //v0.y = posArr[i0 + 1];
-                        //v0.z = posArr[i0 + 2];
+                        //int i0 = row * width * 3 + col * 3;
+                        v0 = new Vector3(posArr[row][col]);
 
-                        int i1 = row * width * 3 + (col - 1) * 3;
-                        v1 = new Vector3(posArr[i1], posArr[i1 + 1], posArr[i1 + 2]);
+                        //int i1 = row * width * 3 + (col - 1) * 3;
+                        v1 = new Vector3(posArr[row][col - 1]);
                         v1 = v1 - v0;
-                        //v1.x = posArr[i1];
-                        //v1.y = posArr[i1 + 1];
-                        //v1.z = posArr[i1 + 2];
                         //v1 = v1.sub(v0);
 
-                        int i2 = (row + 1) * width * 3 + col * 3;
-                        v2 = new Vector3(posArr[i2], posArr[i2 + 1], posArr[i2 + 2]);
+                        //int i2 = (row + 1) * width * 3 + col * 3;
+                        v2 = new Vector3(posArr[row + 1][col]);
                         v2 = v2 - v0;
-                        //v2.x = posArr[i2];
-                        //v2.y = posArr[i2 + 1];
-                        //v2.z = posArr[i2 + 2];
                         //v2 = v2.sub(v0);
 
-                        int i3 = (row) * width * 3 + (col + 1) * 3;
-                        v3 = new Vector3(posArr[i3], posArr[i3 + 1], posArr[i3 + 2]);
+                        //int i3 = (row) * width * 3 + (col + 1) * 3;
+                        v3 = new Vector3(posArr[row][col + 1]);
                         v3 = v3 - v0;
-                        //v3.x = posArr[i3];
-                        //v3.y = posArr[i3 + 1];
-                        //v3.z = posArr[i3 + 2];
                         //v3 = v3.sub(v0);
 
-                        int i4 = (row - 1) * width * 3 + col * 3;
-                        v4 = new Vector3(posArr[i4], posArr[i4 + 1], posArr[i4 + 2]);
+                        //int i4 = (row - 1) * width * 3 + col * 3;
+                        v4 = new Vector3(posArr[row - 1][col]);
                         v4 = v4 - v0;
-                        //v4.x = posArr[i4];
-                        //v4.y = posArr[i4 + 1];
-                        //v4.z = posArr[i4 + 2];
                         //v4 = v4.sub(v0);
 
                         v12 = v1.Cross(v2).Normalize();
@@ -195,20 +225,17 @@ namespace SharpPhysicsEngine.Terrain
                         //v41.normalize();
 
                         normal = v12 + v23 + v34 + v41;
-                        
-                        normal = normal.Normalize();
+
+                        normals[row][col] = normal.Normalize();
                     }
                     else
                     {
-                        normal = new Vector3(0.0, 1.0, 0.0);
+                        normals[row][col] = new Vector3(0.0, 1.0, 0.0);
                     }
-                    normal = normal.Normalize();
-                    normals.Add(normal.x);
-                    normals.Add(normal.y);
-                    normals.Add(normal.z);
+                    
                 }
             }
-            return normals.ToArray();
+            return normals;
         }
 
         #endregion

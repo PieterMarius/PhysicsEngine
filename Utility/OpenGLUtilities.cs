@@ -612,6 +612,50 @@ namespace Utility
 			GL.End ();
 		}
 
+        public static void DrawTerrain(
+            double[][][] positions,
+            double[][][] textureData,
+            int height,
+            int width)
+        {
+            for (int row = 0; row < height-1; row++)
+            {
+                GL.Begin(PrimitiveType.TriangleStrip);
+                for (int col = 0; col < width-1; col++)
+                {
+                    //GL.TexCoord2(0.0f, 0.0f);
+                    GL.TexCoord2((float)textureData[row][col][0], (float)textureData[row][col][1]);
+                    GL.Vertex3(
+                        positions[row][col][0],
+                        positions[row][col][1],
+                        positions[row][col][2]);
+
+                    //GL.TexCoord2(1.0f, 0.0f);
+                    GL.TexCoord2((float)textureData[row+1][col][0], (float)textureData[row+1][col][1]);
+                    GL.Vertex3(
+                        positions[row+1][col][0],
+                        positions[row+1][col][1],
+                        positions[row+1][col][2]);
+
+                    //GL.TexCoord2(0.0f, 1.0f);
+                    GL.TexCoord2((float)textureData[row][col+1][0], (float)textureData[row][col+1][1]);
+                    GL.Vertex3(
+                        positions[row][col+1][0],
+                        positions[row][col+1][1],
+                        positions[row][col+1][2]);
+
+                    //GL.TexCoord2(1.0f, 1.0f);
+                    GL.TexCoord2((float)textureData[row+1][col+1][0], (float)textureData[row+1][col+1][1]);
+                    GL.Vertex3(
+                        positions[row+1][col+1][0],
+                        positions[row+1][col+1][1],
+                        positions[row+1][col+1][2]);
+
+                }
+                GL.End();
+            }
+        }
+
 		/// <summary>
 		/// GL draw solid.
 		/// </summary>
