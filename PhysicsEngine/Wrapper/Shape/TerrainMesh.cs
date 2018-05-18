@@ -20,7 +20,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public TerrainMesh()
         {
-            terrain = new HeightMapMesh(0, 10, "heightmap.png",1);
+            terrain = new HeightMapMesh(0, 10, "heightmap.png", 1, 100);
         }
 
         #endregion

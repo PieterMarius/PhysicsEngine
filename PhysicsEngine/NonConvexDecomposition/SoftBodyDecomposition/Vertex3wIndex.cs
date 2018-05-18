@@ -51,6 +51,10 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             ID = id;
         }
 
+        #endregion
+
+        #region Public Methods
+
         public override int GetHashCode()
         {
             return Indexes.GetHashCode();

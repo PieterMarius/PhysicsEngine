@@ -4,24 +4,85 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Drawing;
+using SharpPhysicsEngine.ShapeDefinition;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.Terrain
 {
+    internal class TerrainElement
+    {
+        #region Fields
+
+        public List<Vector3> Position { get; private set; }
+        public AABB Box { get; private set; }
+
+        #endregion
+
+        #region Constructor
+
+        public TerrainElement()
+        {
+            Position = new List<Vector3>();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void AddPosition(Vector3 position)
+        {
+            Position.Add(position);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void GenerateShapes()
+        {
+            //ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(Box, TriangleMeshes);
+
+            //Vertex3Index[] verticesIndex = Array.ConvertAll(InputVertexPosition, x => new Vertex3Index(x, null, -1));
+            //var convexShapes = convexDecomposition.GetConvexShapeList(verticesIndex, 0.2);
+
+            //ConvexShapesGeometry = new Geometry[convexShapes.Count];
+
+
+            //ConvexHullData convexHullData = convexHullEngine.GetConvexHull(convexVertices);
+
+            //ConvexShapesGeometry[i] = new Geometry(
+            //    this,
+            //    convexHullData.Vertices,
+            //    convexHullData.TriangleMeshes,
+            //    ObjectGeometryType.ConvexShape,
+            //            true);
+        }
+
+        #endregion
+
+    }
+
     internal sealed class HeightMapMesh
     {
         #region Fields
 
         private static readonly int MAX_COLOUR = 255 * 255 * 255;
-        private static readonly double STARTX = -10.0;
-        private static readonly double STARTZ = -10.0;
+        private static readonly double STARTX = -0.5;
+        private static readonly double STARTZ = -0.5;
 
         private readonly double minY;
         private readonly double maxY;
+        private readonly double scale;
+
+        private int gridXDim = 20;
+        private int gridZDim = 20;
+
+        TerrainElement[,] terrainElements;
 
         private readonly Vector3[][] position;
         private readonly Vector3[][] normalsArr;
         private readonly Vector2[][] textureCoords;
-        private readonly int[] indicesArr;
+        //private readonly int[] indicesArr;
 
         #endregion
 
@@ -31,10 +92,12 @@ namespace SharpPhysicsEngine.Terrain
             double minY, 
             double maxY, 
             String heightMapFile,
-            int textInc)
+            int textInc,
+            double scale)
         {
             this.minY = minY;
             this.maxY = maxY;
+            this.scale = scale;
 
             Stream imageStreamSource = new FileStream(heightMapFile, FileMode.Open, FileAccess.Read, FileShare.Read);
             PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
@@ -47,14 +110,22 @@ namespace SharpPhysicsEngine.Terrain
             
             bitmapSource.CopyPixels(bufferStream, width * 4, 0);
 
-            double incx = GetXLength() / (width - 1);
-            double incz = GetZLength() / (height - 1);
+            double incx = (GetXLength() * scale) / (width - 1);
+            double incz = (GetZLength() * scale) / (height - 1);
+            double startx = -GetXLength() * 0.5 * scale;
+            double startz = -GetZLength() * 0.5 * scale;
+            double constStepX = GetXLength() * 0.5 * scale;
+            double constStepZ = GetZLength() * 0.5 * scale;
+
+            terrainElements = new TerrainElement[gridXDim, gridZDim];
+            double positionIndexStepX = (GetXLength() * scale) / gridXDim;
+            double positionIndexStepZ = (GetZLength() * scale) / gridZDim;
 
             Vector2[][] textCoords = new Vector2[height][];
             Vector3[][] positions = new Vector3[height][];
-
-            List<int> indices = new List<int>();
-
+            List<Vector3> vPositions = new List<Vector3>();
+            List<TriangleMesh> triangleMeshes = new List<TriangleMesh>();
+                        
             for (int row = 0; row < height; row++)
             {
                 positions[row] = new Vector3[width];
@@ -63,16 +134,34 @@ namespace SharpPhysicsEngine.Terrain
                 for (int col = 0; col < width; col++)
                 {
                     // Create vertex for current position
-                    positions[row][col] = new Vector3(
-                        STARTX + col * incx,
-                        GetHeight(col, row, width, bufferStream),
-                        STARTZ + row * incz);
+                    double pX = startx + col * incx;
+                    double pZ = startz + row * incz;
+                    double pY = GetHeight(col, row, width, bufferStream);
+                    var vBuf = new Vector3(pX, pY, pZ);
+                    
+                    vPositions.Add(vBuf);
+                    positions[row][col] = new Vector3(vBuf);
                                         
+                    int idxX = Convert.ToInt32(Math.Floor((pX + constStepX) / positionIndexStepX));
+                    int idxZ = Convert.ToInt32(Math.Floor((pZ + constStepZ) / positionIndexStepZ));
+
+                    if (idxX == gridXDim)
+                        idxX--;
+
+                    if (idxZ == gridZDim)
+                        idxZ--;
+
+                    if (terrainElements[idxX, idxZ] == null)
+                    {
+                        terrainElements[idxX, idxZ] = new TerrainElement();    
+                    }
+                    terrainElements[idxX, idxZ].AddPosition(positions[row][col]);
+
                     // Set texture coordinates
                     textCoords[row][col] = new Vector2(
                         (double)textInc * (double)col / (double)width,
                         (double)textInc * (double)row / (double)height);
-                    
+
                     // Create indices
                     if (col < width - 1 && row < height - 1)
                     {
@@ -81,19 +170,14 @@ namespace SharpPhysicsEngine.Terrain
                         int rightBottom = (row + 1) * width + col + 1;
                         int rightTop = row * width + col + 1;
 
-                        indices.Add(leftTop);
-                        indices.Add(leftBottom);
-                        indices.Add(rightTop);
-
-                        indices.Add(rightTop);
-                        indices.Add(leftBottom);
-                        indices.Add(rightBottom);
+                        triangleMeshes.Add(new TriangleMesh(leftTop, leftBottom, rightTop));
+                        triangleMeshes.Add(new TriangleMesh(rightTop, leftBottom, rightBottom));
                     }
                 }
             }
 
             position = positions;
-            indicesArr = indices.ToArray();
+            //indicesArr = indices.ToArray();
             normalsArr = CalcNormals(position, width, height);
             textureCoords = textCoords;
         }
