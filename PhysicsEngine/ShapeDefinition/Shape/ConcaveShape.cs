@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ConvexHullWrapper;
@@ -116,7 +117,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(AABBox, TriangleMeshes);
 
-            Vertex3Index[] verticesIndex = Array.ConvertAll(InputVertexPosition, x => new Vertex3Index(x, null, -1));
+            Vertex3Index[] verticesIndex = Array.ConvertAll(InputVertexPosition, x => new Vertex3Index(x, new HashSet<int>(), -1));
             var convexShapes = convexDecomposition.GetConvexShapeList(verticesIndex, 0.2);
 
             ConvexShapesGeometry = new Geometry[convexShapes.Count];

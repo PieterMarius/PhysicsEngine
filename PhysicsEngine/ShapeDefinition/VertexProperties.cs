@@ -26,6 +26,7 @@
 
 using SharpEngineMathUtility;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -34,9 +35,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Fields
 
         public Vector3 Vertex { get; private set; }
-        public List<int> Adjacency { get; private set; }
+        public List<int> Adjacency {
+            get
+            {
+                SetAdjacencyList();
+                return _adjacency;
+            }
+            private set { }
+        }
         public int? ID { get; private set; }
         public int?[] LinkedID { get; private set; }
+
+        #endregion
+
+        #region Private Fields
+
+        private List<int> _adjacency;
+        private HashSet<int> AdjacencyHash;
 
         #endregion
 
@@ -44,19 +59,28 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public VertexProperties(
             Vector3 vertex,
-            List<int> adjacency,
+            HashSet<int> adjacency,
             int? id,
             int?[] linkedID)
         {
             Vertex = vertex;
-            Adjacency = adjacency;
+            AdjacencyHash = adjacency;
+
+            if (AdjacencyHash != null)
+                _adjacency = AdjacencyHash.ToList();
+            else
+            {
+                AdjacencyHash = new HashSet<int>();
+                _adjacency = new List<int>();
+            }
+
             ID = id;
             LinkedID = linkedID;
         }
 
         public VertexProperties(
             Vector3 vertex,
-            List<int> adjacency)
+            HashSet<int> adjacency)
             : this(vertex, adjacency, null, null)
         { }
 
@@ -70,14 +94,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             int? id)
             : this(vertex, null, id, null)
         { }
-
-        public VertexProperties(
-            Vector3 vertex,
-            int? id,
-            int?[] linkedID)
-            : this(vertex, null, id, linkedID)
-        { }
-
+                
         public VertexProperties(
             Vector3 vertex,
             int?[] linkedID)
@@ -92,10 +109,25 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             Vertex = position;
         }
-
-        public void SetAdjacencyList(List<int> adjacencyList)
+        
+        public void AddVertexToAdjList(int vertex)
         {
-            Adjacency = adjacencyList;
+            AdjacencyHash.Add(vertex);
+        }
+
+        public HashSet<int> GetAdjacencyList()
+        {
+            return AdjacencyHash;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void SetAdjacencyList()
+        {
+            if (AdjacencyHash.Count() != _adjacency.Count)
+                _adjacency = AdjacencyHash.ToList();
         }
 
         #endregion

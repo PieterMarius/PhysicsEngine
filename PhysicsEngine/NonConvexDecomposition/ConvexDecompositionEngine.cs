@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition
             var shapeConvexDecomposition = new ShapeConvexDecomposition(baseSoftShape.AABBox, baseSoftShape.Triangle);
             var vertex = Array.ConvertAll(baseSoftShape.ShapePoints, item => new Vertex3Index(
                                                                                 item.Position,
-                                                                                item.TriangleIndex.ToArray(), 0));
+                                                                                item.TriangleIndex, 0));
 
             var convexShapeHash = shapeConvexDecomposition.GetConvexShapeList(vertex, baseSoftShape.DecompositionParameter)
                 .Select(x => x.Vertex3Idx.ToArray()).ToList();

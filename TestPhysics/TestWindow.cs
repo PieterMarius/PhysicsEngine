@@ -75,7 +75,7 @@ namespace TestPhysics
 
         int redTexture;
 
-        double[][][] TerrainPositions;
+        double[][] TerrainPositions;
         double[][][] TerrainTexture;
 
         #region Keyboard and mouse variables
@@ -355,20 +355,20 @@ namespace TestPhysics
             MoveCamera();
             displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
-            displayContact();
+            //displayContact();
             //displayBaseContact();
-            displayJoint();
+            //displayJoint();
             //displaySoftJoint();
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
 
-            displayPartitionedContact();
+            //displayPartitionedContact();
 
             //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
             //    displayVertex(i);
 
             //displayAABB();
-            displayVertex (0);
+            //displayVertex (0);
             //displayVertex (1);
             //displayVertex (2);
 
@@ -1277,7 +1277,7 @@ namespace TestPhysics
 		}
 
 
-        private void displayTerrain(double[][][] spherePoint,double[][][] textureCoord, int height, int width)
+        private void displayTerrain(double[][] spherePoint,double[][][] textureCoord, int height, int width)
         {
             GL.Enable(EnableCap.Texture2D);
 

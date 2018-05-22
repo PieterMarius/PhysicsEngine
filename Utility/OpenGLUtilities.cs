@@ -613,7 +613,7 @@ namespace Utility
 		}
 
         public static void DrawTerrain(
-            double[][][] positions,
+            double[][] positions,
             double[][][] textureData,
             int height,
             int width)
@@ -623,33 +623,37 @@ namespace Utility
                 GL.Begin(PrimitiveType.TriangleStrip);
                 for (int col = 0; col < width-1; col++)
                 {
+                    int index = row * width + col;
                     //GL.TexCoord2(0.0f, 0.0f);
                     GL.TexCoord2((float)textureData[row][col][0], (float)textureData[row][col][1]);
                     GL.Vertex3(
-                        positions[row][col][0],
-                        positions[row][col][1],
-                        positions[row][col][2]);
+                        positions[index][0],
+                        positions[index][1],
+                        positions[index][2]);
 
+                    index = (row + 1) * width + col;
                     //GL.TexCoord2(1.0f, 0.0f);
                     GL.TexCoord2((float)textureData[row+1][col][0], (float)textureData[row+1][col][1]);
                     GL.Vertex3(
-                        positions[row+1][col][0],
-                        positions[row+1][col][1],
-                        positions[row+1][col][2]);
+                        positions[index][0],
+                        positions[index][1],
+                        positions[index][2]);
 
+                    index = row * width + col + 1;
                     //GL.TexCoord2(0.0f, 1.0f);
                     GL.TexCoord2((float)textureData[row][col+1][0], (float)textureData[row][col+1][1]);
                     GL.Vertex3(
-                        positions[row][col+1][0],
-                        positions[row][col+1][1],
-                        positions[row][col+1][2]);
+                        positions[index][0],
+                        positions[index][1],
+                        positions[index][2]);
 
+                    index = (row + 1) * width + col + 1;
                     //GL.TexCoord2(1.0f, 1.0f);
                     GL.TexCoord2((float)textureData[row+1][col+1][0], (float)textureData[row+1][col+1][1]);
                     GL.Vertex3(
-                        positions[row+1][col+1][0],
-                        positions[row+1][col+1][1],
-                        positions[row+1][col+1][2]);
+                        positions[index][0],
+                        positions[index][1],
+                        positions[index][2]);
 
                 }
                 GL.End();

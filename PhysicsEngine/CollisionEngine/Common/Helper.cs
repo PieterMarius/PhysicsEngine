@@ -97,17 +97,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 				check = false;
 				int maxIndex = -1;
 
-				for (int i = 0; i < vertexObj[index].Adjacency.Count; i++)
-				{
-					double dot = Vector3.Dot(vertexObj[vertexObj[index].Adjacency[i]].Vertex, direction);
-					if (dot > maxDot)
-					{
-						maxDot = dot;
-						maxIndex = vertexObj[index].Adjacency[i];
-						check = true;
-					}
-				}
-
+                foreach (var vtx in vertexObj[index].Adjacency)
+                {
+                    double dot = Vector3.Dot(vertexObj[vtx].Vertex, direction);
+                    if (dot > maxDot)
+                    {
+                        maxDot = dot;
+                        maxIndex = vtx;
+                        check = true;
+                    }
+                }
+				
 				if (maxIndex >= 0)
 					index = maxIndex;
 			}

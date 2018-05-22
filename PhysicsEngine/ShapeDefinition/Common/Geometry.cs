@@ -28,6 +28,7 @@ using SharpEngineMathUtility;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -119,6 +120,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			AABBox = box;
 		}
 
+        /// <summary>
+        /// TOTO eliminare
+        /// </summary>
+        /// <param name="shape"></param>
 		public void SetShape(IShape shape)
 		{
 			Shape = shape;
@@ -132,43 +137,21 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			Vector3[] inputVertexPosition,
 			bool getAdjacencyList)
 		{
-			VertexPosition = new VertexProperties[inputVertexPosition.Length];
+            VertexPosition = Array.ConvertAll(inputVertexPosition, x => new VertexProperties(x));
 
-			Parallel.For(0,
-				VertexPosition.Length,
-				i =>
-				{
-					VertexPosition[i] = new VertexProperties(inputVertexPosition[i]);
-
-					if (getAdjacencyList && Triangle != null)
-					{
-						HashSet<int> adjacencyList = new HashSet<int>();
-
-						for (int j = 0; j < Triangle.Length; j++)
-						{
-							if (Triangle[j].a == i)
-							{
-								adjacencyList.Add(Triangle[j].b);
-								adjacencyList.Add(Triangle[j].c);
-								continue;
-							}
-							if (Triangle[j].b == i)
-							{
-								adjacencyList.Add(Triangle[j].a);
-								adjacencyList.Add(Triangle[j].c);
-								continue;
-							}
-							if (Triangle[j].c == i)
-							{
-								adjacencyList.Add(Triangle[j].a);
-								adjacencyList.Add(Triangle[j].b);
-								continue;
-							}
-						}
-						VertexPosition[i].SetAdjacencyList(adjacencyList.ToList());
-					}
-				});
-		}
+            if (getAdjacencyList && Triangle != null)
+            {
+                foreach (var tr in Triangle)
+                {
+                    VertexPosition[tr.a].AddVertexToAdjList(tr.b);
+                    VertexPosition[tr.a].AddVertexToAdjList(tr.c);
+                    VertexPosition[tr.b].AddVertexToAdjList(tr.a);
+                    VertexPosition[tr.b].AddVertexToAdjList(tr.c);
+                    VertexPosition[tr.c].AddVertexToAdjList(tr.a);
+                    VertexPosition[tr.c].AddVertexToAdjList(tr.b);
+                }
+            }
+        }
 
 		#endregion
 	}

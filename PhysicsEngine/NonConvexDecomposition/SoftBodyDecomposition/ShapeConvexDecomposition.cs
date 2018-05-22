@@ -335,7 +335,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                      {
                          bufVertex.Add(new Vertex3Index(
                              shape.Vertex3Idx.First().Vector3 + Vector3.Random(-perturbationValue, perturbationValue), 
-                             new int[] { int.MaxValue - i }, 
+                             new HashSet<int> { int.MaxValue - i }, 
                              0));
                      }
                      shape.AddVertex3Index(bufVertex);

@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.Helper
             return new VertexProperties(
                 obj.Shape.Position +
                 (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]),
-                obj.VertexPosition[vertexIndex].Adjacency);
+                obj.VertexPosition[vertexIndex].GetAdjacencyList());
         }
 
         public static TriangleMesh[] GetTriangleMeshes(int[][] inputTriangle)
