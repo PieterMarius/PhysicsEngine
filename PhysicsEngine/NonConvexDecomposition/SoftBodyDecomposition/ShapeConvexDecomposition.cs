@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         private AABB region;
 
-        private ShapeConvexDecomposition[] childNode = new ShapeConvexDecomposition[8];
+        private readonly ShapeConvexDecomposition[] childNode = new ShapeConvexDecomposition[8];
 
         private List<Vertex3Index> VertexPosition;
 
@@ -234,36 +234,39 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             //This will contain all of our objects which fit within each respective octant.
             List<Vertex3Index>[] octList = new List<Vertex3Index>[8];
-            List<Vertex3Index> delist = new List<Vertex3Index>();
+            List<Vertex3Index>[] delist = new List<Vertex3Index>[8];
 
             for (int i = 0; i < 8; i++)
+            {
                 octList[i] = new List<Vertex3Index>();
+                delist[i] = new List<Vertex3Index>();
+            }
             
             //this list contains all of the objects which got moved down the tree and can be delisted from this node.
             foreach (Vertex3Index point in VertexPosition)
             {
-                for (int a = 0; a < 8; a++)
+                for (int i = 0; i < 8; i++)
                 {
-                    if (octant[a].Contains(point.Vector3))
+                    if (octant[i].Contains(point.Vector3))
                     {
-                        octList[a].Add(point);
-                        delist.Add(point);
+                        octList[i].Add(point);
+                        delist[i].Add(point);
                         break;
                     }
                 }
             }
-
-            foreach (Vertex3Index obj in delist)
-                VertexPosition.Remove(obj);
-
+            
             //Create child nodes where there are items contained in the bounding region
-            for (int a = 0; a < 8; a++)
+            for (int i = 0; i < 8; i++)
             {
-                if (octList[a].Count > 0)
+                if (octList[i].Count > 0)
                 {
+                    foreach (Vertex3Index obj in delist[i])
+                        VertexPosition.Remove(obj);
+
                     //delist every moved object from this node.
-                    childNode[a] = CreateNode(octant[a], octList[a]);
-                    childNode[a].BuildTree();
+                    childNode[i] = CreateNode(octant[i], octList[i]);
+                    childNode[i].BuildTree();
                 }
             }
         }
@@ -311,7 +314,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         private void FinalizeShape(ref List<ShapeDecompositionOutput> convexShapes)
         {
              Parallel.ForEach(convexShapes,
-                            new ParallelOptions { MaxDegreeOfParallelism = 2 },
+                            new ParallelOptions { MaxDegreeOfParallelism = 1 },
                             shape =>
              {
                  HashSet<Vertex3Index> bufVertex = new HashSet<Vertex3Index>();
@@ -319,11 +322,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                  foreach (var vertex in shape.Vertex3Idx)
                  {
                      foreach (var idx in vertex.Indexes)
-                     {
-                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].a]);
-                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].b]);
-                         bufVertex.Add(BaseVertexPosition[triangleIndexes[idx].c]);
-                     }
+                        bufVertex.Add(BaseVertexPosition[idx]);
                  }
 
                  shape.AddVertex3Index(bufVertex);

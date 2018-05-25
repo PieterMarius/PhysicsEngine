@@ -77,6 +77,7 @@ namespace TestPhysics
 
         double[][] TerrainPositions;
         double[][][] TerrainTexture;
+        double[][][] TerrainShapes;
 
         #region Keyboard and mouse variables
 
@@ -84,7 +85,7 @@ namespace TestPhysics
         float xrot = 0.0f;
         float yrot = 0.0f;
         float xpos = 0.0f;
-        float ypos = 0.0f;
+        float ypos = 4.0f;
         float zpos = -7.0f;
 
         #endregion
@@ -244,6 +245,8 @@ namespace TestPhysics
             TerrainMesh terrain = new TerrainMesh();
             TerrainPositions = terrain.GetPositions();
             TerrainTexture = terrain.GetTextureCoordMatrix();
+            TerrainShapes = terrain.GetConvexShapeList();
+            InitTerrain();
 
             pause = true;
 
@@ -1276,16 +1279,65 @@ namespace TestPhysics
 			
 		}
 
+        IVertex[][][] ConvexHullShapes;
+        SharpEngineMathUtility.Vector3[][][] ConvertConvexHull;
+
+        private void InitTerrain()
+        {
+            ConvexHullShapes = new IVertex[TerrainShapes.Length][][];
+            ConvertConvexHull = new SharpEngineMathUtility.Vector3[TerrainShapes.Length][][];
+
+            for (int i = 0; i < TerrainShapes.Length; i++)
+            {
+
+           
+                IVertex[] vtx = Array.ConvertAll(TerrainShapes[i], x => new DefaultVertex() { Position = x });
+
+                if (vtx.Length > 5)
+                {
+
+                    ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx);
+
+                    ConvexHullShapes[i] = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
+
+                    ConvertConvexHull[i] = Array.ConvertAll(ConvexHullShapes[i], x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+
+                }
+            }
+        }
 
         private void displayTerrain(double[][] spherePoint,double[][][] textureCoord, int height, int width)
         {
-            GL.Enable(EnableCap.Texture2D);
+            //GL.Enable(EnableCap.Texture2D);
 
-            GL.BindTexture(TextureTarget.Texture2D, textureID[0][0]);
+            //GL.BindTexture(TextureTarget.Texture2D, textureID[0][0]);
 
-            OpenGLUtilities.DrawTerrain(spherePoint,textureCoord, height, width);
+            //OpenGLUtilities.DrawTerrain(spherePoint, textureCoord, height, width);
 
-            GL.Disable(EnableCap.Texture2D);
+            //GL.Disable(EnableCap.Texture2D);
+
+
+            //GL.Enable(EnableCap.Texture2D);
+
+            //GL.BindTexture(TextureTarget.Texture2D, textureID[0][0]);
+
+            foreach (var shape in ConvertConvexHull)
+            {
+                if (shape != null)
+                {
+                    GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
+                    //GL.Color3(0.0, 1.0, 0.0);
+
+
+                    //var convert = Array.ConvertAll(shape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+
+                    OpenGLUtilities.GLDrawSolid(shape, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+
+                    GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+            }
+
+            //GL.Disable(EnableCap.Texture2D);
 
             //int index = 0;
             //for (int row = 0; row < height; row++)

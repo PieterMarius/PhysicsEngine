@@ -216,12 +216,9 @@ namespace SharpPhysicsEngine.Terrain
                     int idxX = Convert.ToInt32(Math.Floor((pX + constStepX) / positionIndexStepX));
                     int idxZ = Convert.ToInt32(Math.Floor((pZ + constStepZ) / positionIndexStepZ));
 
-                    if (idxX == gridXDim)
-                        idxX--;
-
-                    if (idxZ == gridZDim)
-                        idxZ--;
-
+                    idxX = (idxX == gridXDim) ? idxX - 1 : idxX;
+                    idxZ = (idxZ == gridZDim) ? idxZ - 1 : idxZ;
+                    
                     if (terrainElements[idxX, idxZ] == null)
                     {
                         terrainElements[idxX, idxZ] = new TerrainElement();
@@ -231,6 +228,10 @@ namespace SharpPhysicsEngine.Terrain
             }
 
             triangleMeshes = triangle.ToArray();
+
+            //Test
+            var tt = triangleMeshes.Where(x => x.a == 0).ToList();
+            var a = positions[0];var b = positions[256];var c = positions[1];
             //indicesArr = indices.ToArray();
         }
 
@@ -357,7 +358,7 @@ namespace SharpPhysicsEngine.Terrain
             ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(box, triangleMeshes);
             var vertex3Idx = SetVertexAdjacency(positions, triangleMeshes);
 
-            convexShapes = convexDecomposition.GetConvexShapeList(vertex3Idx, 0.2);
+            convexShapes = convexDecomposition.GetConvexShapeList(vertex3Idx, 0.7);
         }
 
         private Vertex3Index[] SetVertexAdjacency(

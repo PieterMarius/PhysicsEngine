@@ -28,7 +28,7 @@ namespace SharpPhysicsEngine.Wrapper
                 0, 
                 10, 
                 1, 
-                100);
+                50);
         }
 
         #endregion
