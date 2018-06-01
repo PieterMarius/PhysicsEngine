@@ -82,13 +82,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// Gets a value indicating whether this CollisionEngineParameters activate sweep and prune.
 		/// </summary>
 		/// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
-		public bool ActivateSweepAndPrune { get; private set;}
+		public BroadPhaseEngineType BroadPhaseType { get; private set;}
 
-		#endregion
+        /// <summary>
+        /// Collision distance
+        /// </summary>
+        public double CollisionDistance { get; private set; }
 
-		#region Constructors
+        #endregion
 
-		public CollisionEngineParameters ()
+        #region Constructors
+
+        public CollisionEngineParameters ()
 		{
 			MaxGJKIteration = 12;
 			MaxEPAIteration = 12;
@@ -98,11 +103,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ManifoldProjectionTolerance = 0.005;
 			ManifoldPointNumber = 5;
 			MaxThreadNumber = 2;
-			ActivateSweepAndPrune = true;
+            CollisionDistance = 0.001;
+			BroadPhaseType = BroadPhaseEngineType.AABBBroadPhase;
 		}
 
 		public CollisionEngineParameters (
-			int maxGJKIteration,
+			double collisionDistance,
+            int maxGJKIteration,
 			int maxEPAIteration,
 			double precision,
 			double gjkTolerance,
@@ -110,8 +117,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			double manifoldProjectionTolerance,
 			int manifoldPointNumber,
 			int maxThreadNumber,
-			bool activateSweepAndPrune)
+            BroadPhaseEngineType broadPhaseEngineType)
 		{
+            CollisionDistance = collisionDistance;
 			MaxGJKIteration = maxGJKIteration;
 			MaxEPAIteration = maxEPAIteration;
 			Precision = precision;
@@ -120,7 +128,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ManifoldProjectionTolerance = manifoldProjectionTolerance;
 			ManifoldPointNumber = manifoldPointNumber;
 			MaxThreadNumber = maxThreadNumber;
-			ActivateSweepAndPrune = activateSweepAndPrune;
+			BroadPhaseType = broadPhaseEngineType;
 		}
 
 		#endregion
@@ -142,15 +150,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Precision = precision;
 		}
 
-		public void SetSweepAndPrune(bool activate)
-		{
-			ActivateSweepAndPrune = activate;
-		}
-
-		public void SetManifoldPoints(int manifoldPointNumber)
+        public void SetManifoldPoints(int manifoldPointNumber)
 		{
 			ManifoldPointNumber = manifoldPointNumber;
 		}
+
+        public void SetCollisionDistance(double collisionDistance)
+        {
+            CollisionDistance = collisionDistance;
+        }
 			
 		#endregion
 	}

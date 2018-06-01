@@ -36,7 +36,6 @@ using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
-using SharpPhysicsEngine.NonConvexDecomposition.Octree;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.Wrapper;
@@ -85,7 +84,7 @@ namespace TestPhysics
         float xrot = 0.0f;
         float yrot = 0.0f;
         float xpos = 0.0f;
-        float ypos = 4.0f;
+        float ypos = -4.0f;
         float zpos = -7.0f;
 
         #endregion
@@ -242,11 +241,13 @@ namespace TestPhysics
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
             textureID = env.LoadTexture();
-            TerrainMesh terrain = new TerrainMesh();
-            TerrainPositions = terrain.GetPositions();
-            TerrainTexture = terrain.GetTextureCoordMatrix();
-            TerrainShapes = terrain.GetConvexShapeList();
-            InitTerrain();
+
+
+            //TerrainMesh terrain = new TerrainMesh();
+            //TerrainPositions = terrain.GetPositions();
+            //TerrainTexture = terrain.GetTextureCoordMatrix();
+            //TerrainShapes = terrain.GetConvexShapeList();
+            //InitTerrain();
 
             pause = true;
 
@@ -356,7 +357,7 @@ namespace TestPhysics
             GL.LoadIdentity();
 
             MoveCamera();
-            displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
+            //displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
             //displayContact();
             //displayBaseContact();
@@ -375,8 +376,8 @@ namespace TestPhysics
             //displayVertex (1);
             //displayVertex (2);
 
-            //for (int i = 0; i < physicsEngine.ShapesCount(); i++)
-            //    SetOpenGLObjectMatrixAndDisplayObject(i);
+            for (int i = 0; i < physicsEngine.ShapesCount(); i++)
+                SetOpenGLObjectMatrixAndDisplayObject(i);
 
             //displayOctree();
             //displayConvexDecomposition();

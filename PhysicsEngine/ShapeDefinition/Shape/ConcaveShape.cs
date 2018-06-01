@@ -98,10 +98,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetAABB()
         {
-            AABBox = AABB.GetGeometryAABB(ObjectGeometry);
+            AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
             
             foreach (var shape in ConvexShapesGeometry)
-                shape.SetAABB(AABB.GetGeometryAABB(shape));
+                shape.SetAABB(AABB.GetGeometryAABB(shape, shape));
         }
 
         public override void SetMass(double mass)

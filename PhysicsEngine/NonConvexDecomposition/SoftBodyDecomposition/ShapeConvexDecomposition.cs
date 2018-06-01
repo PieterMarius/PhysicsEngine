@@ -109,7 +109,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
                     region.Min -= offset;
                     region.Max -= offset;
-                    return new AABB(region.Min, region.Max);
+                    return new AABB(region.Min, region.Max, null);
                 }
             }
 
@@ -122,7 +122,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             region.Min -= offset;
             region.Max -= offset;
 
-            return new AABB(region.Min, region.Max);
+            return new AABB(region.Min, region.Max, null);
         }
         
         public List<ShapeDecompositionOutput> GetConvexShapeList(
@@ -223,14 +223,14 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             //Create subdivided regions for each octant
             AABB[] octant = new AABB[8];
-            octant[0] = new AABB(region.Min, center);
-            octant[1] = new AABB(new Vector3(center.x, region.Min.y, region.Min.z), new Vector3(region.Max.x, center.y, center.z));
-            octant[2] = new AABB(new Vector3(center.x, region.Min.y, center.z), new Vector3(region.Max.x, center.y, region.Max.z));
-            octant[3] = new AABB(new Vector3(region.Min.x, region.Min.y, center.z), new Vector3(center.x, center.y, region.Max.z));
-            octant[4] = new AABB(new Vector3(region.Min.x, center.y, region.Min.z), new Vector3(center.x, region.Max.y, center.z));
-            octant[5] = new AABB(new Vector3(center.x, center.y, region.Min.z), new Vector3(region.Max.x, region.Max.y, center.z));
-            octant[6] = new AABB(center, region.Max);
-            octant[7] = new AABB(new Vector3(region.Min.x, center.y, center.z), new Vector3(center.x, region.Max.y, region.Max.z));
+            octant[0] = new AABB(region.Min, center, null);
+            octant[1] = new AABB(new Vector3(center.x, region.Min.y, region.Min.z), new Vector3(region.Max.x, center.y, center.z), null);
+            octant[2] = new AABB(new Vector3(center.x, region.Min.y, center.z), new Vector3(region.Max.x, center.y, region.Max.z), null);
+            octant[3] = new AABB(new Vector3(region.Min.x, region.Min.y, center.z), new Vector3(center.x, center.y, region.Max.z), null);
+            octant[4] = new AABB(new Vector3(region.Min.x, center.y, region.Min.z), new Vector3(center.x, region.Max.y, center.z), null);
+            octant[5] = new AABB(new Vector3(center.x, center.y, region.Min.z), new Vector3(region.Max.x, region.Max.y, center.z), null);
+            octant[6] = new AABB(center, region.Max, null);
+            octant[7] = new AABB(new Vector3(region.Min.x, center.y, center.z), new Vector3(center.x, region.Max.y, region.Max.z), null);
 
             //This will contain all of our objects which fit within each respective octant.
             List<Vertex3Index>[] octList = new List<Vertex3Index>[8];
@@ -341,7 +341,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                  }
 
                  var vertices = bufVertex.Select(x => x.Vector3).ToArray();
-                 shape.SetRegion(AABB.GetGeometryAABB(vertices));
+                 shape.SetRegion(AABB.GetGeometryAABB(vertices, null));
              });
         }
 

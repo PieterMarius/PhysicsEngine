@@ -136,7 +136,9 @@ namespace SharpPhysicsEngine
 
 		private readonly LinearProblemBuilder linearProblemBuilder;
 
-		private readonly IntegrationHelper integrationHelper;
+		private readonly IntegratePosition integratePosition;
+
+        private readonly IntegrateVelocity integrateVelocity;
 
 		private readonly ContactConstraintBuilder contactConstraintBuilder;
 
@@ -169,7 +171,8 @@ namespace SharpPhysicsEngine
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
 			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
-			integrationHelper = new IntegrationHelper(EngineParameters);
+            integrateVelocity = new IntegrateVelocity(EngineParameters);
+			integratePosition = new IntegratePosition(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             
@@ -419,96 +422,6 @@ namespace SharpPhysicsEngine
 		public void SimulateCCD()
 		{
 			throw new NotImplementedException();
-			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
-
-
-			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
-			//			for (int k = 0; k < this.simulationObjects.Length; k++) 
-			//			{
-			//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
-			//			}
-			//
-			//			List<CollisionPointStructure> bufferCollisionPoints;
-			//
-			//			this.timeStep = this.simulationParameters.TimeStep;
-			//
-			//			double intersectionTimeStep = 0.0;
-			//			double noCollisionTimeStep = 0.0;
-			//
-			//			bool exit = false;
-			//
-			//			if (this.simulationParameters.DiscreteCCD && !exit) 
-			//			{
-			//
-			//				for (int i = 0; i < 20; i++) 
-			//				{
-			//					//Collision detection
-			//					this.collisionDetection ();
-			//					this.extractValidCollisionPoint ();
-			//
-			//					int firstCount = this.collisionPoints.Count ();
-			//
-			//					//Set start context
-			//					this.physicsExecutionFlow ();
-			//
-			//					//bufferCollisionPoints = new List<CollisionPointStructure> (this.collisionPoints);
-			//
-			//					//After postion update the collision is retested
-			//					this.collisionDetection ();
-			//					this.extractValidCollisionPoint ();
-			//
-			//					//No collision detection
-			//					if (firstCount == 0 && 
-			//						this.collisionPoints.Count == 0 &&
-			//						i == 0)
-			//						break;
-			//
-			//					exit = false;
-			//
-			//					//Test for intersection
-			//					for (int j = 0; j < this.collisionPoints.Count; j++) 
-			//					{
-			//						Console.WriteLine ("Distance " + this.collisionPoints[j].collisionDistance);
-			//						//Check intersection
-			//						if (this.collisionPoints [j].intersection ) 
-			//						{
-			//							exit = true;
-			//							intersectionTimeStep = this.timeStep;
-			//							this.timeStep = (this.timeStep + noCollisionTimeStep) / 2.0;
-			//							break;
-			//						}
-			//					}
-			//					//No intersection, only collision
-			//					if (!exit)
-			//						break;
-			//
-			//					//Increase TimeStep (up to reference time step)
-			//					if (this.collisionPoints.Count == 0) 
-			//					{
-			//						noCollisionTimeStep = this.timeStep;
-			//						this.timeStep = (this.timeStep + intersectionTimeStep) / 2.0;
-			//					}
-			//					
-			//					//Array.Copy (this.simulationObjectsCCD, this.simulationObjects, this.simulationObjects.Length);
-			//					for (int k = 0; k < this.simulationObjects.Length; k++) 
-			//					{
-			//						this.simulationObjects [k] = this.simulationObjectsCCD [k];
-			//					}
-			//					//DEBUG
-			//					Console.WriteLine (this.timeStep);
-			//				}
-			//
-			//			}
-			//				
-			//			this.simulationObjectsCCD = new SimulationObject[this.simulationObjects.Length];
-			//			Array.Copy (this.simulationObjects, this.simulationObjectsCCD, this.simulationObjects.Length);
-			//			for (int k = 0; k < this.simulationObjects.Length; k++) 
-			//			{
-			//				this.simulationObjectsCCD [k] = this.simulationObjects [k];
-			//			}
-
 		}
 
         #endregion
@@ -562,8 +475,8 @@ namespace SharpPhysicsEngine
                                                                         
                         if (overallLCP != null)
 						    overallSolution = Solver.Solve(overallLCP, overallLCP.StartImpulse);
-                                                       
-                        integrationHelper.UpdateVelocity(jacobianConstraints, overallSolution);
+
+                        integrateVelocity.UpdateVelocity(jacobianConstraints, overallSolution);
                     }
 				}
 			}
@@ -572,7 +485,7 @@ namespace SharpPhysicsEngine
 
             #region Position and Velocity integration
                         
-            integrationHelper.IntegrateObjectsPosition(ref Shapes, TimeStep);
+            integratePosition.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
             #endregion
 

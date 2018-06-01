@@ -25,7 +25,7 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.NonConvexDecomposition.Octree;
+using System;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -33,9 +33,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 	{
 		#region Fields
 
-		public Vector3 Min;
-		public Vector3 Max;
-		public bool positionAABBChanged { get; private set; }
+		public Vector3 Min { get; set; }
+		public Vector3 Max { get; set; }
+        public object ObjectReference { get; set; }
+        public bool positionAABBChanged { get; private set; }
 
 		#endregion
 
@@ -48,17 +49,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			double maxY,
 			double minZ,
 			double maxZ,
+            object objectID,
 			bool positionChanged)
 		{
 			Min = new Vector3(minX, minY, minZ);
 			Max = new Vector3(maxX, maxY, maxZ);
+            ObjectReference = objectID;
 			positionAABBChanged = positionChanged;
 		}
 
-		public AABB(Vector3 min, Vector3 max)
+		public AABB(
+            Vector3 min, 
+            Vector3 max,
+            object objectID)
 		{
 			Min = min;
 			Max = max;
+            ObjectReference = objectID;
 		}
 
 		#endregion
@@ -123,7 +130,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public static methods
 
-        public static AABB GetGeometryAABB(IGeometry simObject)
+        public static AABB GetGeometryAABB(
+            IGeometry simObject,
+            object objectID)
 		{
 			Vector3 vertexPos = Helper.GetVertexPosition(simObject, 0);
 			double xMax = vertexPos.x;
@@ -153,10 +162,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
 					zMax = vertex.z;
 			}
 
-			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
 		}
 
-        public static AABB GetGeometryAABB(Vector3[] vertices)
+        public static AABB GetGeometryAABB(
+            Vector3[] vertices,
+            object objectID)
         {
             Vector3 vertexPos = vertices[0];
             double xMax = vertexPos.x;
@@ -186,10 +197,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     zMax = vertex.z;
             }
 
-            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+            return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
         }
 
-        public static AABB GetShapePointAABB(SoftShapePoint[] shapePoint)
+        public static AABB GetShapePointAABB(
+            SoftShapePoint[] shapePoint,
+            int? objectID)
 		{
 			Vector3 vertexPos = shapePoint[0].Position;
 			double xMax = vertexPos.x;
@@ -219,10 +232,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
 					zMax = vertex.z;
 			}
 
-			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
 		}
 
-		public static AABB GetTriangleAABB(Vector3[] triangle)
+		public static AABB GetTriangleAABB(
+            Vector3[] triangle,
+            int? objectID)
 		{
 			Vector3 vertexPos = triangle[0];
 			double xMax = vertexPos.x;
@@ -252,7 +267,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 					zMax = vertex.z;
 			}
 
-			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, false);
+			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
 		}
 		
 		#endregion

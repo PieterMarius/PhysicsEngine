@@ -143,7 +143,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                
         public override void SetAABB()
         {
-            AABBox = AABB.GetShapePointAABB(ShapePoints);
+            AABBox = AABB.GetShapePointAABB(ShapePoints, null);
         }
 
         public void SetPointsMass(double mass)

@@ -56,6 +56,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollisionEngine\BroadPhaseEngine\BroadPhaseEngineType.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\BruteForceBroadPhase.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\IBroadPhase.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\SweepAndPrune.cs" />
     <Compile Include="CollisionEngine\CollisionDetectionEngine.cs" />
     <Compile Include="CollisionEngine\CollisionEngineParameters.cs" />
     <Compile Include="CollisionEngine\Common\CollisionPoint.cs" />
@@ -65,15 +69,18 @@
     <Compile Include="CollisionEngine\Common\ICollisionEngine.cs" />
     <Compile Include="CollisionEngine\Common\Support.cs" />
     <Compile Include="CollisionEngine\Common\SupportTriangle.cs" />
-    <Compile Include="CollisionEngine\EPA\Edge.cs" />
-    <Compile Include="CollisionEngine\EPA\EPA.cs" />
-    <Compile Include="CollisionEngine\EPA\EPAOutput.cs" />
-    <Compile Include="CollisionEngine\GJK\GJK.cs" />
-    <Compile Include="CollisionEngine\GJK\GJKOutput.cs" />
-    <Compile Include="CollisionEngine\GJK\Simplex.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\Edge.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPA.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPAOutput.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\GJK\GJK.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\GJK\GJKOutput.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\GJK\Simplex.cs" />
     <Compile Include="CollisionEngine\ManifoldPoints\ManifoldPointsGenerator.cs" />
-    <Compile Include="CollisionEngine\SweepAndPrune\CollisionPair.cs" />
-    <Compile Include="CollisionEngine\SweepAndPrune\SweepAndPrune.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\CollisionPair.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\AABBBroadPhase.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\INarrowPhase.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\NarrowPhase.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\RigidBodyNarrowPhase.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullData.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
@@ -83,7 +90,8 @@
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\CommonUtilities.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
-    <Compile Include="Helper\IntegrationHelper.cs" />
+    <Compile Include="Helper\IntegratePosition.cs" />
+    <Compile Include="Helper\IntegrateVelocity.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />
     <Compile Include="Helper\StabilizationValues.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />
@@ -102,7 +110,6 @@
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
     <Compile Include="Helper\LinearProblemBuilder.cs" />
     <Compile Include="NonConvexDecomposition\ConvexDecompositionEngine.cs" />
-    <Compile Include="NonConvexDecomposition\Octree\OctTree.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />

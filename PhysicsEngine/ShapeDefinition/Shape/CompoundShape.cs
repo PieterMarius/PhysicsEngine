@@ -112,18 +112,18 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public override void SetAABB()
         {
             if (ShapesGeometry.Length == 1)
-                ShapesGeometry[0].SetAABB(AABB.GetGeometryAABB(ShapesGeometry[0]));
+                ShapesGeometry[0].SetAABB(AABB.GetGeometryAABB(ShapesGeometry[0], ShapesGeometry[0]));
             else if (ShapesGeometry.Length > 1)
             {
                 int geometryIndex = 0;
                 foreach (Geometry obj in ShapesGeometry)
                 {
-                    obj.SetAABB(AABB.GetGeometryAABB(obj));
+                    obj.SetAABB(AABB.GetGeometryAABB(obj, obj));
                     geometryIndex++;
                 }
             }
             //ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
-            AABBox = AABB.GetGeometryAABB(ObjectGeometry);
+            AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
 
         }
 

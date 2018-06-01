@@ -52,18 +52,18 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="BreadthFirstSearch.cs" />
-    <Compile Include="GeneralMathUtilities.cs" />
-    <Compile Include="Graph.cs" />
-    <Compile Include="HashSetStruct.cs" />
-    <Compile Include="Line.cs" />
-    <Compile Include="SIMDMathUtility.cs" />
+    <Compile Include="Utilities\BreadthFirstSearch.cs" />
+    <Compile Include="Utilities\GeneralMathUtilities.cs" />
+    <Compile Include="Utilities\Graph.cs" />
+    <Compile Include="Utilities\HashSetStruct.cs" />
+    <Compile Include="Utilities\Line.cs" />
+    <Compile Include="Utilities\SIMDMathUtility.cs" />
     <Compile Include="BaseStruct\Vector2.cs" />
     <Compile Include="BaseStruct\Vector3.cs" />
-    <Compile Include="ConstValues.cs" />
+    <Compile Include="Utilities\ConstValues.cs" />
     <Compile Include="BaseStruct\Matrix3x3.cs" />
     <Compile Include="BaseStruct\Quaternion.cs" />
-    <Compile Include="GeometryUtilities.cs" />
+    <Compile Include="Utilities\GeometryUtilities.cs" />
     <Compile Include="BaseStruct\Vertices.cs" />
     <Compile Include="BaseStruct\SparseElement.cs" />
   </ItemGroup>

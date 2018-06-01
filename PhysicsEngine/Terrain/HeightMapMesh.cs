@@ -87,6 +87,11 @@ namespace SharpPhysicsEngine.Terrain
         private readonly Vector3[] positions;
         private readonly Vector3[] normalsArr;
         private readonly Vector2[][] textureCoords;
+        private double incx;
+        private double incz;
+        private double startx;
+        private double startz;
+
         private TriangleMesh[] triangleMeshes;
         private List<ShapeDecompositionOutput> convexShapes;
 
@@ -118,6 +123,10 @@ namespace SharpPhysicsEngine.Terrain
             GenerateConvexShapes(convexHullEngine);
         }
 
+        #endregion
+
+        #region Public Methods
+
         public Vector3[] GetPosition()
         {
             return positions;
@@ -143,6 +152,37 @@ namespace SharpPhysicsEngine.Terrain
             return result;
         }
 
+        public void GetPotentialCollidingShape(AABB box)
+        {
+            //Cercare il posIndex (estrarre 4 punti più bassi) 
+            var min = box.Min;
+            var max = box.Max;
+
+            //Point 1
+            var col = (int)Math.Floor((min.x - startx) / incx);
+            var row = (int)Math.Floor((min.z - startz) / incz);
+            int posIndex = row * Width + col;
+            var heigth = positions[posIndex].z;
+
+            //Point 2
+            var col1 = (int)Math.Floor((min.x + max.x - startx) / incx);
+            var row1 = (int)Math.Floor((min.z - startz) / incz);
+            int posIndex1 = row * Width + col;
+            var heigth1 = positions[posIndex1].z;
+
+            //Point 3
+            var col2 = (int)Math.Floor((min.x - startx) / incx);
+            var row2 = (int)Math.Floor((min.z + max.z - startz) / incz);
+            int posIndex2 = row * Width + col;
+            var heigth2 = positions[posIndex2].z;
+        
+            //Point 4
+            var col3 = (int)Math.Floor((min.x + max.x - startx) / incx);
+            var row3 = (int)Math.Floor((min.z + max.z - startz) / incz);          
+            int posIndex3 = row * Width + col;
+            var heigth3 = positions[posIndex3].z;
+        }
+
         #endregion
 
         #region Private Methods
@@ -153,8 +193,8 @@ namespace SharpPhysicsEngine.Terrain
             PngBitmapDecoder decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
             BitmapSource bitmapSource = decoder.Frames[0];
 
-            this.Height = bitmapSource.PixelHeight;
-            this.Width = bitmapSource.PixelWidth;
+            Height = bitmapSource.PixelHeight;
+            Width = bitmapSource.PixelWidth;
 
             Byte[] bufferStream = new Byte[4 * bitmapSource.PixelHeight * bitmapSource.PixelWidth];
 
@@ -165,10 +205,10 @@ namespace SharpPhysicsEngine.Terrain
 
         private void Init(byte[] bufferStream, int textInc)
         {
-            double incx = (GetXLength() * scale) / (Width - 1);
-            double incz = (GetZLength() * scale) / (Height - 1);
-            double startx = -GetXLength() * 0.5 * scale;
-            double startz = -GetZLength() * 0.5 * scale;
+            incx = (GetXLength() * scale) / (Width - 1);
+            incz = (GetZLength() * scale) / (Height - 1);
+            startx = -GetXLength() * 0.5 * scale;
+            startz = -GetZLength() * 0.5 * scale;
             double constStepX = GetXLength() * 0.5 * scale;
             double constStepZ = GetZLength() * 0.5 * scale;
 
@@ -176,7 +216,6 @@ namespace SharpPhysicsEngine.Terrain
             double positionIndexStepX = (GetXLength() * scale) / gridXDim;
             double positionIndexStepZ = (GetZLength() * scale) / gridZDim;
 
-            List<Vector3> vPositions = new List<Vector3>();
             List<TriangleMesh> triangle = new List<TriangleMesh>();
 
             for (int row = 0; row < Height; row++)
@@ -191,7 +230,6 @@ namespace SharpPhysicsEngine.Terrain
                     double pY = GetHeight(col, row, Width, bufferStream);
                     var vBuf = new Vector3(pX, pY, pZ);
 
-                    vPositions.Add(vBuf);
                     int posIndex = row * Width + col;
                     positions[posIndex] = new Vector3(vBuf);
 
@@ -228,11 +266,6 @@ namespace SharpPhysicsEngine.Terrain
             }
 
             triangleMeshes = triangle.ToArray();
-
-            //Test
-            var tt = triangleMeshes.Where(x => x.a == 0).ToList();
-            var a = positions[0];var b = positions[256];var c = positions[1];
-            //indicesArr = indices.ToArray();
         }
 
         private byte[] ImageToByteArray(Image imageIn)
@@ -309,35 +342,27 @@ namespace SharpPhysicsEngine.Terrain
                         posIndex = row * Width + col - 1;
                         v1 = new Vector3(posArr[posIndex]);
                         v1 = v1 - v0;
-                        //v1 = v1.sub(v0);
 
                         posIndex = (row + 1) * Width + col;
                         v2 = new Vector3(posArr[posIndex]);
                         v2 = v2 - v0;
-                        //v2 = v2.sub(v0);
-
+                        
                         posIndex = row * Width + col + 1;
                         v3 = new Vector3(posArr[posIndex]);
                         v3 = v3 - v0;
-                        //v3 = v3.sub(v0);
-
+                        
                         posIndex = (row - 1) * Width + col;
                         v4 = new Vector3(posArr[posIndex]);
                         v4 = v4 - v0;
-                        //v4 = v4.sub(v0);
-
+                        
                         v12 = v1.Cross(v2).Normalize();
-                        //v1.Cross(v2, v12);
-
+                        
                         v23 = v2.Cross(v3).Normalize();
-                        //v2.cross(v3, v23);
-
+                        
                         v34 = v3.Cross(v4).Normalize();
-                        //v3.cross(v4, v34);
-
+                        
                         v41 = v4.Cross(v1).Normalize();
-                        //v4.cross(v1, v41);
-
+                        
                         normal = v12 + v23 + v34 + v41;
 
                         normals[row * Height + col] = normal.Normalize();
@@ -354,10 +379,9 @@ namespace SharpPhysicsEngine.Terrain
 
         private void GenerateConvexShapes(IConvexHullEngine convexHullEngine)
         {
-            AABB box = AABB.GetGeometryAABB(positions);
+            AABB box = AABB.GetGeometryAABB(positions, this);
             ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(box, triangleMeshes);
             var vertex3Idx = SetVertexAdjacency(positions, triangleMeshes);
-
             convexShapes = convexDecomposition.GetConvexShapeList(vertex3Idx, 0.7);
         }
 

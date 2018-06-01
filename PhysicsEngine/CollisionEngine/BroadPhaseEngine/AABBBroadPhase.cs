@@ -30,9 +30,9 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	internal class SweepAndPruneEngine
+	internal class AABBBroadPhase: IBroadPhase
 	{
-		#region Fileds
+		#region Fields
 
 		CollisionEngineParameters collisionEngineParameters;
 
@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		#region Contructor
 
-		public SweepAndPruneEngine(CollisionEngineParameters collisionEngineParameters)
+		public AABBBroadPhase(CollisionEngineParameters collisionEngineParameters)
 		{
 			this.collisionEngineParameters = collisionEngineParameters;
 		}
@@ -68,9 +68,9 @@ namespace SharpPhysicsEngine.CollisionEngine
                         AABB box2 = boxs[k];
 
                         if (box1 != null && box2 != null &&
-                            TestBoxes(box1, box2, 0, distanceTolerance) &&
-                            TestBoxes(box1, box2, 1, distanceTolerance) &&
-                            TestBoxes(box1, box2, 2, distanceTolerance))
+                            Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
+                            Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
+                            Helper.TestBoxes(box1, box2, 2, distanceTolerance))
                         {
                             lock (lockMe)
                             {
@@ -78,27 +78,6 @@ namespace SharpPhysicsEngine.CollisionEngine
                             }
                         }
                     }
-						
-
-					//	for (int j = i + 1; j < boxs.Length; j++)
-					//	{
-					//		for (int w = 0; w < boxs[j].Length; w++)
-					//		{
-					//			AABB box2 = boxs[j][w];
-
-					//			if (boxs[i] != null && boxs[j] != null &&
-					//				TestBoxes(box1, box2, 0, distanceTolerance) &&
-					//				TestBoxes(box1, box2, 1, distanceTolerance) &&
-					//				TestBoxes(box1, box2, 2, distanceTolerance))
-					//			{
-					//				lock (lockMe)
-					//				{
-					//					collisionPairs.Add(new CollisionPair(i, j));
-					//				}
-					//			}
-					//		}
-					//	}
-					//}
 					
 				});
 
@@ -125,9 +104,9 @@ namespace SharpPhysicsEngine.CollisionEngine
                         AABB box2 = objectBoxesB[k];
 
                         if (box1 != null && box2 != null &&
-                            TestBoxes(box1, box2, 0, distanceTolerance) &&
-                            TestBoxes(box1, box2, 1, distanceTolerance) &&
-                            TestBoxes(box1, box2, 2, distanceTolerance))
+                            Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
+                            Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
+                            Helper.TestBoxes(box1, box2, 2, distanceTolerance))
                         {
                             lock (lockMe)
                             {
@@ -143,16 +122,6 @@ namespace SharpPhysicsEngine.CollisionEngine
         #endregion
 
         #region Private Methods
-
-        private bool TestBoxes(
-			AABB a, 
-			AABB b,
-			int axisIndex,
-			double distanceTolerance)
-		{
-			return a.Min [axisIndex] - b.Max[axisIndex] <= distanceTolerance &&
-				   a.Max [axisIndex] - b.Min[axisIndex] >= -distanceTolerance ;
-		}
 
 		#endregion
 	}

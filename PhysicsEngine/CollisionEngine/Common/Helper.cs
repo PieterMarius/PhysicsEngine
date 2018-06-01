@@ -320,11 +320,21 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return vertexPosition;
 		}
 
-		#endregion
+        public static bool TestBoxes(
+            AABB a,
+            AABB b,
+            int axisIndex,
+            double distanceTolerance)
+        {
+            return a.Min[axisIndex] - b.Max[axisIndex] <= distanceTolerance &&
+                   a.Max[axisIndex] - b.Min[axisIndex] >= -distanceTolerance;
+        }
 
-		#region Private Methods
+        #endregion
 
-		private static List<SupportTriangle> AddTriangle(
+        #region Private Methods
+
+        private static List<SupportTriangle> AddTriangle(
 			List<Edge> edge,
 			List<SupportTriangle> triangles,
 			Support p,
