@@ -124,7 +124,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
             //ObjectGeometry.SetAABB(AABB.GetGeometryAABB(ObjectGeometry));
             AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
-
         }
 
         public override void SetMass(double mass)
@@ -229,11 +228,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
+
+
                 baseTensors += ShapeCommonUtilities.GetInertiaTensor(
                     ShapesGeometry[i].VertexPosition,
                     ShapesGeometry[i].Triangle,
                     InitCenterOfMass,
-                    PartialMass[i]);
+                    PartialMass[i]).InertiaTensor;
 
                 Vector3[] vertexPosition = Array.ConvertAll(
                                         ShapesGeometry[i].VertexPosition,

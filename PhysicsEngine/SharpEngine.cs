@@ -592,7 +592,7 @@ namespace SharpPhysicsEngine
                             IShape objectA = simulationObjs.First(x => x.ID == item.ObjectIndexA);
                             IShape objectB = simulationObjs.First(x => x.ID == item.ObjectIndexB);
 
-                            List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildJoints(item, TimeStep, objectA, objectB);
+                            List<JacobianConstraint> constraintsBuf = contactConstraintBuilder.BuildContactConstraint(item, TimeStep, objectA, objectB);
 
                             lock (sync)
                             {

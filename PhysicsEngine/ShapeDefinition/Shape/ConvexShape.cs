@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     ObjectGeometry.VertexPosition,
                     ObjectGeometry.Triangle,
                     InitCenterOfMass,
-                    Mass);
+                    Mass).InertiaTensor;
 
             BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
 

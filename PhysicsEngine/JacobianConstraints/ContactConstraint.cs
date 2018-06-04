@@ -57,7 +57,7 @@ namespace SharpPhysicsEngine
         
 		#region Public Methods
 
-        public List<JacobianConstraint> BuildJoints(
+        public List<JacobianConstraint> BuildContactConstraint(
             CollisionPointStructure collisionPointStr,
             double timeStep,
             IShape objectA,
@@ -602,7 +602,7 @@ namespace SharpPhysicsEngine
 
             var tx = new Vector3();
             var ty = new Vector3();
-
+                       
             GeometryUtilities.ComputeBasis(
                 normal,
                 ref tx,
@@ -617,7 +617,7 @@ namespace SharpPhysicsEngine
                 for (int i = 0; i < nDirection; i++)
                     coneDirection[i] = Matrix3x3.GetRotationMatrix(normal, step * i) * tx;
             }
-                       
+
             return coneDirection;
         }
 

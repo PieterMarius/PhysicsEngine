@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-    internal sealed class RigidBodyNarrowPhase
+    internal sealed class ConvexBodyNarrowPhase
     {
         #region Fields
 
@@ -13,7 +13,6 @@ namespace SharpPhysicsEngine.CollisionEngine
         private GJK collisionEngine;
         private EPA compenetrationEngine;
         private readonly CollisionEngineParameters parameters;
-        private readonly CollisionEngineParameters collisionEngineParameters;
         private readonly ManifoldPointsGenerator manifoldGJKPointsGenerator;
         private readonly ManifoldPointsGenerator manifoldEPAPointsGenerator;
         private readonly AABBBroadPhase innerBroadPhase;
@@ -22,7 +21,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         #region Constructor
 
-        public RigidBodyNarrowPhase(CollisionEngineParameters parameters)
+        public ConvexBodyNarrowPhase(CollisionEngineParameters parameters)
         {
             this.parameters = parameters;
 
@@ -55,53 +54,25 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         #region Public Methods
 
-        public List<CollisionPointStructure> RigidBodyCollisionStep(
-            IShape A,
-            IShape B)
+        public CollisionPointStructure Execute(
+            VertexProperties[] objA,
+            VertexProperties[] objB,
+            int ID_A,
+            int ID_B)
         {
-            List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
+            GJKOutput gjkOutput = collisionEngine.Execute(objA, objB);
 
-            IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
-            IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
-
-            List<CollisionPair> collisionPair = CheckGeometryAABB(
-                geometryA,
-                geometryB);
-
-            foreach (var collidingPair in collisionPair)
-            {
-                VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA]);
-                VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB]);
-
-                GJKOutput gjkOutput = collisionEngine.Execute(vertexObjA, vertexObjB);
-
-                CollisionPointStructure collision = NarrowPhaseCollisionDetection(
-                    gjkOutput,
-                    vertexObjA,
-                    vertexObjB,
-                    A.ID,
-                    B.ID);
-
-                if (collision != null)
-                    collisionPointStructure.Add(collision);
-            }
-
-            return collisionPointStructure;
+            return NarrowPhaseCollisionDetection(
+                gjkOutput,
+                objA,
+                objB,
+                ID_A,
+                ID_B);
         }
 
-        private List<CollisionPair> CheckGeometryAABB(
-            IGeometry[] geometryA,
-            IGeometry[] geometryB)
-        {
-            var geometryBoxesA = Array.ConvertAll(geometryA, x => x.AABBox);
-            var geometryBoxesB = Array.ConvertAll(geometryB, x => x.AABBox);
+        #endregion
 
-            if (geometryBoxesA.Length == 1 &&
-                geometryBoxesB.Length == 1)
-                return new List<CollisionPair>() { new CollisionPair(0, 0) };
-
-            return innerBroadPhase.Execute(geometryBoxesA, geometryBoxesB, parameters.CollisionDistance);
-        }
+        #region Private Methods
 
         private CollisionPointStructure NarrowPhaseCollisionDetection(
             GJKOutput gjkOutput,

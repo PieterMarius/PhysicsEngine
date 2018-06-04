@@ -28,15 +28,16 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	internal sealed class InertiaTensor
+	internal sealed class InertiaTensorEngine
 	{
 		#region Private properties
 
 		Vector3 massCenter;
 		Matrix3x3 inertiaTensor;
-        bool bodyCoords;
+        double densityMass;
+        readonly bool bodyCoords;
 		readonly double objMass;
-
+        
 		readonly Vector3[] vertexStartPosition;
 		readonly TriangleMesh[] triangleVertexIndex;
                 
@@ -62,7 +63,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		#region Constructor
 
-		public InertiaTensor (
+		public InertiaTensorEngine (
 			Vector3[] vertexStartPosition,
             TriangleMesh[] triangleVertexIndex,
 			double mass,
@@ -75,11 +76,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			massCenter = new Vector3 ();
 			inertiaTensor = new Matrix3x3 ();
-                         
-			ComputeInertiaTensor ();
 		}
 
-        public InertiaTensor(
+        public InertiaTensorEngine(
             Vector3[] vertexStartPosition,
             TriangleMesh[] triangleVertexIndex,
             double mass) :
@@ -90,16 +89,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
-        public Vector3 GetMassCenter()
+        public InertiaTensorOutput Execute()
         {
-            return massCenter;
-        }
+            ComputeInertiaTensor();
 
-        public Matrix3x3 GetInertiaTensor()
-        {
-            return inertiaTensor;
+            return new InertiaTensorOutput(
+                inertiaTensor,
+                massCenter,
+                densityMass);
         }
-
+        
         #endregion
 
         #region Private Methods
@@ -172,9 +171,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
 
 			for (int i = 0; i < 10; i++) 
-			{
-                intg[i] *= mult[i];
-			}
+			    intg[i] *= mult[i];
+			
 			double mass = intg [0];
 
 			//centro di massa
@@ -216,6 +214,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			
 			//L'oggetto ha massa totale 1, l'adatto alla massa richiesta
 			double bufferMass = objMass / mass;
+            densityMass = mass;
 
 			inertiaTensor = inertiaTensor * bufferMass;
 			

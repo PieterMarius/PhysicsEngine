@@ -80,7 +80,7 @@
     <Compile Include="CollisionEngine\BroadPhaseEngine\AABBBroadPhase.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\INarrowPhase.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\NarrowPhase.cs" />
-    <Compile Include="CollisionEngine\NarrowPhaseEngine\RigidBodyNarrowPhase.cs" />
+    <Compile Include="CollisionEngine\NarrowPhaseEngine\ConvexBodyNarrowPhase.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullData.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
@@ -115,11 +115,13 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
+    <Compile Include="ShapeDefinition\Common\InertiaTensorOutput.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IConcaveShape.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
+    <Compile Include="StackingUtilities\StackManager.cs" />
     <Compile Include="Terrain\HeightMapMesh.cs" />
     <Compile Include="Wrapper\Shape\CompoundRigidShape.cs" />
     <Compile Include="Wrapper\EngineObjectType.cs" />

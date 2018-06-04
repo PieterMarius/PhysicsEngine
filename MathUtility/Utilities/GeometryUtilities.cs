@@ -183,7 +183,7 @@ namespace SharpEngineMathUtility
 				a = new Vector3(0.0, normal.z, -normal.y);
 
 			a = a.Normalize();
-			b = normal.Cross(a);
+			b = normal.Cross(a).Normalize();
 		}
 			
 		/// <summary>

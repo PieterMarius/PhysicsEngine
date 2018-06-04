@@ -31,7 +31,6 @@ namespace SharpPhysicsEngine.Helper
             ref IShape[] shapes,
             double timeStep)
         {
-
             var dynamicShapes = shapes.Where(x => !x.IsStatic);
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
@@ -42,7 +41,6 @@ namespace SharpPhysicsEngine.Helper
 
             foreach (var shape in dynamicShapes.OfType<CompoundShape>())
                 IntegrateRigidShapePosition(shape, timeStep);
-
         }
 
         #endregion

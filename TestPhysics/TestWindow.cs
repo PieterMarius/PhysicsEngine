@@ -249,7 +249,7 @@ namespace TestPhysics
             //TerrainShapes = terrain.GetConvexShapeList();
             //InitTerrain();
 
-            pause = true;
+            pause = false;
 
             collPoint = new List<CollisionPointStructure>();
             collisionPartitionedPoints = new List<List<CollisionPointStructure>>();

@@ -38,16 +38,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TriangleMesh[] triangleMeshes,
             double mass)
         {
-            var inertiaTensor = new InertiaTensor(
+            var inertiaTensor = new InertiaTensorEngine(
                     vertices,
                     triangleMeshes,
                     mass,
                     false);
 
-            return inertiaTensor.GetMassCenter();
+            return inertiaTensor.Execute().CenterOfMass;
         }
 
-        public static Matrix3x3 GetInertiaTensor(
+        public static InertiaTensorOutput GetInertiaTensor(
             VertexProperties[] vertex,
             TriangleMesh[] triangleMeshes,
             Vector3 position,
@@ -57,20 +57,20 @@ namespace SharpPhysicsEngine.ShapeDefinition
                                     vertex,
                                     item => item.Vertex);
 
-            var inertiaTensor = new InertiaTensor(
+            var inertiaTensor = new InertiaTensorEngine(
                     vertexPosition,
                     triangleMeshes,
                     mass,
                     true);
 
-            var normalizedInertiaTensor = inertiaTensor;
+            var inertiaTensorRes = inertiaTensor.Execute();
 
-            Vector3 r = inertiaTensor.GetMassCenter() - position;
-            Matrix3x3 baseTensors= inertiaTensor.GetInertiaTensor() +
+            Vector3 r = inertiaTensorRes.CenterOfMass - position;
+            Matrix3x3 baseTensors= inertiaTensorRes.InertiaTensor +
                             (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
                             mass;
 
-            return baseTensors;
+            return new InertiaTensorOutput(baseTensors, inertiaTensorRes.CenterOfMass, inertiaTensorRes.DensityMass);
         }
 
         #endregion
