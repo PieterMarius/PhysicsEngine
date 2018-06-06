@@ -10,5 +10,9 @@ namespace SharpPhysicsEngine.CollisionEngine
             IShape[] shapes, 
             List<CollisionPair> collisionPairs, 
             HashSet<HashSetStruct> ignoreList);
+
+        CollisionPointStructure Execute(
+            IShape shapeA,
+            IShape shapeB);
     }
 }

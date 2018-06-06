@@ -228,8 +228,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
-
-
                 baseTensors += ShapeCommonUtilities.GetInertiaTensor(
                     ShapesGeometry[i].VertexPosition,
                     ShapesGeometry[i].Triangle,
@@ -245,16 +243,17 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
 
-            SetRelativePosition(totalVertex);
+            SetRelativePosition();
 
             BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
             InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
                             Matrix3x3.Transpose(RotationMatrix);
         }
 
-        private void SetRelativePosition(int totalVertex)
+        private void SetRelativePosition()
         {
             List<Vector3> objectRelativePosition = new List<Vector3>();
+            double dist = 0.0;
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
@@ -269,6 +268,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
                             InitCenterOfMass;
 
                         objectRelativePosition.Add(relativePositions[j]);
+
+                        double length = relativePositions[j].Dot(relativePositions[j]);
+
+                        if (length > dist)
+                        {
+                            dist = length;
+                            FarthestPoint = relativePositions[j];
+                        }
                     } 
                 }
 

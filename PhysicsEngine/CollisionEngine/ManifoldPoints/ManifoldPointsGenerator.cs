@@ -62,27 +62,32 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3[] vertexObjB,
 			CollisionPoint collisionPoint)
 		{
-			List<Vector3> collisionA = GetNearestPoint (
-				vertexObjA,
-				collisionPoint.CollisionPointA.Vertex,
-				collisionPoint.CollisionNormal);
+            if (ManifoldPointNumber > 1)
+            {
+                List<Vector3> collisionA = GetNearestPoint(
+                    vertexObjA,
+                    collisionPoint.CollisionPointA.Vertex,
+                    collisionPoint.CollisionNormal);
 
-			List<Vector3> collisionB = GetNearestPoint (
-				vertexObjB,
-				collisionPoint.CollisionPointB.Vertex,
-				collisionPoint.CollisionNormal);
+                List<Vector3> collisionB = GetNearestPoint(
+                    vertexObjB,
+                    collisionPoint.CollisionPointB.Vertex,
+                    collisionPoint.CollisionNormal);
 
-			List<CollisionPoint> collisionPointsList = FindCollisionPoints (
-				collisionA.ToArray (),
-				collisionB.ToArray (),
-				collisionPoint);
+                List<CollisionPoint> collisionPointsList = FindCollisionPoints(
+                    collisionA.ToArray(),
+                    collisionB.ToArray(),
+                    collisionPoint);
 
-			collisionA.Clear ();
-			collisionB.Clear ();
+                collisionA.Clear();
+                collisionB.Clear();
 
-            SetCollisionNormal(collisionPointsList, collisionPoint.CollisionNormal);
+                SetCollisionNormal(collisionPointsList, collisionPoint.CollisionNormal);
 
-			return collisionPointsList;
+                return collisionPointsList;
+            }
+
+            return null;
 		}
 
 		#endregion
@@ -142,7 +147,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
-				CollisionPoint? collisionP = TestLineIntersection (
+				CollisionPoint collisionP = TestLineIntersection (
 					ca [0],
 					ca [1],
 					cb [0],
@@ -150,7 +155,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 					cp);
 
 				if (collisionP != null)
-					result.Add (collisionP.Value);
+					result.Add (collisionP);
 
 			} 
 			else if (ca.Length > 2 && cb.Length == 2) 
@@ -168,7 +173,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
 
-						CollisionPoint? collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [0],
@@ -176,7 +181,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							cp);
 
 						if (collisionP != null)
-							result.Add (collisionP.Value);
+							result.Add (collisionP);
 					}
 				}
 			} 
@@ -195,7 +200,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
 
-						CollisionPoint? collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [0],
 							ca [1],
 							cb [i],
@@ -203,7 +208,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							cp);
 
 						if (collisionP != null)
-							result.Add (collisionP.Value);
+							result.Add (collisionP);
 					}
 				}
 			} 
@@ -226,7 +231,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
 
-						CollisionPoint? collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestLineIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [j],
@@ -234,7 +239,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							cp);
 						
 						if (collisionP != null)
-							result.Add (collisionP.Value);
+							result.Add (collisionP);
 					}
 				}
 			}
@@ -353,7 +358,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return cpList;
 		}
 
-		private CollisionPoint? TestLineIntersection(
+		private CollisionPoint TestLineIntersection(
 			Vector3 p1,
 			Vector3 p2,
 			Vector3 p3,

@@ -40,6 +40,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         double StaticFrictionCoeff { get; }
         Vector3 TorqueValue { get; }
         AABB AABBox { get; }
+        Vector3 FarthestPoint { get; }
         
         void SetAABB();
         void SetRestoreCoeff(double value);

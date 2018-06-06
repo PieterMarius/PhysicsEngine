@@ -87,14 +87,18 @@ namespace SharpPhysicsEngine.CollisionEngine
                 if (gjkOutput.CollisionNormal.Length() < normalTolerance)
                     return null;
 
-                List<CollisionPoint> collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
+                List<CollisionPoint> collisionPointsList = null;
+                                
+                collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
                     Array.ConvertAll(vertexObjA, x => x.Vertex),
                     Array.ConvertAll(vertexObjB, x => x.Vertex),
                     gjkOutput.CollisionPoint);
+                
+                gjkOutput.CollisionPoint.SetDistance(gjkOutput.CollisionDistance);
 
                 var collisionPointBaseStr = new CollisionPointBaseStructure(
                         gjkOutput.CollisionPoint,
-                        collisionPointsList.ToArray());
+                        collisionPointsList?.ToArray());
 
                 return new CollisionPointStructure(
                     ID_A,
@@ -112,14 +116,16 @@ namespace SharpPhysicsEngine.CollisionEngine
                 if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
                     return null;
 
-                List<CollisionPoint> collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(
-                                                               Array.ConvertAll(vertexObjA, x => x.Vertex),
-                                                               Array.ConvertAll(vertexObjB, x => x.Vertex),
-                                                               epaOutput.CollisionPoint);
-
+                List<CollisionPoint> collisionPointsList = null;
+                                
+                collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(
+                                            Array.ConvertAll(vertexObjA, x => x.Vertex),
+                                            Array.ConvertAll(vertexObjB, x => x.Vertex),
+                                            epaOutput.CollisionPoint);
+                
                 var collisionPointBaseStr = new CollisionPointBaseStructure(
                         epaOutput.CollisionPoint,
-                        collisionPointsList.ToArray());
+                        collisionPointsList?.ToArray());
 
                 return new CollisionPointStructure(
                     ID_A,

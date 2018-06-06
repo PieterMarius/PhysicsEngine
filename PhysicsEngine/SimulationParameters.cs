@@ -158,7 +158,7 @@ namespace SharpPhysicsEngine
         /// <summary>
         /// Turn to zero if angular velocity is lower
         /// </summary>
-        public double AngularValocityMinLimit { get; private set; }
+        public double AngularVelocityMinLimit { get; private set; }
 
         #endregion
 
@@ -186,7 +186,7 @@ namespace SharpPhysicsEngine
 			SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;
-            AngularValocityMinLimit = 0.0;
+            AngularVelocityMinLimit = 0.0;
         }
 
 		//TODO Update input parameters

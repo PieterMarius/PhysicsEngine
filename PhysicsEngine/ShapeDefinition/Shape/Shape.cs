@@ -80,6 +80,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public AABB AABBox { get; protected set; }
 
+        public Vector3 FarthestPoint { get; protected set; }
+
         #endregion
 
         #region Public Methods

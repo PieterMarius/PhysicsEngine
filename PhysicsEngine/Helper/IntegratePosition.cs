@@ -34,18 +34,96 @@ namespace SharpPhysicsEngine.Helper
             var dynamicShapes = shapes.Where(x => !x.IsStatic);
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
-                IntegrateSoftShapePosition(shape, timeStep);
+                IntegrateSoftShapePosition(shape, timeStep, true);
 
             foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+            {
                 IntegrateRigidShapePosition(shape, timeStep);
+                IntegrateExternalForce(shape, timeStep);
+                UpdateShapeProperties(shape);
+            }
 
             foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+            {
+                IntegrateRigidShapePosition(shape, timeStep);
+                IntegrateExternalForce(shape, timeStep);
+                UpdateShapeProperties(shape);
+            }
+        }
+
+
+        /// <summary>
+        /// Update Position, Rotation Status, Rotation Matrix, Inertia Tensor
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <param name="timeStep"></param>
+        public void IntegrateObjectPosition(
+            IShape shape,
+            double timeStep)
+        {
+            if(shape is ISoftShape)
+                IntegrateSoftShapePosition((ISoftShape)shape, timeStep, false);
+            else 
                 IntegrateRigidShapePosition(shape, timeStep);
         }
 
         #endregion
 
         #region Private Methods
+
+        private void UpdateLinearVelocity(
+            IShape shape,
+            double timeStep)
+        {
+            var externalForce = shape.ForceValue * shape.InverseMass +
+                                timeStep * EngineParameters.ExternalForce;
+
+            shape.SetLinearVelocity(shape.LinearVelocity + externalForce);
+        }
+
+        private void UpdateAngularVelocity(
+            IShape shape,
+            double timeStep)
+        {
+            var extAngularVelocity = shape.InertiaTensor * shape.TorqueValue;
+
+            shape.SetAngularVelocity(shape.AngularVelocity + extAngularVelocity);
+        }
+
+        private void IntegrateExternalForce(
+            IShape shape,
+            double timeStep)
+        {
+            UpdateLinearVelocity(shape, timeStep);
+            shape.SetForce(new Vector3());
+
+            UpdateAngularVelocity(shape, timeStep);
+            shape.SetTorque(new Vector3());
+        }
+
+        private void UpdateShapeProperties(IShape shape)
+        {
+            #region Sleeping Object
+
+            if (EngineParameters.SleepingObject)
+                ObjectSleep(shape);
+
+            #endregion
+
+            #region Update AABB
+
+            double linearVelocity = shape.LinearVelocity.Length();
+
+            double angularVelocity = shape.AngularVelocity.Length();
+
+            if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
+                (linearVelocity > 0.0 || angularVelocity > 0.0))
+            {
+                shape.SetAABB();
+            }
+
+            #endregion
+        }
 
         private void IntegrateRigidShapePosition(
             IShape shape,
@@ -57,27 +135,14 @@ namespace SharpPhysicsEngine.Helper
                     shape.Position +
                     timeStep *
                     shape.LinearVelocity);
-
-            var externalForce = shape.ForceValue * shape.InverseMass +
-                                timeStep * EngineParameters.ExternalForce;
-
-            shape.SetLinearVelocity(shape.LinearVelocity + externalForce);
-
-            shape.SetForce(new Vector3());
-
-            double linearVelocity = shape.LinearVelocity.Length();
-
+            
             #endregion
 
             #region Angular Velocity
 
             double angularVelocity = shape.AngularVelocity.Length();
-
-            if (angularVelocity < EngineParameters.AngularValocityMinLimit)
-            {
-                shape.SetAngularVelocity(shape.InertiaTensor * shape.TorqueValue);
-            }
-            else
+            
+            if (angularVelocity >= EngineParameters.AngularVelocityMinLimit)
             {
                 Vector3 versor = shape.AngularVelocity.Normalize();
 
@@ -92,79 +157,67 @@ namespace SharpPhysicsEngine.Helper
                 shape.SetInertiaTensor(
                     (shape.RotationMatrix * shape.BaseInertiaTensor) *
                     shape.RotationMatrix.Transpose());
-
-                shape.SetAngularVelocity(shape.AngularVelocity +
-                                            shape.InertiaTensor *
-                                            shape.TorqueValue);
             }
-            
-            angularVelocity = shape.AngularVelocity.Length();
-            shape.SetTorque(new Vector3());
-
+                                  
             #endregion
+        }
 
-            #region Sleeping Object
+        private void UpdatePointLinearVelocity(
+            SoftShapePoint point,
+            double timeStep)
+        {
+            var externalForce = point.ForceValue * point.InverseMass +
+                                timeStep * EngineParameters.ExternalForce;
 
-            if (EngineParameters.SleepingObject)
-                ObjectSleep(shape);
-
-            #endregion
-
-            #region Update AABB
-
-            if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
-                (linearVelocity > 0.0 || angularVelocity > 0.0))
-            {
-                shape.SetAABB();
-            }
-
-            #endregion
+            point.SetLinearVelocity(point.LinearVelocity + externalForce);
         }
 
         private void IntegrateSoftShapePosition(
             ISoftShape shape,
-            double timeStep)
+            double timeStep,
+            bool updateExtForce)
         {
-            Parallel.ForEach(shape.ShapePoints, new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                    point =>
+            Parallel.ForEach(
+                shape.ShapePoints, 
+                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                point => {
+                        
+                    #region Linear Velocity
+
+                    point.SetPosition(
+                            point.Position +
+                            timeStep *
+                            point.LinearVelocity);
+
+                    if (updateExtForce)
                     {
-                        #region Linear Velocity
-
-                        point.SetPosition(
-                                point.Position +
-                                timeStep *
-                                point.LinearVelocity);
-
-                        point.SetLinearVelocity(point.LinearVelocity +
-                            (point.ForceValue * point.InverseMass) +
-                            (timeStep * EngineParameters.ExternalForce));
-
+                        UpdatePointLinearVelocity(point, timeStep);
                         point.SetForce(new Vector3());
+                    }
 
-                        #endregion
+                    #endregion
 
-                        #region Angular Velocity
+                    #region Angular Velocity
 
-                        double angularVelocity = point.AngularVelocity.Length();
+                    double angularVelocity = point.AngularVelocity.Length();
 
-                        Vector3 versor = point.AngularVelocity.Normalize();
+                    Vector3 versor = point.AngularVelocity.Normalize();
 
-                        double rotationAngle = angularVelocity * timeStep;
+                    double rotationAngle = angularVelocity * timeStep;
 
-                        var rotationQuaternion = new Quaternion(versor, rotationAngle);
+                    var rotationQuaternion = new Quaternion(versor, rotationAngle);
 
-                        point.SetRotationStatus((rotationQuaternion * point.RotationStatus).Normalize());
+                    point.SetRotationStatus((rotationQuaternion * point.RotationStatus).Normalize());
 
-                        point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
+                    point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
 
-                        point.SetInertiaTensor(
-                            (point.RotationMatrix * point.BaseInertiaTensor) *
-                            point.RotationMatrix.Transpose());
-
-                        point.SetAngularVelocity(point.AngularVelocity);
-
-                        #endregion
-                    });
+                    point.SetInertiaTensor(
+                        (point.RotationMatrix * point.BaseInertiaTensor) *
+                        point.RotationMatrix.Transpose());
+                                                
+                    #endregion
+                    }
+                );
 
             shape.SetAABB();
         }

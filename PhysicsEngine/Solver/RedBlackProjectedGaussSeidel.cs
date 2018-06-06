@@ -143,33 +143,49 @@ namespace SharpPhysicsEngine.LCPSolver
             redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> red);
             redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> black);
 
-            var rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);
-            var rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
+            OrderablePartitioner<Tuple<int, int>> rangePartitionerBlack = null;
+            OrderablePartitioner<Tuple<int, int>> rangePartitionerRed = null;
 
-            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+            try
             {
-                //Execute Red
-                Parallel.ForEach(
-                    rangePartitionerRed,
-                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
-                    (range, loopState) =>
-                    {
-                        for (int i = range.Item1; i < range.Item2; i++)
-                            ExecuteKernel(input, red[i], ref x);
-                    });
+                rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);                       
+                rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
 
-                //Execute Black
-                Parallel.ForEach(
-                    rangePartitionerBlack,
-                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
-                    (range, loopState) =>
+                for (int k = 0; k < SolverParameters.MaxIteration; k++)
+                {
+                    if (red.Any())
                     {
-                        for (int i = range.Item1; i < range.Item2; i++)
-                            ExecuteKernel(input, black[i], ref x);
-                    });
+                        //Execute Red
+                        Parallel.ForEach(
+                            rangePartitionerRed,
+                            new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
+                            (range, loopState) =>
+                            {
+                                for (int i = range.Item1; i < range.Item2; i++)
+                                    ExecuteKernel(input, red[i], ref x);
+                            });
+                    }
+
+                    if (black.Any())
+                    {
+                        //Execute Black
+                        Parallel.ForEach(
+                            rangePartitionerBlack,
+                            new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
+                            (range, loopState) =>
+                            {
+                                for (int i = range.Item1; i < range.Item2; i++)
+                                    ExecuteKernel(input, black[i], ref x);
+                            });
+                    }
+                }
             }
-
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             return x;
+            
         }
                
         private void ExecuteKernel(

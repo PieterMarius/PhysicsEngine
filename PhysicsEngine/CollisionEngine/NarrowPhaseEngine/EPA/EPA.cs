@@ -128,9 +128,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 							direction = vDistance;
 							epaCollisionPoint.SetDist (vDistance);
-							epaCollisionPoint.SetNormal (Vector3.Normalize (vDistance));
 
-							Helper.GetVertexFromMinkowsky(
+                            if(vDistance.Dot(vDistance) > 0.0)
+							    epaCollisionPoint.SetNormal (Vector3.Normalize (vDistance));
+                            else
+                                epaCollisionPoint.SetNormal(triangles[i].Normal);
+
+                            Helper.GetVertexFromMinkowsky(
 								triangles[i],
 								vertexShape1,
 								vertexShape2,

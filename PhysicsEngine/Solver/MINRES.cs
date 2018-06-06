@@ -36,6 +36,8 @@ namespace SharpPhysicsEngine.LCPSolver
     {
         #region Fields
 
+        private const double precisionConst = 1E-30;
+
         ProjectedGaussSeidel gaussSeidelSolver;
         public readonly SolverParameters SolverParameters;
 
@@ -123,7 +125,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 double[] w = Multiply((1.0 / p1), (Minus(Minus(v, Multiply(p3, w_1)), Multiply(p2, w0))));
 
                 x = Plus(x, Multiply(c1, Multiply(n, w)));
-                x = gaussSeidelSolver.Solve(linearProblemProperties, x);
+                //x = gaussSeidelSolver.Solve(linearProblemProperties, x);
                 //v1 = Minus(linearProblemProperties.B, Multiply(A, x));
                 //x = Project(linearProblemProperties, x);
 
@@ -131,8 +133,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 residual = Math.Abs(n);
 
-                //if (residual < precisionConst)
-                //    break;
+                if (residual < precisionConst)
+                    break;
 
                 beta1 = betaN;
                 v0 = v;

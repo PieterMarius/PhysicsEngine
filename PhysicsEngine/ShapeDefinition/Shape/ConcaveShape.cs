@@ -137,6 +137,41 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
+        private void SetRelativePosition()
+        {
+            List<Vector3> objectRelativePosition = new List<Vector3>();
+            double dist = 0.0;
+
+            for (int i = 0; i < ConvexShapesGeometry.Length; i++)
+            {
+                Vector3[] relativePositions = new Vector3[ConvexShapesGeometry[i].VertexPosition.Length];
+
+                if (ConvexShapesGeometry[i].VertexPosition.Length > 0)
+                {
+                    for (int j = 0; j < ConvexShapesGeometry[i].VertexPosition.Length; j++)
+                    {
+                        relativePositions[j] =
+                            ConvexShapesGeometry[i].VertexPosition[j].Vertex -
+                            InitCenterOfMass;
+
+                        objectRelativePosition.Add(relativePositions[j]);
+
+                        double length = relativePositions[j].Dot(relativePositions[j]);
+
+                        if (length > dist)
+                        {
+                            dist = length;
+                            FarthestPoint = relativePositions[j];
+                        }
+                    }
+                }
+
+                ConvexShapesGeometry[i].SetRelativePosition(relativePositions);
+            }
+
+            ObjectGeometry.SetRelativePosition(objectRelativePosition.ToArray());
+        }
+
         #endregion
     }
 }

@@ -144,18 +144,30 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetRotationMatrix();
             SetInertiaTensor();
 
-            SetRelativePosition(ObjectGeometry.VertexPosition.Length);
+            SetRelativePosition();
         }
 
-        private void SetRelativePosition(int totalVertex)
+        private void SetRelativePosition()
         {
             Vector3[] relativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
+            double dist = 0.0;
+
             if (ObjectGeometry.VertexPosition.Length > 0)
             {
                 for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+                {
                     relativePositions[j] =
                         ObjectGeometry.VertexPosition[j].Vertex -
                         InitCenterOfMass;
+
+                    double length = relativePositions[j].Dot(relativePositions[j]);
+
+                    if (length > dist)
+                    {
+                        dist = length;
+                        FarthestPoint = relativePositions[j];
+                    }
+                }
             }
 
             ObjectGeometry.SetRelativePosition(relativePositions);

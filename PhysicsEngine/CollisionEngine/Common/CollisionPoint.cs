@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-    public struct CollisionPoint
+    public class CollisionPoint
     {
         public readonly VertexProperties CollisionPointA;
         public readonly VertexProperties CollisionPointB;
@@ -62,6 +62,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                 new StartImpulseProperties(0.0),
             };
         }
+
+        public CollisionPoint() { }
 
         #endregion
 

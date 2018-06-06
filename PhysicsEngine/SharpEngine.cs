@@ -38,6 +38,7 @@ using SharpPhysicsEngine.Wrapper;
 using SharpPhysicsEngine.Wrapper.Joint;
 using System.Collections.Concurrent;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.ContinuosCollisionDetection;
 
 namespace SharpPhysicsEngine
 {
@@ -144,6 +145,8 @@ namespace SharpPhysicsEngine
 
         private readonly WarmStartEngine warmStartEngine;
 
+        private readonly ICCDEngine ccdEngine;
+
 		#endregion
 
 		#region Constructor
@@ -175,6 +178,7 @@ namespace SharpPhysicsEngine
 			integratePosition = new IntegratePosition(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
+            ccdEngine = new ConservativeAdvancement();
             
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -538,6 +542,8 @@ namespace SharpPhysicsEngine
             IShape[] simShapes = Array.ConvertAll(
                             Shapes,
                             item => (item.ExcludeFromCollisionDetection) ? null : item);
+
+            //double timeOfImpact = ccdEngine.GetTimeOfImpact(simShapes[0], simShapes[1]);
 
             //Eseguo il motore che gestisce le collisioni
             var actualCollisionPoints = CollisionEngine.Execute(simShapes, null);

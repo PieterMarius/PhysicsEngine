@@ -82,6 +82,8 @@
     <Compile Include="CollisionEngine\NarrowPhaseEngine\NarrowPhase.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\ConvexBodyNarrowPhase.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
+    <Compile Include="ContinuosCollisionDetection\ConservativeAdvancement.cs" />
+    <Compile Include="ContinuosCollisionDetection\IConservativeAdvancement.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullData.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullVertex.cs" />

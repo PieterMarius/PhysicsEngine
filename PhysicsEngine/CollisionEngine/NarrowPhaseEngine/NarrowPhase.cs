@@ -67,6 +67,17 @@ namespace SharpPhysicsEngine.CollisionEngine
             return result;
         }
 
+        public CollisionPointStructure Execute(
+            IShape shapeA,
+            IShape shapeB)
+        {
+            CollisionPointStructure collisionPointStruct = ExecuteNarrowPhase(
+                            shapeA,
+                            shapeB);
+
+            return collisionPointStruct;
+        }
+
         #endregion
 
         #region Private Methods
