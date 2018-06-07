@@ -307,7 +307,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 										  ref centroid,
 										  ref isIntersection);
 
-			return new GJKOutput (
+            return new GJKOutput (
 				collisionDistance,
 				collisionPoint,
 				collisionNormal,

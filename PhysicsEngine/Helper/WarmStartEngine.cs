@@ -69,8 +69,7 @@ namespace SharpPhysicsEngine.Helper
             Dictionary<WarmStartHashSet, CollisionPointStructure> warmStartedCollisionPoints = new Dictionary<WarmStartHashSet, CollisionPointStructure>();
 
             int warmStartCounter = 15;
-
-
+            
             foreach (var item in actualCollisionPoints)
             {
                 WarmStartHashSet hashset = new WarmStartHashSet(

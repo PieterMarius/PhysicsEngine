@@ -148,8 +148,11 @@ namespace SharpPhysicsEngine.LCPSolver
 
             try
             {
-                rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);                       
-                rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
+                if (black.Any())
+                    rangePartitionerBlack = Partitioner.Create(0, black.Count, Convert.ToInt32(black.Count / SolverParameters.MaxThreadNumber) + 1);
+
+                if (red.Any())
+                    rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
 
                 for (int k = 0; k < SolverParameters.MaxIteration; k++)
                 {

@@ -109,13 +109,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <value>The compenetration tolerance.</value>
 		public double CompenetrationTolerance { get; private set; }
-
-		/// <summary>
-		/// Gets the velocity tolerance.
-		/// </summary>
-		/// <value>The velocity tolerance.</value>
-		public double VelocityTolerance { get; private set; }
-
+        		
 		/// <summary>
 		/// Gets the max thread number.
 		/// </summary>
@@ -178,11 +172,10 @@ namespace SharpPhysicsEngine
 			DiscreteCCD = false;
 			CollisionDistance = 0.003;
             CompenetrationTolerance = 0.005;
-			VelocityTolerance = 0.5;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;
-			MaxCorrectionValue = 50.0;
+			MaxCorrectionValue = 10000.0;
 			SleepingObject = false;
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;

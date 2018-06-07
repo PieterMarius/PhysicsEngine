@@ -61,7 +61,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             int ID_B)
         {
             GJKOutput gjkOutput = collisionEngine.Execute(objA, objB);
-
+                        
             return NarrowPhaseCollisionDetection(
                 gjkOutput,
                 objA,
@@ -81,31 +81,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             int ID_A,
             int ID_B)
         {
-            if (!gjkOutput.Intersection &&
-                gjkOutput.CollisionDistance <= parameters.CollisionDistance)
-            {
-                if (gjkOutput.CollisionNormal.Length() < normalTolerance)
-                    return null;
-
-                List<CollisionPoint> collisionPointsList = null;
-                                
-                collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
-                    Array.ConvertAll(vertexObjA, x => x.Vertex),
-                    Array.ConvertAll(vertexObjB, x => x.Vertex),
-                    gjkOutput.CollisionPoint);
-                
-                gjkOutput.CollisionPoint.SetDistance(gjkOutput.CollisionDistance);
-
-                var collisionPointBaseStr = new CollisionPointBaseStructure(
-                        gjkOutput.CollisionPoint,
-                        collisionPointsList?.ToArray());
-
-                return new CollisionPointStructure(
-                    ID_A,
-                    ID_B,
-                    collisionPointBaseStr);
-            }
-            else if (gjkOutput.Intersection)
+            if (gjkOutput.Intersection)
             {
                 EPAOutput epaOutput = compenetrationEngine.Execute(
                                                 vertexObjA,
@@ -125,6 +101,29 @@ namespace SharpPhysicsEngine.CollisionEngine
                 
                 var collisionPointBaseStr = new CollisionPointBaseStructure(
                         epaOutput.CollisionPoint,
+                        collisionPointsList?.ToArray());
+
+                return new CollisionPointStructure(
+                    ID_A,
+                    ID_B,
+                    collisionPointBaseStr);
+            }
+            else if (gjkOutput.CollisionDistance <= parameters.CollisionDistance)
+            {
+                if (gjkOutput.CollisionNormal.Length() < normalTolerance)
+                    return null;
+
+                List<CollisionPoint> collisionPointsList = null;
+
+                collisionPointsList = manifoldGJKPointsGenerator.GetManifoldPoints(
+                    Array.ConvertAll(vertexObjA, x => x.Vertex),
+                    Array.ConvertAll(vertexObjB, x => x.Vertex),
+                    gjkOutput.CollisionPoint);
+
+                gjkOutput.CollisionPoint.SetDistance(gjkOutput.CollisionDistance);
+
+                var collisionPointBaseStr = new CollisionPointBaseStructure(
+                        gjkOutput.CollisionPoint,
                         collisionPointsList?.ToArray());
 
                 return new CollisionPointStructure(

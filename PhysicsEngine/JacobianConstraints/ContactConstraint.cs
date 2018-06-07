@@ -152,7 +152,7 @@ namespace SharpPhysicsEngine
 
                     double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent);
 
                     double correctionParameter = 0.0;
 
@@ -278,7 +278,7 @@ namespace SharpPhysicsEngine
 
                     double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+                    double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent);
 
                     double correctionParameter = 0.0;
 
@@ -431,7 +431,7 @@ namespace SharpPhysicsEngine
 
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent - simulationParameters.VelocityTolerance);
+					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
 					double correctionParameter = 0.0;
 
