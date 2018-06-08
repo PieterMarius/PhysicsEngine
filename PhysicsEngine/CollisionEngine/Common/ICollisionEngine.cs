@@ -32,9 +32,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 {
 	internal interface ICollisionEngine
 	{
-        List<CollisionPointStructure> Execute(IShape[] objects, HashSet<HashSetStruct> ignoreList);
+        List<CollisionPointStructure> Execute(IShape[] objects);
 
-        void SetCollisionDistance(double collisionDistance);
-	}
+        List<CollisionPointStructure> Execute(
+            IShape[] shapes,
+            List<CollisionPair> collisionPair);
+
+    }
 }
 

@@ -545,8 +545,10 @@ namespace SharpPhysicsEngine
 
             //double timeOfImpact = ccdEngine.GetTimeOfImpact(simShapes[0], simShapes[1]);
 
+            var collisionPair = ContinuosCollisionDetection(simShapes);
+
             //Eseguo il motore che gestisce le collisioni
-            var actualCollisionPoints = CollisionEngine.Execute(simShapes, null);
+            var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair);
 
             //var warmStartedPoints = warmStartEngine.GetWarmStartedCollisionPoints(
             //    Shapes, 
@@ -555,6 +557,25 @@ namespace SharpPhysicsEngine
             //    PreviousShapesProperties);
             
             collisionPoints = actualCollisionPoints.ToArray();
+        }
+
+        private List<CollisionPair> ContinuosCollisionDetection(
+            IShape[] simShapes)
+        {
+            var collisionPair = new List<CollisionPair>();
+
+            for (int i = 0; i < simShapes.Length; i++)
+            {
+                for (int j = i; j < simShapes.Length; j++)
+                {
+                    double timeOfImpact = ccdEngine.GetTimeOfImpact(simShapes[i], simShapes[j]);
+
+                    if (timeOfImpact <= TimeStep)
+                        collisionPair.Add(new CollisionPair(i, j));
+                }
+            }
+
+            return collisionPair;
         }
 
 		#endregion

@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         private INarrowPhase narrowPhase;
         private IBroadPhase broadPhaseEngine;
 
-		private double CollisionDistance;
+		private readonly double CollisionDistance;
 
 		#endregion
 
@@ -72,35 +72,23 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <returns>The test collision.</returns>
 		/// <param name="shapes">Objects.</param>
 		/// <param name="minDistance">Minimum distance.</param>
-		public List<CollisionPointStructure> Execute(
+		public List<CollisionPointStructure> Execute(IShape[] shapes)
+		{
+           return ExecuteEngine(shapes); 
+		}
+
+        public List<CollisionPointStructure> Execute(
             IShape[] shapes,
-            HashSet<HashSetStruct> ignoreList)
-		{
-            if (ignoreList == null)
-                ignoreList = new HashSet<HashSetStruct>();
+            List<CollisionPair> collisionPair)
+        {
+            return ExecuteEngine(shapes, collisionPair);
+        }
 
-            return ExecuteNarrowPhase(shapes, ignoreList); 
-		}
+        #endregion
 
-		public void SetCollisionDistance(double collisionDistance)
-		{
-			CollisionDistance = collisionDistance;
-		}
+        #endregion
 
-		/// <summary>
-		/// Gets the engine parameters.
-		/// </summary>
-		/// <returns>The engine parameters.</returns>
-		public CollisionEngineParameters GetEngineParameters()
-		{
-			return collisionEngineParameters;
-		}
-
-		#endregion
-
-		#endregion
-
-		#region Private Methods
+        #region Private Methods
 
         private void SetBroadPhaseEngine()
         {
@@ -121,18 +109,23 @@ namespace SharpPhysicsEngine.CollisionEngine
             }
         }
         				
-		private List<CollisionPointStructure> ExecuteNarrowPhase(
-            IShape[] shapes,
-            HashSet<HashSetStruct> ignoreList)
+		private List<CollisionPointStructure> ExecuteEngine(IShape[] shapes)
 		{
 			AABB[] boxs = GetAABB(shapes);
 			
 			List<CollisionPair> collisionPair = broadPhaseEngine.Execute (boxs, CollisionDistance);
 
-            var result = narrowPhase.Execute(shapes, collisionPair, ignoreList);
+            var result = narrowPhase.Execute(shapes, collisionPair);
 
 			return result;
 		}
+
+        private List<CollisionPointStructure> ExecuteEngine(
+            IShape[] shapes,
+            List<CollisionPair> collisionPair)
+        {
+            return narrowPhase.Execute(shapes, collisionPair);
+        }
 
 		private AABB[] GetAABB(IShape[] shapes)
 		{

@@ -24,32 +24,12 @@
  *  
  *****************************************************************************/
 
-using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 
-namespace SharpPhysicsEngine.ShapeDefinition
+namespace SharpPhysicsEngine.ContinuosCollisionDetection
 {
-    internal sealed class InertiaTensorOutput
+    internal interface ICCDEngine
     {
-        #region Fields
-
-        public Matrix3x3 InertiaTensor { get; private set; }
-        public Vector3 CenterOfMass { get; private set; }
-        public double DensityMass { get; private set; }
-
-        #endregion
-
-        #region Constructor
-
-        public InertiaTensorOutput(
-            Matrix3x3 inertiaTensor,
-            Vector3 centerOfMass,
-            double densityMass)
-        {
-            InertiaTensor = inertiaTensor;
-            CenterOfMass = centerOfMass;
-            DensityMass = densityMass;
-        }
-
-        #endregion
+        double GetTimeOfImpact(IShape shapeA, IShape shapeB);
     }
 }

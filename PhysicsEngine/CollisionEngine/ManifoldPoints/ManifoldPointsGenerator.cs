@@ -125,7 +125,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
-                Vector3 diff = vertexObj[i] - collisionPoint;
+                Vector3 diff = collisionPoint - vertexObj[i];
                 if (diff == Vector3.Zero())
                     continue;
 
@@ -244,7 +244,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				}
 			}
 
-			result = PruneCollisionPoints (result);
+            result = PruneCollisionPoints (result);
 
 			result.Add(cp);
 
