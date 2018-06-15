@@ -73,7 +73,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
 
             physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
 
             return physicsEnvironment;
 		}
@@ -153,7 +153,7 @@ namespace TestPhysics
 
             double[] mass = new double[] { 50, 20, 8, 3, 1 };
             
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 20; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1);

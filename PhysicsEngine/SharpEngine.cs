@@ -542,39 +542,52 @@ namespace SharpPhysicsEngine
             IShape[] simShapes = Array.ConvertAll(
                             Shapes,
                             item => (item.ExcludeFromCollisionDetection) ? null : item);
-
-            //double timeOfImpact = ccdEngine.GetTimeOfImpact(simShapes[0], simShapes[1]);
-
-            var collisionPair = ContinuosCollisionDetection(simShapes);
+                        
+            //var collisionPair = ContinuosCollisionDetection(simShapes);
 
             //Eseguo il motore che gestisce le collisioni
-            var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair);
+            double collisionDist = CollisionEngineParam.CollisionDistance;
+
+            //collisionDist = 100.0;
+
+            //var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair, collisionDist);
+
+            var actualCollisionPoints = CollisionEngine.Execute(simShapes);
 
             //var warmStartedPoints = warmStartEngine.GetWarmStartedCollisionPoints(
             //    Shapes, 
             //    previousCollisionPoints, 
             //    actualCollisionPoints, 
             //    PreviousShapesProperties);
-            
+
             collisionPoints = actualCollisionPoints.ToArray();
         }
 
-        private List<CollisionPair> ContinuosCollisionDetection(
-            IShape[] simShapes)
+        private List<CollisionPair> ContinuosCollisionDetection(IShape[] simShapes)
         {
             var collisionPair = new List<CollisionPair>();
 
+            var selection = simShapes.Select((v, i) => new { value = v, index = i })
+                                     .Where(x => x.value.ActiveCCD)
+                                     .ToList();
+
             for (int i = 0; i < simShapes.Length; i++)
             {
-                for (int j = i; j < simShapes.Length; j++)
+                for (int j = i + 1; j < simShapes.Length; j++)
                 {
-                    double timeOfImpact = ccdEngine.GetTimeOfImpact(simShapes[i], simShapes[j]);
+                    double? timeOfImpact = ccdEngine.GetTimeOfImpact(
+                        simShapes[i], 
+                        simShapes[j], 
+                        TimeStep);
 
-                    if (timeOfImpact <= TimeStep)
+                    if (timeOfImpact.HasValue && 
+                        timeOfImpact <= TimeStep)
+                    {
                         collisionPair.Add(new CollisionPair(i, j));
+                    }
                 }
             }
-
+                        
             return collisionPair;
         }
 

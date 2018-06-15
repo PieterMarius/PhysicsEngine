@@ -41,7 +41,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Vector3 TorqueValue { get; }
         AABB AABBox { get; }
         Vector3 FarthestPoint { get; }
-        
+        bool ActiveCCD { get; }
+
+
         void SetAABB();
         void SetRestoreCoeff(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
@@ -52,5 +54,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetStaticFrictionCoeff(double staticFrictionCoeff);
         void SetTorque(Vector3 torque);
         void Rotate(Vector3 versor, double angle);
+        void SetActiveCCD(bool isActive);
     }
 }

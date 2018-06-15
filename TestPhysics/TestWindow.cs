@@ -47,7 +47,7 @@ namespace TestPhysics
 {
     public class TestWindow : GameWindow
     {
-        public TestWindow() : base(64, 64, new GraphicsMode(32, 24, 0, 4))
+        public TestWindow() : base(256, 256, new GraphicsMode(32, 24, 0, 4))
         {
         }
 
@@ -359,7 +359,7 @@ namespace TestPhysics
             MoveCamera();
             //displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
-            //displayContact();
+            displayContact();
             //displayBaseContact();
             //displayJoint();
             //displaySoftJoint();

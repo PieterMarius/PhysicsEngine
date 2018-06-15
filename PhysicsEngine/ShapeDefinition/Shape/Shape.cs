@@ -82,6 +82,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public Vector3 FarthestPoint { get; protected set; }
 
+        public bool ActiveCCD { get; protected set; }
+
         #endregion
 
         #region Public Methods
@@ -185,6 +187,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public void SetIsStatic(bool isStatic)
         {
             IsStatic = isStatic;
+        }
+
+        public void SetActiveCCD(bool isActive)
+        {
+            ActiveCCD = isActive;
         }
 
         #endregion

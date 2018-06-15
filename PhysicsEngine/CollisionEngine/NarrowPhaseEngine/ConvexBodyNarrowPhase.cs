@@ -84,7 +84,8 @@ namespace SharpPhysicsEngine.CollisionEngine
             VertexProperties[] objA,
             VertexProperties[] objB,
             int ID_A,
-            int ID_B)
+            int ID_B,
+            double collisionDistance)
         {
             GJKOutput gjkOutput = collisionEngine.Execute(objA, objB);
                         
@@ -93,7 +94,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                 objA,
                 objB,
                 ID_A,
-                ID_B);
+                ID_B,
+                collisionDistance);
         }
 
         #endregion
@@ -105,39 +107,30 @@ namespace SharpPhysicsEngine.CollisionEngine
             VertexProperties[] vertexObjA,
             VertexProperties[] vertexObjB,
             int ID_A,
-            int ID_B)
+            int ID_B,
+            double collisionDistance)
         {
             if (gjkOutput.Intersection)
             {
-                EPAOutput epaOutput = compenetrationEngine.Execute(
-                                                vertexObjA,
-                                                vertexObjB,
-                                                gjkOutput.SupportTriangles,
-                                                gjkOutput.Centroid);
-
-                if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
-                    return null;
-
-                List<CollisionPoint> collisionPointsList = null;
-                                
-                collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(
-                                            Array.ConvertAll(vertexObjA, x => x.Vertex),
-                                            Array.ConvertAll(vertexObjB, x => x.Vertex),
-                                            epaOutput.CollisionPoint);
-                
-                var collisionPointBaseStr = new CollisionPointBaseStructure(
-                        epaOutput.CollisionPoint,
-                        collisionPointsList?.ToArray());
-
-                return new CollisionPointStructure(
+                return ExecuteEPAEngine(
+                    gjkOutput,
+                    vertexObjA,
+                    vertexObjB,
                     ID_A,
-                    ID_B,
-                    collisionPointBaseStr);
+                    ID_B);
             }
-            else if (gjkOutput.CollisionDistance <= parameters.CollisionDistance)
+            else if (gjkOutput.CollisionDistance <= collisionDistance)
             {
                 if (gjkOutput.CollisionNormal.Length() < normalTolerance)
+                {
                     return null;
+                    //return ExecuteEPAEngine(
+                    //    gjkOutput,
+                    //    vertexObjA,
+                    //    vertexObjB,
+                    //    ID_A,
+                    //    ID_B);
+                }
 
                 List<CollisionPoint> collisionPointsList = null;
 
@@ -159,6 +152,39 @@ namespace SharpPhysicsEngine.CollisionEngine
             }
 
             return null;
+        }
+
+        private CollisionPointStructure ExecuteEPAEngine(
+            GJKOutput gjkOutput,
+            VertexProperties[] vertexObjA,
+            VertexProperties[] vertexObjB,
+            int ID_A,
+            int ID_B)
+        {
+            EPAOutput epaOutput = compenetrationEngine.Execute(
+                                                vertexObjA,
+                                                vertexObjB,
+                                                gjkOutput.SupportTriangles,
+                                                gjkOutput.Centroid);
+
+            if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
+                return null;
+
+            List<CollisionPoint> collisionPointsList = null;
+
+            collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(
+                                        Array.ConvertAll(vertexObjA, x => x.Vertex),
+                                        Array.ConvertAll(vertexObjB, x => x.Vertex),
+                                        epaOutput.CollisionPoint);
+
+            var collisionPointBaseStr = new CollisionPointBaseStructure(
+                    epaOutput.CollisionPoint,
+                    collisionPointsList?.ToArray());
+
+            return new CollisionPointStructure(
+                ID_A,
+                ID_B,
+                collisionPointBaseStr);
         }
 
         #endregion

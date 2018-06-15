@@ -30,6 +30,9 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
 {
     internal interface ICCDEngine
     {
-        double GetTimeOfImpact(IShape shapeA, IShape shapeB);
+        double? GetTimeOfImpact(
+            IShape shapeA, 
+            IShape shapeB,
+            double timeStep);
     }
 }

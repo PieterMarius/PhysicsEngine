@@ -68,7 +68,7 @@ namespace SharpEngineMathUtility
 		}
 
 		/// <summary>
-		/// Tests the lines intersect.
+		/// Tests the edges intersect.
 		/// </summary>
 		/// <returns><c>true</c>, if lines intersect was tested, <c>false</c> otherwise.</returns>
 		/// <param name="p1">P1.</param>
@@ -79,7 +79,7 @@ namespace SharpEngineMathUtility
 		/// <param name="pb">Pb.</param>
 		/// <param name="mua">Mua.</param>
 		/// <param name="mub">Mub.</param>
-		public static bool TestLinesIntersect(
+		public static bool TestEdgesIntersect(
 			Vector3 p1, 
 			Vector3 p2, 
 			Vector3 p3, 

@@ -147,7 +147,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
-				CollisionPoint collisionP = TestLineIntersection (
+				CollisionPoint collisionP = TestEdgesIntersection (
 					ca [0],
 					ca [1],
 					cb [0],
@@ -173,7 +173,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (result.Count < ca.Length) {
 					for (int i = 0; i < ca.Length; i++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestEdgesIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [0],
@@ -200,7 +200,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (result.Count < cb.Length) {
 					for (int i = 0; i < cb.Length; i++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestEdgesIntersection (
 							ca [0],
 							ca [1],
 							cb [i],
@@ -231,7 +231,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				for (int i = 0; i < ca.Length; i++) {
 					for (int j = 0; j < cb.Length; j++) {
 
-						CollisionPoint collisionP = TestLineIntersection (
+						CollisionPoint collisionP = TestEdgesIntersection (
 							ca [i],
 							ca [(i + 1) % ca.Length],
 							cb [j],
@@ -358,7 +358,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return cpList;
 		}
 
-		private CollisionPoint TestLineIntersection(
+		private CollisionPoint TestEdgesIntersection(
 			Vector3 p1,
 			Vector3 p2,
 			Vector3 p3,
@@ -370,7 +370,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			double mua = 0.0;
 			double mub = 0.0;
 
-			if (GeometryUtilities.TestLinesIntersect (
+			if (GeometryUtilities.TestEdgesIntersect (
 				p1,
 				p2,
 				p3,

@@ -54,8 +54,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
                 
-        public LinearProblemProperties BuildLCP(
-            JacobianConstraint[] constraints)
+        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints)
         {
             if (constraints.Length > 0)
             {
@@ -282,9 +281,7 @@ namespace SharpPhysicsEngine.Helper
         /// Builds the LCP matrix for solver.
         /// </summary>
         [Obsolete]
-        public LinearProblemProperties OldBuildLCP(
-            JacobianConstraint[] constraint,
-            bool positionStabilization = false)
+        public LinearProblemProperties OldBuildLCP(JacobianConstraint[] constraint)
         {
             if (constraint.Length > 0)
             {
@@ -316,10 +313,7 @@ namespace SharpPhysicsEngine.Helper
                     {
                         JacobianConstraint contactA = constraint[i];
 
-                        if (positionStabilization)
-                            B[i] = contactA.CorrectionValue;
-                        else
-                            B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
+                        B[i] = -(contactA.B - ((contactA.CorrectionValue) < 0 ? Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
                                                                                     Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue)));
 
                         constraints[i] = contactA.ContactReference;
@@ -541,10 +535,6 @@ namespace SharpPhysicsEngine.Helper
             {
                 index.Add(innerIndex);
                 values.Add(mValue);
-            }
-            else
-            {
-                bool test = true;
             }
         }
 

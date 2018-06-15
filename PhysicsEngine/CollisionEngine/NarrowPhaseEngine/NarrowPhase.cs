@@ -62,7 +62,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public List<CollisionPointStructure> Execute(
             IShape[] shapes,
-            List<CollisionPair> collisionPairs)
+            List<CollisionPair> collisionPairs,
+            double collisionDistance)
         {
             var result = new List<CollisionPointStructure>();
                         
@@ -75,7 +76,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                 {
                     CollisionPointStructure collisionPointStruct = ExecuteNarrowPhase(
                         shapes[pair.objectIndexA],
-                        shapes[pair.objectIndexB]);
+                        shapes[pair.objectIndexB],
+                        collisionDistance);
 
                     if (collisionPointStruct != null)
                     {
@@ -91,11 +93,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public CollisionPointStructure Execute(
             IShape shapeA,
-            IShape shapeB)
+            IShape shapeB,
+            double collisionDistance)
         {
             CollisionPointStructure collisionPointStruct = ExecuteNarrowPhase(
                             shapeA,
-                            shapeB);
+                            shapeB,
+                            collisionDistance);
 
             return collisionPointStruct;
         }
@@ -106,9 +110,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         private CollisionPointStructure ExecuteNarrowPhase(
             IShape A,
-            IShape B)
+            IShape B,
+            double collisionDistance)
         {
-            List<CollisionPointStructure> collisionPointStructure = GetCollisionPointStructure(A, B);
+            List<CollisionPointStructure> collisionPointStructure = GetCollisionPointStructure(A, B, collisionDistance);
 
             if (collisionPointStructure.Count > 1)
             {
@@ -131,7 +136,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         private List<CollisionPointStructure> GetCollisionPointStructure(
             IShape A,
-            IShape B)
+            IShape B,
+            double collisionDistance)
         {
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
@@ -141,7 +147,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             if (softShapeA == null &&
                 softShapeB == null)
             {
-                return RigidBodyCollisionStep(A, B);
+                return RigidBodyCollisionStep(A, B, collisionDistance);
             }
             else if (softShapeA != null &&
                      softShapeB != null)
@@ -185,7 +191,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <returns></returns>
 		private List<CollisionPointStructure> RigidBodyCollisionStep(
             IShape A,
-            IShape B)
+            IShape B,
+            double collisionDistance)
         {
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
@@ -201,7 +208,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                 VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA]);
                 VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB]);
 
-                CollisionPointStructure collision = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, A.ID, B.ID);
+                CollisionPointStructure collision = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, A.ID, B.ID, collisionDistance);
                                
                 if (collision != null)
                     collisionPointStructure.Add(collision);
@@ -285,7 +292,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             int ID_A,
             int ID_B)
         {
-            List<CollisionPointStructure> collisionPointStructure = ConvexCollisionStep(A, B, ID_A, ID_B);
+            List<CollisionPointStructure> collisionPointStructure = ConvexCollisionStep(A, B, ID_A, ID_B, parameters.CollisionDistance);
 
             if (collisionPointStructure.Count > 1)
             {
@@ -310,14 +317,15 @@ namespace SharpPhysicsEngine.CollisionEngine
             ShapeDecompositionOutput A,
             ShapeDecompositionOutput B,
             int ID_A,
-            int ID_B)
+            int ID_B,
+            double collisionDistance)
         {
             VertexProperties[] vertexObjA = Array.ConvertAll(A.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
             VertexProperties[] vertexObjB = Array.ConvertAll(B.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
                         
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-            var cps = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, ID_A, ID_B);
+            var cps = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, ID_A, ID_B, collisionDistance);
                         
             if (cps != null)
                 collisionPointStructure.Add(cps);
@@ -355,7 +363,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         VertexProperties[] vertexObjSoftShape = Array.ConvertAll(softConvexShape.Vertex3Idx.ToArray(), x => new VertexProperties(x.Vector3, x.ID));
 
-                        var cps = convexBodyNarrowPhase.Execute(convexVertexObj, vertexObjSoftShape, rigidShape.ID, shapeSoft.ID);
+                        var cps = convexBodyNarrowPhase.Execute(convexVertexObj, vertexObjSoftShape, rigidShape.ID, shapeSoft.ID, parameters.CollisionDistance);
 
                         if (cps != null)
                             collisionPointStructure.Add(cps);

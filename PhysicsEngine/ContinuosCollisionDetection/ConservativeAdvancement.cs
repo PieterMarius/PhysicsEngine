@@ -52,7 +52,6 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             var parameters = new CollisionEngineParameters();
             var physicsEngineParams = new PhysicsEngineParameters();
 
-            parameters.SetCollisionDistance(100.0);
             parameters.SetManifoldPoints(0);
 
             collisionDetectionEngine = new NarrowPhase(parameters);
@@ -63,37 +62,56 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
 
         #region Public Methods
 
-        public double GetTimeOfImpact(
+        public double? GetTimeOfImpact(
             IShape shapeA,
-            IShape shapeB)
+            IShape shapeB,
+            double timeStep)
         {            
             SaveBaseData(shapeA, shapeB);
 
             // relative linear velocity
-            Vector3 rLinearVelocity = shapeA.LinearVelocity - shapeB.LinearVelocity;
+            Vector3 rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
             double maxAngularVelocity = shapeA.AngularVelocity.Length() * shapeA.FarthestPoint.Length() +
                                         shapeB.AngularVelocity.Length() * shapeB.FarthestPoint.Length();
+
+            //TEST
+            var a = 0.0;
+            if (maxAngularVelocity > 10.0)
+                a = 0.0;
 
             double radius = 1E-4;
             double t = 0.0;
             CollisionPoint collisionPoint = GetDistance(shapeA, shapeB);
+
+            if (collisionPoint == null || collisionPoint.Intersection)
+                return 0.0;
                         
-            while (collisionPoint.Distance > radius)
+            while (collisionPoint.Distance > radius &&
+                   !collisionPoint.Intersection)
             {
-                double nLinear = rLinearVelocity.Dot(collisionPoint.CollisionNormal);
+                double nLinear = rLinearVelocity.Dot(-1.0 * collisionPoint.CollisionNormal);
                 double relDist = nLinear + maxAngularVelocity;
 
                 t += collisionPoint.Distance / relDist;
+
                 if (t < 0.0 || t > 1.0)
                 {
                     // never hit
-                    return t;
+                    RestoreBaseData(shapeA, shapeB);
+                    return null;
                 }
-
+                
                 integratePosition.IntegrateObjectPosition(shapeA, t);
                 integratePosition.IntegrateObjectPosition(shapeB, t);
 
                 collisionPoint = GetDistance(shapeA, shapeB);
+
+                if (collisionPoint == null || 
+                    collisionPoint.Intersection ||
+                    collisionPoint.Distance < 1E-10)
+                {
+                    break;
+                }
             }
 
             RestoreBaseData(shapeA, shapeB);
@@ -109,7 +127,10 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             IShape shapeA,
             IShape shapeB)
         {
-            var collisionPoint = collisionDetectionEngine.Execute(shapeA, shapeB);
+            var collisionPoint = collisionDetectionEngine.Execute(shapeA, shapeB, 100.0);
+
+            if (collisionPoint == null)
+                return null;
 
             //Gestire soft body, compound shape, concaveshape
             return collisionPoint.CollisionPointBase[0].CollisionPoint;

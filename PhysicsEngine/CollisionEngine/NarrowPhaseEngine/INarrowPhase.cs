@@ -34,10 +34,12 @@ namespace SharpPhysicsEngine.CollisionEngine
     {
         List<CollisionPointStructure> Execute(
             IShape[] shapes, 
-            List<CollisionPair> collisionPairs);
+            List<CollisionPair> collisionPairs,
+            double collisionDistance);
 
         CollisionPointStructure Execute(
             IShape shapeA,
-            IShape shapeB);
+            IShape shapeB,
+            double collisionDistance);
     }
 }

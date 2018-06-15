@@ -79,9 +79,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public List<CollisionPointStructure> Execute(
             IShape[] shapes,
-            List<CollisionPair> collisionPair)
+            List<CollisionPair> collisionPair,
+            double collisionDistance)
         {
-            return ExecuteEngine(shapes, collisionPair);
+            return ExecuteEngine(shapes, collisionPair, collisionDistance);
         }
 
         #endregion
@@ -115,16 +116,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 			
 			List<CollisionPair> collisionPair = broadPhaseEngine.Execute (boxs, CollisionDistance);
 
-            var result = narrowPhase.Execute(shapes, collisionPair);
+            var result = narrowPhase.Execute(shapes, collisionPair, collisionEngineParameters.CollisionDistance);
 
 			return result;
 		}
 
         private List<CollisionPointStructure> ExecuteEngine(
             IShape[] shapes,
-            List<CollisionPair> collisionPair)
+            List<CollisionPair> collisionPair,
+            double collisionDistance)
         {
-            return narrowPhase.Execute(shapes, collisionPair);
+            return narrowPhase.Execute(shapes, collisionPair, collisionDistance);
         }
 
 		private AABB[] GetAABB(IShape[] shapes)
