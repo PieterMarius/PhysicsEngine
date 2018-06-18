@@ -127,9 +127,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 					buffer.SetValueT(t);
 				}
 				else
-				{
-					continue;
-				}
+				    continue;
+				
 
 				triangles[i] = buffer;
 
@@ -258,7 +257,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				if (mod < minDistance)
 				{
 					result.SetDist(triangleDistance);
-					result.SetNormal(Vector3.Normalize(triangleDistance));
+                    result.SetNormal(triangles[minTriangleIndex].Normal);
 					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
 
 					minDistance = mod;

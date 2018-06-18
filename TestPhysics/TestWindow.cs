@@ -236,7 +236,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment1();
+            var env = new BuildEnvironment2();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -262,8 +262,8 @@ namespace TestPhysics
             //var loadObject = new LoadObject("startConfig.xml");
             //var loadObject = new LoadObject("carConfig.xml");
             //var loadObject = new LoadObject("testJointBridge.xml");
-            var loadObject = new LoadObject("compositeObjectConfig.xml");
-            //var loadObject = new LoadObject("frictionTestConfig.xml");
+            //var loadObject = new LoadObject("compositeObjectConfig.xml");
+            var loadObject = new LoadObject("frictionTestConfig.xml");
 
             //var loadObject = new LoadObject("softBodyConfig.xml");
 
@@ -279,7 +279,7 @@ namespace TestPhysics
 
             physicsEngine = new SharpEngine();
 
-            physicsEngine.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
+            physicsEngine.SetSolverType(SolverType.NonLinearConjugateGradient);
             physicsEngine.SolverParameters.SetSolverMaxIteration(30);
 
             for (int i = 0; i < simulationObjects.Count(); i++)

@@ -114,9 +114,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							epaBuffer.SetValueT (t);
 						} 
 						else 
-						{
 							continue;
-						}
 							
 						triangles [i] = epaBuffer;
 
@@ -129,10 +127,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							direction = vDistance;
 							epaCollisionPoint.SetDist (vDistance);
 
-                            if(vDistance.Dot(vDistance) > 0.0)
-							    epaCollisionPoint.SetNormal (Vector3.Normalize (vDistance));
-                            else
-                                epaCollisionPoint.SetNormal(triangles[i].Normal);
+                            epaCollisionPoint.SetNormal(triangles[i].Normal);
 
                             Helper.GetVertexFromMinkowsky(
 								triangles[i],
