@@ -283,7 +283,7 @@ namespace SharpEngineMathUtility
 		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
 		{
 			var p= versor * versor;
-            	double c = Math.Cos (angle);
+            double c = Math.Cos (angle);
 			double s = Math.Sin (angle);
 			double t = 1.0 - angle;
 

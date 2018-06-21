@@ -236,7 +236,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment2();
+            var env = new BuildEnvironment1();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -372,9 +372,9 @@ namespace TestPhysics
             //    displayVertex(i);
 
             //displayAABB();
-            //displayVertex (0);
-            //displayVertex (1);
-            //displayVertex (2);
+            displayVertex(0);
+            displayVertex(1);
+            displayVertex(2);
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)
                 SetOpenGLObjectMatrixAndDisplayObject(i);

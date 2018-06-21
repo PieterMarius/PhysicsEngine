@@ -26,6 +26,7 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -57,10 +58,14 @@ namespace SharpPhysicsEngine.Helper
             ref IShape[] shapes,
             double timeStep)
         {
-            var dynamicShapes = shapes.Where(x => !x.IsStatic);
+            var dynamicShapes = shapes.Where(x => !x.IsStatic).ToList();
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
                 IntegrateSoftShapePosition(shape, timeStep, true);
+
+            //DEBUG
+            Console.WriteLine("velocity " + dynamicShapes[1].LinearVelocity.x + " " + dynamicShapes[1].LinearVelocity.y +" "+ dynamicShapes[1].LinearVelocity.z);
+            Console.WriteLine("velocity " + dynamicShapes[1].AngularVelocity.x + " " + dynamicShapes[1].AngularVelocity.y + " " + dynamicShapes[1].AngularVelocity.z);
 
             foreach (var shape in dynamicShapes.OfType<ConvexShape>())
             {
@@ -70,6 +75,13 @@ namespace SharpPhysicsEngine.Helper
             }
 
             foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+            {
+                IntegrateRigidShapePosition(shape, timeStep);
+                IntegrateExternalForce(shape, timeStep);
+                UpdateShapeProperties(shape);
+            }
+
+            foreach (var shape in dynamicShapes.OfType<ConcaveShape>())
             {
                 IntegrateRigidShapePosition(shape, timeStep);
                 IntegrateExternalForce(shape, timeStep);
@@ -155,6 +167,8 @@ namespace SharpPhysicsEngine.Helper
             IShape shape,
             double timeStep)
         {
+            ObjectSleep(shape);
+
             #region Linear Velocity
 
             shape.SetPosition(
@@ -184,7 +198,7 @@ namespace SharpPhysicsEngine.Helper
                     (shape.RotationMatrix * shape.BaseInertiaTensor) *
                     shape.RotationMatrix.Transpose());
             }
-                                  
+
             #endregion
         }
 
@@ -255,7 +269,7 @@ namespace SharpPhysicsEngine.Helper
             {
                 if (simulationObj.SleepingFrameCount < EngineParameters.SleepingFrameLimit)
                     simulationObj.SetSleepingFrameCount(simulationObj.SleepingFrameCount + 1);
-                else if (simulationObj.SleepingFrameCount >= EngineParameters.SleepingFrameLimit)
+                else
                 {
                     simulationObj.SetLinearVelocity(new Vector3());
                     simulationObj.SetAngularVelocity(new Vector3());

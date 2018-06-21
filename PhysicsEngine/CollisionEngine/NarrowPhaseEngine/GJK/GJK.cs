@@ -258,7 +258,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 				{
 					result.SetDist(triangleDistance);
                     result.SetNormal(triangles[minTriangleIndex].Normal);
-					Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
+
+                    Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
 
 					minDistance = mod;
 				}

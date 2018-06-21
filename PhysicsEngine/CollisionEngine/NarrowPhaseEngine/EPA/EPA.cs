@@ -187,15 +187,17 @@ namespace SharpPhysicsEngine.CollisionEngine
 													  startTriangles,
 													  centroid);
 
-			var collisionPoint = new CollisionPoint (
+            var distance = Vector3.Length(epaCollisionPoint.Dist);
+
+            var collisionPoint = new CollisionPoint (
 				epaCollisionPoint.A,
 				epaCollisionPoint.B,
 				epaCollisionPoint.Normal,
-                Vector3.Length(epaCollisionPoint.Dist),
+                distance,
                 true);
 
 			return new EPAOutput (
-				Vector3.Length (epaCollisionPoint.Dist),
+				distance,
 				collisionPoint);
 		}
 

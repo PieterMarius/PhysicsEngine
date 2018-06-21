@@ -34,7 +34,7 @@ namespace Utility
 {
     public static class GenericUtility
     {
-        public struct ObjProperties
+        public class ObjProperties
         {
             public Vector3[] vertexPoint;
             public int[][] triangleIndex;

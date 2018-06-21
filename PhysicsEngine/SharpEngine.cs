@@ -422,11 +422,7 @@ namespace SharpPhysicsEngine
 		{
 			Simulate(EngineParameters.TimeStep);
 		}
-
-		public void SimulateCCD()
-		{
-			throw new NotImplementedException();
-		}
+        		
 
         #endregion
 

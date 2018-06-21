@@ -437,10 +437,10 @@ namespace SharpPhysicsEngine
 
 					if (collisionPoint.Intersection)
 					{
-						//Limit the Baum stabilization jitter effect 
-						correctionParameter = Math.Max(Math.Max(collisionPoint.Distance- simulationParameters.CompenetrationTolerance, 0.0) *
-												        baumgarteStabilizationValue - uCollision, 0.0);
-					}
+                        //Limit the Baum stabilization jitter effect 
+                        correctionParameter = Math.Max(Math.Max(collisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *
+                                                        baumgarteStabilizationValue, 0.0);
+                    }
 
 					double correctedBounce = uCollision;
 

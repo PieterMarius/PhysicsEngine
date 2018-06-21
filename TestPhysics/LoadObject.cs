@@ -142,7 +142,7 @@ namespace TestPhysics
 					//Object mass
 					mass[j] = Convert.ToDouble(xmlGeometryList[j][massAttribute].InnerText);
 
-					objGeometry[j] = GetObjectGeometry(geometryFileName, scale);
+					objGeometry[j] = GetObjectGeometry(geometryFileName, scale, mass[j]);
 
 					startCompositePosition[j] = new Vector3(
 						Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["x"].Value),
@@ -506,16 +506,28 @@ namespace TestPhysics
 
         public static GeometryProperties GetObjectGeometry(
             string fileName,
-            float scale)
+            float scale,
+            double mass)
         {
             GenericUtility.ObjProperties properties = GenericUtility.GetImportedObjectProperties(fileName, scale);
+
+            if (mass != 0.0)
+                RotateObj(ref properties, new Vector3(1.0, 0.0, 0.0), 0.75);
 
             return new GeometryProperties(
                 properties.vertexPoint,
                 properties.triangleIndex);
         }
 
-        	#endregion
-		}
+        private static void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
+        {
+            for (int i = 0; i < obj.vertexPoint.Length; i++)
+            {
+                obj.vertexPoint[i] = Vector3.RotatePoint(obj.vertexPoint[i], versor, angle);
+            }
+        }
+
+        #endregion
+    }
 }
 

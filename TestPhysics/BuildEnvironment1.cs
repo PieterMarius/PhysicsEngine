@@ -73,7 +73,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
 
             physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(30);
 
             return physicsEnvironment;
 		}
@@ -102,7 +102,9 @@ namespace TestPhysics
 
                 for (int j = 0; j < 1; j++)
                 {
-                    loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i]);
+                    loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(0.0, 0.0, 0.0), 0.0);
+                    if(i >0)
+                        loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(1.0, 0.0, 0.0),0.5);
                 }
             }
 
@@ -131,7 +133,7 @@ namespace TestPhysics
 			ShapeScale.Add(25);
 			TextureFilename.Add("texture/woodbox.bmp");
 
-            GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
+            GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0], 0.0);
             var objects0 = new ConvexShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -0.7, 0.0), 0.0, true);
             objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
             objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -140,7 +142,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetErrorReductionParam(0.2);
+            objects0.SetErrorReductionParam(0.15);
 
             objects.Add(objects0);
 
@@ -148,8 +150,8 @@ namespace TestPhysics
 
             #region Dynamic Objects
 
-            Vector3 shift = new Vector3(0.0, 2.1, 0.0);
-            Vector3 position = new Vector3(0.0, 1.7, 0.0);
+            Vector3 shift = new Vector3(0.0, 2.5, 0.0);
+            Vector3 position = new Vector3(0.0, 8.0, 0.0);
 
             double[] mass = new double[] { 50, 20, 8, 3, 1 };
             
@@ -159,16 +161,16 @@ namespace TestPhysics
                 ShapeScale.Add(1);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1, 0.5);
+                var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 2.0);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.2);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(0.2);
+                objects1.SetErrorReductionParam(0.15);
                 position = position + shift;
 
                 objects.Add(objects1);
@@ -313,9 +315,12 @@ namespace TestPhysics
         
 		public static GeometryProperties GetObjectGeometry(
 			string fileName,
-			float scale)
+			float scale,
+            double rotate)
 		{
 			GenericUtility.ObjProperties properties = GenericUtility.GetImportedObjectProperties(fileName, scale);
+
+            RotateObj(ref properties, new Vector3(1.0, 0.0, 0.0), rotate);
 
             return new GeometryProperties(
                 properties.vertexPoint,
@@ -340,7 +345,9 @@ namespace TestPhysics
 
 		private ObjImporter.meshStruct LoadObjMesh(
 			string fileName,
-			double scale)
+			double scale,
+            Vector3 versor,
+            double angle)
 		{
 			ObjImporter importer = new ObjImporter();
 			ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
@@ -353,8 +360,12 @@ namespace TestPhysics
 			OpenGLUtilities.UnitizeObject(ref vertexStartPoint);
 			OpenGLUtilities.ScaleObject(ref vertexStartPoint, scale);
 
-			for (int i = 0; i < mesh.vertices.Length; i++)
+            RotateObj(ref vertexStartPoint, versor, angle);
+            
+            for (int i = 0; i < mesh.vertices.Length; i++)
 				mesh.vertices[i] = vertexStartPoint[i];
+
+            
 
 			return mesh;
 		}
@@ -379,11 +390,19 @@ namespace TestPhysics
 		}
 
 
-        private void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
+        private static void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
         {
             for (int i = 0; i < obj.vertexPoint.Length; i++)
             {
                 obj.vertexPoint[i] = Vector3.RotatePoint(obj.vertexPoint[i], versor, angle);
+            }
+        }
+
+        private static void RotateObj(ref Vector3[] vertexStartPoint, Vector3 versor, double angle)
+        {
+            for (int i = 0; i < vertexStartPoint.Length; i++)
+            {
+                vertexStartPoint[i] = Vector3.RotatePoint(vertexStartPoint[i], versor, angle);
             }
         }
 

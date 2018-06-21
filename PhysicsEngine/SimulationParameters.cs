@@ -79,13 +79,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <value>The external force.</value>
 		public Vector3 ExternalForce { get; private set; }
-
-        	/// <summary>
-		/// Gets the overall constraints iterations.
-		/// </summary>
-		/// <value>The overall constraints iterations.</value>
-		public int OverallConstraintsIterations { get; private set; }
-        		
+                        		
 		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
 		/// </summary>
@@ -160,18 +154,17 @@ namespace SharpPhysicsEngine
 
         public PhysicsEngineParameters ()
 		{
-			TimeStep = 0.016;
+			TimeStep = 0.01;
 			CFM = 1E-07;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 1.0;
-            OverallConstraintsIterations = 200;
-			LinearVelDisable = 0.2;
+            LinearVelDisable = 0.08;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;
 			DiscreteCCD = false;
 			CollisionDistance = 0.003;
-            CompenetrationTolerance = 0.005;
+            CompenetrationTolerance = 0.05;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;
