@@ -34,5 +34,10 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             IShape shapeA, 
             IShape shapeB,
             double timeStep);
+
+        double? GetAABBTimeOfImpact(
+            IShape shapeA,
+            IShape shapeB,
+            double timeStep);
     }
 }

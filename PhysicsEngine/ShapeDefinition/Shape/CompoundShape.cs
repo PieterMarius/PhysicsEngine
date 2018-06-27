@@ -90,13 +90,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             if (IsStatic)
             {
-                Mass = 0.0;
-                InverseMass = 0.0;
+                MassInfo.Mass = 0.0;
+                MassInfo.InverseMass = 0.0;
             }
-            else if (Mass > 0.0)
-                InverseMass = 1.0;
-
-            InertiaTensor = Matrix3x3.IdentityMatrix();
+            else if (MassInfo.Mass > 0.0)
+                MassInfo.InverseMass = 1.0;
+            
+            MassInfo.InverseInertiaTensor = Matrix3x3.IdentityMatrix();
             SleepingFrameCount = 0;
             StartCompoundPositionObjects = compoundPosition;
             SetPartialMass(mass);
@@ -128,9 +128,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetMass(double mass)
         {
-            Mass = mass;
-            if (Mass > 0.0)
-                InverseMass = 1.0 / Mass;
+            MassInfo.Mass = mass;
+            if (MassInfo.Mass > 0.0)
+                MassInfo.InverseMass = 1.0 / MassInfo.Mass;
         }
 
         public void SetPartialMass(double[] mass)
@@ -139,15 +139,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Array.Copy(mass, PartialMass, mass.Length);
 
             for (int i = 0; i < mass.Length; i++)
-                Mass += mass[i];
+                MassInfo.Mass += mass[i];
 
             if (IsStatic)
             {
-                Mass = 0.0;
-                InverseMass = 0.0;
+                MassInfo.Mass = 0.0;
+                MassInfo.InverseMass = 0.0;
             }
-            else if (Mass > 0.0)
-                InverseMass = 1.0 / Mass;
+            else if (MassInfo.Mass > 0.0)
+                MassInfo.InverseMass = 1.0 / MassInfo.Mass;
         }
 
         public void SetCompoundPosition(Vector3[] compoundPosition)
@@ -245,9 +245,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             SetRelativePosition();
 
-            BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
-            InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
-                            Matrix3x3.Transpose(RotationMatrix);
+            MassInfo.InertiaTensor = baseTensors;
+            MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+            MassInfo.InverseInertiaTensor = (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
+                                            Matrix3x3.Transpose(RotationMatrix);
         }
 
         private void SetRelativePosition()
@@ -303,8 +304,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 startPosition += centerOfMass * PartialMass[i];
             }
 
-            if (Mass > 0.0)
-                return startPosition / Mass;
+            if (MassInfo.Mass > 0.0)
+                return startPosition / MassInfo.Mass;
 
             return Vector3.ToZero();
         }

@@ -98,16 +98,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetMass(double mass)
         {
-            Mass = mass;
+            MassInfo.Mass = mass;
 
             if (IsStatic)
             {
-                Mass = 0.0;
-                InverseMass = 0.0;
+                MassInfo.Mass = 0.0;
+                MassInfo.InverseMass = 0.0;
             }
-            else if (Mass > 0.0)
+            else if (MassInfo.Mass > 0.0)
             {
-                InverseMass = 1.0 / Mass;
+                MassInfo.InverseMass = 1.0 / MassInfo.Mass;
                 SetInertiaTensor();
             }
             else
@@ -122,8 +122,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             SetRotationMatrix(RotationStatus.ConvertToMatrix());
 
-            SetInertiaTensor(
-                (RotationMatrix * BaseInertiaTensor) *
+            SetInverseInertiaTensor(
+                (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
                 RotationMatrix.Transpose());
         }
 
@@ -187,18 +187,18 @@ namespace SharpPhysicsEngine.ShapeDefinition
             InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                 vertices,
                 ObjectGeometry.Triangle,
-                Mass);
+                MassInfo.Mass);
 
             Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
                     ObjectGeometry.VertexPosition,
                     ObjectGeometry.Triangle,
                     InitCenterOfMass,
-                    Mass).InertiaTensor;
+                    MassInfo.Mass).InertiaTensor;
 
-            BaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+            MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(baseTensors);
 
-            InertiaTensor = (RotationMatrix * BaseInertiaTensor) *
-                             Matrix3x3.Transpose(RotationMatrix);
+            MassInfo.InverseInertiaTensor = (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
+                                             Matrix3x3.Transpose(RotationMatrix);
         }
 
         #endregion

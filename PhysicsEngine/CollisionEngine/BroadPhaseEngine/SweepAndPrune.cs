@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -55,6 +56,11 @@ namespace SharpPhysicsEngine.CollisionEngine
         #region Public Methods
 
         public List<CollisionPair> Execute(AABB[] boxs, double distanceTolerance)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Vector3 Execute(AABB boxA, AABB boxB)
         {
             throw new NotImplementedException();
         }

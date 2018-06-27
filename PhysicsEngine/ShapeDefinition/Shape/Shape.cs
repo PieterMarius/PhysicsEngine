@@ -60,16 +60,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public Vector3 AngularVelocity { get; protected set; }
 
-        public Matrix3x3 InertiaTensor { get; protected set; }
-
-        public Matrix3x3 BaseInertiaTensor { get; protected set; }
+        public MassData MassInfo { get; protected set; }
 
         public Matrix3x3 RotationMatrix { get; protected set; }
-
-        public double Mass { get; protected set; }
-
-        public double InverseMass { get; protected set; }
-
+                
         public Vector3 TempAngularVelocity { get; protected set; }
 
         public Vector3 TempLinearVelocity { get; protected set; }
@@ -92,14 +86,19 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public abstract void SetAABB();
 
+        public void SetAABB(AABB box)
+        {
+            AABBox = box;
+        }
+
         public void SetAngularVelocity(Vector3 inputAngularVelocity)
         {
             AngularVelocity = inputAngularVelocity;
         }
 
-        public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
+        public void SetInverseBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
         {
-            BaseInertiaTensor = Matrix3x3.Invert(inputIntertiaTensor);
+            MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(inputIntertiaTensor);
         }
 
         public void SetDynamicFrictionCoeff(double dynamicFrictionCoeff)
@@ -122,9 +121,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ID = id;
         }
 
-        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseInertiaTensor(Matrix3x3 inertiaTensor)
         {
-            InertiaTensor = inertiaTensor;
+            MassInfo.InverseInertiaTensor = inertiaTensor;
         }
 
         public void SetLinearVelocity(Vector3 inputLinearVelocity)

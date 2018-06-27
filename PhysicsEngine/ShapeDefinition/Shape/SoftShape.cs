@@ -76,8 +76,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             ObjectType = ObjectType.SoftBody;
             Triangle = triangleIndex;
-            InertiaTensor = Matrix3x3.IdentityMatrix();
-            Mass = mass;
+            MassInfo.InverseInertiaTensor = Matrix3x3.IdentityMatrix();
+            MassInfo.Mass = mass;
             AddSoftShapePoint(shapePoint);
             BuildSoftConstraints(softConstraints, restoreCoeff, springCoeff, angularErrorReductionParam, angularSpringCoeff);
             SleepingFrameCount = 0;
@@ -108,8 +108,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Triangle = triangleIndex;
 
             DecompositionParameter = decompositionParam;
-            Mass = mass;
-            InertiaTensor = Matrix3x3.IdentityMatrix();
+            MassInfo.Mass = mass;
+            MassInfo.InverseInertiaTensor = Matrix3x3.IdentityMatrix();
 
             Position = startPosition;
 
@@ -138,7 +138,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetMass(double mass)
         {
-            Mass = mass;
+            MassInfo.Mass = mass;
         }
                
         public override void SetAABB()
@@ -148,15 +148,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public void SetPointsMass(double mass)
         {
-            Mass = mass;
+            MassInfo.Mass = mass;
             
             if (IsStatic)
             {
-                Mass = 0.0;
-                InverseMass = 0.0;
+                MassInfo.Mass = 0.0;
+                MassInfo.InverseMass = 0.0;
             }
-            else if (Mass > 0.0)
-                InverseMass = 1.0 / Mass;
+            else if (MassInfo.Mass > 0.0)
+                MassInfo.InverseMass = 1.0 / MassInfo.Mass;
         }
 
         public void SetShapePoint(SoftShapePoint[] shapePoint)
@@ -226,7 +226,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             ShapePoints = new SoftShapePoint[points.Length];
 
-            double mass = Mass * (1.0 / points.Length);
+            double mass = MassInfo.Mass * (1.0 / points.Length);
             double inverseMass = 1.0 / mass;
 
             Matrix3x3 inertiaTensor = Matrix3x3.IdentityMatrix() *
@@ -248,8 +248,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetAngularVelocity(AngularVelocity);
                 ShapePoints[i].SetMass(mass);
                 ShapePoints[i].SetInverseMass(inverseMass);
-                ShapePoints[i].SetBaseInertiaTensor(baseTensors);
-                ShapePoints[i].SetInertiaTensor(baseTensors);
+                ShapePoints[i].SetInverseBaseInertiaTensor(baseTensors);
+                ShapePoints[i].SetInverseInertiaTensor(baseTensors);
                 ShapePoints[i].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
                 ShapePoints[i].SetRotationMatrix(Quaternion.ConvertToMatrix(RotationStatus));
             }

@@ -36,7 +36,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Fields
 
         public int ID { get; private set; }
-        public double Mass { get; private set; }
         public Vector3 Position { get; private set; }
         public Vector3 StartPosition { get; private set; }
         public Vector3 AngularVelocity { get; private set; }
@@ -44,12 +43,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public Matrix3x3 RotationMatrix { get; private set; }
         public Quaternion RotationStatus { get; private set; }
         public double Diameter { get; private set; }
-        public Matrix3x3 InertiaTensor { get; private set; }
-        public double InverseMass { get; private set; }
+        public MassData MassInfo { get; private set; }
         public ObjectType ObjectType { get; private set; }
         public Vector3 TempAngularVelocity { get; private set; }
         public Vector3 TempLinearVelocity { get; private set; }
-        public Matrix3x3 BaseInertiaTensor { get; private set; }
         public Vector3 ForceValue { get; private set; }
         public HashSet<int> TriangleIndex { get; private set; }
         public bool IsStatic { get; private set; }
@@ -77,7 +74,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public void SetMass(double mass)
         {
-            Mass = mass;
+            MassInfo.Mass = mass;
         }
 
         public void SetPosition(Vector3 position)
@@ -105,19 +102,20 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TempLinearVelocity = linearVelocity;
         }
 
-        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseInertiaTensor(Matrix3x3 inertiaTensor)
         {
-            InertiaTensor = inertiaTensor;
+            //TODO verificare inverse
+            MassInfo.InertiaTensor = inertiaTensor;
         }
 
         public void SetInverseMass(double inverseMass)
         {
-            InverseMass = inverseMass;
+            MassInfo.InverseMass = inverseMass;
         }
 
-        public void SetBaseInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseBaseInertiaTensor(Matrix3x3 inertiaTensor)
         {
-            BaseInertiaTensor = inertiaTensor;
+            MassInfo.InverseBaseInertiaTensor = inertiaTensor;
         }
 
         public void SetForce(Vector3 force)

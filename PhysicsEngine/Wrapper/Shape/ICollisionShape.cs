@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine.Wrapper
         void SetPosition(Vector3 inputPosition);
         void SetLinearVelocity(Vector3 inputLinearVelocity);
         void SetAngularVelocity(Vector3 inputAngularVelocity);
-        void SetInertiaTensor(Matrix3x3 inertiaTensor);
+        void SetInverseInertiaTensor(Matrix3x3 inertiaTensor);
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
         void SetForce(Vector3 force);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);

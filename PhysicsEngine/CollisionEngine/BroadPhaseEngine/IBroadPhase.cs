@@ -24,6 +24,7 @@
  *  
  *****************************************************************************/
 
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 
@@ -34,5 +35,9 @@ namespace SharpPhysicsEngine.CollisionEngine
         List<CollisionPair> Execute(
             AABB[] boxs,
             double distanceTolerance);
+
+        Vector3 Execute(
+            AABB boxA,
+            AABB boxB);
     }
 }

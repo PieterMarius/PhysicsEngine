@@ -36,12 +36,14 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
         #region Fields
 
         private readonly INarrowPhase collisionDetectionEngine;
+        private readonly IBroadPhase broadPhaseEngine;
         private readonly IntegratePosition integratePosition;
 
         private Vector3[] bufPosition;
         private Quaternion[] bufRotStatus;
         private Matrix3x3[] bufRotMatrix;
         private Matrix3x3[] bufInertiaTensor;
+        private AABB[] bufAABB;
 
         #endregion
 
@@ -55,6 +57,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             parameters.SetManifoldPoints(0);
 
             collisionDetectionEngine = new NarrowPhase(parameters);
+            broadPhaseEngine = new AABBBroadPhase(parameters);
             integratePosition = new IntegratePosition(physicsEngineParams);
         }
         
@@ -73,17 +76,12 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             Vector3 rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
             double maxAngularVelocity = shapeA.AngularVelocity.Length() * shapeA.FarthestPoint.Length() +
                                         shapeB.AngularVelocity.Length() * shapeB.FarthestPoint.Length();
-
-            //TEST
-            var a = 0.0;
-            if (maxAngularVelocity > 10.0)
-                a = 0.0;
-
+                        
             double radius = 1E-4;
             double t = 0.0;
             CollisionPoint collisionPoint = GetDistance(shapeA, shapeB);
 
-            if (collisionPoint == null || collisionPoint.Intersection)
+            if (collisionPoint.Intersection)
                 return 0.0;
                         
             while (collisionPoint.Distance > radius &&
@@ -94,9 +92,9 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
 
                 t += collisionPoint.Distance / relDist;
 
-                if (t < 0.0 || t > 1.0)
+                if (t < 0.0 || t > timeStep)
                 {
-                    // never hit
+                    // never hit during this timestep
                     RestoreBaseData(shapeA, shapeB);
                     return null;
                 }
@@ -106,12 +104,58 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
 
                 collisionPoint = GetDistance(shapeA, shapeB);
 
-                if (collisionPoint == null || 
-                    collisionPoint.Intersection ||
-                    collisionPoint.Distance < 1E-10)
-                {
+                if (collisionPoint == null)
                     break;
+            }
+
+            RestoreBaseData(shapeA, shapeB);
+
+            return t;
+        }
+
+        public double? GetAABBTimeOfImpact(
+            IShape shapeA,
+            IShape shapeB,
+            double timeStep)
+        {
+            SaveBaseData(shapeA, shapeB);
+
+            // relative linear velocity
+            Vector3 rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
+            double maxAngularVelocity = shapeA.AngularVelocity.Length() * shapeA.FarthestPoint.Length() +
+                                        shapeB.AngularVelocity.Length() * shapeB.FarthestPoint.Length();
+
+            double radius = 1E-4;
+            double t = 0.0;
+            Vector3 collisionPoint = GetAABBDist(shapeA, shapeB);
+
+            //if (collisionpoint.intersection)
+            //    return 0.0;
+            double distance = collisionPoint.Length();
+
+            while (distance > radius) //&& !collisionPoint.Intersection)
+            {
+                double nLinear = rLinearVelocity.Dot(collisionPoint.Normalize());
+                double relDist = nLinear + maxAngularVelocity;
+
+                t += distance / relDist;
+
+                if (t < 0.0 || t > timeStep)
+                {
+                    // never hit during this timestep
+                    RestoreBaseData(shapeA, shapeB);
+                    return null;
                 }
+
+                integratePosition.IntegrateObjectPosition(shapeA, t);
+                integratePosition.IntegrateObjectPosition(shapeB, t);
+
+                collisionPoint = GetAABBDist(shapeA, shapeB);
+
+                distance = collisionPoint.Length();
+
+                //if (collisionPoint == null)
+                //    break;
             }
 
             RestoreBaseData(shapeA, shapeB);
@@ -127,13 +171,20 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             IShape shapeA,
             IShape shapeB)
         {
-            var collisionPoint = collisionDetectionEngine.Execute(shapeA, shapeB, 100.0);
+            CollisionPointStructure collisionPoint = collisionDetectionEngine.Execute(shapeA, shapeB, double.MaxValue);
 
             if (collisionPoint == null)
                 return null;
 
             //Gestire soft body, compound shape, concaveshape
             return collisionPoint.CollisionPointBase[0].CollisionPoint;
+        }
+
+        private Vector3 GetAABBDist(
+            IShape shapeA,
+            IShape shapeB)
+        {
+            return broadPhaseEngine.Execute(shapeA.AABBox, shapeB.AABBox);
         }
 
         private void SaveBaseData(
@@ -143,7 +194,8 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             bufPosition = new Vector3[] { shapeA.Position, shapeB.Position };
             bufRotStatus = new Quaternion[] { shapeA.RotationStatus, shapeB.RotationStatus };
             bufRotMatrix = new Matrix3x3[] { shapeA.RotationMatrix, shapeB.RotationMatrix };
-            bufInertiaTensor = new Matrix3x3[] { shapeA.InertiaTensor, shapeB.InertiaTensor };
+            bufInertiaTensor = new Matrix3x3[] { shapeA.MassInfo.InverseInertiaTensor, shapeB.MassInfo.InverseInertiaTensor };
+            bufAABB = new AABB[] { shapeA.AABBox, shapeB.AABBox };
         }
 
         private void RestoreBaseData(
@@ -159,8 +211,11 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             shapeA.SetRotationMatrix(bufRotMatrix[0]);
             shapeB.SetRotationMatrix(bufRotMatrix[1]);
 
-            shapeA.SetInertiaTensor(bufInertiaTensor[0]);
-            shapeB.SetInertiaTensor(bufInertiaTensor[1]);
+            shapeA.SetInverseInertiaTensor(bufInertiaTensor[0]);
+            shapeB.SetInverseInertiaTensor(bufInertiaTensor[1]);
+
+            shapeA.SetAABB(bufAABB[0]);
+            shapeB.SetAABB(bufAABB[1]);
         }
 
         #endregion

@@ -119,6 +119,7 @@
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\Common\InertiaTensorOutput.cs" />
     <Compile Include="ShapeDefinition\Interfaces\IConcaveShape.cs" />
+    <Compile Include="ShapeDefinition\Shape\Properties\MassData.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
     <Compile Include="Solver\MINRES.cs" />

@@ -104,7 +104,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.BaseInertiaTensor;
+                return convexShape.MassInfo.InverseBaseInertiaTensor;
             }
         }
 
@@ -120,7 +120,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.InertiaTensor;
+                return convexShape.MassInfo.InverseInertiaTensor;
             }
         }
 
@@ -128,7 +128,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.InverseMass;
+                return convexShape.MassInfo.InverseMass;
             }
         }
 
@@ -144,7 +144,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return convexShape.Mass;
+                return convexShape.MassInfo.Mass;
             }
         }
 
@@ -200,7 +200,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
         {
-            convexShape.SetBaseInertiaTensor(inputIntertiaTensor);
+            convexShape.SetInverseBaseInertiaTensor(inputIntertiaTensor);
         }
 
         public void SetDynamicFrictionCoeff(double dynamicFrictionCoeff)
@@ -218,9 +218,9 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetForce(force);
         }
 
-        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseInertiaTensor(Matrix3x3 inertiaTensor)
         {
-            convexShape.SetInertiaTensor(inertiaTensor);
+            convexShape.SetInverseInertiaTensor(inertiaTensor);
         }
 
         public void SetLinearVelocity(Vector3 inputLinearVelocity)

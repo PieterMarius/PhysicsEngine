@@ -134,9 +134,9 @@ namespace SharpPhysicsEngine.Helper
                 Vector3 angularImpuse = X * angularComponent;
 
                 Vector3 linearVelocity = linearImpulse *
-                                         simObj.InverseMass;
+                                         simObj.MassInfo.InverseMass;
 
-                Vector3 angularVelocity = simObj.InertiaTensor *
+                Vector3 angularVelocity = simObj.MassInfo.InverseInertiaTensor *
                                           angularImpuse;
 
                 //Critical Section
@@ -158,7 +158,7 @@ namespace SharpPhysicsEngine.Helper
             {
                 Vector3 angularImpuse = X * angularComponent;
 
-                Vector3 angularVelocity = simObj.InertiaTensor *
+                Vector3 angularVelocity = simObj.MassInfo.InverseInertiaTensor *
                                           angularImpuse;
 
                 //Critical Section

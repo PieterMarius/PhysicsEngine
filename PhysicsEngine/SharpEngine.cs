@@ -130,6 +130,12 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		double solverError;
 
+
+        /// <summary>
+        /// Accumulated timestep
+        /// </summary>
+        double partialTimeStep;
+
 		/// <summary>
 		/// Generate ID for shape of simulation
 		/// </summary>
@@ -407,13 +413,18 @@ namespace SharpPhysicsEngine
 		{
 			TimeStep = timeStep;
 
-			#region Simulation Workflow
+            partialTimeStep = 0.0;
 
-			CollisionDetection();
+            #region Simulation Workflow
 
-			PartitionEngineExecute();
+            while (partialTimeStep < timeStep)
+            {
+                CollisionDetection();
 
-			PhysicsExecutionFlow();
+                PartitionEngineExecute();
+
+                PhysicsExecutionFlow();
+            }
 
 			#endregion
 		}
@@ -539,14 +550,14 @@ namespace SharpPhysicsEngine
                             Shapes,
                             item => (item.ExcludeFromCollisionDetection) ? null : item);
                         
-            //var collisionPair = ContinuosCollisionDetection(simShapes);
+            var collisionPair = ContinuosCollisionDetection(simShapes);
 
             //Eseguo il motore che gestisce le collisioni
-            double collisionDist = CollisionEngineParam.CollisionDistance;
+            //double collisionDist = CollisionEngineParam.CollisionDistance;
 
             //collisionDist = 100.0;
 
-            //var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair, collisionDist);
+           // var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair, collisionDist);
 
             var actualCollisionPoints = CollisionEngine.Execute(simShapes);
 
@@ -567,23 +578,41 @@ namespace SharpPhysicsEngine
                                      .Where(x => x.value.ActiveCCD)
                                      .ToList();
 
+            double lowerTimeStep = 0.016;
+
             for (int i = 0; i < simShapes.Length; i++)
             {
                 for (int j = i + 1; j < simShapes.Length; j++)
                 {
-                    double? timeOfImpact = ccdEngine.GetTimeOfImpact(
-                        simShapes[i], 
-                        simShapes[j], 
+                    double? timeOfImpact = ccdEngine.GetAABBTimeOfImpact(
+                        simShapes[i],
+                        simShapes[j],
                         TimeStep);
 
-                    if (timeOfImpact.HasValue && 
-                        timeOfImpact <= TimeStep)
+                    //double? timeOfImpact = ccdEngine.GetTimeOfImpact(
+                    //    simShapes[i], 
+                    //    simShapes[j], 
+                    //    TimeStep);
+
+                    if (timeOfImpact.HasValue &&
+                        timeOfImpact < lowerTimeStep)
                     {
+                        lowerTimeStep = timeOfImpact.Value;
+
                         collisionPair.Add(new CollisionPair(i, j));
                     }
                 }
             }
-                        
+
+            if (lowerTimeStep < 0.004)
+                TimeStep = 0.004;
+            else
+                TimeStep = lowerTimeStep;
+
+            partialTimeStep += TimeStep;
+
+            Console.WriteLine("TimeStep " + TimeStep);
+
             return collisionPair;
         }
 

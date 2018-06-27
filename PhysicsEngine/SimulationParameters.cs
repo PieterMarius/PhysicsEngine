@@ -154,12 +154,12 @@ namespace SharpPhysicsEngine
 
         public PhysicsEngineParameters ()
 		{
-			TimeStep = 0.01;
+			TimeStep = 0.016;
 			CFM = 1E-07;
 			NormalCFM = 0.0;
 			FrictionCFM = 0.0;
 			BaumStabilization = 1.0;
-            LinearVelDisable = 0.08;
+            LinearVelDisable = 0.1;
 			AngularVelDisable = 0.1;
 			ShiftToStaticFrictionTolerance = 0.05;
 			DiscreteCCD = false;

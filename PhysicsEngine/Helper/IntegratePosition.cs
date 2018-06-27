@@ -63,10 +63,6 @@ namespace SharpPhysicsEngine.Helper
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
                 IntegrateSoftShapePosition(shape, timeStep, true);
 
-            //DEBUG
-            Console.WriteLine("velocity " + dynamicShapes[1].LinearVelocity.x + " " + dynamicShapes[1].LinearVelocity.y +" "+ dynamicShapes[1].LinearVelocity.z);
-            Console.WriteLine("velocity " + dynamicShapes[1].AngularVelocity.x + " " + dynamicShapes[1].AngularVelocity.y + " " + dynamicShapes[1].AngularVelocity.z);
-
             foreach (var shape in dynamicShapes.OfType<ConvexShape>())
             {
                 IntegrateRigidShapePosition(shape, timeStep);
@@ -103,6 +99,8 @@ namespace SharpPhysicsEngine.Helper
                 IntegrateSoftShapePosition((ISoftShape)shape, timeStep, false);
             else 
                 IntegrateRigidShapePosition(shape, timeStep);
+
+            shape.SetAABB();
         }
 
         #endregion
@@ -113,7 +111,7 @@ namespace SharpPhysicsEngine.Helper
             IShape shape,
             double timeStep)
         {
-            var externalForce = shape.ForceValue * shape.InverseMass +
+            var externalForce = shape.ForceValue * shape.MassInfo.InverseMass +
                                 timeStep * EngineParameters.ExternalForce;
 
             shape.SetLinearVelocity(shape.LinearVelocity + externalForce);
@@ -123,7 +121,7 @@ namespace SharpPhysicsEngine.Helper
             IShape shape,
             double timeStep)
         {
-            var extAngularVelocity = shape.InertiaTensor * shape.TorqueValue;
+            var extAngularVelocity = shape.MassInfo.InertiaTensor * shape.TorqueValue;
 
             shape.SetAngularVelocity(shape.AngularVelocity + extAngularVelocity);
         }
@@ -141,17 +139,9 @@ namespace SharpPhysicsEngine.Helper
 
         private void UpdateShapeProperties(IShape shape)
         {
-            #region Sleeping Object
-
-            if (EngineParameters.SleepingObject)
-                ObjectSleep(shape);
-
-            #endregion
-
             #region Update AABB
 
             double linearVelocity = shape.LinearVelocity.Length();
-
             double angularVelocity = shape.AngularVelocity.Length();
 
             if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
@@ -159,6 +149,13 @@ namespace SharpPhysicsEngine.Helper
             {
                 shape.SetAABB();
             }
+
+            #endregion
+
+            #region Sleeping Object
+
+            if (EngineParameters.SleepingObject)
+                ObjectSleep(shape);
 
             #endregion
         }
@@ -194,8 +191,8 @@ namespace SharpPhysicsEngine.Helper
 
                 shape.SetRotationMatrix(shape.RotationStatus.ConvertToMatrix());
 
-                shape.SetInertiaTensor(
-                    (shape.RotationMatrix * shape.BaseInertiaTensor) *
+                shape.SetInverseInertiaTensor(
+                    (shape.RotationMatrix * shape.MassInfo.InverseBaseInertiaTensor) *
                     shape.RotationMatrix.Transpose());
             }
 
@@ -206,7 +203,7 @@ namespace SharpPhysicsEngine.Helper
             SoftShapePoint point,
             double timeStep)
         {
-            var externalForce = point.ForceValue * point.InverseMass +
+            var externalForce = point.ForceValue * point.MassInfo.InverseMass +
                                 timeStep * EngineParameters.ExternalForce;
 
             point.SetLinearVelocity(point.LinearVelocity + externalForce);
@@ -251,8 +248,8 @@ namespace SharpPhysicsEngine.Helper
 
                     point.SetRotationMatrix(point.RotationStatus.ConvertToMatrix());
 
-                    point.SetInertiaTensor(
-                        (point.RotationMatrix * point.BaseInertiaTensor) *
+                    point.SetInverseInertiaTensor(
+                        (point.RotationMatrix * point.MassInfo.InverseBaseInertiaTensor) *
                         point.RotationMatrix.Transpose());
                                                 
                     #endregion

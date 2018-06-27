@@ -71,7 +71,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             bool isStatic)
         {
             ObjectType = ObjectType.RigidBody;
-            Mass = mass;
+            MassInfo.Mass = mass;
             Position = position;
             TriangleMeshes = triangleMeshes;
             InputVertexPosition = inputVertexPosition;
@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void SetMass(double mass)
         {
-            Mass = mass;
+            MassInfo.Mass = mass;
         }
 
         #endregion

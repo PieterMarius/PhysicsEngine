@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System.Collections.Generic;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -61,6 +62,11 @@ namespace SharpPhysicsEngine.CollisionEngine
             }
 
             return result;
+        }
+
+        public Vector3 Execute(AABB boxA, AABB boxB)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion

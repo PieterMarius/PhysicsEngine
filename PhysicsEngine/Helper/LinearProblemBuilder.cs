@@ -141,16 +141,14 @@ namespace SharpPhysicsEngine.Helper
                                             contactB.LinearComponentA,
                                             contactA.AngularComponentA,
                                             contactB.AngularComponentA,
-                                            contactA.ObjectA.InverseMass,
-                                            contactA.ObjectA.InertiaTensor);
+                                            contactA.ObjectA.MassInfo);
 
                                         mValue += GetLCPMatrixValue(
                                                 contactA.LinearComponentB,
                                                 contactB.LinearComponentB,
                                                 contactA.AngularComponentB,
                                                 contactB.AngularComponentB,
-                                                contactA.ObjectB.InverseMass,
-                                                contactA.ObjectB.InertiaTensor);
+                                                contactA.ObjectB.MassInfo);
 
                                         AddValues(ref index, ref values, mValue, innerIndex);
                                     }
@@ -173,16 +171,14 @@ namespace SharpPhysicsEngine.Helper
                                                 contactB.LinearComponentB,
                                                 contactA.AngularComponentA,
                                                 contactB.AngularComponentB,
-                                                contactA.ObjectA.InverseMass,
-                                                contactA.ObjectA.InertiaTensor);
+                                                contactA.ObjectA.MassInfo);
 
                                             mValue += GetLCPMatrixValue(
                                                 contactA.LinearComponentB,
                                                 contactB.LinearComponentA,
                                                 contactA.AngularComponentB,
                                                 contactB.AngularComponentA,
-                                                contactA.ObjectB.InverseMass,
-                                                contactA.ObjectB.InertiaTensor);
+                                                contactA.ObjectB.MassInfo);
 
                                             AddValues(ref index, ref values, mValue, innerIndex);
                                         }
@@ -201,8 +197,7 @@ namespace SharpPhysicsEngine.Helper
                                         symmetricHashSet,
                                         contactA.LinearComponentA,
                                         contactA.AngularComponentA,
-                                        contactA.ObjectA.InverseMass,
-                                        contactA.ObjectA.InertiaTensor,
+                                        contactA.ObjectA.MassInfo,
                                         true);
                                 }
 
@@ -218,8 +213,7 @@ namespace SharpPhysicsEngine.Helper
                                         symmetricHashSet,
                                         contactA.LinearComponentA,
                                         contactA.AngularComponentA,
-                                        contactA.ObjectA.InverseMass,
-                                        contactA.ObjectA.InertiaTensor,
+                                        contactA.ObjectA.MassInfo,
                                         false);
                                 }
 
@@ -235,8 +229,7 @@ namespace SharpPhysicsEngine.Helper
                                         symmetricHashSet,
                                         contactA.LinearComponentB,
                                         contactA.AngularComponentB,
-                                        contactA.ObjectB.InverseMass,
-                                        contactA.ObjectB.InertiaTensor,
+                                        contactA.ObjectB.MassInfo,
                                         true);
                                 }
 
@@ -252,8 +245,7 @@ namespace SharpPhysicsEngine.Helper
                                         symmetricHashSet,
                                         contactA.LinearComponentB,
                                         contactA.AngularComponentB,
-                                        contactA.ObjectB.InverseMass,
-                                        contactA.ObjectB.InertiaTensor,
+                                        contactA.ObjectB.MassInfo,
                                         false);
                                 }
 
@@ -351,8 +343,7 @@ namespace SharpPhysicsEngine.Helper
                                     contactB.LinearComponentA,
                                     contactA.AngularComponentA,
                                     contactB.AngularComponentA,
-                                    contactA.ObjectA.InverseMass,
-                                    contactA.ObjectA.InertiaTensor);
+                                    contactA.ObjectA.MassInfo);
                             }
                             else if (contactA_ID_A == contactB_ID_B)
                             {
@@ -361,8 +352,7 @@ namespace SharpPhysicsEngine.Helper
                                     contactB.LinearComponentB,
                                     contactA.AngularComponentA,
                                     contactB.AngularComponentB,
-                                    contactA.ObjectA.InverseMass,
-                                    contactA.ObjectA.InertiaTensor);
+                                    contactA.ObjectA.MassInfo);
                             }
 
                             if (contactA_ID_B == contactB_ID_A)
@@ -372,8 +362,7 @@ namespace SharpPhysicsEngine.Helper
                                     contactB.LinearComponentA,
                                     contactA.AngularComponentB,
                                     contactB.AngularComponentA,
-                                    contactA.ObjectB.InverseMass,
-                                    contactA.ObjectB.InertiaTensor);
+                                    contactA.ObjectB.MassInfo);
                             }
                             else if (contactA_ID_B == contactB_ID_B)
                             {
@@ -382,8 +371,7 @@ namespace SharpPhysicsEngine.Helper
                                     contactB.LinearComponentB,
                                     contactA.AngularComponentB,
                                     contactB.AngularComponentB,
-                                    contactA.ObjectB.InverseMass,
-                                    contactA.ObjectB.InertiaTensor);
+                                    contactA.ObjectB.MassInfo);
                             }
 
                             if (Math.Abs(mValue) > 1E-32)
@@ -445,8 +433,7 @@ namespace SharpPhysicsEngine.Helper
             HashSetStruct symmetricHashSet,
             Vector3? linearComponentA,
             Vector3 angularComponentA,
-            double inverseMass,
-            Matrix3x3 inertiaTensor,
+            MassData massData, 
             bool componentA)
         {
             double mValue = 0.0;
@@ -474,8 +461,7 @@ namespace SharpPhysicsEngine.Helper
                         lComponent,
                         angularComponentA,
                         aComponent,
-                        inverseMass,
-                        inertiaTensor);
+                        massData);
 
                     AddValues(ref index, ref values, mValue, innerIndex);
                 }
@@ -487,18 +473,17 @@ namespace SharpPhysicsEngine.Helper
             Vector3? linearComponentB,
             Vector3 angularComponentA,
             Vector3 angularComponentB,
-            double inverseMass,
-            Matrix3x3 inertiaTensor)
+            MassData massData)
         {
             double LCPValue = 0.0;
 
             if (linearComponentA.HasValue &&
                 linearComponentB.HasValue)
                 LCPValue += linearComponentA.Value.Dot(
-                            linearComponentB.Value * inverseMass);
+                            linearComponentB.Value * massData.InverseMass);
 
             LCPValue += angularComponentA.Dot(
-                        inertiaTensor * angularComponentB);
+                        massData.InverseInertiaTensor * angularComponentB);
 
             return LCPValue;
         }
@@ -510,17 +495,17 @@ namespace SharpPhysicsEngine.Helper
 
             if (contact.LinearComponentA.HasValue)
                 LCPvalue += contact.LinearComponentA.Value.Dot(
-                            contact.LinearComponentA.Value * contact.ObjectA.InverseMass);
+                            contact.LinearComponentA.Value * contact.ObjectA.MassInfo.InverseMass);
 
             LCPvalue += contact.AngularComponentA.Dot(
-                        contact.ObjectA.InertiaTensor * contact.AngularComponentA);
+                        contact.ObjectA.MassInfo.InverseInertiaTensor * contact.AngularComponentA);
 
             if (contact.LinearComponentB.HasValue)
                 LCPvalue += contact.LinearComponentB.Value.Dot(
-                            contact.LinearComponentB.Value * contact.ObjectB.InverseMass);
+                            contact.LinearComponentB.Value * contact.ObjectB.MassInfo.InverseMass);
 
             LCPvalue += contact.AngularComponentB.Dot(
-                        contact.ObjectB.InertiaTensor * contact.AngularComponentB);
+                        contact.ObjectB.MassInfo.InverseInertiaTensor * contact.AngularComponentB);
 
             return LCPvalue;
         }

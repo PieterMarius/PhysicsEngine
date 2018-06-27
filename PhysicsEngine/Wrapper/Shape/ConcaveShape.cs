@@ -109,7 +109,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return concaveShape.InertiaTensor;
+                return concaveShape.MassInfo.InverseInertiaTensor;
             }
         }
 
@@ -117,7 +117,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return concaveShape.BaseInertiaTensor;
+                return concaveShape.MassInfo.InverseBaseInertiaTensor;
             }
         }
 
@@ -133,7 +133,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return concaveShape.Mass;
+                return concaveShape.MassInfo.Mass;
             }
         }
 
@@ -141,7 +141,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return concaveShape.InverseMass;
+                return concaveShape.MassInfo.InverseMass;
             }
         }
 
@@ -203,7 +203,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor)
         {
-            concaveShape.SetBaseInertiaTensor(inputIntertiaTensor);
+            concaveShape.SetInverseBaseInertiaTensor(inputIntertiaTensor);
         }
 
         public void SetDynamicFrictionCoeff(double dynamicFrictionCoeff)
@@ -221,9 +221,9 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetForce(force);
         }
 
-        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseInertiaTensor(Matrix3x3 inertiaTensor)
         {
-            concaveShape.SetInertiaTensor(inertiaTensor);
+            concaveShape.SetInverseInertiaTensor(inertiaTensor);
         }
 
         public void SetIsStatic(bool isStatic)

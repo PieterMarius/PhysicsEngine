@@ -45,6 +45,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 
         void SetAABB();
+        void SetAABB(AABB box);
         void SetRestoreCoeff(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
         void SetExcludeFromCollisionDetection(bool excludeFromCollisionDetection);

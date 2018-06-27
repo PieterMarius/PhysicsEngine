@@ -125,7 +125,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return softShape.BaseInertiaTensor;
+                return softShape.MassInfo.InverseBaseInertiaTensor;
             }
         }
 
@@ -141,7 +141,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return softShape.InertiaTensor;
+                return softShape.MassInfo.InverseInertiaTensor;
             }
         }
 
@@ -149,7 +149,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return softShape.InverseMass;
+                return softShape.MassInfo.InverseMass;
             }
         }
 
@@ -165,7 +165,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             get
             {
-                return softShape.Mass;
+                return softShape.MassInfo.Mass;
             }
         }
 
@@ -239,7 +239,7 @@ namespace SharpPhysicsEngine.Wrapper
             throw new NotImplementedException();
         }
 
-        public void SetInertiaTensor(Matrix3x3 inertiaTensor)
+        public void SetInverseInertiaTensor(Matrix3x3 inertiaTensor)
         {
             throw new NotImplementedException();
         }
