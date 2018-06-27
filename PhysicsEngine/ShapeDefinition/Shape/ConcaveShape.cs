@@ -68,7 +68,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             IConvexHullEngine convexHullEngine,
             Vector3 position,
             double mass,
-            bool isStatic)
+            bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
             MassInfo.Mass = mass;

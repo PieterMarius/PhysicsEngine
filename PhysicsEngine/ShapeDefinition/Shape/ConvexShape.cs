@@ -37,7 +37,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		public IGeometry ObjectGeometry { get; private set; }
 
         #endregion
-        
+
         #region Constructor
 
         public ConvexShape(
@@ -45,7 +45,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             TriangleMesh[] triangleMeshes,
             Vector3 position,
             double mass,
-            bool isStatic)
+            bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
 
@@ -67,7 +67,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             IConvexHullEngine convexHullEngine,
             Vector3 position,
             double mass,
-            bool isStatic)
+            bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
                         

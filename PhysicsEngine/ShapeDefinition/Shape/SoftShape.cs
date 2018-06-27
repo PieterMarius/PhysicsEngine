@@ -72,7 +72,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             double restoreCoeff,
             double springCoeff,
             double angularErrorReductionParam,
-            double angularSpringCoeff)
+            double angularSpringCoeff) : base()
         {
             ObjectType = ObjectType.SoftBody;
             Triangle = triangleIndex;
@@ -103,7 +103,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             double errorReductionParam,
             double springCoeff,
             double angularErrorReductionParam,
-            double angularSpringCoeff)
+            double angularSpringCoeff) : base()
         {
             Triangle = triangleIndex;
 

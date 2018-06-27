@@ -84,7 +84,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             List<Vector3[]> inputVertexPosition,
             List<int[][]> inputTriangle,
             Vector3[] compoundPosition,
-            double[] mass)
+            double[] mass) : base()
         {
             ObjectType = ObjectType.CompoundShape;
 

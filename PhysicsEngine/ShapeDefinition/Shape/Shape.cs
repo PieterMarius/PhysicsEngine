@@ -80,6 +80,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #endregion
 
+        #region Constructor
+
+        protected Shape()
+        {
+            MassInfo = new MassData();
+        }
+
+        #endregion
+
         #region Public Methods
 
         public abstract void Rotate(Vector3 versor, double angle);
