@@ -211,7 +211,7 @@ namespace SharpPhysicsEngine
             }
             return null;
         }
-
+        //TODO correggere RigidBody con static/terrain (meglio terrain)
         private void RecursiveSearch(
 			ContactIndex searchPoint,
 			List<ContactIndex> readList,
@@ -261,8 +261,8 @@ namespace SharpPhysicsEngine
                             objectsTypeDic);
 					}
 
-				} else if ((objectsTypeDic[searchPoint.IndexA].Item1 == ObjectType.RigidBody &&
-                           objectsTypeDic[searchPoint.IndexB].Item1 == ObjectType.RigidBody) &&
+				} else if ((!objectsTypeDic[searchPoint.IndexA].Item2 &&
+                            !objectsTypeDic[searchPoint.IndexB].Item2) &&
 						   (searchPoint.IndexA == collisionValue.IndexB ||
 				           searchPoint.IndexB == collisionValue.IndexA ||
 				           searchPoint.IndexA == collisionValue.IndexA ||

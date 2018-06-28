@@ -38,7 +38,7 @@ using SharpPhysicsEngine.Wrapper.Joint;
 
 namespace TestPhysics
 {
-	public class BuildEnvironment1
+	public class PerformaceAndStackTest
 	{
 		#region Fields
 
@@ -50,7 +50,7 @@ namespace TestPhysics
 
 		#region Constructor
 
-		public BuildEnvironment1()
+		public PerformaceAndStackTest()
 		{
 			ShapeFilename = new List<string>();
 			ShapeScale = new List<float>();
@@ -72,8 +72,8 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(30);
 
             return physicsEnvironment;
 		}
@@ -104,7 +104,7 @@ namespace TestPhysics
                 {
                     loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(0.0, 0.0, 0.0), 0.0);
                     if(i >0)
-                        loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(1.0, 0.0, 0.0),0.0);
+                        loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(1.0, 0.0, 0.0),1.0);
                 }
             }
 
@@ -155,13 +155,13 @@ namespace TestPhysics
 
             double[] mass = new double[] { 50, 20, 8, 3, 1 };
             
-            for (int i = 0; i < 50; i++)
+            for (int i = 0; i < 100; i++)
             {
                 ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1.0f);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1.0f, 0.0);
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1.0f, 1.0);
                 var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
@@ -175,32 +175,32 @@ namespace TestPhysics
 
                 objects.Add(objects1);
             }
+            
+            //position = new Vector3(3.0, 4.0, 0.0);
+
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    ShapeFilename.Add("cube.obj");
+            //    ShapeScale.Add(1);
+            //    TextureFilename.Add("texture/woodbox.bmp");
+                         
+                
+            //    GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1, 0.0);
+            //    var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+            //    objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
+            //    //objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+            //    objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
+            //    objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            //    objects1.SetRestitutionCoeff(0.1);
+            //    objects1.SetDynamicFrictionCoeff(0.8);
+            //    objects1.SetStaticFrictionCoeff(0.9);
+            //    objects1.ExcludeFromCollisionDetection(false);
+            //    objects1.SetErrorReductionParam(0.5);
+            //    position = position + shift;
+
+            //    objects.Add(objects1);
+            //}
             /*
-            position = new Vector3(3.0, 1.7, 0.0);
-
-            for (int i = 0; i < 10; i++)
-            {
-                ShapeFilename.Add("cube.obj");
-                ShapeScale.Add(1);
-                TextureFilename.Add("texture/woodbox.bmp");
-
-                var objects1 = new RigidCollisionShape();
-                objects1.SetMass(1.0);
-                objects1.SetPosition(position);
-                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
-                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
-                objects1.SetStaticFrictionCoeff(0.9);
-                objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(0.5);
-                position = position + shift;
-
-                objects.Add(objects1);
-            }
             position = new Vector3(-3.0, 1.7, 0.0);
 
             for (int i = 0; i < 5; i++)

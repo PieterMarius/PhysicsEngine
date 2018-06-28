@@ -415,18 +415,13 @@ namespace SharpPhysicsEngine
 
             partialTimeStep = 0.0;
 
-            #region Simulation Workflow
-
-            while (partialTimeStep < timeStep)
+            if (EngineParameters.CCD)
             {
-                CollisionDetection();
-
-                PartitionEngineExecute();
-
-                PhysicsExecutionFlow();
+                while (partialTimeStep < timeStep)
+                    ExecuteFlow();
             }
-
-			#endregion
+            else
+                ExecuteFlow();
 		}
 
 		public void Simulate()
@@ -440,6 +435,15 @@ namespace SharpPhysicsEngine
         #endregion
 
         #region Private Methods
+
+        private void ExecuteFlow()
+        {
+            CollisionDetection();
+
+            PartitionEngineExecute();
+
+            PhysicsExecutionFlow();
+        }
 
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
 		{
@@ -470,6 +474,8 @@ namespace SharpPhysicsEngine
             
             if (Partitions != null) 
 			{
+                Console.WriteLine("Partitions " + Partitions.Count);
+
                 for (int i = 0; i < Partitions.Count;i++)
 				{
                     JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
@@ -550,7 +556,10 @@ namespace SharpPhysicsEngine
                             Shapes,
                             item => (item.ExcludeFromCollisionDetection) ? null : item);
                         
-            var collisionPair = ContinuosCollisionDetection(simShapes);
+            //var collisionPair = ContinuosCollisionDetection(simShapes);
+
+            if (EngineParameters.CCD)
+                GlobalCCDSimulatation(simShapes);
 
             //Eseguo il motore che gestisce le collisioni
             //double collisionDist = CollisionEngineParam.CollisionDistance;
@@ -568,6 +577,32 @@ namespace SharpPhysicsEngine
             //    PreviousShapesProperties);
 
             collisionPoints = actualCollisionPoints.ToArray();
+        }
+
+        private void GlobalCCDSimulatation(IShape[] simShapes)
+        {
+            double lowerTimeStep = 0.016;
+
+            for (int i = 0; i < simShapes.Length; i++)
+            {
+                for (int j = i + 1; j < simShapes.Length; j++)
+                {
+                    double? timeOfImpact = ccdEngine.GetAABBTimeOfImpact(
+                        simShapes[i],
+                        simShapes[j],
+                        TimeStep);
+                    
+                    if (timeOfImpact.HasValue)
+                        lowerTimeStep = timeOfImpact.Value;
+                }
+            }
+
+            if (lowerTimeStep < 0.004)
+                TimeStep = 0.004;
+            else
+                TimeStep = lowerTimeStep;
+
+            partialTimeStep += TimeStep;
         }
 
         private List<CollisionPair> ContinuosCollisionDetection(IShape[] simShapes)

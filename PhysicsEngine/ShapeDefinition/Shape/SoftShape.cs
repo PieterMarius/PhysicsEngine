@@ -239,11 +239,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetPosition(points[i] + Position);
 
                 Vector3 r = -1.0 * ShapePoints[i].StartPosition;
-                Matrix3x3 baseTensors = Matrix3x3.Invert(
-                                inertiaTensor +
-                                (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
-                                mass);
+                var baseInertiaTensor = inertiaTensor + (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) * mass;
 
+                Matrix3x3 baseTensors = Matrix3x3.Invert(baseInertiaTensor);
+                
                 ShapePoints[i].SetLinearVelocity(LinearVelocity);
                 ShapePoints[i].SetAngularVelocity(AngularVelocity);
                 ShapePoints[i].SetMass(mass);

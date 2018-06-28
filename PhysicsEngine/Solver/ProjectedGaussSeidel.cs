@@ -56,8 +56,15 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x)
         {
             var rangePartitioner = Partitioner.Create(0, input.Count, Convert.ToInt32(input.Count / SolverParameters.MaxThreadNumber) + 1);
-            for (int k = 0; k < SolverParameters.MaxIteration; k++) 
-			    ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
+            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+            {
+                ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
+
+                double actualSolverError = SolverHelper.ComputeSolverError(input, x);
+
+                if (actualSolverError < SolverParameters.ErrorTolerance)
+                    return x;
+            }
             
             return x;
         }

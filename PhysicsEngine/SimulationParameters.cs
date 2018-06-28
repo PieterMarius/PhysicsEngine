@@ -96,7 +96,7 @@ namespace SharpPhysicsEngine
 		/// Discrete Continuos Collision Detection.
 		/// </summary>
 		/// <value><c>true</c> if discrete CC; otherwise, <c>false</c>.</value>
-		public bool DiscreteCCD { get; private set; }
+		public bool CCD { get; private set; }
 
 		/// <summary>
 		/// Gets the compenetration tolerance.
@@ -160,9 +160,9 @@ namespace SharpPhysicsEngine
 			FrictionCFM = 0.0;
 			BaumStabilization = 1.0;
             LinearVelDisable = 0.1;
-			AngularVelDisable = 0.1;
+			AngularVelDisable = 0.08;
 			ShiftToStaticFrictionTolerance = 0.05;
-			DiscreteCCD = false;
+			CCD = true;
 			CollisionDistance = 0.003;
             CompenetrationTolerance = 0.05;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);
@@ -196,7 +196,7 @@ namespace SharpPhysicsEngine
 			LinearVelDisable = linearVelDisable;
 			AngularVelDisable = angularVelDisable;
 			ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
-			DiscreteCCD = discreteCCD;
+			CCD = discreteCCD;
 			CollisionDistance = collisionDistance;
 			CompenetrationTolerance = compenetrationTolerance;
 			ExternalForce = externalForce;

@@ -128,12 +128,10 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             double radius = 1E-4;
             double t = 0.0;
             Vector3 collisionPoint = GetAABBDist(shapeA, shapeB);
-
-            //if (collisionpoint.intersection)
-            //    return 0.0;
+                        
             double distance = collisionPoint.Length();
-
-            while (distance > radius) //&& !collisionPoint.Intersection)
+                        
+            while (distance > radius)
             {
                 double nLinear = rLinearVelocity.Dot(collisionPoint.Normalize());
                 double relDist = nLinear + maxAngularVelocity;
@@ -153,9 +151,6 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
                 collisionPoint = GetAABBDist(shapeA, shapeB);
 
                 distance = collisionPoint.Length();
-
-                //if (collisionPoint == null)
-                //    break;
             }
 
             RestoreBaseData(shapeA, shapeB);

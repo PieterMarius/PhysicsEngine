@@ -24,6 +24,7 @@
  *  
  *****************************************************************************/
 
+using System.Linq;
 using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.LCPSolver
@@ -32,26 +33,36 @@ namespace SharpPhysicsEngine.LCPSolver
     {
         public static double ComputeSolverError(
             LinearProblemProperties input,
-            double[] X)
+            double[] x)
         {
             double error = 0.0;
 
-            for (int i = 0; i < input.Count; i++)
+            var counter = input.ConstraintType.Count(s => s != ShapeDefinition.ConstraintType.Friction);
+
+            if (counter > 0)
             {
-                SparseElement m = input.M[i];
+                for (int i = 0; i < input.Count; i++)
+                {
+                    SparseElement m = input.M[i];
 
-                double[] bufValue = m.Value;
-                int[] bufIndex = m.Index;
+                    if (input.ConstraintType[i] != ShapeDefinition.ConstraintType.Friction)
+                    {
+                        double[] bufValue = m.Value;
+                        int[] bufIndex = m.Index;
 
-                double bValue = (1.0 / input.InvD[i]) * X[i];
+                        double bValue = (1.0 / input.InvD[i]) * x[i];
 
-                for (int j = 0; j < m.Count; j++)
-                    bValue += bufValue[j] * X[bufIndex[j]];
+                        for (int j = 0; j < m.Count; j++)
+                            bValue += bufValue[j] * x[bufIndex[j]];
 
-                error += (bValue - input.B[i]) * (bValue - input.B[i]);
+                        error += (bValue - input.B[i]) * (bValue - input.B[i]);
+                    }
+                }
+
+                return error / counter;
             }
 
-            return error;
+            return -1.0;
         }
     }
 }
