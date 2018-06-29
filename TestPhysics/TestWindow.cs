@@ -249,7 +249,7 @@ namespace TestPhysics
             //TerrainShapes = terrain.GetConvexShapeList();
             //InitTerrain();
 
-            pause = false;
+            pause = true;
 
             collPoint = new List<CollisionPointStructure>();
             collisionPartitionedPoints = new List<List<CollisionPointStructure>>();
@@ -372,9 +372,9 @@ namespace TestPhysics
             //    displayVertex(i);
 
             //displayAABB();
-            displayVertex(0);
+            //displayVertex(0);
             displayVertex(1);
-            displayVertex(2);
+            //displayVertex(2);
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)
                 SetOpenGLObjectMatrixAndDisplayObject(i);

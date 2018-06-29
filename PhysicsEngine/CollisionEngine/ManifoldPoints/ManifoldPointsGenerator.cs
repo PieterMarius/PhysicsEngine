@@ -358,7 +358,104 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return cpList;
 		}
 
-		private CollisionPoint TestEdgesIntersection(
+        private List<CollisionPoint> ExtractFourCollisionPoint(
+            List<CollisionPoint> cpList,
+            Vector3 normal)
+        {
+            if (cpList.Count > 4)
+            {
+                var result = new List<CollisionPoint>();
+
+                //Point 1
+                Vector3 A = cpList[0].CollisionPointA.Vertex;
+                result.Add(cpList[0]);
+
+                //Point 2
+                double maxDist = double.MinValue;
+                CollisionPoint farthestPoint = null;
+                for (int i = 1; i < cpList.Count; i++)
+                {
+                    double dist = (cpList[i].CollisionPointA.Vertex - A).Length();
+
+                    if (dist > maxDist)
+                    {
+                        maxDist = dist;
+                        farthestPoint = cpList[i];
+                    }
+                }
+                Vector3 B = farthestPoint.CollisionPointA.Vertex;
+                result.Add(farthestPoint);
+
+                //Point 3
+                double maxArea = double.MinValue;
+                CollisionPoint third = null;
+
+                for (int i = 1; i < cpList.Count; i++)
+                {
+                    double area = CalculateArea(A, B, cpList[i].CollisionPointA.Vertex, normal);
+
+                    if(area > maxArea)
+                    {
+                        maxArea = area;
+                        third = cpList[i];
+                    }
+                }
+                Vector3 C = third.CollisionPointA.Vertex;
+                result.Add(third);
+
+                //Point 4
+                CollisionPoint fourth = null;
+                maxArea = double.MinValue;
+                for (int i = 1; i < cpList.Count; i++)
+                {
+                    // A-B-D
+                    double area = CalculateArea(A, B, cpList[i].CollisionPointA.Vertex, normal);
+
+                    if (area > maxArea)
+                    {
+                        maxArea = area;
+                        fourth = cpList[i];
+                    }
+
+                    // A-C-D
+                    area = CalculateArea(A, C, cpList[i].CollisionPointA.Vertex, normal);
+
+                    if (area > maxArea)
+                    {
+                        maxArea = area;
+                        fourth = cpList[i];
+                    }
+
+                    // B-C-D
+                    area = CalculateArea(B, C, cpList[i].CollisionPointA.Vertex, normal);
+
+                    if (area > maxArea)
+                    {
+                        maxArea = area;
+                        fourth = cpList[i];
+                    }
+                }
+
+                result.Add(fourth);
+
+                return result;
+
+            }
+            return cpList;
+        }
+
+        private double CalculateArea(
+            Vector3 A,
+            Vector3 B,
+            Vector3 C,
+            Vector3 normal)
+        {
+            Vector3 CA = C - A;
+            Vector3 CB = C - B;
+            return 0.5 * Vector3.Dot(Vector3.Cross(CA, CB), normal);
+        }
+
+        private CollisionPoint TestEdgesIntersection(
 			Vector3 p1,
 			Vector3 p2,
 			Vector3 p3,

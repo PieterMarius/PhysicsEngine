@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     inputVertexPosition,
                     triangleMeshes,
                     ObjectGeometryType.ConvexShape,
-                    true);
+                    false);
 
             SetIsStatic(isStatic);
             SetMass(mass);

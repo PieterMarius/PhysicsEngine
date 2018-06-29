@@ -55,7 +55,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexObj,
 			Vector3 direction)
 		{
-			if (vertexObj[0].Adjacency != null)
+			if (vertexObj[0].Adjacency != null && 
+                vertexObj[0].Adjacency.Count > 0)
 				return GetFarthestPointWithAdj(vertexObj, direction);
 			else
 				return GetFarthestPointWithOutAdj(vertexObj, direction);
