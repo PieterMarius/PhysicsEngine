@@ -26,7 +26,6 @@
 
 using System;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.ConvexHullWrapper;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -54,30 +53,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     inputVertexPosition,
                     triangleMeshes,
                     ObjectGeometryType.ConvexShape,
-                    false);
-
-            SetIsStatic(isStatic);
-            SetMass(mass);
-            SetPosition(position);
-            ShapeInit();
-        }
-
-        public ConvexShape(
-            Vector3[] inputVertexPosition,
-            IConvexHullEngine convexHullEngine,
-            Vector3 position,
-            double mass,
-            bool isStatic) : base()
-        {
-            ObjectType = ObjectType.RigidBody;
-                        
-            ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
-            
-            ObjectGeometry = new Geometry(
-                    this,
-                    convexHullData.Vertices,
-                    convexHullData.TriangleMeshes,
-                    ObjectGeometryType.ConvexShape,
                     true);
 
             SetIsStatic(isStatic);
@@ -85,7 +60,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetPosition(position);
             ShapeInit();
         }
-
+                
         #endregion
 
         #region Public methods

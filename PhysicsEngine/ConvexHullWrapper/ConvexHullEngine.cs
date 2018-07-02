@@ -51,12 +51,18 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
                 TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
                 Vector3[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x=> new Vector3(x.Position));
 
+                var pointsList = cHull.Points.ToList();
+
                 foreach (var face in faces.Select((value, i) => new { value, i }))
                 {
+                    int index0 = pointsList.FindIndex(x => x.Index == face.value.Vertices[0].Index);
+                    int index1 = pointsList.FindIndex(x => x.Index == face.value.Vertices[1].Index);
+                    int index2 = pointsList.FindIndex(x => x.Index == face.value.Vertices[2].Index);
+
                     triangleMeshes[face.i] = new TriangleMesh(
-                        face.value.Vertices[0].Index,
-                        face.value.Vertices[1].Index,
-                        face.value.Vertices[2].Index);
+                        index0,
+                        index1,
+                        index2);
                 }
                     
                 return new ConvexHullData(vertices,triangleMeshes);

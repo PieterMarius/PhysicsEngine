@@ -373,7 +373,7 @@ namespace TestPhysics
 
             //displayAABB();
             //displayVertex(0);
-            displayVertex(1);
+            //displayVertex(1);
             //displayVertex(2);
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)

@@ -69,7 +69,8 @@ namespace SharpPhysicsEngine.Wrapper
         public ConvexShape(
             Vector3[] inputVertexPosition,
             Vector3 position,
-            double mass)
+            double mass,
+            bool isStatic)
         {
             IConvexHullEngine convexHullEngine = new ConvexHullEngine();
 
@@ -80,8 +81,15 @@ namespace SharpPhysicsEngine.Wrapper
                 convexHullData.TriangleMeshes,
                 position,
                 mass,
-                false);
+                isStatic);
         }
+
+        public ConvexShape(
+            Vector3[] inputVertexPosition,
+            Vector3 position,
+            double mass) :
+            this(inputVertexPosition, position, mass, false)
+        { }
 
         #endregion
 
@@ -309,7 +317,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3 GetCenterOfMassShiftValue(int index = 0)
         {
-            return convexShape.InitCenterOfMass;
+            return -1.0 * convexShape.InitCenterOfMass;
         }
 
         #endregion
