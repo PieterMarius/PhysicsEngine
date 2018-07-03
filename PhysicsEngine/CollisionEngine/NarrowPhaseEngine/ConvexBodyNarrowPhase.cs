@@ -122,15 +122,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             else if (gjkOutput.CollisionDistance <= collisionDistance)
             {
                 if (gjkOutput.CollisionNormal.Length() < normalTolerance)
-                {
                     return null;
-                    //return ExecuteEPAEngine(
-                    //    gjkOutput,
-                    //    vertexObjA,
-                    //    vertexObjB,
-                    //    ID_A,
-                    //    ID_B);
-                }
 
                 List<CollisionPoint> collisionPointsList = null;
 

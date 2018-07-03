@@ -32,17 +32,17 @@ using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    public sealed class SoftSimShape : ICollisionShape, IMapper
+    public sealed class SoftShape : ICollisionShape, IMapper
     {
         #region Fields
 
-        SoftShape softShape;
+        SimSoftShape softShape;
 
         #endregion
 
         #region Constructor
 
-        public SoftSimShape(
+        public SoftShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
@@ -55,7 +55,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
-            softShape = new SoftShape(
+            softShape = new SimSoftShape(
                 triangleMeshes,
                 shapePoint,
                 startPosition,
@@ -67,7 +67,7 @@ namespace SharpPhysicsEngine.Wrapper
                 angularSpringCoeff);
         }
 
-        public SoftSimShape(
+        public SoftShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
@@ -78,7 +78,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
-            softShape = new SoftShape(
+            softShape = new SimSoftShape(
                 triangleMeshes, 
                 shapePoint, 
                 startPosition, 
@@ -88,7 +88,7 @@ namespace SharpPhysicsEngine.Wrapper
                 springCoefficient);
         }
 
-        public SoftSimShape(
+        public SoftShape(
             int[][] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softJoint,
@@ -99,7 +99,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(triangleIndex);
 
-            softShape = new SoftShape(triangleMeshes, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
+            softShape = new SimSoftShape(triangleMeshes, shapePoint, softJoint, mass, decompositionParam, restoreCoefficient, springCoefficient);
         }
 
         #endregion

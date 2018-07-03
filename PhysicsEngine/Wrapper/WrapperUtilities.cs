@@ -24,12 +24,43 @@
  *  
  *****************************************************************************/
 
-using SharpPhysicsEngine.ShapeDefinition;
+using SharpPhysicsEngine.ConvexHullWrapper;
+using SharpEngineMathUtility;
+using System.Linq;
 
 namespace SharpPhysicsEngine.Wrapper
 {
-    internal static class WrapperUtilities
+    public static class PhysicsEngineUtilities
     {
-        
+        #region Fields
+
+        public struct ConvexHull
+        {
+            public double[][] Vertices;
+            public int[][] Triangles;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public static ConvexHull ExtractConvexHull(double[][] vertex)
+        {
+            IConvexHullEngine convexHullEngine = new ConvexHullEngine();
+
+            var inputVertex = GeneralMathUtilities.GetVector3ArrayFromMatrix(vertex);
+
+            ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertex);
+
+            var result = new ConvexHull()
+            {
+                Triangles = convexHullData.TriangleMeshes.Select(x => x.GetArray())?.ToArray(),
+                Vertices = GeneralMathUtilities.GetArrayFromVector3(convexHullData.Vertices)
+            };
+                        
+            return result;
+        }
+
+        #endregion
     }
 }

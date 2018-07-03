@@ -244,12 +244,19 @@ namespace SharpPhysicsEngine.CollisionEngine
 				}
 			}
 
-            result = PruneCollisionPoints (result);
+            if (ManifoldPointNumber == 4)
+            {
+                result = ExtractFourCollisionPoints(result, cp.CollisionNormal);
+                result.Add(cp);
+            }
+            else
+            {
+                result = PruneCollisionPoints(result);
+                result.Add(cp);
+            }
 
-			result.Add(cp);
-
-			return result;
-		}
+            return result;
+        }
 
 		/// <summary>
 		/// Tests the point is on plane.
@@ -325,12 +332,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return result;
 		}
 
-		//Pulisco il vettore da punti ridondanti
-		//al fine della simulazione non necessito più di 4 punti di collisione
-		private List<CollisionPoint> PruneCollisionPoints(
-			List<CollisionPoint> cpList)
+		private List<CollisionPoint> PruneCollisionPoints(List<CollisionPoint> cpList)
 		{
-			if (cpList.Count > ManifoldPointNumber - 1) 
+            if (cpList.Count > ManifoldPointNumber) 
 			{
 				var center = new Vector3();
 				for (int i = 0; i < cpList.Count; i++)
@@ -358,7 +362,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return cpList;
 		}
 
-        private List<CollisionPoint> ExtractFourCollisionPoint(
+        private List<CollisionPoint> ExtractFourCollisionPoints(
             List<CollisionPoint> cpList,
             Vector3 normal)
         {
@@ -369,11 +373,13 @@ namespace SharpPhysicsEngine.CollisionEngine
                 //Point 1
                 Vector3 A = cpList[0].CollisionPointA.Vertex;
                 result.Add(cpList[0]);
+                cpList.RemoveAt(0);
 
                 //Point 2
                 double maxDist = double.MinValue;
                 CollisionPoint farthestPoint = null;
-                for (int i = 1; i < cpList.Count; i++)
+                int index = -1;
+                for (int i = 0; i < cpList.Count; i++)
                 {
                     double dist = (cpList[i].CollisionPointA.Vertex - A).Length();
 
@@ -381,16 +387,19 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxDist = dist;
                         farthestPoint = cpList[i];
+                        index = i;
                     }
                 }
                 Vector3 B = farthestPoint.CollisionPointA.Vertex;
                 result.Add(farthestPoint);
+                cpList.RemoveAt(index);
 
                 //Point 3
                 double maxArea = double.MinValue;
                 CollisionPoint third = null;
+                index = -1;
 
-                for (int i = 1; i < cpList.Count; i++)
+                for (int i = 0; i < cpList.Count; i++)
                 {
                     double area = CalculateArea(A, B, cpList[i].CollisionPointA.Vertex, normal);
 
@@ -398,15 +407,19 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         third = cpList[i];
+                        index = i;
                     }
                 }
                 Vector3 C = third.CollisionPointA.Vertex;
                 result.Add(third);
+                cpList.RemoveAt(index);
 
                 //Point 4
                 CollisionPoint fourth = null;
                 maxArea = double.MinValue;
-                for (int i = 1; i < cpList.Count; i++)
+                index = -1;
+
+                for (int i = 0; i < cpList.Count; i++)
                 {
                     // A-B-D
                     double area = CalculateArea(A, B, cpList[i].CollisionPointA.Vertex, normal);
@@ -415,6 +428,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
+                        index = i;
                     }
 
                     // A-C-D
@@ -424,6 +438,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
+                        index = i;
                     }
 
                     // B-C-D
@@ -433,11 +448,12 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
+                        index = i;
                     }
                 }
 
                 result.Add(fourth);
-
+                
                 return result;
 
             }
@@ -452,7 +468,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             Vector3 CA = C - A;
             Vector3 CB = C - B;
-            return 0.5 * Vector3.Dot(Vector3.Cross(CA, CB), normal);
+            return Math.Abs(0.5 * Vector3.Dot(Vector3.Cross(CA, CB), normal));
         }
 
         private CollisionPoint TestEdgesIntersection(

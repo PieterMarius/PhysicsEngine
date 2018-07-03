@@ -190,5 +190,17 @@ namespace SharpEngineMathUtility
             
             return result;
         }
+
+        public static Vector3[] GetVector3ArrayFromMatrix(double[][] input)
+        {
+            var result = new Vector3[input.Length];
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                result[i] = new Vector3(input[i]);
+            }
+
+            return result;
+        }
     }
 }

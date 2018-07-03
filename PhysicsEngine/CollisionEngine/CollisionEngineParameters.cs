@@ -101,7 +101,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			GJKManifoldTolerance = 0.009;
 			EPAManifoldTolerance = 0.009;
 			ManifoldProjectionTolerance = 0.005;
-			ManifoldPointNumber = 5;
+			ManifoldPointNumber = 4;
 			MaxThreadNumber = 2;
             CollisionDistance = 0.001;
 			BroadPhaseType = BroadPhaseEngineType.AABBBroadPhase;

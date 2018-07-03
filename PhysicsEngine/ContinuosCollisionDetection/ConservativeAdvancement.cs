@@ -26,8 +26,8 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.CollisionEngine;
-using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
+using SharpPhysicsEngine.SolutionIntegration;
 
 namespace SharpPhysicsEngine.ContinuosCollisionDetection
 {

@@ -107,17 +107,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Utility\Utility.csproj">
-      <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
-      <Name>Utility</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MathUtility\SharpEngineMathUtility.csproj">
-      <Project>{3B6B749B-D6C4-4176-B40E-84FE676733B7}</Project>
+      <Project>{3b6b749b-d6c4-4176-b40e-84fe676733b7}</Project>
       <Name>SharpEngineMathUtility</Name>
     </ProjectReference>
     <ProjectReference Include="..\PhysicsEngine\SharpPhysicsEngine.csproj">
-      <Project>{45BC9A44-8517-4BC3-81DC-C7007D248F8C}</Project>
+      <Project>{45bc9a44-8517-4bc3-81dc-c7007d248f8c}</Project>
       <Name>SharpPhysicsEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utility\Utility.csproj">
+      <Project>{40EC4E5C-91BF-4F11-949C-B387CBFD2A02}</Project>
+      <Name>Utility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

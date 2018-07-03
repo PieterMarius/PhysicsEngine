@@ -32,7 +32,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal sealed class SoftShape : Shape, ISoftShape
+    internal sealed class SimSoftShape : Shape, ISoftShape
     {
      
         #region Simulation Properties
@@ -63,7 +63,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Constructor
 
-        public SoftShape(
+        public SimSoftShape(
             TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softConstraints,
@@ -83,7 +83,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SleepingFrameCount = 0;
         }
 
-        public SoftShape(
+        public SimSoftShape(
             TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             ConstraintIndex[] softConstraints,
@@ -94,7 +94,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             this(triangleIndex, shapePoint, softConstraints, mass, decompositionParam, restoreCoeff, springCoeff, 0.0, 0.0)
         { }
 
-        public SoftShape(
+        public SimSoftShape(
             TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,
@@ -121,7 +121,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetAABB();
         }
 
-        public SoftShape(
+        public SimSoftShape(
             TriangleMesh[] triangleIndex,
             Vector3[] shapePoint,
             Vector3 startPosition,

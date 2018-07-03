@@ -80,6 +80,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
+        public int[] GetArray()
+        {
+            return new int[] { a, b, c };
+        }
+
         public bool Contains(int index)
         {
             return a == index ||

@@ -157,11 +157,11 @@ namespace TestPhysics
             
             for (int i = 0; i < 30; i++)
             {
-                ShapeFilename.Add("teapot.obj");
+                ShapeFilename.Add("cube.obj");
                 ShapeScale.Add(1.0f);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                GeometryProperties geom1 = GetObjectGeometry("teapot.obj", 1.0f, 0.0);
+                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1.0f, 0.0);
                 //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
                 var objects1 = new ConvexShape(geom1.VertexPoint, position, 1.0);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 1.0));
@@ -371,7 +371,7 @@ namespace TestPhysics
 			return mesh;
 		}
 
-		private SoftSimShape BuildSoftBody(
+		private SoftShape BuildSoftBody(
 			string fileName,
 			double scale,
 			Vector3 position)
@@ -380,7 +380,7 @@ namespace TestPhysics
 
             RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
 
-			return new SoftSimShape(
+			return new SoftShape(
 				prop.triangleIndex, 
 				prop.vertexPoint, 
 				position,

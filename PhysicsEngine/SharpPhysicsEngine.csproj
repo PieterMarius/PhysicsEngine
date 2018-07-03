@@ -92,8 +92,8 @@
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\CommonUtilities.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
-    <Compile Include="Helper\IntegratePosition.cs" />
-    <Compile Include="Helper\IntegrateVelocity.cs" />
+    <Compile Include="SolutionIntegration\IntegratePosition.cs" />
+    <Compile Include="SolutionIntegration\IntegrateVelocity.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />
     <Compile Include="Helper\StabilizationValues.cs" />
     <Compile Include="JacobianConstraints\AngularConstraint.cs" />

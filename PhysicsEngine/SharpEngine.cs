@@ -39,6 +39,7 @@ using SharpPhysicsEngine.Wrapper.Joint;
 using System.Collections.Concurrent;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ContinuosCollisionDetection;
+using SharpPhysicsEngine.SolutionIntegration;
 
 namespace SharpPhysicsEngine
 {
@@ -519,8 +520,8 @@ namespace SharpPhysicsEngine
                 var shapeA = Shapes.First(x => x.ID == item.ObjectIndexA);
                 var shapeB = Shapes.First(x => x.ID == item.ObjectIndexB);
 
-                if (!(shapeA is SoftShape) &&
-                    !(shapeB is SoftShape))
+                if (!(shapeA is SimSoftShape) &&
+                    !(shapeB is SimSoftShape))
                 {
 
                     if (!PreviousShapesProperties.ContainsKey(item.ObjectIndexA))

@@ -30,7 +30,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SharpPhysicsEngine.Helper
+namespace SharpPhysicsEngine.SolutionIntegration
 {
     internal sealed class IntegratePosition
     {

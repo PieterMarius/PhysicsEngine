@@ -66,12 +66,12 @@ namespace SharpPhysicsEngine
             var contactConstraints = new List<JacobianConstraint>();
 
             if (objectA is ISoftShape && 
-                !(objectB is SoftShape))
+                !(objectB is SimSoftShape))
             {
                 contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, timeStep));
             }
             else if (objectB is ISoftShape && 
-                    !(objectA is SoftShape))
+                    !(objectA is SimSoftShape))
             {
                 contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, objectA, (ISoftShape)objectB, timeStep));
             }
@@ -364,8 +364,7 @@ namespace SharpPhysicsEngine
             IShape softShape,
             IShape shape)
         {
-            return (softShape.RestitutionCoeff +
-                   shape.RestitutionCoeff) * 0.5;
+            return (softShape.RestitutionCoeff + shape.RestitutionCoeff) * 0.5;
         }
 
         private double GetBaumgarteStabilizationValue(

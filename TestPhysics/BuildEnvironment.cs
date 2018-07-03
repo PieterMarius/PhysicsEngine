@@ -387,7 +387,7 @@ namespace TestPhysics
 			return mesh;
 		}
 
-		private SoftSimShape BuildSoftBody(
+		private SoftShape BuildSoftBody(
 			string fileName,
 			double scale,
 			Vector3 position)
@@ -396,7 +396,7 @@ namespace TestPhysics
 
             //RotateObj(ref prop, new Vector3(0.0, 0.0, 1.0), -Math.PI / 4.5);
 
-			return new SoftSimShape(
+			return new SoftShape(
 				prop.triangleIndex, 
 				prop.vertexPoint, 
 				position,
