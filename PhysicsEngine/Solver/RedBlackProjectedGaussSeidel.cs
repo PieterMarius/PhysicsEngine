@@ -74,26 +74,7 @@ namespace SharpPhysicsEngine.LCPSolver
         {
             return Execute(input, redBlackDictionary, x);
         }
-
-        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)
-        {
-            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = new Dictionary<RedBlackEnum, List<int>>
-            {
-                { RedBlackEnum.Red, new List<int>() },
-                { RedBlackEnum.Black, new List<int>() }
-            };
-
-            for (int i = 0; i < nodeDictionary.Count; i++)
-            {
-                if (nodeDictionary[i])
-                    redBlackDictionary[RedBlackEnum.Black].Add(i);
-                else
-                    redBlackDictionary[RedBlackEnum.Red].Add(i);
-            }
-
-            return redBlackDictionary;
-        }
-
+        
         public Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(LinearProblemProperties input)
         {
             var graph = input.ConstrGraph;
@@ -181,6 +162,11 @@ namespace SharpPhysicsEngine.LCPSolver
                                     ExecuteKernel(input, black[i], ref x);
                             });
                     }
+
+                    double actualSolverError = SolverHelper.ComputeSolverError(input, x);
+                                        
+                    if (actualSolverError < SolverParameters.ErrorTolerance)
+                        return x;
                 }
             }
             catch(Exception ex)
@@ -190,7 +176,7 @@ namespace SharpPhysicsEngine.LCPSolver
             return x;
             
         }
-               
+                               
         private void ExecuteKernel(
             LinearProblemProperties input,
             int index,
@@ -215,6 +201,25 @@ namespace SharpPhysicsEngine.LCPSolver
             xValue += (sumBuffer - xValue) * SolverParameters.SOR;
 
             x[index] = ClampSolution.Clamp(input, xValue, x, index);
+        }
+
+        private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)
+        {
+            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = new Dictionary<RedBlackEnum, List<int>>
+            {
+                { RedBlackEnum.Red, new List<int>() },
+                { RedBlackEnum.Black, new List<int>() }
+            };
+
+            for (int i = 0; i < nodeDictionary.Count; i++)
+            {
+                if (nodeDictionary[i])
+                    redBlackDictionary[RedBlackEnum.Black].Add(i);
+                else
+                    redBlackDictionary[RedBlackEnum.Red].Add(i);
+            }
+
+            return redBlackDictionary;
         }
 
         #endregion

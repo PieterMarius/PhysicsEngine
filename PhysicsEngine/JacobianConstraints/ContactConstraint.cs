@@ -400,9 +400,11 @@ namespace SharpPhysicsEngine
 
 			for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
 			{
-				for (int k = 0; k < collisionPointStr.CollisionPointBase[h].CollisionPoints.Length; k++)
+                var collisionPointBase = collisionPointStr.CollisionPointBase[h];
+
+                for (int k = 0; k < collisionPointBase.CollisionPoints.Length; k++)
 				{
-					CollisionPoint collisionPoint = collisionPointStr.CollisionPointBase[h].CollisionPoints[k];
+					CollisionPoint collisionPoint = collisionPointBase.CollisionPoints[k];
 
 					Vector3 ra = collisionPoint.CollisionPointA.Vertex - objectA.Position;
 					Vector3 rb = collisionPoint.CollisionPointB.Vertex - objectB.Position;
@@ -422,8 +424,8 @@ namespace SharpPhysicsEngine
 					Vector3 relativeVelocity = velocityB - velocityA;
 
 					if (relativeVelocity.Length() < 1E-12 &&
-						collisionPoint.Intersection &&
-						collisionPoint.Distance < 1E-10)
+                        collisionPointBase.CollisionPoint.Intersection &&
+                        collisionPointBase.CollisionPoint.Distance < 1E-10)
 						continue;
 
 					#region Normal direction contact
@@ -434,10 +436,10 @@ namespace SharpPhysicsEngine
 
 					double correctionParameter = 0.0;
 
-					if (collisionPoint.Intersection)
+					if (collisionPointBase.CollisionPoint.Intersection)
 					{
                         //Limit the Baum stabilization jitter effect 
-                        correctionParameter = Math.Max(Math.Max(collisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *
+                        correctionParameter = Math.Max(Math.Max(collisionPointBase.CollisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *
                                                         baumgarteStabilizationValue, 0.0);
                     }
 

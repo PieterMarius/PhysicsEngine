@@ -42,7 +42,9 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
 
             for (int i = 0; i < points.Length; i++)
                 vtx[i] = new ConvexHullVertex() { Position = points[i].Array, Index = i };
-            
+
+            var check = GeometryUtilities.TestAlignedPlanePoints(points);
+
             try
             {
                 ConvexHull<ConvexHullVertex, DefaultConvexFace<ConvexHullVertex>> cHull = ConvexHull.Create(vtx);

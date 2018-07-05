@@ -270,10 +270,14 @@ namespace SharpPhysicsEngine.SolutionIntegration
                 {
                     simulationObj.SetLinearVelocity(new Vector3());
                     simulationObj.SetAngularVelocity(new Vector3());
+                    simulationObj.SetIsSleeping(true);
                 }
             }
             else
+            {
                 simulationObj.SetSleepingFrameCount(0);
+                simulationObj.SetIsSleeping(false);
+            }
         }
 
         #endregion

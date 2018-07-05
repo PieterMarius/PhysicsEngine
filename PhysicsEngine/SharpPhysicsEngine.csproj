@@ -92,6 +92,8 @@
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\CommonUtilities.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
+    <Compile Include="K-Means\IKMeansInput.cs" />
+    <Compile Include="K-Means\KMeans.cs" />
     <Compile Include="SolutionIntegration\IntegratePosition.cs" />
     <Compile Include="SolutionIntegration\IntegrateVelocity.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />

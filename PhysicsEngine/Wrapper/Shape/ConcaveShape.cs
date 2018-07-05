@@ -168,12 +168,12 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3 GetCenterOfMassShiftValue(int index = 0)
         {
-            throw new NotImplementedException();
+            return -1.0 * concaveShape.InitCenterOfMass;
         }
 
         public int GetGeometryCount()
         {
-            throw new NotImplementedException();
+            return 1;
         }
 
         public int GetID()
@@ -213,7 +213,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public void SetErrorReductionParam(double value)
         {
-            throw new NotImplementedException();
+            concaveShape.SetRestoreCoeff(value);
         }
 
         public void SetForce(Vector3 force)
@@ -274,6 +274,17 @@ namespace SharpPhysicsEngine.Wrapper
         public void SetTorque(Vector3 torque)
         {
             concaveShape.SetTorque(torque);
+        }
+
+        public double[][][] GetConvexShapeList()
+        {
+            Vector3[][] result = new Vector3[concaveShape.ConvexShapesGeometry.Length][];
+
+            for (int i = 0; i < concaveShape.ConvexShapesGeometry.Length; i++)
+                result[i] = Array.ConvertAll(concaveShape.ConvexShapesGeometry[i].RelativePosition, 
+                                             x => ShapeDefinition.Helper.GetVertexPosition(concaveShape.ConvexShapesGeometry[i], x));
+
+            return GeneralMathUtilities.GetMatrixFromVector3Matrix(result);
         }
 
         #endregion

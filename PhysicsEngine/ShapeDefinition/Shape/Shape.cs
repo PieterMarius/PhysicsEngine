@@ -78,6 +78,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public bool ActiveCCD { get; protected set; }
 
+        public bool IsSleeping { get; protected set; }
+
         #endregion
 
         #region Constructor
@@ -200,6 +202,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public void SetActiveCCD(bool isActive)
         {
             ActiveCCD = isActive;
+        }
+
+        public void SetIsSleeping(bool isSleep)
+        {
+            IsSleeping = isSleep;
         }
 
         #endregion

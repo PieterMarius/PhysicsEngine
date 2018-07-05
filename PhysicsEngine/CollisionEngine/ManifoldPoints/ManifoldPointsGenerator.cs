@@ -247,7 +247,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             if (ManifoldPointNumber == 4)
             {
                 result = ExtractFourCollisionPoints(result, cp.CollisionNormal);
-                result.Add(cp);
+                //result.Add(cp);
             }
             else
             {

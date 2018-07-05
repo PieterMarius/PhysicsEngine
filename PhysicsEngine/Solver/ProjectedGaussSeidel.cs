@@ -61,7 +61,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
 
                 double actualSolverError = SolverHelper.ComputeSolverError(input, x);
-
+                                
                 if (actualSolverError < SolverParameters.ErrorTolerance)
                     return x;
             }
@@ -126,8 +126,7 @@ namespace SharpPhysicsEngine.LCPSolver
             OrderablePartitioner<Tuple<int, int>> rangePartitioner)
         {
             double[] sum = new double[input.Count];
-
-            
+                        
             Parallel.ForEach(
                     rangePartitioner,
                     new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },

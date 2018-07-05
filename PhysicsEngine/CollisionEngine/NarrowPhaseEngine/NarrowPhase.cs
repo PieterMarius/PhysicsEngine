@@ -43,7 +43,8 @@ namespace SharpPhysicsEngine.CollisionEngine
         private readonly CollisionEngineParameters parameters;
         private readonly AABBBroadPhase broadPhaseSoftCollisionEngine;
         private readonly ConvexBodyNarrowPhase convexBodyNarrowPhase;
-        
+        private readonly K_Means.KMeans kMeansEngine;
+
         #endregion
 
         #region Constructor
@@ -54,6 +55,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             convexBodyNarrowPhase = new ConvexBodyNarrowPhase(parameters);
             broadPhaseSoftCollisionEngine = new AABBBroadPhase(parameters);
+            kMeansEngine = new K_Means.KMeans();
         }
 
         #endregion
@@ -126,6 +128,34 @@ namespace SharpPhysicsEngine.CollisionEngine
                 }
 
                 collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
+
+
+                if (A is ConcaveShape || B is ConcaveShape)
+                {
+
+                    var executeKMeans = kMeansEngine.Execute(collisionPointStructure[0].CollisionPointBase, parameters.ManifoldPointNumber);
+
+                    var p1 = executeKMeans[0].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2);
+
+                    List<CollisionPointBaseStructure> newBaseStructure = new List<CollisionPointBaseStructure>();
+
+                    for (int i = 0; i < parameters.ManifoldPointNumber; i++)
+                    {
+                        newBaseStructure.Add((CollisionPointBaseStructure)executeKMeans[i].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2).Item1);
+                    }
+
+                    collisionPointStructure[0].SetBaseCollisionPoint(newBaseStructure.ToArray());
+                }
+
+                //var aggregateCollisionPoint = GeneralMathUtilities.FlattenArray(Array.ConvertAll(collisionPointStructure[0].CollisionPointBase, x => x.CollisionPoints));
+
+                //var executeKMeans = kMeansEngine.Execute(aggregateCollisionPoint, parameters.ManifoldPointNumber);
+
+                //var p1 = executeKMeans[0].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2);
+
+
+                //TODO sostituire i punti con quelli appena trovati
+                //collisionPointStructure[0].CollisionPointBase = new CollisionPointBaseStructure(null, executeKMeans.)
             }
 
             if (collisionPointStructure.Count > 0)
@@ -133,7 +163,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             return null;
         }
-
+        
         private List<CollisionPointStructure> GetCollisionPointStructure(
             IShape A,
             IShape B,

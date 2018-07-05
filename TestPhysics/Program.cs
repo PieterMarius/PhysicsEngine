@@ -33,15 +33,54 @@ namespace TestPhysics
 	{
 		public static void Main (string[] args)
 		{
-			using (TestWindow test = new TestWindow ()) 
-			{
+            using (TestWindow test = new TestWindow())
+            {
                 //Test();
                 //TestBFS();
-				//test.VSync = VSyncMode.Adaptive;
-				test.Run(0.0, 0.0);
-				
-			}
+                //test.VSync = VSyncMode.Adaptive;
+                test.Run(0.0, 0.0);
+
+            }
 		}
+
+        //private static void TestKMeans()
+        //{
+        //    SharpPhysicsEngine.K_Means.KMeans engine = new SharpPhysicsEngine.K_Means.KMeans();
+
+        //    //var points = new Vector3[] {
+        //    //    new Vector3(1.0,1.0,0.0),
+        //    //    new Vector3(1.5,2.0,0.0),
+        //    //    new Vector3(3.0,4.0,0.0),
+        //    //    new Vector3(5.0,7.0,0.0),
+        //    //    new Vector3(3.5,5.0,0.0),
+        //    //    new Vector3(4.5,5.0,0.0),
+        //    //    new Vector3(3.5,4.5,0.0),
+        //    //};
+
+        //    var points = new Vector3[] {
+        //        new Vector3(5.0,5.0,0.0),
+        //        new Vector3(9,8.0,0.0),
+        //        new Vector3(13.0,7.0,0.0),
+        //        new Vector3(5.0,12.0,0.0),
+        //        new Vector3(10,16.0,0.0),
+        //        new Vector3(15,11.0,0.0),
+        //        new Vector3(34,22,0.0),
+        //        new Vector3(39,21,0.0),
+        //        new Vector3(31,27,0.0),
+        //        new Vector3(36,26,0.0),
+        //        new Vector3(42,27,0.0),
+        //        new Vector3(32,30,0.0),
+        //        new Vector3(37,30,0.0),
+        //        new Vector3(16,30,0.0),
+        //        new Vector3(17,28,0.0),
+        //        new Vector3(15,31,0.0),
+        //        new Vector3(18,32,0.0),
+        //        new Vector3(14,25,0.0),
+        //    };
+
+        //    var output = engine.Execute(points, 3);
+
+        //}
 
         private static void Test()
         {

@@ -360,6 +360,7 @@ namespace TestPhysics
             //displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
             displayContact();
+            //DisplayConcaveShape(1);
             //displayBaseContact();
             //displayJoint();
             //displaySoftJoint();
@@ -440,6 +441,8 @@ namespace TestPhysics
 
 
                     collPoint = physicsEngine.GetCollisionPointStrucureList();
+                    //if (collPoint.Count > 0)
+                    //    pause = true;
 
 
                     //pause = true;
@@ -1168,9 +1171,33 @@ namespace TestPhysics
 				OpenGLUtilities.DrawLine(item.a, item.b);
 		}
 
+        private void DisplayConcaveShape(int index)
+        {
+            ConcaveShape shape = physicsEngine.GetShape(index) as ConcaveShape;
+
+            var convexShapeList = shape.GetConvexShapeList();
+
+            for (int i = 0; i < convexShapeList.Length; i++)
+            {
+                IVertex[] vtx = Array.ConvertAll(convexShapeList[i], x => new DefaultVertex() { Position = x });
+
+                ConvexHull<IVertex, DefaultConvexFace<IVertex>> cHull = ConvexHull.Create(vtx);
+
+                var convexHullShape = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
+
+                var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+
+                GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
+
+                OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+
+                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+            }
+        }
+
 		private void displayConvexDecomposition()
 		{
-			SoftShape softShape = physicsEngine.GetShape(13) as SoftShape;
+			SoftShape softShape = physicsEngine.GetShape(1) as SoftShape;
 
             //region.Min = region.Min + new SharpEngineMathUtility.Vector3(-1.0, -1.0, -1.0);
             //region.Max = region.Max + new SharpEngineMathUtility.Vector3(1.0, 1.0, 1.0);

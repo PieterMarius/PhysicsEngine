@@ -25,15 +25,17 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.K_Means;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-    public class CollisionPoint
+    public class CollisionPoint: IKMeansInput
     {
         public readonly VertexProperties CollisionPointA;
         public readonly VertexProperties CollisionPointB;
+
         public double Distance { get; private set; }
         public bool Intersection { get; private set; }
         public Vector3 CollisionNormal { get; private set; }
@@ -98,6 +100,11 @@ namespace SharpPhysicsEngine.CollisionEngine
         public void SetIntersection(bool intersection)
         {
             Intersection = intersection;
+        }
+
+        public Vector3 GetPointPosition()
+        {
+            return CollisionPointA.Vertex;
         }
 
         #endregion

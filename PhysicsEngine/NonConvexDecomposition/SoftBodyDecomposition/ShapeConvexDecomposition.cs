@@ -313,9 +313,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         private void FinalizeShape(ref List<ShapeDecompositionOutput> convexShapes)
         {
-             Parallel.ForEach(convexShapes,
-                            new ParallelOptions { MaxDegreeOfParallelism = 1 },
-                            shape =>
+            Parallel.ForEach(convexShapes,
+                new ParallelOptions { MaxDegreeOfParallelism = 1 },
+                shape =>
              {
                  HashSet<Vertex3Index> bufVertex = new HashSet<Vertex3Index>();
                  
@@ -340,7 +340,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                      shape.AddVertex3Index(bufVertex);
                  }
 
-                 var vertices = bufVertex.Select(x => x.Vector3).ToArray();
+                 var vertices = shape.Vertex3Idx.Select(x => x.Vector3).ToArray();
                  shape.SetRegion(AABB.GetGeometryAABB(vertices, null));
              });
         }

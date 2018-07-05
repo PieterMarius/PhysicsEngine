@@ -122,13 +122,13 @@ namespace SharpPhysicsEngine.SolutionIntegration
             IShapeCommon simObj,
             Vector3 linearComponent,
             Vector3 angularComponent,
-            double X,
+            double x,
             object sync)
         {
             if (!simObj.IsStatic)
             {
-                Vector3 linearImpulse = X * linearComponent;
-                Vector3 angularImpuse = X * angularComponent;
+                Vector3 linearImpulse = x * linearComponent;
+                Vector3 angularImpuse = x * angularComponent;
 
                 Vector3 linearVelocity = linearImpulse *
                                          simObj.MassInfo.InverseMass;

@@ -25,43 +25,11 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
-using System;
 
-namespace SharpPhysicsEngine.ShapeDefinition
+namespace SharpPhysicsEngine.K_Means
 {
-    internal static class Helper
+    internal interface IKMeansInput
     {
-        public static Vector3 GetVertexPosition(
-            IGeometry obj,
-            int vertexIndex)
-        {
-            return
-                obj.Shape.Position +
-                (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]);
-        }
-
-        public static Vector3 GetVertexPosition(
-            IGeometry obj,
-            Vector3 relativePos)
-        {
-            return
-                obj.Shape.Position +
-                (obj.Shape.RotationMatrix * relativePos);
-        }
-
-
-        public static IGeometry[] GetGeometry(IShape shape)
-        {
-            if (shape is IConvexShape convexShape)
-                return new IGeometry[] { convexShape.ObjectGeometry };
-
-            if (shape is ICompoundShape compoundShape)
-                return compoundShape.ShapesGeometry;
-                        
-            if (shape is IConcaveShape concaveShape)
-                return concaveShape.ConvexShapesGeometry;
-
-            throw new ArgumentException("Unexpected type: " + shape.GetType());
-        }
+        Vector3 GetPointPosition();
     }
 }

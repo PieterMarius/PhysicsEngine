@@ -624,7 +624,7 @@ namespace SharpEngineMathUtility
 		public static bool TestAlignedPlanePoints(
 			Vector3[] vt)
 		{
-			if (vt == null || vt.Length != 4)
+			if (vt == null || vt.Length < 4)
 				return false;
 
 			double[] t = new double[24];

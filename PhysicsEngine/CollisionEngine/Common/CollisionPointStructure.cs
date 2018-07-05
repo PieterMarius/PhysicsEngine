@@ -24,6 +24,8 @@
  *  
  *****************************************************************************/
 
+using SharpEngineMathUtility;
+using SharpPhysicsEngine.K_Means;
 using System.Linq;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -93,8 +95,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 	}
 
-	public class CollisionPointBaseStructure
-	{
+	public class CollisionPointBaseStructure: IKMeansInput
+    {
 		#region Fields
 
 		/// <summary>
@@ -130,8 +132,13 @@ namespace SharpPhysicsEngine.CollisionEngine
             CollisionPoints = lst.ToArray();
         }
 
-		#endregion
+        public Vector3 GetPointPosition()
+        {
+            return CollisionPoint.CollisionPointA.Vertex;
+        }
 
-	}
+        #endregion
+
+    }
 }
 

@@ -42,6 +42,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         AABB AABBox { get; }
         Vector3 FarthestPoint { get; }
         bool ActiveCCD { get; }
+        bool IsSleeping { get; }
 
 
         void SetAABB();
@@ -56,5 +57,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetTorque(Vector3 torque);
         void Rotate(Vector3 versor, double angle);
         void SetActiveCCD(bool isActive);
+        void SetIsSleeping(bool isSleep);
     }
 }

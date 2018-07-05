@@ -137,6 +137,8 @@ namespace SharpPhysicsEngine
         /// </summary>
         double partialTimeStep;
 
+        private double GlobalTimestep;
+
 		/// <summary>
 		/// Generate ID for shape of simulation
 		/// </summary>
@@ -412,13 +414,14 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		public void Simulate(double timeStep)
 		{
+            GlobalTimestep = timeStep;
 			TimeStep = timeStep;
 
             partialTimeStep = 0.0;
 
             if (EngineParameters.CCD)
             {
-                while (partialTimeStep < timeStep)
+                while (partialTimeStep < GlobalTimestep)
                     ExecuteFlow();
             }
             else
@@ -560,7 +563,7 @@ namespace SharpPhysicsEngine
             //var collisionPair = ContinuosCollisionDetection(simShapes);
 
             if (EngineParameters.CCD)
-                GlobalCCDSimulatation(simShapes);
+                GlobalCCDSimulation(simShapes);
 
             //Eseguo il motore che gestisce le collisioni
             //double collisionDist = CollisionEngineParam.CollisionDistance;
@@ -580,9 +583,9 @@ namespace SharpPhysicsEngine
             collisionPoints = actualCollisionPoints.ToArray();
         }
 
-        private void GlobalCCDSimulatation(IShape[] simShapes)
+        private void GlobalCCDSimulation(IShape[] simShapes)
         {
-            double lowerTimeStep = 0.016;
+            double lowerTimeStep = GlobalTimestep;
 
             for (int i = 0; i < simShapes.Length; i++)
             {
@@ -620,6 +623,12 @@ namespace SharpPhysicsEngine
             {
                 for (int j = i + 1; j < simShapes.Length; j++)
                 {
+                    if (simShapes[i].AngularVelocity.Dot(simShapes[i].AngularVelocity) == 0.0 &&
+                        simShapes[i].LinearVelocity.Dot(simShapes[i].LinearVelocity) == 0.0 &&
+                        simShapes[j].AngularVelocity.Dot(simShapes[j].AngularVelocity) == 0.0 &&
+                        simShapes[j].LinearVelocity.Dot(simShapes[j].LinearVelocity) == 0.0)
+                        continue;
+
                     double? timeOfImpact = ccdEngine.GetAABBTimeOfImpact(
                         simShapes[i],
                         simShapes[j],

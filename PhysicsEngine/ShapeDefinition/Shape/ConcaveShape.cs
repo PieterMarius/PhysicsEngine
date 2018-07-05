@@ -75,8 +75,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Position = position;
             TriangleMeshes = triangleMeshes;
             InputVertexPosition = inputVertexPosition;
-            SetAABB();
-
+            
             ObjectGeometry = new Geometry(
                 this, 
                 inputVertexPosition, 
@@ -84,7 +83,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ObjectGeometryType.ConcaveShape, 
                 true);
 
+            SetRotationMatrix();
+            SetInertiaTensor();
+                        
             SetShapeGeometry(convexHullEngine);
+            SetRelativePosition();
+            SetShapesRelativePosition();
+            SetAABB();
         }
 
         #endregion
@@ -93,7 +98,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public override void Rotate(Vector3 versor, double angle)
         {
-            throw new NotImplementedException();
+            var rotationQuaternion = new Quaternion(versor, angle);
+
+            SetRotationStatus((rotationQuaternion * RotationStatus).Normalize());
+
+            SetRotationMatrix(RotationStatus.ConvertToMatrix());
+
+            SetInverseInertiaTensor(
+                (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
+                RotationMatrix.Transpose());
         }
 
         public override void SetAABB()
@@ -115,9 +128,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetShapeGeometry(IConvexHullEngine convexHullEngine)
         {
-            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(AABBox, TriangleMeshes);
+            AABB region = AABB.GetGeometryAABB(Array.ConvertAll(ObjectGeometry.VertexPosition, x => x.Vertex), this);
 
-            Vertex3Index[] verticesIndex = Array.ConvertAll(InputVertexPosition, x => new Vertex3Index(x, new HashSet<int>(), -1));
+            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(region, TriangleMeshes);
+
+            Vertex3Index[] verticesIndex = Array.ConvertAll(ObjectGeometry.VertexPosition, x => new Vertex3Index(x.Vertex, x.GetAdjacencyList(), -1));
             var convexShapes = convexDecomposition.GetConvexShapeList(verticesIndex, 0.2);
 
             ConvexShapesGeometry = new Geometry[convexShapes.Count];
@@ -137,7 +152,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
-        private void SetRelativePosition()
+        private void SetShapesRelativePosition()
         {
             List<Vector3> objectRelativePosition = new List<Vector3>();
             double dist = 0.0;
@@ -168,10 +183,62 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 ConvexShapesGeometry[i].SetRelativePosition(relativePositions);
             }
-
-            ObjectGeometry.SetRelativePosition(objectRelativePosition.ToArray());
         }
 
+        private void SetRelativePosition()
+        {
+            Vector3[] relativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
+            double dist = 0.0;
+
+            if (ObjectGeometry.VertexPosition.Length > 0)
+            {
+                for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+                {
+                    relativePositions[j] =
+                        ObjectGeometry.VertexPosition[j].Vertex -
+                        InitCenterOfMass;
+
+                    double length = relativePositions[j].Dot(relativePositions[j]);
+
+                    if (length > dist)
+                    {
+                        dist = length;
+                        FarthestPoint = relativePositions[j];
+                    }
+                }
+            }
+
+            ObjectGeometry.SetRelativePosition(relativePositions);
+        }
+
+        private void SetRotationMatrix()
+        {
+            RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
+        }
+
+        private void SetInertiaTensor()
+        {
+            Vector3[] vertices = Array.ConvertAll(
+                                        ObjectGeometry.VertexPosition,
+                                        item => item.Vertex);
+
+            InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
+                vertices,
+                ObjectGeometry.Triangle,
+                MassInfo.Mass);
+
+            Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
+                    ObjectGeometry.VertexPosition,
+                    ObjectGeometry.Triangle,
+                    InitCenterOfMass,
+                    MassInfo.Mass).InertiaTensor;
+
+            MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+
+            MassInfo.InverseInertiaTensor = (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
+                                             Matrix3x3.Transpose(RotationMatrix);
+        }
+        
         #endregion
     }
 }

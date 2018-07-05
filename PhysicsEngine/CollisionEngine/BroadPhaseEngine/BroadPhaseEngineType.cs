@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-
 namespace SharpPhysicsEngine.CollisionEngine
 {
     public enum BroadPhaseEngineType

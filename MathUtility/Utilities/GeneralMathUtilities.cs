@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -201,6 +202,23 @@ namespace SharpEngineMathUtility
             }
 
             return result;
+        }
+
+        public static T[] FlattenArray<T>(T[][] matrix)
+        {
+            var rows = matrix.Length;
+            var list1d = new List<T>();
+
+            for (int i = 0; i < rows; i++)
+            {
+                int cols = matrix[i].Length;
+                for (int j = 0; j < cols; j++)
+                {
+                    list1d.Add(matrix[i][j]);
+                }
+            }
+
+            return list1d.ToArray();
         }
     }
 }
