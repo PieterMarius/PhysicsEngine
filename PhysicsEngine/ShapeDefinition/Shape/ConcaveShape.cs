@@ -71,7 +71,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
             bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
-            MassInfo.Mass = mass;
+            SetIsStatic(isStatic);
+            SetMass(mass);
             Position = position;
             TriangleMeshes = triangleMeshes;
             InputVertexPosition = inputVertexPosition;
@@ -120,6 +121,19 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public override void SetMass(double mass)
         {
             MassInfo.Mass = mass;
+
+            if (IsStatic)
+            {
+                MassInfo.Mass = 0.0;
+                MassInfo.InverseMass = 0.0;
+            }
+            else if (MassInfo.Mass > 0.0)
+            {
+                MassInfo.InverseMass = 1.0 / MassInfo.Mass;
+                SetInertiaTensor();
+            }
+            else
+                throw new Exception("Invalid mass value " + mass);
         }
 
         #endregion

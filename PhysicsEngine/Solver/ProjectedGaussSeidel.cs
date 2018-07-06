@@ -61,7 +61,9 @@ namespace SharpPhysicsEngine.LCPSolver
                 ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
 
                 double actualSolverError = SolverHelper.ComputeSolverError(input, x);
-                                
+
+                Console.WriteLine("Error " + actualSolverError);
+
                 if (actualSolverError < SolverParameters.ErrorTolerance)
                     return x;
             }

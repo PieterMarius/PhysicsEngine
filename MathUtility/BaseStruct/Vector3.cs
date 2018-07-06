@@ -441,6 +441,16 @@ namespace SharpEngineMathUtility
                 Math.Round(this.z, digits, mode));
         }
 
+        public bool IsNaN()
+        {
+            if (double.IsNaN(this.x) &&
+                double.IsNaN(this.y) &&
+                double.IsNaN(this.z))
+                return true;
+
+            return false;
+        }
+
         #endregion
 
         #region IComparable implementation

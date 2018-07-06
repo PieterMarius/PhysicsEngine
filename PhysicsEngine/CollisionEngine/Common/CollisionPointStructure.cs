@@ -26,6 +26,7 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.K_Means;
+using System;
 using System.Linq;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -85,11 +86,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			FrameCount = count;
 		}
 
-		public void SetBaseCollisionPoint(
-			CollisionPointBaseStructure[] collisionPointBase)
+		public void SetBaseCollisionPoint(CollisionPointBaseStructure[] collisionPointBase)
 		{
-			CollisionPointBase = collisionPointBase;
-		}
+            CollisionPointBase = new CollisionPointBaseStructure[collisionPointBase.Length];
+            Array.Copy(collisionPointBase, CollisionPointBase, collisionPointBase.Length);
+
+        }
 
 		#endregion
 

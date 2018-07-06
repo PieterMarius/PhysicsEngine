@@ -127,41 +127,44 @@ namespace SharpPhysicsEngine.CollisionEngine
                         baseStructure.AddRange(cps.CollisionPointBase);
                 }
 
-                collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
-
-
                 if (A is ConcaveShape || B is ConcaveShape)
                 {
-
-                    var executeKMeans = kMeansEngine.Execute(collisionPointStructure[0].CollisionPointBase, parameters.ManifoldPointNumber);
-
-                    var p1 = executeKMeans[0].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2);
-
-                    List<CollisionPointBaseStructure> newBaseStructure = new List<CollisionPointBaseStructure>();
-
-                    for (int i = 0; i < parameters.ManifoldPointNumber; i++)
-                    {
-                        newBaseStructure.Add((CollisionPointBaseStructure)executeKMeans[i].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2).Item1);
-                    }
-
-                    collisionPointStructure[0].SetBaseCollisionPoint(newBaseStructure.ToArray());
+                    collisionPointStructure[0].SetBaseCollisionPoint(ExtractConcaveShapeCollisionPoint(A, B, baseStructure).ToArray());
+                    
                 }
-
-                //var aggregateCollisionPoint = GeneralMathUtilities.FlattenArray(Array.ConvertAll(collisionPointStructure[0].CollisionPointBase, x => x.CollisionPoints));
-
-                //var executeKMeans = kMeansEngine.Execute(aggregateCollisionPoint, parameters.ManifoldPointNumber);
-
-                //var p1 = executeKMeans[0].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2);
-
-
-                //TODO sostituire i punti con quelli appena trovati
-                //collisionPointStructure[0].CollisionPointBase = new CollisionPointBaseStructure(null, executeKMeans.)
+                else
+                    collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
             }
 
             if (collisionPointStructure.Count > 0)
                 return collisionPointStructure[0];
 
             return null;
+        }
+
+        private List<CollisionPointBaseStructure> ExtractConcaveShapeCollisionPoint(
+            IShape A,
+            IShape B,
+            List<CollisionPointBaseStructure> collisionPointBase)
+        {
+            var collisionPointWithIntersection = collisionPointBase.Where(x => x.CollisionPoint.Intersection).ToArray();
+
+            CollisionPointBaseStructure[] collisionPointBS = collisionPointBase.ToArray();
+
+            if (collisionPointWithIntersection.Length > 0)
+                collisionPointBS = collisionPointWithIntersection;
+           
+            var executeKMeans = kMeansEngine.Execute(collisionPointBS, parameters.ManifoldPointNumber);
+                        
+            List<CollisionPointBaseStructure> result = new List<CollisionPointBaseStructure>();
+
+            for (int i = 0; i < parameters.ManifoldPointNumber; i++)
+            {
+                if (executeKMeans[i].Points.Count > 0)
+                    result.Add((CollisionPointBaseStructure)executeKMeans[i].Points.Aggregate((i1, i2) => i1.Item2 < i2.Item2 ? i1 : i2).Item1);
+            }
+
+            return result;
         }
         
         private List<CollisionPointStructure> GetCollisionPointStructure(

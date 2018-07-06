@@ -142,7 +142,13 @@ namespace SharpPhysicsEngine.K_Means
             for (int i = 0; i < newCentroid.Length; i++)
             {
                 if (newCentroid[i] != oldCentroid[i])
+                {
+                    if (newCentroid[i].IsNaN() &&
+                        oldCentroid[i].IsNaN())
+                        continue;
+
                     return true;
+                }
             }
 
             return false;
