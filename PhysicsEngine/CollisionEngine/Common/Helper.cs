@@ -59,12 +59,12 @@ namespace SharpPhysicsEngine.CollisionEngine
                 vertexObj[0].Adjacency.Count > 0)
 				return GetFarthestPointWithAdj(vertexObj, direction);
 			else
-				return GetFarthestPointWithOutAdj(vertexObj, direction);
+				return GetFarthestPointWithoutAdj(vertexObj, direction);
 		}
 
 		
 
-		public static int GetFarthestPointWithOutAdj(
+		public static int GetFarthestPointWithoutAdj(
 			VertexProperties[] vertexObj,
 			Vector3 direction)
 		{
@@ -131,38 +131,37 @@ namespace SharpPhysicsEngine.CollisionEngine
 				Vector3 center = result[i].A.s;
 				Vector3 dir = Vector3.Normalize(vt.s - center);
 
-				if (Vector3.Dot(result[i].Normal, dir) > 0.0)
-				{
-					//Edge 1
-					var edge = new Edge(
-									result[i].A,
-									result[i].B);
+                if (Vector3.Dot(result[i].Normal, dir) > 0.0)
+                {
+                    //Edge 1
+                    var edge = new Edge(
+                                    result[i].A,
+                                    result[i].B);
 
-					edges = CheckEdge(edges, edge);
+                    edges = CheckEdge(edges, edge);
 
-					//Edge 2
+                    //Edge 2
 
-					edge = new Edge(
-						result[i].A,
-						result[i].C);
+                    edge = new Edge(
+                        result[i].A,
+                        result[i].C);
 
-					edges = CheckEdge(edges, edge);
+                    edges = CheckEdge(edges, edge);
 
-					//Edge 3
+                    //Edge 3
 
-					edge = new Edge(
-						result[i].B,
-						result[i].C);
+                    edge = new Edge(
+                        result[i].B,
+                        result[i].C);
 
-					edges = CheckEdge(edges, edge);
+                    edges = CheckEdge(edges, edge);
 
-					result.RemoveAt(i);
+                    result.RemoveAt(i);
 
-				}
-				else
-				{
-					i++;
-				}
+                }
+                else
+                    i = i + 1;
+				
 			}
 
 			result = AddTriangle(edges, result, vt, centroid);

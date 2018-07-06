@@ -245,15 +245,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			}
 
             if (ManifoldPointNumber == 4)
-            {
                 result = ExtractFourCollisionPoints(result, cp.CollisionNormal);
-                //result.Add(cp);
-            }
             else
-            {
-                result = PruneCollisionPoints(result);
+                result = ExtractCollisionPoints(result, cp.CollisionNormal);
+
+            if (result.Count < 4)
                 result.Add(cp);
-            }
 
             return result;
         }
@@ -332,7 +329,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return result;
 		}
 
-		private List<CollisionPoint> PruneCollisionPoints(List<CollisionPoint> cpList)
+		private List<CollisionPoint> ExtractCollisionPoints(
+            List<CollisionPoint> cpList,
+            Vector3 normal)
 		{
             if (cpList.Count > ManifoldPointNumber) 
 			{
@@ -342,25 +341,48 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 				center = center / Convert.ToDouble(cpList.Count);
 
-				while (cpList.Count > ManifoldPointNumber - 1) 
-				{
-					int index = 0;
-					double min = Vector3.Length (cpList [0].CollisionPointA.Vertex - center);
-					for (int i = 1; i < cpList.Count; i++) 
-					{
-						double minx = Vector3.Length (cpList [i].CollisionPointA.Vertex - center);
-						if (minx < min) 
-						{
-							min = minx;
-							index = i;
-						}
-					}
-					cpList.RemoveAt (index);
-				}
+                int nDirection = ManifoldPointNumber;
+                var coneDirection = GetConeDirection(normal, nDirection);
+                var arrayList = cpList.ToArray();
+
+                List<CollisionPoint> result = new List<CollisionPoint>();
+
+                for (int i = 0; i < nDirection; i++)
+                {
+                    int index = GetFarthestPoint(cpList.ToArray(), coneDirection[i]);
+                    result.Add(arrayList[index]);
+                    cpList.RemoveAt(index);
+                }
+                
+                return result;
 			}
 
 			return cpList;
 		}
+
+        private Vector3[] GetConeDirection(
+            Vector3 normal,
+            int nDirection)
+        {
+            var coneDirection = new Vector3[nDirection];
+
+            var tx = new Vector3();
+            var ty = new Vector3();
+
+            GeometryUtilities.ComputeBasis(
+                normal,
+                ref tx,
+                ref ty);
+
+            coneDirection[0] = tx;
+            coneDirection[1] = ty;
+                        
+            double step = Math.PI / nDirection;
+            for (int i = 0; i < nDirection; i++)
+                coneDirection[i] = Matrix3x3.GetRotationMatrix(normal, step * i) * tx;
+            
+            return coneDirection;
+        }
 
         private List<CollisionPoint> ExtractFourCollisionPoints(
             List<CollisionPoint> cpList,
@@ -417,8 +439,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                 //Point 4
                 CollisionPoint fourth = null;
                 maxArea = double.MinValue;
-                index = -1;
-
+                
                 for (int i = 0; i < cpList.Count; i++)
                 {
                     // A-B-D
@@ -428,7 +449,6 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
-                        index = i;
                     }
 
                     // A-C-D
@@ -438,7 +458,6 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
-                        index = i;
                     }
 
                     // B-C-D
@@ -448,7 +467,6 @@ namespace SharpPhysicsEngine.CollisionEngine
                     {
                         maxArea = area;
                         fourth = cpList[i];
-                        index = i;
                     }
                 }
 
@@ -505,8 +523,29 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return null;
 		}
 
+        public int GetFarthestPoint(
+            CollisionPoint[] vertexObj,
+            Vector3 direction)
+        {
+            int index = 0;
+            double maxDot = Vector3.Dot(vertexObj[index].CollisionPointA.Vertex, direction);
 
-		#endregion
-	}
+            for (int i = 1; i < vertexObj.Length; i++)
+            {
+                Vector3 vertex = vertexObj[i].CollisionPointA.Vertex;
+                double dot = Vector3.Dot(vertex, direction);
+
+                if (dot > maxDot)
+                {
+                    maxDot = dot;
+                    index = i;
+                }
+            }
+            return index;
+        }
+
+
+        #endregion
+    }
 }
 
