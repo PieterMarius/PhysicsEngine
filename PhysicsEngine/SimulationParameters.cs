@@ -162,7 +162,7 @@ namespace SharpPhysicsEngine
             LinearVelDisable = 0.1;
 			AngularVelDisable = 0.08;
 			ShiftToStaticFrictionTolerance = 0.05;
-			CCD = true;
+			CCD = false;
 			CollisionDistance = 0.003;
             CompenetrationTolerance = 0.05;
 			ExternalForce = new Vector3(0.0, -9.81, 0.0);

@@ -72,7 +72,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             ObjectType = ObjectType.RigidBody;
             SetIsStatic(isStatic);
-            SetMass(mass);
+            
             Position = position;
             TriangleMeshes = triangleMeshes;
             InputVertexPosition = inputVertexPosition;
@@ -85,8 +85,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 true);
 
             SetRotationMatrix();
-            SetInertiaTensor();
-                        
+            SetMass(mass);
+            
             SetShapeGeometry(convexHullEngine);
             SetRelativePosition();
             SetShapesRelativePosition();

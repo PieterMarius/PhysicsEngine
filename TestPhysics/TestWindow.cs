@@ -361,6 +361,7 @@ namespace TestPhysics
             //displayOrigin ();
             displayContact();
             //DisplayConcaveShape(1);
+            //DisplayConcaveShape(2);
             //displayBaseContact();
             //displayJoint();
             //displaySoftJoint();

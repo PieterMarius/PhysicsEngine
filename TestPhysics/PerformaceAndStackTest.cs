@@ -104,7 +104,7 @@ namespace TestPhysics
                 {
                     loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(0.0, 0.0, 0.0), 0.0);
                     if (i > 0)
-                        loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(1.0, 0.0, 0.0), 1.0);
+                        loadObjects[i][j] = LoadObjMesh(ShapeFilename[i], ShapeScale[i], new Vector3(1.0, 0.0, 0.0), 0.0);
                 }
             }
 
@@ -155,16 +155,16 @@ namespace TestPhysics
 
             double[] mass = new double[] { 50, 20, 8, 3, 1 };
             
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
             {
                 ShapeFilename.Add("teapot.obj");
                 ShapeScale.Add(1.0f);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                GeometryProperties geom1 = GetObjectGeometry("teapot.obj", 1.0f, 1.0);
-                //var objects1 = new ConcaveShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0, false);
+                GeometryProperties geom1 = GetObjectGeometry("teapot.obj", 1.0f, 0.0);
+                var objects1 = new ConcaveShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0, false);
                 //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
-                var objects1 = new ConvexShape(geom1.VertexPoint, position, 1.0);
+                //var objects1 = new ConvexShape(geom1.VertexPoint, position, 1.0);
                 objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 1.0));
                 objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));

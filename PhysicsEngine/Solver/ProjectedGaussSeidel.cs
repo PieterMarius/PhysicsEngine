@@ -62,7 +62,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 double actualSolverError = SolverHelper.ComputeSolverError(input, x);
 
-                Console.WriteLine("Error " + actualSolverError);
+                //Console.WriteLine("Error " + actualSolverError);
 
                 if (actualSolverError < SolverParameters.ErrorTolerance)
                     return x;

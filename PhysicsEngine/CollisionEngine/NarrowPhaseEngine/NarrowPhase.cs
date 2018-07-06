@@ -129,7 +129,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                 if (A is ConcaveShape || B is ConcaveShape)
                 {
-                    collisionPointStructure[0].SetBaseCollisionPoint(ExtractConcaveShapeCollisionPoint(A, B, baseStructure).ToArray());
+                    var concaveCollisionPoints = ExtractConcaveShapeCollisionPoint(A, B, baseStructure).ToArray();
+
+
+                    collisionPointStructure[0].SetBaseCollisionPoint(concaveCollisionPoints);
                     
                 }
                 else
