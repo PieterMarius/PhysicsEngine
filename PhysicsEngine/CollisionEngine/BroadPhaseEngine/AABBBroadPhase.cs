@@ -24,9 +24,12 @@
  *  
  *****************************************************************************/
 
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -56,26 +59,32 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
 			var collisionPairs = new List<CollisionPair> ();
 
-			var lockMe = new object();
+            var rangePartitioner = Partitioner.Create(0, boxs.Length, Convert.ToInt32(boxs.Length / collisionEngineParameters.MaxThreadNumber) + 1);
 
-			Parallel.For (0, 
-				boxs.Length, 
-				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber }, 
-				i => {
-                    AABB box1 = boxs[i];
+            var lockMe = new object();
 
-                    for (int k = i + 1; k < boxs.Length; k++)
+			Parallel.ForEach (
+                rangePartitioner, 
+				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
+                (range, loopState) => 
+                {
+                    for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        AABB box2 = boxs[k];
+                        AABB box1 = boxs[i];
 
-                        if (box1 != null && box2 != null &&
-                            Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
-                            Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
-                            Helper.TestBoxes(box1, box2, 2, distanceTolerance))
+                        for (int k = i + 1; k < boxs.Length; k++)
                         {
-                            lock (lockMe)
+                            AABB box2 = boxs[k];
+
+                            if (box1 != null && box2 != null &&
+                                Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
+                                Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
+                                Helper.TestBoxes(box1, box2, 2, distanceTolerance))
                             {
-                                collisionPairs.Add(new CollisionPair(i, k));
+                                lock (lockMe)
+                                {
+                                    collisionPairs.Add(new CollisionPair(i, k));
+                                }
                             }
                         }
                     }
@@ -92,26 +101,32 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             var collisionPairs = new List<CollisionPair>();
 
+            var rangePartitioner = Partitioner.Create(0, objectBoxesA.Length, Convert.ToInt32(objectBoxesA.Length / collisionEngineParameters.MaxThreadNumber) + 1);
+
             var lockMe = new object();
 
-            Parallel.For(0,
-                objectBoxesA.Length,
+            Parallel.ForEach(
+                rangePartitioner,
                 new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
-                i => {
-                    AABB box1 = objectBoxesA[i];
-
-                    for (int k = 0; k < objectBoxesB.Length; k++)
+                (range, loopState) =>
+                {
+                    for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        AABB box2 = objectBoxesB[k];
+                        AABB box1 = objectBoxesA[i];
 
-                        if (box1 != null && box2 != null &&
-                            Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
-                            Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
-                            Helper.TestBoxes(box1, box2, 2, distanceTolerance))
+                        for (int k = 0; k < objectBoxesB.Length; k++)
                         {
-                            lock (lockMe)
+                            AABB box2 = objectBoxesB[k];
+
+                            if (box1 != null && box2 != null &&
+                                Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
+                                Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
+                                Helper.TestBoxes(box1, box2, 2, distanceTolerance))
                             {
-                                collisionPairs.Add(new CollisionPair(i, k));
+                                lock (lockMe)
+                                {
+                                    collisionPairs.Add(new CollisionPair(i, k));
+                                }
                             }
                         }
                     }
