@@ -68,27 +68,17 @@ namespace SharpPhysicsEngine.CollisionEngine
             double collisionDistance)
         {
             var result = new List<CollisionPointStructure>();
-                        
-            var lockMe = new object();
 
-            Parallel.ForEach(
-                collisionPairs,
-                new ParallelOptions { MaxDegreeOfParallelism = parameters.MaxThreadNumber },
-                pair =>
-                {
-                    CollisionPointStructure collisionPointStruct = ExecuteNarrowPhase(
+            foreach (var pair in collisionPairs)
+            {
+                CollisionPointStructure collisionPointStruct = ExecuteNarrowPhase(
                         shapes[pair.objectIndexA],
                         shapes[pair.objectIndexB],
                         collisionDistance);
-
-                    if (collisionPointStruct != null)
-                    {
-                        lock (lockMe)
-                        {
-                            result.Add(collisionPointStruct);
-                        }
-                    }
-                });
+               
+                if(collisionPointStruct != null)
+                    result.Add(collisionPointStruct);
+            }
 
             return result;
         }
