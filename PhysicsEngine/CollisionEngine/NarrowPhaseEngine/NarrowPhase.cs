@@ -232,10 +232,21 @@ namespace SharpPhysicsEngine.CollisionEngine
                 var verticesA = Helper.GetVertexPosition(A);
                 var verticesB = Helper.GetVertexPosition(B);
 
+                VertexProperties[] vertexObjA = null;
+                VertexProperties[] vertexObjB = null;
+
+                if (A is ConvexShape)
+                    vertexObjA = Helper.SetVertexPosition(geometryA[0], verticesA);
+
+                if (B is ConvexShape)
+                    vertexObjB = Helper.SetVertexPosition(geometryB[0], verticesB);
+
                 foreach (var collidingPair in collisionPair)
                 {
-                    VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA], verticesA);
-                    VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB], verticesB);
+                    if (!(A is ConvexShape))
+                        vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA], verticesA);
+                    if (!(B is ConvexShape))
+                        vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB], verticesB);
 
                     CollisionPointStructure collision = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, A.ID, B.ID, collisionDistance);
 
@@ -258,7 +269,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                 geometryBoxesB.Length == 1)
                 return new List<CollisionPair>() { new CollisionPair(0, 0) };
 
-            return broadPhaseCollisionEngine.Execute(geometryBoxesA, geometryBoxesB, parameters.CollisionDistance);
+            return broadPhaseCollisionEngine.Execute(geometryBoxesA, geometryBoxesB, 0.000001);
         }
 
         private List<CollisionPointStructure> SoftBodyCollisionStep(
