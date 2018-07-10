@@ -37,6 +37,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
         Vector3 InitCenterOfMass { get; }
+        Vector3[] Vertices { get; }
+        Vector3[] VerticesRelPos { get; }
         double StaticFrictionCoeff { get; }
         Vector3 TorqueValue { get; }
         AABB AABBox { get; }

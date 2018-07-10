@@ -28,13 +28,24 @@ using System;
 using System.Linq;
 using MIConvexHull;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.ConvexHullWrapper
 {
     internal sealed class ConvexHullEngine : IConvexHullEngine
-    {        
+    {
         #region Public Methods
+
+        public ConvexHullData GetConvexHull(Vertex3Index[] points)
+        {
+            ConvexHullVertex[] vtx = new ConvexHullVertex[points.Length];
+
+            for (int i = 0; i < points.Length; i++)
+                vtx[i] = new ConvexHullVertex() { Position = points[i].Vector3.Array, Index = points[i].ID };
+
+            return GetConvexHullData1(vtx);
+        }
 
         public ConvexHullData GetConvexHull(Vector3[] points)
         {
@@ -43,15 +54,22 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
             for (int i = 0; i < points.Length; i++)
                 vtx[i] = new ConvexHullVertex() { Position = points[i].Array, Index = i };
 
-            var check = GeometryUtilities.TestAlignedPlanePoints(points);
+            return GetConvexHullData(vtx);
+        }
 
+        #endregion
+
+        #region Private Methods
+
+        private ConvexHullData GetConvexHullData(ConvexHullVertex[] vtx)
+        {
             try
             {
                 ConvexHull<ConvexHullVertex, DefaultConvexFace<ConvexHullVertex>> cHull = ConvexHull.Create(vtx);
                 var faces = cHull.Faces.ToArray();
 
                 TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
-                Vector3[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x=> new Vector3(x.Position));
+                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3(x.Position), null, x.Index));
 
                 var pointsList = cHull.Points.ToList();
 
@@ -66,8 +84,36 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
                         index1,
                         index2);
                 }
-                    
-                return new ConvexHullData(vertices,triangleMeshes);
+
+                return new ConvexHullData(vertices, triangleMeshes);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message, ex);
+            }
+        }
+
+        private ConvexHullData GetConvexHullData1(ConvexHullVertex[] vtx)
+        {
+            try
+            {
+                ConvexHull<ConvexHullVertex, DefaultConvexFace<ConvexHullVertex>> cHull = ConvexHull.Create(vtx);
+                var faces = cHull.Faces.ToArray();
+
+                TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
+                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3(x.Position), null, x.Index));
+
+                var pointsList = cHull.Points.ToList();
+
+                foreach (var face in faces.Select((value, i) => new { value, i }))
+                {
+                    triangleMeshes[face.i] = new TriangleMesh(
+                        face.value.Vertices[0].Index,
+                        face.value.Vertices[1].Index,
+                        face.value.Vertices[2].Index);
+                }
+
+                return new ConvexHullData(vertices, triangleMeshes);
             }
             catch (Exception ex)
             {

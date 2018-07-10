@@ -32,21 +32,21 @@ namespace SharpPhysicsEngine.ShapeDefinition
     internal static class Helper
     {
         public static Vector3 GetVertexPosition(
-            IGeometry obj,
+            IShape obj,
             int vertexIndex)
         {
             return
-                obj.Shape.Position +
-                (obj.Shape.RotationMatrix * obj.RelativePosition[vertexIndex]);
+                obj.Position +
+                (obj.RotationMatrix * obj.VerticesRelPos[vertexIndex]);
         }
 
         public static Vector3 GetVertexPosition(
-            IGeometry obj,
+            IShape obj,
             Vector3 relativePos)
         {
             return
-                obj.Shape.Position +
-                (obj.Shape.RotationMatrix * relativePos);
+                obj.Position +
+                (obj.RotationMatrix * relativePos);
         }
 
 

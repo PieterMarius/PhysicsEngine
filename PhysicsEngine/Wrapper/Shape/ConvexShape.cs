@@ -77,7 +77,7 @@ namespace SharpPhysicsEngine.Wrapper
             ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
 
             convexShape = new ShapeDefinition.ConvexShape(
-                convexHullData.Vertices,
+                Array.ConvertAll(convexHullData.Vertices, x => x.Vector3),
                 convexHullData.TriangleMeshes,
                 position,
                 mass,
@@ -298,8 +298,8 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3[] GetVertices()
         {
-            Vector3[] vertices = new Vector3[convexShape.ObjectGeometry.VertexPosition.Length];
-            for (int i = 0; i < convexShape.ObjectGeometry.VertexPosition.Length; i++)
+            Vector3[] vertices = new Vector3[convexShape.ObjectGeometry.VerticesIdx.Length];
+            for (int i = 0; i < convexShape.ObjectGeometry.VerticesIdx.Length; i++)
                 vertices[i] = CommonUtilities.GetVertexPosition(convexShape.ObjectGeometry, i).Vertex;
 
             return vertices;

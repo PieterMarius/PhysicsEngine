@@ -94,6 +94,7 @@
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="K-Means\IKMeansInput.cs" />
     <Compile Include="K-Means\KMeans.cs" />
+    <Compile Include="ShapeDefinition\Common\SupportIndex.cs" />
     <Compile Include="SolutionIntegration\IntegratePosition.cs" />
     <Compile Include="SolutionIntegration\IntegrateVelocity.cs" />
     <Compile Include="Helper\LinearProblemBaseProperties.cs" />

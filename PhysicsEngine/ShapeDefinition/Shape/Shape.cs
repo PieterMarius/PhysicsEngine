@@ -56,6 +56,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public Vector3 Position { get; protected set; }
 
+        public Vector3[] Vertices { get; protected set; }
+
+        public Vector3[] VerticesRelPos { get; protected set; }
+
         public Vector3 LinearVelocity { get; protected set; }
 
         public Vector3 AngularVelocity { get; protected set; }

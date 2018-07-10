@@ -172,8 +172,8 @@ namespace SharpPhysicsEngine.Wrapper
             List<Vector3> vertices = new List<Vector3>();
             for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
             {
-                for (int j = 0; j < compoundShape.ShapesGeometry[i].VertexPosition.Length; j++)
-                    vertices.Add(CommonUtilities.GetVertexPosition(compoundShape.ShapesGeometry[i], j).Vertex);
+                for (int j = 0; j < compoundShape.ShapesGeometry[i].VerticesIdx.Length; j++)
+                    vertices.Add(CommonUtilities.GetVertexPosition(compoundShape.ShapesGeometry[i], compoundShape.ShapesGeometry[i].VerticesIdx[j].ID).Vertex);
             }
 
             return vertices.ToArray();

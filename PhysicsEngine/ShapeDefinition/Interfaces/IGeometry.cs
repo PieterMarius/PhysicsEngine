@@ -34,13 +34,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
         TriangleMesh[] Triangle { get; }
-        VertexProperties[] VertexPosition { get; }
-        Vector3[] RelativePosition { get; }
-
+        SupportIndex[] VerticesIdx { get; }
+        
         void SetAABB(AABB box);
-        void SetShape(IShape shape);
-        void SetVertexPosition(Vector3 v, int index);
-        void SetVertexPositions(Vector3[] v);
-        void SetRelativePosition(Vector3[] relativePosition);
+        Vector3[] GetVertices();
     }
 }

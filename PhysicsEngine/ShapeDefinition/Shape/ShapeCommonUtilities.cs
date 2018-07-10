@@ -48,15 +48,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public static InertiaTensorOutput GetInertiaTensor(
-            VertexProperties[] vertex,
+            Vector3[] vertexPosition,
             TriangleMesh[] triangleMeshes,
             Vector3 position,
             double mass)
         {
-            Vector3[] vertexPosition = Array.ConvertAll(
-                                    vertex,
-                                    item => item.Vertex);
-
             var inertiaTensor = new InertiaTensorEngine(
                     vertexPosition,
                     triangleMeshes,

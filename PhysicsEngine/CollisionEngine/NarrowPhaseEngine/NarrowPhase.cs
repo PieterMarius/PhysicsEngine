@@ -227,24 +227,22 @@ namespace SharpPhysicsEngine.CollisionEngine
                 geometryA,
                 geometryB);
 
-            //Test
-            var vcount = 0;
-
-            foreach (var collidingPair in collisionPair)
+            if (collisionPair.Count > 0)
             {
-                VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA]);
-                VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB]);
+                var verticesA = Helper.GetVertexPosition(A);
+                var verticesB = Helper.GetVertexPosition(B);
 
-                //Test
-                vcount += vertexObjA.Length * vertexObjB.Length;
+                foreach (var collidingPair in collisionPair)
+                {
+                    VertexProperties[] vertexObjA = Helper.SetVertexPosition(geometryA[collidingPair.objectIndexA], verticesA);
+                    VertexProperties[] vertexObjB = Helper.SetVertexPosition(geometryB[collidingPair.objectIndexB], verticesB);
 
-                CollisionPointStructure collision = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, A.ID, B.ID, collisionDistance);
-                               
-                if (collision != null)
-                    collisionPointStructure.Add(collision);
+                    CollisionPointStructure collision = convexBodyNarrowPhase.Execute(vertexObjA, vertexObjB, A.ID, B.ID, collisionDistance);
+
+                    if (collision != null)
+                        collisionPointStructure.Add(collision);
+                }
             }
-
-            Console.WriteLine("vertex count " + vcount);
 
             return collisionPointStructure;
         }

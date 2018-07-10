@@ -25,11 +25,13 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ConvexHullWrapper
 {
     internal interface IConvexHullEngine
     {
         ConvexHullData GetConvexHull(Vector3[] points);
+        ConvexHullData GetConvexHull(Vertex3Index[] points);
     }
 }

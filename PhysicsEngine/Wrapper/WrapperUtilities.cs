@@ -27,6 +27,7 @@
 using SharpPhysicsEngine.ConvexHullWrapper;
 using SharpEngineMathUtility;
 using System.Linq;
+using System;
 
 namespace SharpPhysicsEngine.Wrapper
 {
@@ -55,7 +56,7 @@ namespace SharpPhysicsEngine.Wrapper
             var result = new ConvexHull()
             {
                 Triangles = convexHullData.TriangleMeshes.Select(x => x.GetArray())?.ToArray(),
-                Vertices = GeneralMathUtilities.GetArrayFromVector3(convexHullData.Vertices)
+                Vertices = GeneralMathUtilities.GetArrayFromVector3(Array.ConvertAll(convexHullData.Vertices, x => x.Vector3))
             };
                         
             return result;

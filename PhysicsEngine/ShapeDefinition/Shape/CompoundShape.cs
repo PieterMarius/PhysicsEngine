@@ -61,12 +61,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// Object triangle mesh index
         /// </summary>
         public TriangleMesh[] TriangleMeshes { get; private set; }
-
-        /// <summary>
-        /// Initial shape vertex position
-        /// </summary>
-        public Vector3[] InputVertexPosition { get; private set; }
-
+                
         #endregion
 
         #region Object dynamic properties
@@ -175,12 +170,17 @@ namespace SharpPhysicsEngine.ShapeDefinition
             {
                 TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle[i]);
 
-                geometry[i] = new Geometry(this, inputVertexPosition[i], triangleMeshes, ObjectGeometryType.ConvexShape, true);
+                var idx = new int[inputVertexPosition[i].Length];
+
+                for (int j = 0; j < inputVertexPosition[i].Length; j++)
+                    idx[j] = verticesSum.Count + j;
+                
+                geometry[i] = new Geometry(this, idx, triangleMeshes, ObjectGeometryType.ConvexShape, true);
 
                 verticesSum.AddRange(inputVertexPosition[i].ToList());
             }
 
-            InputVertexPosition = verticesSum.ToArray();
+            Vertices = verticesSum.ToArray();
 
             SetGeometry();
 
@@ -189,10 +189,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetGeometry()
         {
-            ObjectGeometry = new Geometry(
-                this,
-                InputVertexPosition,
-                ObjectGeometryType.ConvexShape);
+            //ObjectGeometry = new Geometry(
+            //    this,
+            //    InputVertexPosition,
+            //    ObjectGeometryType.ConvexShape);
         }
 
         private void SetShapesGeometry(IGeometry[] geometry)
@@ -203,12 +203,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
             {
                 for (int i = 0; i < ShapesGeometry.Length; i++)
                 {
-                    if (ShapesGeometry[i].VertexPosition != null &&
-                        ShapesGeometry[i].VertexPosition.Length > 0)
+                    if (ShapesGeometry[i].VerticesIdx != null &&
+                        ShapesGeometry[i].VerticesIdx.Length > 0)
                     {
-                        for (int j = 0; j < ShapesGeometry[i].VertexPosition.Length; j++)
-                            ShapesGeometry[i].VertexPosition[j].SetVertexPosition(ShapesGeometry[i].VertexPosition[j].Vertex +
-                                                                                  StartCompoundPositionObjects[i]);
+                        for (int j = 0; j < ShapesGeometry[i].VerticesIdx.Length; j++)
+                        {
+                            Vertices[ShapesGeometry[i].VerticesIdx[j].ID] += StartCompoundPositionObjects[i];
+                        }
                     }
                 }
                 CompoundingConvexObjCount = ShapesGeometry.Length;
@@ -228,17 +229,17 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
+                var vertices = ShapesGeometry[i].GetVertices();
+
                 baseTensors += ShapeCommonUtilities.GetInertiaTensor(
-                    ShapesGeometry[i].VertexPosition,
+                    vertices,
                     ShapesGeometry[i].Triangle,
                     InitCenterOfMass,
                     PartialMass[i]).InertiaTensor;
 
-                Vector3[] vertexPosition = Array.ConvertAll(
-                                        ShapesGeometry[i].VertexPosition,
-                                        item => item.Vertex);
+                Vector3[] vertexPosition = vertices;
 
-                totalVertex += ShapesGeometry[i].VertexPosition.Length;
+                totalVertex += ShapesGeometry[i].VerticesIdx.Length;
             }
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
@@ -253,37 +254,21 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            List<Vector3> objectRelativePosition = new List<Vector3>();
-            double dist = 0.0;
+            VerticesRelPos = new Vector3[Vertices.Length];
+            double dist = double.MinValue;
 
-            for (int i = 0; i < ShapesGeometry.Length; i++)
+            for (int i = 0; i < Vertices.Length; i++)
             {
-                Vector3[] relativePositions = new Vector3[ShapesGeometry[i].VertexPosition.Length];
+                var rPos = Vertices[i] - InitCenterOfMass;
+                VerticesRelPos[i] = rPos;
+                double length = rPos.Dot(rPos);
 
-                if (ShapesGeometry[i].VertexPosition.Length > 0)
+                if (length > dist)
                 {
-                    for (int j = 0; j < ShapesGeometry[i].VertexPosition.Length; j++)
-                    {
-                        relativePositions[j] =
-                            ShapesGeometry[i].VertexPosition[j].Vertex -
-                            InitCenterOfMass;
-
-                        objectRelativePosition.Add(relativePositions[j]);
-
-                        double length = relativePositions[j].Dot(relativePositions[j]);
-
-                        if (length > dist)
-                        {
-                            dist = length;
-                            FarthestPoint = relativePositions[j];
-                        }
-                    } 
+                    dist = length;
+                    FarthestPoint = rPos;
                 }
-
-                ShapesGeometry[i].SetRelativePosition(relativePositions);
             }
-
-            ObjectGeometry.SetRelativePosition(objectRelativePosition.ToArray());
         }
 
         private Vector3 CalculateCenterOfMass()
@@ -292,9 +277,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
-                Vector3[] vertices = Array.ConvertAll(
-                                        ShapesGeometry[i].VertexPosition,
-                                        item => item.Vertex);
+                Vector3[] vertices = ShapesGeometry[i].GetVertices();
 
                 var centerOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                     vertices,

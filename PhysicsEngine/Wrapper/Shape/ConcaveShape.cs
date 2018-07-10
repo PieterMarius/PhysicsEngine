@@ -193,7 +193,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3[] GetVertices()
         {
-            return concaveShape.InputVertexPosition;
+            return concaveShape.Vertices;
         }
 
         public void SetAngularVelocity(Vector3 inputAngularVelocity)
@@ -281,9 +281,16 @@ namespace SharpPhysicsEngine.Wrapper
             Vector3[][] result = new Vector3[concaveShape.ConvexShapesGeometry.Length][];
 
             for (int i = 0; i < concaveShape.ConvexShapesGeometry.Length; i++)
-                result[i] = Array.ConvertAll(concaveShape.ConvexShapesGeometry[i].RelativePosition, 
-                                             x => ShapeDefinition.Helper.GetVertexPosition(concaveShape.ConvexShapesGeometry[i], x));
+            {
+                var vtx = new Vector3[concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length];
+                for (int j = 0; j < concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length; j++)
+                {
+                    vtx[j]= (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].VerticesIdx[j].ID]) + concaveShape.Position;
+                }
 
+                result[i] = vtx;
+            }
+            
             return GeneralMathUtilities.GetMatrixFromVector3Matrix(result);
         }
 

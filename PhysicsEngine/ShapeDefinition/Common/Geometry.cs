@@ -25,10 +25,8 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
 using System;
+using System.Linq;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -39,7 +37,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		/// <summary>
 		/// Vertex Position
 		/// </summary>
-		public VertexProperties[] VertexPosition { get; private set; }
+		public SupportIndex[] VerticesIdx { get; private set; }
 		/// <summary>
 		/// Triangle Index
 		/// </summary>
@@ -53,10 +51,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		/// </summary>
 		public ObjectGeometryType GeometryType { get; private set; }
 		/// <summary>
-		/// Relative position respect mass center
-		/// </summary>
-		public Vector3[] RelativePosition { get; private set; }
-		/// <summary>
 		/// Pointer to belonging shape 
 		/// </summary>
 		public IShape Shape { get; private set; }
@@ -67,7 +61,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		public Geometry (
 			IShape shape,
-			Vector3[] inputVertexPosition,
+			int[] verticesIdx,
 			TriangleMesh[] inputTriangle,
 			ObjectGeometryType geometryType,
 			bool getAdjacencyList)
@@ -79,77 +73,74 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			{
 				Triangle = inputTriangle;
 				
-				SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
+				SetVertexAdjacency(verticesIdx, getAdjacencyList);
 			}
 			else
-			    SetVertexAdjacency(inputVertexPosition, getAdjacencyList);
+			    SetVertexAdjacency(verticesIdx, getAdjacencyList);
 		}
 
 		public Geometry(
 			IShape shape,
-			Vector3[] inputVertexPosition,
+            int[] verticesIdx,
 			ObjectGeometryType geometryType)
-			: this(shape, inputVertexPosition, null, geometryType, false)
+			: this(shape, verticesIdx, null, geometryType, false)
 		{ }
 
 		#endregion
 
-			#region Public Methods
-
-		public void SetVertexPosition(Vector3 v, int index)
-		{
-			if (VertexPosition != null && 
-				VertexPosition.Length > index ) 
-				VertexPosition[index].SetVertexPosition(v);
-			
-		}
-
-		public void SetVertexPositions(Vector3[] v)
-		{
-			for (int i = 0; i < v.Length; i++)
-				VertexPosition [i].SetVertexPosition(v[i]);
-		}
-
-		public void SetRelativePosition(Vector3[] relativePosition)
-		{
-			RelativePosition = relativePosition;
-		}
-
+		#region Public Methods
+        	
 		public void SetAABB(AABB box)
 		{
 			AABBox = box;
 		}
+        
+        public Vector3[] GetVertices()
+        {
+            var result = new Vector3[VerticesIdx.Length];
 
-        /// <summary>
-        /// TOTO eliminare
-        /// </summary>
-        /// <param name="shape"></param>
-		public void SetShape(IShape shape)
-		{
-			Shape = shape;
-		}
+            for (int i = 0; i < VerticesIdx.Length; i++)
+                result[i] = Shape.Vertices[VerticesIdx[i].ID];
 
-		#endregion
+            return result;
+        }
 
-		#region Private Methods
+        #endregion
 
-		private void SetVertexAdjacency(
-			Vector3[] inputVertexPosition,
+        #region Private Methods
+
+        private void SetVertexAdjacency(
+			int[] verticesIdx,
 			bool getAdjacencyList)
 		{
-            VertexPosition = Array.ConvertAll(inputVertexPosition, x => new VertexProperties(x));
+            VerticesIdx = Array.ConvertAll(verticesIdx, x => new SupportIndex(x));
 
             if (getAdjacencyList && Triangle != null)
             {
+                var vList = VerticesIdx.ToList();
+
                 foreach (var tr in Triangle)
                 {
-                    VertexPosition[tr.a].AddVertexToAdjList(tr.b);
-                    VertexPosition[tr.a].AddVertexToAdjList(tr.c);
-                    VertexPosition[tr.b].AddVertexToAdjList(tr.a);
-                    VertexPosition[tr.b].AddVertexToAdjList(tr.c);
-                    VertexPosition[tr.c].AddVertexToAdjList(tr.a);
-                    VertexPosition[tr.c].AddVertexToAdjList(tr.b);
+                    var indexA = vList.FindIndex(x => x.ID == tr.a);
+                    var indexB = vList.FindIndex(x => x.ID == tr.b);
+                    var indexC = vList.FindIndex(x => x.ID == tr.c);
+
+                    vList[indexA].AddVertexToGlobalAdjList(tr.b);
+                    vList[indexA].AddVertexToGlobalAdjList(tr.c);
+                    vList[indexB].AddVertexToGlobalAdjList(tr.a);
+                    vList[indexB].AddVertexToGlobalAdjList(tr.c);
+                    vList[indexC].AddVertexToGlobalAdjList(tr.a);
+                    vList[indexC].AddVertexToGlobalAdjList(tr.b);
+
+                    vList[indexA].AddVertexToLocalAdjList(indexB);
+                    vList[indexA].AddVertexToLocalAdjList(indexC);
+                    vList[indexB].AddVertexToLocalAdjList(indexA);
+                    vList[indexB].AddVertexToLocalAdjList(indexC);
+                    vList[indexC].AddVertexToLocalAdjList(indexA);
+                    vList[indexC].AddVertexToLocalAdjList(indexB);
                 }
+
+                VerticesIdx = vList.ToArray();
             }
         }
 

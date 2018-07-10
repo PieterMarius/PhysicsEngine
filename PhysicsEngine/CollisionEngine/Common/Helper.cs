@@ -310,15 +310,37 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static VertexProperties[] SetVertexPosition(IGeometry obj)
 		{
-			VertexProperties[] vertexPosition = new VertexProperties[obj.VertexPosition.Length];
+			VertexProperties[] vertexPosition = new VertexProperties[obj.VerticesIdx.Length];
 
-            for (int i = 0; i < obj.VertexPosition.Length; i++)
+            for (int i = 0; i < obj.VerticesIdx.Length; i++)
             {
                 vertexPosition[i] = CommonUtilities.GetVertexPosition(obj, i);
             }
 
 			return vertexPosition;
 		}
+
+        public static VertexProperties[] SetVertexPosition(
+            IGeometry obj,
+            Vector3[] vertices)
+        {
+            VertexProperties[] vertexPosition = new VertexProperties[obj.VerticesIdx.Length];
+
+            for (int i = 0; i < obj.VerticesIdx.Length; i++)
+                vertexPosition[i] = new VertexProperties(vertices[obj.VerticesIdx[i].ID], obj.VerticesIdx[i].GetLocalAdjacencyList());
+            
+            return vertexPosition;
+        }
+
+        public static Vector3[] GetVertexPosition(IShape shape)
+        {
+            Vector3[] vertexPosition = new Vector3[shape.Vertices.Length];
+
+            for (int i = 0; i < shape.Vertices.Length; i++)
+                vertexPosition[i] = shape.Position + (shape.RotationMatrix * shape.VerticesRelPos[i]);
+
+            return vertexPosition;
+        }
 
         public static bool TestBoxes(
             AABB a,

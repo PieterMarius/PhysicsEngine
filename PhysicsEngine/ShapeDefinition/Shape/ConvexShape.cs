@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System;
+using System.Linq;
 using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
@@ -47,10 +48,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
+            Vertices = inputVertexPosition;
 
             ObjectGeometry = new Geometry(
                     this,
-                    inputVertexPosition,
+                    Enumerable.Range(0,Vertices.Length).ToArray(),
                     triangleMeshes,
                     ObjectGeometryType.ConvexShape,
                     true);
@@ -124,28 +126,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            Vector3[] relativePositions = new Vector3[ObjectGeometry.VertexPosition.Length];
+            VerticesRelPos = new Vector3[ObjectGeometry.VerticesIdx.Length];
             double dist = 0.0;
 
-            if (ObjectGeometry.VertexPosition.Length > 0)
+            if (Vertices.Length > 0)
             {
-                for (int j = 0; j < ObjectGeometry.VertexPosition.Length; j++)
+                for (int j = 0; j < Vertices.Length; j++)
                 {
-                    relativePositions[j] =
-                        ObjectGeometry.VertexPosition[j].Vertex -
-                        InitCenterOfMass;
+                    VerticesRelPos[j] = Vertices[j] - InitCenterOfMass;
 
-                    double length = relativePositions[j].Dot(relativePositions[j]);
+                    double length = VerticesRelPos[j].Dot(VerticesRelPos[j]);
 
                     if (length > dist)
                     {
                         dist = length;
-                        FarthestPoint = relativePositions[j];
+                        FarthestPoint = VerticesRelPos[j];
                     }
                 }
             }
-
-            ObjectGeometry.SetRelativePosition(relativePositions);
         }
 
         private void SetRotationMatrix()
@@ -155,17 +153,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetInertiaTensor()
         {
-            Vector3[] vertices = Array.ConvertAll(
-                                        ObjectGeometry.VertexPosition,
-                                        item => item.Vertex);
-
             InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
-                vertices,
+                Vertices,
                 ObjectGeometry.Triangle,
                 MassInfo.Mass);
 
             Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
-                    ObjectGeometry.VertexPosition,
+                    Vertices,
                     ObjectGeometry.Triangle,
                     InitCenterOfMass,
                     MassInfo.Mass).InertiaTensor;

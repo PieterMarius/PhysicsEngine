@@ -24,7 +24,7 @@
  *  
  *****************************************************************************/
 
-using SharpEngineMathUtility;
+using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.ConvexHullWrapper
@@ -33,7 +33,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
     {
         #region Fields
 
-        public Vector3[] Vertices { get; private set; }
+        public Vertex3Index[] Vertices { get; private set; }
 
         public TriangleMesh[] TriangleMeshes { get; private set; }
 
@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
         #region Constructor
 
         public ConvexHullData(
-            Vector3[] vertices,
+            Vertex3Index[] vertices,
             TriangleMesh[] triangleMeshes)
         {
             Vertices = vertices;
