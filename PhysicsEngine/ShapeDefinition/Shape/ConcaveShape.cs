@@ -137,17 +137,15 @@ namespace SharpPhysicsEngine.ShapeDefinition
         private void SetShapeGeometry(IConvexHullEngine convexHullEngine)
         {
             AABB region = AABB.GetGeometryAABB(Vertices, this);
-
-            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(region, TriangleMeshes);
-
-            //Vertex3Index[] verticesIndex = Array.ConvertAll(ObjectGeometry.VerticesIdx, x => new Vertex3Index(x.Vertex, x.GetAdjacencyList(), -1));
-
+                        
             Vertex3Index[] verticesIndex = new Vertex3Index[Vertices.Length];
 
             for (int i = 0; i < Vertices.Length; i++)
                 verticesIndex[i] = new Vertex3Index(Vertices[i], ObjectGeometry.VerticesIdx[i].GetGlobalAdjacencyList(), i);
 
-            var convexShapes = convexDecomposition.GetConvexShapeList(verticesIndex, 0.2);
+            ConvexDecompositionEngine convexDecomposition = new ConvexDecompositionEngine(region, verticesIndex, 0.2);
+
+            var convexShapes = convexDecomposition.Execute().GetConvexShapeList(true);
 
             ConvexShapesGeometry = new Geometry[convexShapes.Count];
 

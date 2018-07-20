@@ -69,6 +69,7 @@
     <Compile Include="CollisionEngine\Common\ICollisionEngine.cs" />
     <Compile Include="CollisionEngine\Common\Support.cs" />
     <Compile Include="CollisionEngine\Common\SupportTriangle.cs" />
+    <Compile Include="CollisionEngine\Dynamic Bounding Tree\AABBTree.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\Edge.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPA.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPAOutput.cs" />
@@ -94,6 +95,8 @@
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
     <Compile Include="K-Means\IKMeansInput.cs" />
     <Compile Include="K-Means\KMeans.cs" />
+    <Compile Include="NonConvexDecomposition\Hierarchical Tree\ConcaveHierarchicalTree.cs" />
+    <Compile Include="NonConvexDecomposition\Hierarchical Tree\HierarchicalTree.cs" />
     <Compile Include="ShapeDefinition\Common\SupportIndex.cs" />
     <Compile Include="SolutionIntegration\IntegratePosition.cs" />
     <Compile Include="SolutionIntegration\IntegrateVelocity.cs" />
@@ -117,7 +120,7 @@
     <Compile Include="NonConvexDecomposition\ConvexDecompositionEngine.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />
-    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeConvexDecomposition.cs" />
+    <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ConvexDecompositionEngine.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\ShapeDecompositionOutput.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\Vertex3wIndex.cs" />
     <Compile Include="ShapeDefinition\Common\InertiaTensorOutput.cs" />

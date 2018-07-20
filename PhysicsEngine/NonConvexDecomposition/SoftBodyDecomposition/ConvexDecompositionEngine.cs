@@ -25,68 +25,100 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.NonConvexDecomposition.Hierarchical_Tree;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 {
-    internal sealed class ShapeConvexDecomposition : IShapeConvexDecomposition
+    internal sealed class ConvexDecompositionEngine : IShapeConvexDecomposition
     {
         #region Fields
 
-        private const double perturbationValue =  1E-5;
-
-        private double DecompositionValue;
+        #region Hierarchical Properties
 
         private AABB region;
 
-        private readonly ShapeConvexDecomposition[] childNode = new ShapeConvexDecomposition[8];
+        private readonly ConvexDecompositionEngine[] childNode = new ConvexDecompositionEngine[8];
 
         private List<Vertex3Index> VertexPosition;
 
-        private ShapeConvexDecomposition parent;
+        private ConvexDecompositionEngine parent;
+
+        #endregion
+
+        private const double perturbationValue =  1E-5;
+
+        private readonly double DecompositionValue;
 
         private Vertex3Index[] BaseVertexPosition;
-
-        private readonly TriangleMesh[] triangleIndexes;
         
         #endregion
 
         #region Constructor
 
-        private ShapeConvexDecomposition(
+        private ConvexDecompositionEngine(
             AABB region,
             List<Vertex3Index> vertexPosition,
-            TriangleMesh[] triangleIndexes,
-            double precisionSize)
+            double precisionSize,
+            bool internalConstructor)
         {
             DecompositionValue = precisionSize;
             this.region = region;
-            this.triangleIndexes = triangleIndexes;
             VertexPosition = vertexPosition;
         }
 
-        public ShapeConvexDecomposition(
+        public ConvexDecompositionEngine(
             AABB region,
-            TriangleMesh[] triangleIndexes)
+            Vertex3Index[] vertexPosition,
+            double precisionSize)
         {
+            DecompositionValue = precisionSize;
+            BaseVertexPosition = vertexPosition;
             this.region = region;
-            this.triangleIndexes = triangleIndexes;            
-        }
-
-        public ShapeConvexDecomposition(
-            TriangleMesh[] triangleIndexes)
-        {
-            this.triangleIndexes = triangleIndexes;
+            VertexPosition = vertexPosition.ToList();
         }
 
         #endregion
 
         #region Public Methods
 
+        public ConcaveHierarchicalTree Execute()
+        {
+            return Decompose();
+        }
+                
+        //public List<ShapeDecompositionOutput> GetIntersectedShape(
+        //    AABB box,
+        //    AABB region,
+        //    Vertex3Index[] vertexPosition,
+        //    double precisionSize,
+        //    double distanceTolerance)
+        //{
+        //    VertexPosition = vertexPosition.ToList();
+        //    BaseVertexPosition = vertexPosition;
+
+        //    this.region = region;
+
+        //    DecompositionValue = precisionSize;
+            
+        //    BuildTree();
+
+        //    List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
+                        
+        //    FindIntersectedConvexShape(box, ref convexShapes, distanceTolerance);
+
+        //    if (convexShapes.Count > 0)
+        //    {
+        //        FinalizeShape(ref convexShapes);
+        //        return convexShapes;
+        //    }
+
+        //    return null;
+        //}
+        
         internal static AABB FindEnclosingCube(AABB region)
         {
             //we can't guarantee that all bounding regions will be relative to the origin, so to keep the math
@@ -124,78 +156,25 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             return new AABB(region.Min, region.Max, null);
         }
-        
-        public List<ShapeDecompositionOutput> GetConvexShapeList(
-            Vertex3Index[] vertexPosition,
-            double precisionSize)
-        {
-            return Decompose(vertexPosition, region, precisionSize);
-        }
 
-        public List<ShapeDecompositionOutput> GetConvexShapeList(
-            Vertex3Index[] vertexPosition,
-            AABB region,
-            double precisionSize)
-        {
-            return Decompose(vertexPosition, region, precisionSize);
-        }
-
-        public List<ShapeDecompositionOutput> GetIntersectedShape(
-            AABB box,
-            AABB region,
-            Vertex3Index[] vertexPosition,
-            double precisionSize,
-            double distanceTolerance)
-        {
-            VertexPosition = vertexPosition.ToList();
-            BaseVertexPosition = vertexPosition;
-
-            this.region = region;
-
-            DecompositionValue = precisionSize;
-            
-            BuildTree();
-
-            List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
-
-            FindIntersectedConvexShape(box, ref convexShapes, distanceTolerance);
-
-            if (convexShapes.Count > 0)
-            {
-                FinalizeShape(ref convexShapes);
-                return convexShapes;
-            }
-
-            return null;
-        }
-        
         #endregion
 
         #region Private Methods
 
-        private List<ShapeDecompositionOutput> Decompose(
-            Vertex3Index[] vertexPosition,
-            AABB region,
-            double precisionSize)
+        private ConcaveHierarchicalTree Decompose()
         {
-            VertexPosition = vertexPosition.ToList();
-            BaseVertexPosition = vertexPosition;
-
-            DecompositionValue = precisionSize;
-
             BuildTree();
 
             List<ShapeDecompositionOutput> convexShapes = new List<ShapeDecompositionOutput>();
 
-            GenerateConvexShapeList(ref convexShapes);
-
-            if (convexShapes.Count > 0)
+            ConcaveHierarchicalTree hTree = new ConcaveHierarchicalTree
             {
-                FinalizeShape(ref convexShapes);
-                return convexShapes;
-            }
+                ChildNodes = new List<HierarchicalTree<Vertex3Index, AABB>>()
+            };
 
-            throw new Exception("Convex Decomposition Failed.");
+            BuildHierachicalTree(ref hTree, this);
+
+            return hTree;
         }
 
         private void BuildTree()
@@ -271,78 +250,36 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             }
         }
                 
-        private ShapeConvexDecomposition CreateNode(AABB region, List<Vertex3Index> objList)
+        private ConvexDecompositionEngine CreateNode(AABB region, List<Vertex3Index> objList)
         {
             if (objList.Count == 0)
                 return null;
 
-            ShapeConvexDecomposition ret = new ShapeConvexDecomposition(region, objList, triangleIndexes, DecompositionValue)
+            ConvexDecompositionEngine ret = new ConvexDecompositionEngine(region, objList, DecompositionValue, true);
             {
-                parent = this
+                parent = this;
             };
 
             return ret;
         }
 
-        private void GenerateConvexShapeList(ref List<ShapeDecompositionOutput> geometry)
+        private void BuildHierachicalTree(
+            ref ConcaveHierarchicalTree tree, 
+            ConvexDecompositionEngine decompositionTree)
         {
-            if (VertexPosition.Count > 0)
-                geometry.Add(new ShapeDecompositionOutput(new HashSet<Vertex3Index>(VertexPosition), region));
-
-            for (int a = 0; a < 8; a++)
+            tree.ChildNodes = new List<HierarchicalTree<Vertex3Index, AABB>>();
+            tree.Elements = new List<Vertex3Index>(decompositionTree.VertexPosition);
+            tree.TotalElements = new List<Vertex3Index>(BaseVertexPosition);
+            
+            for (int i = 0; i < 8; i++)
             {
-                if (childNode[a] != null)
-                    childNode[a].GenerateConvexShapeList(ref geometry);
-            }
-        }
-
-        private void FindIntersectedConvexShape(AABB box, ref List<ShapeDecompositionOutput> geometry, double distanceTolerance)
-        {
-            if (region.Intersect(box, distanceTolerance))
-            {
-                if (VertexPosition.Count > 0)
-                    geometry.Add(new ShapeDecompositionOutput(new HashSet<Vertex3Index>(VertexPosition), region));
-
-                for (int a = 0; a < 8; a++)
+                if (decompositionTree.childNode[i] != null)
                 {
-                    if (childNode[a] != null)
-                        childNode[a].FindIntersectedConvexShape(box, ref geometry, distanceTolerance);
+                    tree.ChildNodes.Add(new ConcaveHierarchicalTree { Parent = tree });
+                    var bufTree = (ConcaveHierarchicalTree)tree.ChildNodes[tree.ChildNodes.Count - 1];
+                    BuildHierachicalTree(ref bufTree, decompositionTree.childNode[i]);
                 }
             }
-        }
-
-        private void FinalizeShape(ref List<ShapeDecompositionOutput> convexShapes)
-        {
-            Parallel.ForEach(convexShapes,
-                new ParallelOptions { MaxDegreeOfParallelism = 1 },
-                shape =>
-             {
-                 HashSet<Vertex3Index> bufVertex = new HashSet<Vertex3Index>();
-                 
-                 foreach (var vertex in shape.Vertex3Idx)
-                 {
-                     foreach (var idx in vertex.Indexes)
-                        bufVertex.Add(BaseVertexPosition[idx]);
-                 }
-
-                 shape.AddVertex3Index(bufVertex);
-                                  
-                 if (shape.Vertex3Idx.Count <= 3)
-                 {
-                     bufVertex.Clear();
-                     for (int i = 0; i < 4 - shape.Vertex3Idx.Count; i++)
-                     {
-                         bufVertex.Add(new Vertex3Index(
-                             shape.Vertex3Idx.First().Vector3 + Vector3.Random(-perturbationValue, perturbationValue), 
-                             new HashSet<int> { int.MaxValue - i }, 
-                             0));
-                     }
-                     shape.AddVertex3Index(bufVertex);
-                 }
-
-                 var vertices = shape.Vertex3Idx.Select(x => x.Vector3).ToArray();
-                 shape.SetRegion(AABB.GetGeometryAABB(vertices, null));
-             });
         }
 
         #endregion

@@ -40,12 +40,17 @@ namespace SharpPhysicsEngine.NonConvexDecomposition
         public static List<double[][]> GetConvexShapeList(SoftShape softShape)
         {
             var baseSoftShape = (SimSoftShape)((IMapper)softShape).GetShape();
-            var shapeConvexDecomposition = new ShapeConvexDecomposition(baseSoftShape.AABBox, baseSoftShape.Triangle);
+            
             var vertex = Array.ConvertAll(baseSoftShape.ShapePoints, item => new Vertex3Index(
                                                                                 item.Position,
                                                                                 item.TriangleIndex, 0));
 
-            var convexShapeHash = shapeConvexDecomposition.GetConvexShapeList(vertex, baseSoftShape.DecompositionParameter)
+            var shapeConvexDecomposition = new SoftBodyDecomposition.ConvexDecompositionEngine(
+                baseSoftShape.AABBox,
+                vertex,
+                baseSoftShape.DecompositionParameter);
+
+            var convexShapeHash = shapeConvexDecomposition.Execute().GetConvexShapeList(true)
                 .Select(x => x.Vertex3Idx.ToArray()).ToList();
 
             var convexShape = convexShapeHash.Select(x => x.Select(y => y.Vector3.Array).ToArray()).ToList();

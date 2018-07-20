@@ -24,24 +24,21 @@
  *  
  *****************************************************************************/
 
-using SharpPhysicsEngine.NonConvexDecomposition.Hierarchical_Tree;
-using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 
-namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
+namespace SharpPhysicsEngine.NonConvexDecomposition.Hierarchical_Tree
 {
-    internal interface IShapeConvexDecomposition
+    internal abstract class HierarchicalTree<T, U>
     {
-        //List<ShapeDecompositionOutput> Execute(
-        //    Vertex3Index[] vertexPosition, 
-        //    double precisionSize);
+        #region Fields
 
-        //List<ShapeDecompositionOutput> GetConvexShapeList(
-        //    Vertex3Index[] vertexPosition,
-        //    AABB region,
-        //    double precisionSize);
+        public List<HierarchicalTree<T, U>> ChildNodes;
+        public HierarchicalTree<T, U> Parent;
 
-        ConcaveHierarchicalTree Execute();
+        public List<T> Elements;
+        public List<T> TotalElements;
+        public U Region;
 
+        #endregion
     }
 }

@@ -106,10 +106,8 @@ namespace SharpPhysicsEngine.K_Means
             var result = new Vector3();
 
             for (int i = 0; i < centroidPoints.Count; i++)
-            {
                 result = result + centroidPoints[i].Item1.GetPointPosition();
-            }
-
+            
             return result / centroidPoints.Count;
         }
 

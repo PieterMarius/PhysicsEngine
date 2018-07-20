@@ -29,6 +29,7 @@ using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -223,12 +224,26 @@ namespace SharpPhysicsEngine.CollisionEngine
             IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
             IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
 
+            Stopwatch watch = new Stopwatch();
+
+            watch.Start();
+
             List<CollisionPair> collisionPair = CheckGeometryAABB(
                 geometryA,
                 geometryB);
 
+            watch.Stop();
+
+            var time = watch.ElapsedMilliseconds;
+
+            watch.Reset();
+
+            
+
             if (collisionPair.Count > 0)
             {
+                watch.Start();
+
                 var verticesA = Helper.GetVertexPosition(A);
                 var verticesB = Helper.GetVertexPosition(B);
 
@@ -242,7 +257,13 @@ namespace SharpPhysicsEngine.CollisionEngine
                     if (collision != null)
                         collisionPointStructure.Add(collision);
                 }
+
+                watch.Stop();
+
+                var endtime = watch.ElapsedMilliseconds;
             }
+
+            
 
             return collisionPointStructure;
         }
@@ -270,17 +291,20 @@ namespace SharpPhysicsEngine.CollisionEngine
             var shapeA = (IShape)softShapeA;
             var shapeB = (IShape)softShapeB;
 
-            ShapeConvexDecomposition convexDecompositionA = new ShapeConvexDecomposition(shapeA.AABBox, softShapeA.Triangle);
-            ShapeConvexDecomposition convexDecompositionB = new ShapeConvexDecomposition(shapeB.AABBox, softShapeB.Triangle);
-
-            List<ShapeDecompositionOutput> decompConvexShapeA = convexDecompositionA.GetConvexShapeList(
+            var convexDecompositionA = new ConvexDecompositionEngine(
+                shapeB.AABBox,
                 Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
                 softShapeA.DecompositionParameter);
 
-            List<ShapeDecompositionOutput> decompConvexShapeB = convexDecompositionB.GetConvexShapeList(
-                Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
+            var convexDecompositionB = new ConvexDecompositionEngine(
+                shapeB.AABBox,
+                Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
                 softShapeB.DecompositionParameter);
 
+            List<ShapeDecompositionOutput> decompConvexShapeA = convexDecompositionA.Execute().GetConvexShapeList(true);
+
+            List<ShapeDecompositionOutput> decompConvexShapeB = convexDecompositionB.Execute().GetConvexShapeList(true);
+            
             AABB[][] boxCollision = new AABB[2][];
 
             boxCollision[0] = Array.ConvertAll(decompConvexShapeA.ToArray(), x => x.Region);
@@ -372,15 +396,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             List<CollisionPointStructure> collisionPointStructure = new List<CollisionPointStructure>();
 
-            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(shapeSoft.AABBox, softShape.Triangle);
-
-            List<ShapeDecompositionOutput> shapeOutput = convexDecomposition.GetIntersectedShape(
-                rigidShape.AABBox,
+            ConvexDecompositionEngine convexDecomposition = new ConvexDecompositionEngine(
                 shapeSoft.AABBox,
                 Array.ConvertAll(softShape.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
-                softShape.DecompositionParameter,
-                parameters.CollisionDistance);
+                softShape.DecompositionParameter);
 
+            List<ShapeDecompositionOutput> shapeOutput = convexDecomposition.Execute().GetIntersectedShape(
+                rigidShape.AABBox,
+                parameters.CollisionDistance,
+                true);
+                        
             if (shapeOutput != null)
             {
                 IGeometry[] convexShapeGeometry = ShapeDefinition.Helper.GetGeometry(rigidShape);

@@ -406,9 +406,11 @@ namespace SharpPhysicsEngine.Terrain
         private void GenerateConvexShapes(IConvexHullEngine convexHullEngine)
         {
             AABB box = AABB.GetGeometryAABB(positions, this);
-            ShapeConvexDecomposition convexDecomposition = new ShapeConvexDecomposition(box, triangleMeshes);
+            
             var vertex3Idx = SetVertexAdjacency(positions, triangleMeshes);
-            convexShapes = convexDecomposition.GetConvexShapeList(vertex3Idx, 0.7);
+            ConvexDecompositionEngine convexDecomposition = new ConvexDecompositionEngine(box, vertex3Idx, 0.7);
+
+            convexShapes = convexDecomposition.Execute().GetConvexShapeList(true);
         }
 
         private Vertex3Index[] SetVertexAdjacency(

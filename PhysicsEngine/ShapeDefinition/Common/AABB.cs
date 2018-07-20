@@ -29,15 +29,16 @@ using System;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-	internal class AABB
-	{
-		#region Fields
+    internal class AABB
+    {
+        #region Fields
 
-		public Vector3 Min { get; set; }
-		public Vector3 Max { get; set; }
+        public Vector3 Min { get; set; }
+        public Vector3 Max { get; set; }
         public object ObjectReference { get; set; }
         public bool positionAABBChanged { get; private set; }
-
+        public double SurfaceArea { get; }
+                
 		#endregion
 
 		#region Constructor
@@ -56,6 +57,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			Max = new Vector3(maxX, maxY, maxZ);
             ObjectReference = objectID;
 			positionAABBChanged = positionChanged;
+            SurfaceArea = CalculateSurfaceArea();
 		}
 
 		public AABB(
@@ -66,6 +68,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			Min = min;
 			Max = max;
             ObjectReference = objectID;
+            SurfaceArea = CalculateSurfaceArea();
 		}
 
 		#endregion
@@ -124,6 +127,47 @@ namespace SharpPhysicsEngine.ShapeDefinition
                    Max[1] - box.Min[1] >= -distanceTolerance &&
                    Min[2] - box.Max[2] <= distanceTolerance &&
                    Max[2] - box.Min[2] >= -distanceTolerance;
+        }
+
+        public AABB Merge(AABB other)
+        {
+            return new AABB(
+                Math.Min(Min.x, other.Min.x),
+                Math.Max(Max.x, other.Max.x),
+                Math.Min(Min.y, other.Min.y),
+                Math.Max(Max.y, other.Max.y),
+                Math.Min(Min.z, other.Min.z),
+                Math.Max(Max.z, other.Max.z), 
+                null, 
+                false);
+        }
+
+        public AABB Intersection(AABB other)
+        {
+            return new AABB(
+                Math.Max(Min.x, other.Min.x),
+                Math.Min(Max.x, other.Max.x),
+                Math.Max(Min.y, other.Min.y),
+                Math.Min(Max.y, other.Max.y),
+                Math.Max(Min.z, other.Min.z),
+                Math.Min(Max.z, other.Max.z),
+                null,
+                false);
+        }
+
+        public double GetWidth()
+        {
+            return Max.x - Min.x;
+        }
+
+        public double GetHeigth()
+        {
+            return Max.y - Min.y;
+        }
+
+        public double GetDepth()
+        {
+            return Max.z - Min.z;
         }
 
         #endregion
@@ -269,8 +313,18 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
 		}
-		
-		#endregion
-	}
+
+        #endregion
+
+        #region Private Methods
+                
+        public double CalculateSurfaceArea()
+        {
+            return
+                2.0 * (GetWidth() * GetHeigth() + GetWidth() * GetDepth() + GetHeigth() * GetDepth());
+        }
+
+        #endregion
+    }
 }
 
