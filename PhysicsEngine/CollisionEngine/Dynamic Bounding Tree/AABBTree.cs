@@ -106,6 +106,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
         #region Public Methods
 
+        //const
         public void InsertObject(IAABB obj)
         {
             int nodeIndex = AllocateNode();
@@ -115,7 +116,8 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             InsertLeaf(nodeIndex);
             objectNodeIndexMap[obj] = nodeIndex;
         }
-                
+        
+        //const
         public void RemoveObject(IAABB obj)
         {
             int nodeIndex = objectNodeIndexMap[obj];
@@ -124,12 +126,14 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             objectNodeIndexMap.Remove(obj);
         }
 
+        //const
         public void UpdateObject(IAABB obj)
         {
             int nodeIndex = objectNodeIndexMap[obj];
             UpdateLeaf(nodeIndex, obj.GetAABB());
         }
-         
+        
+        //obj const and list
         public List<IAABB> QueryOverlaps(IAABB obj)
         {
             List<IAABB> overlaps = new List<IAABB>();
@@ -145,6 +149,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
                 if (!nodeIndex.HasValue)
                     continue;
 
+                //const
                 AABBNode node = Nodes[nodeIndex.Value];
                 if (node.aabb.Intersect(testAabb))
                 {
@@ -219,10 +224,13 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
             while (!Nodes[treeNodeIndex].IsLeaf())
             {
+                //const
                 AABBNode treeNode = Nodes[treeNodeIndex];
                 int leftNodeIndex = treeNode.LeftNodeIndex.Value;
                 int rightNodeIndex = treeNode.RightNodeIndex.Value;
+                //const
                 AABBNode leftNode = Nodes[leftNodeIndex];
+                //const
                 AABBNode rightNode = Nodes[rightNodeIndex];
 
                 AABB combinedAabb = treeNode.aabb.Merge(leafNode.aabb);
@@ -297,6 +305,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
             AABBNode leafNode = Nodes[leafNodeIndex];
             int parentNodeIndex = leafNode.ParentNodeIndex.Value;
+            //const
             AABBNode parentNode = Nodes[parentNodeIndex];
             int? grandParentNodeIndex = parentNode.ParentNodeIndex;
             int? siblingNodeIndex = parentNode.LeftNodeIndex == leafNodeIndex ? parentNode.RightNodeIndex : parentNode.LeftNodeIndex;
@@ -325,6 +334,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             leafNode.ParentNodeIndex = null;
         }
 
+        //const newAABB
         private void UpdateLeaf(int leafNodeIndex, AABB newAABB)
         {
             AABBNode node = Nodes[leafNodeIndex];
@@ -344,7 +354,9 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
                 AABBNode treeNode = Nodes[treeNodeIndex.Value];
                 //assert(treeNode.leftNodeIndex != AABB_NULL_NODE && treeNode.rightNodeIndex != AABB_NULL_NODE);
 
+                //const
                 AABBNode leftNode = Nodes[treeNode.LeftNodeIndex.Value];
+                //const
                 AABBNode rightNode = Nodes[treeNode.RightNodeIndex.Value];
                 treeNode.aabb = leftNode.aabb.Merge(rightNode.aabb);
 
