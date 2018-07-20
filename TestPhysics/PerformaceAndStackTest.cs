@@ -157,11 +157,11 @@ namespace TestPhysics
             
             for (int i = 0; i < 2; i++)
             {
-                ShapeFilename.Add("teapot.obj");
+                ShapeFilename.Add("torus.obj");
                 ShapeScale.Add(1.0f);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                GeometryProperties geom1 = GetObjectGeometry("teapot.obj", 1.0f, 0.0);
+                GeometryProperties geom1 = GetObjectGeometry("torus.obj", 1.0f, 0.0);
                 var objects1 = new ConcaveShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0, false);
                 //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
                 //var objects1 = new ConvexShape(geom1.VertexPoint, position, 1.0);
