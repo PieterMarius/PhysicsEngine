@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using SharpPhysicsEngine.ShapeDefinition;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,10 +33,10 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 {
     internal interface IAABB
     {
-        AABB GetAABB();
+         AABB GetAABB();
     }
 
-    internal class AABBNode
+    internal class AABBNode : ICloneable
     {
         #region Fields
 
@@ -50,7 +51,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
         #endregion
 
         #region Constructor
-                
+
         #endregion
 
         #region Public Methods
@@ -58,6 +59,19 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
         public bool IsLeaf()
         {
             return LeftNodeIndex == null;
+        }
+
+        public object Clone()
+        {
+            return new AABBNode()
+            {
+                aabb = new AABB(this.aabb.Min, this.aabb.Max, this.aabb.ObjectReference),
+                Obj = this.Obj,
+                ParentNodeIndex = this.ParentNodeIndex,
+                LeftNodeIndex = this.LeftNodeIndex,
+                RightNodeIndex = this.RightNodeIndex,
+                NextNodeIndex = this.NextNodeIndex
+            };
         }
 
         #endregion
@@ -150,7 +164,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
                     continue;
 
                 //const
-                AABBNode node = Nodes[nodeIndex.Value];
+                AABBNode node = Nodes[nodeIndex.Value].Clone() as AABBNode;
                 if (node.aabb.Intersect(testAabb))
                 {
                     if(node.IsLeaf() && node.Obj != obj)
@@ -225,13 +239,13 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             while (!Nodes[treeNodeIndex].IsLeaf())
             {
                 //const
-                AABBNode treeNode = Nodes[treeNodeIndex];
+                AABBNode treeNode = Nodes[treeNodeIndex].Clone() as AABBNode;
                 int leftNodeIndex = treeNode.LeftNodeIndex.Value;
                 int rightNodeIndex = treeNode.RightNodeIndex.Value;
                 //const
-                AABBNode leftNode = Nodes[leftNodeIndex];
+                AABBNode leftNode = Nodes[leftNodeIndex].Clone() as AABBNode;
                 //const
-                AABBNode rightNode = Nodes[rightNodeIndex];
+                AABBNode rightNode = Nodes[rightNodeIndex].Clone() as AABBNode;
 
                 AABB combinedAabb = treeNode.aabb.Merge(leafNode.aabb);
 
@@ -306,7 +320,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             AABBNode leafNode = Nodes[leafNodeIndex];
             int parentNodeIndex = leafNode.ParentNodeIndex.Value;
             //const
-            AABBNode parentNode = Nodes[parentNodeIndex];
+            AABBNode parentNode = Nodes[parentNodeIndex].Clone() as AABBNode;
             int? grandParentNodeIndex = parentNode.ParentNodeIndex;
             int? siblingNodeIndex = parentNode.LeftNodeIndex == leafNodeIndex ? parentNode.RightNodeIndex : parentNode.LeftNodeIndex;
             //assert(siblingNodeIndex != AABB_NULL_NODE); // we must have a sibling
@@ -355,9 +369,9 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
                 //assert(treeNode.leftNodeIndex != AABB_NULL_NODE && treeNode.rightNodeIndex != AABB_NULL_NODE);
 
                 //const
-                AABBNode leftNode = Nodes[treeNode.LeftNodeIndex.Value];
+                AABBNode leftNode = Nodes[treeNode.LeftNodeIndex.Value].Clone() as AABBNode;
                 //const
-                AABBNode rightNode = Nodes[treeNode.RightNodeIndex.Value];
+                AABBNode rightNode = Nodes[treeNode.RightNodeIndex.Value].Clone() as AABBNode;
                 treeNode.aabb = leftNode.aabb.Merge(rightNode.aabb);
 
                 treeNodeIndex = treeNode.ParentNodeIndex;
