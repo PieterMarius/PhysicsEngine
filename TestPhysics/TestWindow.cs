@@ -360,7 +360,8 @@ namespace TestPhysics
             //displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
             displayContact();
-            //DisplayConcaveShape(1);
+            DisplayHierarchicalTree();
+            DisplayConcaveShape(1);
             //DisplayConcaveShape(2);
             //displayBaseContact();
             //displayJoint();
@@ -1166,7 +1167,82 @@ namespace TestPhysics
 			}
 		}
 
-		private void displayOctree()
+        private void DisplayHierarchicalTree()
+        {
+            var aabb = physicsEngine.GetHierarchicalTreeAABB();
+
+            for (int i = 0; i < aabb.Count; i++)
+            {
+                SharpEngineMathUtility.Vector3 b1 = aabb[i].Item1;
+                SharpEngineMathUtility.Vector3 b2 = aabb[i].Item2;
+
+                SharpEngineMathUtility.Vector3 b3 = new SharpEngineMathUtility.Vector3(b1.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3 b4 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b1.z);
+                SharpEngineMathUtility.Vector3 b5 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b1.z);
+                SharpEngineMathUtility.Vector3 b6 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b2.z);
+                SharpEngineMathUtility.Vector3 b7 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3 b8 = new SharpEngineMathUtility.Vector3(b2.x, b2.y, b1.z);
+
+                OpenGLUtilities.DrawLine(b6, b2);
+                OpenGLUtilities.DrawLine(b2, b8);
+                OpenGLUtilities.DrawLine(b8, b4);
+                OpenGLUtilities.DrawLine(b4, b6);
+
+                OpenGLUtilities.DrawLine(b3, b7);
+                OpenGLUtilities.DrawLine(b7, b5);
+                OpenGLUtilities.DrawLine(b5, b1);
+                OpenGLUtilities.DrawLine(b1, b3);
+
+                OpenGLUtilities.DrawLine(b6, b3);
+                OpenGLUtilities.DrawLine(b2, b7);
+                OpenGLUtilities.DrawLine(b8, b5);
+                OpenGLUtilities.DrawLine(b4, b1);
+
+                //GL.PushMatrix();
+
+                //Matrix4 mView = Matrix4.CreateTranslation(
+                //                    Convert.ToSingle(b2[0]),
+                //                    Convert.ToSingle(b2[1]),
+                //                    Convert.ToSingle(b2[2]));
+
+                //var dmviewData = new float[] {
+                //    mView.M11, mView.M12, mView.M13, mView.M14,
+                //    mView.M21, mView.M22, mView.M23, mView.M24,
+                //    mView.M31, mView.M32, mView.M33, mView.M34,
+                //    mView.M41, mView.M42, mView.M43, mView.M44
+                //};
+
+                //GL.MultMatrix(dmviewData);
+
+                //OpenGLUtilities.drawSolidCube(0.08f);
+
+                //GL.PopMatrix();
+
+
+                //GL.PushMatrix();
+
+                //mView = Matrix4.CreateTranslation(
+                //                    Convert.ToSingle(b1[0]),
+                //                    Convert.ToSingle(b1[1]),
+                //                    Convert.ToSingle(b1[2]));
+
+                //dmviewData = new float[] {
+                //        mView.M11, mView.M12, mView.M13, mView.M14,
+                //        mView.M21, mView.M22, mView.M23, mView.M24,
+                //        mView.M31, mView.M32, mView.M33, mView.M34,
+                //        mView.M41, mView.M42, mView.M43, mView.M44
+                //    };
+
+                //GL.MultMatrix(dmviewData);
+
+                //OpenGLUtilities.drawSolidCube(0.08f);
+
+                //GL.PopMatrix();
+
+            }
+        }
+
+        private void displayOctree()
 		{
 			foreach (var item in octTreeLine)
 				OpenGLUtilities.DrawLine(item.a, item.b);

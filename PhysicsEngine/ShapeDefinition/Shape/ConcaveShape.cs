@@ -107,6 +107,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public override void SetAABB()
         {
             AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
+            ObjectGeometry.SetAABB(AABBox);
             
             foreach (var shape in ConvexShapesGeometry)
                 shape.SetAABB(AABB.GetGeometryAABB(shape, shape));

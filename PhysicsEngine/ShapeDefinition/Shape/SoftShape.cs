@@ -29,10 +29,11 @@ using SharpEngineMathUtility;
 using System.Collections.Generic;
 using System.Linq;
 using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal sealed class SimSoftShape : Shape, ISoftShape
+    internal sealed class SimSoftShape : Shape, ISoftShape, IAABB
     {
      
         #region Simulation Properties
@@ -146,6 +147,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
             AABBox = AABB.GetShapePointAABB(ShapePoints, null);
         }
 
+        public AABB GetAABB()
+        {
+            return AABBox;
+        }
+
         public void SetPointsMass(double mass)
         {
             MassInfo.Mass = mass;
@@ -216,6 +222,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
+        public int CompareTo(object obj)
+        {
+            return obj.GetHashCode().CompareTo(GetHashCode());
+        }
 
         #endregion
 

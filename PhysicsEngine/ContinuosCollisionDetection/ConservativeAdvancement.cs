@@ -171,7 +171,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             if (collisionPoint == null)
                 return null;
 
-            //Gestire soft body, compound shape, concaveshape
+            //TODO Gestire soft body, compound shape, concaveshape
             return collisionPoint.CollisionPointBase[0].CollisionPoint;
         }
 

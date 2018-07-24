@@ -40,6 +40,7 @@ using System.Collections.Concurrent;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ContinuosCollisionDetection;
 using SharpPhysicsEngine.SolutionIntegration;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 
 namespace SharpPhysicsEngine
 {
@@ -130,14 +131,21 @@ namespace SharpPhysicsEngine
 		/// The last execution solver error.
 		/// </summary>
 		double solverError;
-
-
+                
         /// <summary>
         /// Accumulated timestep
         /// </summary>
         double partialTimeStep;
 
+        /// <summary>
+        /// Used for Continuos Collision Detection
+        /// </summary>
         private double GlobalTimestep;
+
+        /// <summary>
+        /// Hierarchical Tree of Simulation Object
+        /// </summary>
+        private AABBTree HierarchicalTree;
 
 		/// <summary>
 		/// Generate ID for shape of simulation
@@ -188,6 +196,7 @@ namespace SharpPhysicsEngine
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
+            HierarchicalTree = new AABBTree(1);
             
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -239,6 +248,8 @@ namespace SharpPhysicsEngine
 			}
 
 			SoftShapes = Shapes.Where(x => (x as ISoftShape) != null).Cast<ISoftShape>().ToArray();
+
+            AddObjToHierarchicalTree(simObj);
 		}
 
 		public void RemoveShape(int shapeID)
@@ -297,6 +308,22 @@ namespace SharpPhysicsEngine
 		{
 			return CollisionShapes.ToArray();
 		}
+
+        public List<Tuple<Vector3,Vector3>> GetHierarchicalTreeAABB()
+        {
+            var result = new List<Tuple<Vector3, Vector3>>();
+            var nodes = HierarchicalTree.GetNodes();
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (nodes[i].Obj != null)
+                    result.Add(new Tuple<Vector3, Vector3>(nodes[i].aabb.Min, nodes[i].aabb.Max));
+            }
+
+            return result;
+        }
+
+        //TODO Test Hierarchical tree intersection
 					
 		#endregion
 
@@ -447,6 +474,40 @@ namespace SharpPhysicsEngine
             PartitionEngineExecute();
 
             PhysicsExecutionFlow();
+        }
+
+        private void AddObjToHierarchicalTree(IShape shape)
+        {
+            var boundingBox = ExtractIAABBFromShape(shape);
+
+            foreach (var item in boundingBox)
+            {
+                HierarchicalTree.InsertObject(item);
+            }
+        }
+
+        private List<IAABB> ExtractIAABBFromShape(IShape shape)
+        {
+            if (shape is ShapeDefinition.ConvexShape)
+            {
+                return new List<IAABB>() { ((ShapeDefinition.ConvexShape)shape).ObjectGeometry };
+            }
+            else if (shape is SimSoftShape)
+            {
+                return new List<IAABB>() { ((SimSoftShape)shape) };
+            }
+            else if (shape is ShapeDefinition.ConcaveShape)
+            {
+                var boxes = new List<IAABB>(((ShapeDefinition.ConcaveShape)shape).ConvexShapesGeometry);
+                boxes.Add(((ShapeDefinition.ConcaveShape)shape).ObjectGeometry);
+                return boxes;
+            }
+            else if (shape is CompoundShape)
+            {
+                return null;
+            }
+
+            return null;
         }
 
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)

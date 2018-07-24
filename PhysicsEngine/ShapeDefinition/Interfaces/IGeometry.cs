@@ -25,17 +25,18 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal interface IGeometry
+    internal interface IGeometry : IAABB
     {
         AABB AABBox { get; }
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
         TriangleMesh[] Triangle { get; }
         SupportIndex[] VerticesIdx { get; }
-        
+
         void SetAABB(AABB box);
         Vector3[] GetVertices();
     }

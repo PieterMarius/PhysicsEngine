@@ -105,6 +105,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
             return result;
         }
 
+        public AABB GetAABB()
+        {
+            return AABBox;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return obj.GetHashCode().CompareTo(GetHashCode());
+        }
+
         #endregion
 
         #region Private Methods
@@ -144,7 +154,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
-		#endregion
-	}
+        #endregion
+    }
 }
 

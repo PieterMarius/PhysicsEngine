@@ -31,7 +31,7 @@ using System.Linq;
 
 namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 {
-    internal interface IAABB
+    internal interface IAABB: IComparable
     {
          AABB GetAABB();
     }
@@ -114,6 +114,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             }
 
             Nodes[initialState - 1].NextNodeIndex = null;
+            objectNodeIndexMap = new SortedDictionary<IAABB, int>();
         }
 
         #endregion
@@ -128,7 +129,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             node.aabb = obj.GetAABB();
             node.Obj = obj;
             InsertLeaf(nodeIndex);
-            objectNodeIndexMap[obj] = nodeIndex;
+            objectNodeIndexMap.Add(obj, nodeIndex);
         }
         
         //const
@@ -182,6 +183,11 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             return overlaps;
         }
         
+        public List<AABBNode> GetNodes()
+        {
+            return Nodes;
+        }
+
         #endregion
 
         #region Private Methods
