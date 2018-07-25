@@ -238,8 +238,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             watch.Reset();
 
-            
-
             if (collisionPair.Count > 0)
             {
                 watch.Start();

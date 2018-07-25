@@ -42,6 +42,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
         public AABB aabb;
         public object Obj;
+        public int Height;
 
         public int? ParentNodeIndex;
         public int? LeftNodeIndex;
@@ -67,6 +68,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             {
                 aabb = new AABB(this.aabb.Min, this.aabb.Max, this.aabb.ObjectReference),
                 Obj = this.Obj,
+                Height = this.Height,
                 ParentNodeIndex = this.ParentNodeIndex,
                 LeftNodeIndex = this.LeftNodeIndex,
                 RightNodeIndex = this.RightNodeIndex,
@@ -229,10 +231,6 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
         private void InsertLeaf(int leafNodeIndex)
         {
-            // make sure we're inserting a new leaf
-            //        assert(_nodes[leafNodeIndex].parentNodeIndex == AABB_NULL_NODE);
-            //        assert(_nodes[leafNodeIndex].leftNodeIndex == AABB_NULL_NODE);
-            //        assert(_nodes[leafNodeIndex].rightNodeIndex == AABB_NULL_NODE);
             if(RootNodeIndex== null)
             {
                 RootNodeIndex = leafNodeIndex;
@@ -293,12 +291,20 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             int? oldParentIndex = leafSibling.ParentNodeIndex;
             int newParentIndex = AllocateNode();
             AABBNode newParent = Nodes[newParentIndex];
+
+
             newParent.ParentNodeIndex = oldParentIndex;
             newParent.aabb = leafNode.aabb.Merge(leafSibling.aabb);
             newParent.LeftNodeIndex = leafSiblingIndex;
             newParent.RightNodeIndex = leafNodeIndex;
+
+            if (newParent.ParentNodeIndex.HasValue)
+                newParent.Height = 1 + Nodes[newParent.ParentNodeIndex.Value].Height;
+
             leafNode.ParentNodeIndex = newParentIndex;
             leafSibling.ParentNodeIndex = newParentIndex;
+
+            leafNode.Height = 1 + Math.Max(Nodes[newParent.LeftNodeIndex.Value].Height, Nodes[newParent.RightNodeIndex.Value].Height);
 
             if (oldParentIndex == null)
                 RootNodeIndex = newParentIndex;

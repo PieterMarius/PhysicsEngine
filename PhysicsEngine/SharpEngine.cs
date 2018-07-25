@@ -275,9 +275,11 @@ namespace SharpPhysicsEngine
 						}
 					}
 
-					#endregion
+                    #endregion
 
-					#region Remove shape
+                    #region Remove shape
+
+                    RemoveObjFromHierarchicalTree(bufferList[shapeIndex]);
 
 					bufferList.RemoveAt(shapeIndex);
 					Shapes = bufferList.ToArray();
@@ -313,23 +315,47 @@ namespace SharpPhysicsEngine
         {
             var result = new List<Tuple<Vector3, Vector3>>();
             var nodes = HierarchicalTree.GetNodes();
+            var maxHeight = nodes.Max(x => x.Height);
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                if (nodes[i].Obj != null)
+                //if (nodes[i].Obj != null)
                     result.Add(new Tuple<Vector3, Vector3>(nodes[i].aabb.Min, nodes[i].aabb.Max));
             }
 
             return result;
         }
 
+        public List<Tuple<Vector3, Vector3>> GetShapesAABB()
+        {
+            var result = new List<Tuple<Vector3, Vector3>>();
+
+            for (int i = 0; i < Shapes.Length; i++)
+            {
+                if (Shapes[i] is ShapeDefinition.ConvexShape)
+                    result.Add(new Tuple<Vector3, Vector3>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+                else if (Shapes[i] is ShapeDefinition.ConcaveShape)
+                {
+                    var shapesGeom = ((ShapeDefinition.ConcaveShape)Shapes[i]).ConvexShapesGeometry;
+
+                    for (int j = 0; j < shapesGeom.Length; j++)
+                    {
+                        result.Add(new Tuple<Vector3, Vector3>(shapesGeom[j].AABBox.Min, shapesGeom[j].AABBox.Max));
+                    }
+                    result.Add(new Tuple<Vector3, Vector3>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+                }
+            }
+
+            return result;
+        }
+
         //TODO Test Hierarchical tree intersection
-					
-		#endregion
 
-		#region Simulation Joint
+        #endregion
 
-		public void AddJoint(ICollisionJoint joint)
+        #region Simulation Joint
+
+        public void AddJoint(ICollisionJoint joint)
 		{
             CollisionJoints.Add(joint);
 
@@ -478,29 +504,27 @@ namespace SharpPhysicsEngine
 
         private void AddObjToHierarchicalTree(IShape shape)
         {
-            var boundingBox = ExtractIAABBFromShape(shape);
-
-            foreach (var item in boundingBox)
-            {
-                HierarchicalTree.InsertObject(item);
-            }
+            HierarchicalTree.InsertObject(ExtractIAABBFromShape(shape));
         }
 
-        private List<IAABB> ExtractIAABBFromShape(IShape shape)
+        private void RemoveObjFromHierarchicalTree(IShape shape)
+        {
+            HierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
+        }
+
+        private IAABB ExtractIAABBFromShape(IShape shape)
         {
             if (shape is ShapeDefinition.ConvexShape)
             {
-                return new List<IAABB>() { ((ShapeDefinition.ConvexShape)shape).ObjectGeometry };
+                return ((ShapeDefinition.ConvexShape)shape).ObjectGeometry;
             }
             else if (shape is SimSoftShape)
             {
-                return new List<IAABB>() { ((SimSoftShape)shape) };
+                return (SimSoftShape)shape;
             }
             else if (shape is ShapeDefinition.ConcaveShape)
             {
-                var boxes = new List<IAABB>(((ShapeDefinition.ConcaveShape)shape).ConvexShapesGeometry);
-                boxes.Add(((ShapeDefinition.ConcaveShape)shape).ObjectGeometry);
-                return boxes;
+                return ((ShapeDefinition.ConcaveShape)shape).ObjectGeometry;
             }
             else if (shape is CompoundShape)
             {
@@ -508,6 +532,11 @@ namespace SharpPhysicsEngine
             }
 
             return null;
+        }
+
+        private void UpdateHierarchicalTree()
+        {
+
         }
 
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)

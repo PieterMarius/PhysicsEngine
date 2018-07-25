@@ -178,7 +178,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             IGeometry simObject,
             object objectID)
 		{
-			Vector3 vertexPos = Helper.GetVertexPosition(simObject.Shape, 0);
+			Vector3 vertexPos = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[0].ID);
 			double xMax = vertexPos.x;
 			double xMin = vertexPos.x;
 			double yMax = vertexPos.y;
@@ -318,7 +318,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Private Methods
                 
-        public double CalculateSurfaceArea()
+        private double CalculateSurfaceArea()
         {
             return
                 2.0 * (GetWidth() * GetHeigth() + GetWidth() * GetDepth() + GetHeigth() * GetDepth());

@@ -361,7 +361,7 @@ namespace TestPhysics
             //displayOrigin ();
             displayContact();
             DisplayHierarchicalTree();
-            DisplayConcaveShape(1);
+            //DisplayConcaveShape(1);
             //DisplayConcaveShape(2);
             //displayBaseContact();
             //displayJoint();
@@ -1170,6 +1170,7 @@ namespace TestPhysics
         private void DisplayHierarchicalTree()
         {
             var aabb = physicsEngine.GetHierarchicalTreeAABB();
+            //var aabb = physicsEngine.GetShapesAABB();
 
             for (int i = 0; i < aabb.Count; i++)
             {
