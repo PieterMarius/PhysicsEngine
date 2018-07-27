@@ -30,6 +30,6 @@ namespace SharpPhysicsEngine.CollisionEngine
     {
         BruteForce = 0,
         AABBBroadPhase = 1,
-        SweepAndPrune = 2,
+        HierarchicalTree = 2,
     }
 }

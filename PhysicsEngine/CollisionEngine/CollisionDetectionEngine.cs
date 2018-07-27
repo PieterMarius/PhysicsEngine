@@ -41,8 +41,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private readonly CollisionEngineParameters collisionEngineParameters;
         private INarrowPhase narrowPhase;
         private IBroadPhase broadPhaseEngine;
-        
-		private readonly double CollisionDistance;
+
+        private AABBTree HierarchicalTree;
+
+        private readonly double CollisionDistance;
 
 		#endregion
 
@@ -58,7 +60,8 @@ namespace SharpPhysicsEngine.CollisionEngine
             SetBroadPhaseEngine();
 
 			CollisionDistance = collisionDistance;
-		}
+            HierarchicalTree = new AABBTree(1);
+        }
 
 		#endregion
 
@@ -99,8 +102,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                     broadPhaseEngine = new AABBBroadPhase(collisionEngineParameters);
                     break;
 
-                case BroadPhaseEngineType.SweepAndPrune:
-                    broadPhaseEngine = new SweepAndPrune(collisionEngineParameters);
+                case BroadPhaseEngineType.HierarchicalTree:
+                    broadPhaseEngine = new HierarchicalTree(collisionEngineParameters, null);
                     break;
 
                 case BroadPhaseEngineType.BruteForce:

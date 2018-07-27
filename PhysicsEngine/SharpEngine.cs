@@ -289,7 +289,7 @@ namespace SharpPhysicsEngine
 			}
 		}
 
-		public void RemoveShapes()
+		public void RemoveAllShapes()
 		{
 			Shapes = new IShape[0];
             CollisionShapes.Clear();
@@ -315,8 +315,7 @@ namespace SharpPhysicsEngine
         {
             var result = new List<Tuple<Vector3, Vector3>>();
             var nodes = HierarchicalTree.GetNodes();
-            var maxHeight = nodes.Max(x => x.Height);
-
+            
             for (int i = 0; i < nodes.Count; i++)
             {
                 //if (nodes[i].Obj != null)
@@ -350,6 +349,23 @@ namespace SharpPhysicsEngine
         }
 
         //TODO Test Hierarchical tree intersection
+        public List<Tuple<Vector3, Vector3>> GetHierarchicalIntersection()
+        {
+            var result = new List<Tuple<Vector3, Vector3>>();
+            int height = HierarchicalTree.GetMaxHeight();
+
+
+            for (int i = 0; i < Shapes.Length; i++)
+            {
+                var overlaps = HierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(Shapes[i]));
+                foreach (var item in overlaps)
+                {
+                    var aabb = item.GetAABB();
+                    result.Add(new Tuple<Vector3, Vector3>(aabb.Min, aabb.Max));
+                }
+            }
+            return result;
+        }
 
         #endregion
 
@@ -479,6 +495,12 @@ namespace SharpPhysicsEngine
             }
             else
                 ExecuteFlow();
+
+            //TODO Test
+            for (int i = 0; i < Shapes.Length; i++)
+            {
+                HierarchicalTree.UpdateObject(ExtractIAABBFromShape(Shapes[i]));
+            }
 		}
 
 		public void Simulate()

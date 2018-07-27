@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public Vector3 Execute(AABB boxA, AABB boxB)
         {
-            throw new System.NotImplementedException();
+            return AABB.GetDist(boxA, boxB);
         }
 
         #endregion

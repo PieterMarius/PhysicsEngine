@@ -42,8 +42,7 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
         public AABB aabb;
         public object Obj;
-        public int Height;
-
+        
         public int? ParentNodeIndex;
         public int? LeftNodeIndex;
         public int? RightNodeIndex;
@@ -68,7 +67,6 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             {
                 aabb = new AABB(this.aabb.Min, this.aabb.Max, this.aabb.ObjectReference),
                 Obj = this.Obj,
-                Height = this.Height,
                 ParentNodeIndex = this.ParentNodeIndex,
                 LeftNodeIndex = this.LeftNodeIndex,
                 RightNodeIndex = this.RightNodeIndex,
@@ -166,8 +164,8 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
                 if (!nodeIndex.HasValue)
                     continue;
 
-                //const
                 AABBNode node = Nodes[nodeIndex.Value].Clone() as AABBNode;
+
                 if (node.aabb.Intersect(testAabb))
                 {
                     if(node.IsLeaf() && node.Obj != obj)
@@ -184,16 +182,55 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
             return overlaps;
         }
-        
+
+
+//        int maxDepth(struct node* node) 
+//{
+//   if (node==NULL) 
+//       return 0;
+//   else
+//   {
+//       /* compute the depth of each subtree */
+//       int lDepth = maxDepth(node->left);
+//        int rDepth = maxDepth(node->right);
+ 
+//       /* use the larger one */
+//       if (lDepth > rDepth) 
+//           return(lDepth+1);
+//       else return(rDepth+1);
+//   }
+//}
+
         public List<AABBNode> GetNodes()
         {
             return Nodes;
         }
 
+        public int GetMaxHeight()
+        {
+            return GetMaxDepth(Nodes[0]);
+        }
+
         #endregion
 
         #region Private Methods
-                
+
+        private int GetMaxDepth(AABBNode node)
+        {
+            if (node == null)
+                return 0;
+            else
+            {
+                int lDepth = GetMaxDepth(Nodes[node.LeftNodeIndex.Value]);
+                int rDepth = GetMaxDepth(Nodes[node.RightNodeIndex.Value]);
+
+                if (lDepth > rDepth)
+                    return lDepth + 1;
+                else
+                    return rDepth + 1;
+            }
+        }
+
         private int AllocateNode()
         {
             if(NextFreeNodeIndex == null)
@@ -242,13 +279,11 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
             while (!Nodes[treeNodeIndex].IsLeaf())
             {
-                //const
                 AABBNode treeNode = Nodes[treeNodeIndex].Clone() as AABBNode;
                 int leftNodeIndex = treeNode.LeftNodeIndex.Value;
                 int rightNodeIndex = treeNode.RightNodeIndex.Value;
-                //const
+                
                 AABBNode leftNode = Nodes[leftNodeIndex].Clone() as AABBNode;
-                //const
                 AABBNode rightNode = Nodes[rightNodeIndex].Clone() as AABBNode;
 
                 AABB combinedAabb = treeNode.aabb.Merge(leafNode.aabb);
@@ -297,15 +332,10 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             newParent.aabb = leafNode.aabb.Merge(leafSibling.aabb);
             newParent.LeftNodeIndex = leafSiblingIndex;
             newParent.RightNodeIndex = leafNodeIndex;
-
-            if (newParent.ParentNodeIndex.HasValue)
-                newParent.Height = 1 + Nodes[newParent.ParentNodeIndex.Value].Height;
-
+                        
             leafNode.ParentNodeIndex = newParentIndex;
             leafSibling.ParentNodeIndex = newParentIndex;
-
-            leafNode.Height = 1 + Math.Max(Nodes[newParent.LeftNodeIndex.Value].Height, Nodes[newParent.RightNodeIndex.Value].Height);
-
+                        
             if (oldParentIndex == null)
                 RootNodeIndex = newParentIndex;
             else
@@ -331,11 +361,11 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
             AABBNode leafNode = Nodes[leafNodeIndex];
             int parentNodeIndex = leafNode.ParentNodeIndex.Value;
-            //const
+            
             AABBNode parentNode = Nodes[parentNodeIndex].Clone() as AABBNode;
             int? grandParentNodeIndex = parentNode.ParentNodeIndex;
             int? siblingNodeIndex = parentNode.LeftNodeIndex == leafNodeIndex ? parentNode.RightNodeIndex : parentNode.LeftNodeIndex;
-            //assert(siblingNodeIndex != AABB_NULL_NODE); // we must have a sibling
+            
             AABBNode siblingNode = Nodes[siblingNodeIndex.Value];
 
             if (grandParentNodeIndex != null)
@@ -378,14 +408,11 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             while(treeNodeIndex != null)
             {
                 AABBNode treeNode = Nodes[treeNodeIndex.Value];
-                //assert(treeNode.leftNodeIndex != AABB_NULL_NODE && treeNode.rightNodeIndex != AABB_NULL_NODE);
-
-                //const
+                
                 AABBNode leftNode = Nodes[treeNode.LeftNodeIndex.Value].Clone() as AABBNode;
-                //const
                 AABBNode rightNode = Nodes[treeNode.RightNodeIndex.Value].Clone() as AABBNode;
                 treeNode.aabb = leftNode.aabb.Merge(rightNode.aabb);
-
+                                
                 treeNodeIndex = treeNode.ParentNodeIndex;
             }
         }

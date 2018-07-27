@@ -137,34 +137,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public Vector3 Execute(AABB boxA, AABB boxB)
         {
-            return GetDist(boxA, boxB);
+            return AABB.GetDist(boxA, boxB);
         }
 
         #endregion
 
         #region Private Methods
-
-        private Vector3 GetDist(AABB boxA, AABB boxB) 
-	    {
-            double[] sqrDist = new double[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (boxA.Max[i] < boxB.Min[i])
-                {
-                    double d = boxA.Max[i] - boxB.Min[i];
-                    sqrDist[i] = d;
-                }
-                else if (boxA.Min[i] > boxB.Max[i])
-                {
-                    double d = boxA.Min[i] - boxB.Max[i];
-                    sqrDist[i] = d;
-                }
-            }
-
-            return new Vector3(sqrDist);
-	    }
-
+               
 		#endregion
 	}
 }

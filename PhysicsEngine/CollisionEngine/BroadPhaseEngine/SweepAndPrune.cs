@@ -30,25 +30,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
-    internal sealed class SweepAndPrune : IBroadPhase
+    internal sealed class HierarchicalTree : IBroadPhase
     {
         #region Fields
 
         private CollisionEngineParameters collisionEngineParameters;
-        
-         
-            
+        private readonly AABBTree hierarchicalTree;
+                    
         #endregion
 
         #region Contructor
 
-        public SweepAndPrune(CollisionEngineParameters collisionEngineParameters)
+        public HierarchicalTree(
+            CollisionEngineParameters collisionEngineParameters,
+            AABBTree hierarchicalTree)
         {
             this.collisionEngineParameters = collisionEngineParameters;
+            this.hierarchicalTree = hierarchicalTree;
         }
 
         #endregion
@@ -57,6 +60,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public List<CollisionPair> Execute(AABB[] boxs, double distanceTolerance)
         {
+            //hierarchicalTree.QueryOverlaps()
+
             throw new NotImplementedException();
         }
 
