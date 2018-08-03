@@ -115,10 +115,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		private List<Partition> Partitions;
 
-		/// <summary>
-		/// The solver.
-		/// </summary>
-		private ISolver Solver;
+		
 
         private Dictionary<int, StabilizationValues> PreviousShapesProperties;
 
@@ -147,28 +144,56 @@ namespace SharpPhysicsEngine
         /// </summary>
         private AABBTree HierarchicalTree;
 
-		/// <summary>
-		/// Generate ID for shape of simulation
-		/// </summary>
-		private readonly HashGenerator HsGenerator;
 
-		private readonly LinearProblemBuilder linearProblemBuilder;
+        #region Support Engines
 
-		private readonly IntegratePosition integratePosition;
+        /// <summary>
+        /// The solver.
+        /// </summary>
+        private ISolver Solver;
 
-        private readonly IntegrateVelocity integrateVelocity;
+        /// <summary>
+        /// Generate ID for shape of simulation
+        /// </summary>
+        private readonly HashGenerator HsGenerator;
 
+        /// <summary>
+        /// Build the linear system: Ax = b (symmetric)
+        /// </summary>
+		private readonly LinearProblemBuilder LinearSystemBuilder;
+
+        /// <summary>
+        /// Update objects position and integrate external forces
+        /// </summary>
+		private readonly IntegratePosition IntegratePositionEngine;
+
+        /// <summary>
+        /// Update velocity related to Collisions and Joints constraints solutions
+        /// </summary>
+        private readonly IntegrateVelocity IntegrateVelocityEngine;
+
+        /// <summary>
+        /// 
+        /// </summary>
 		private readonly ContactConstraintBuilder contactConstraintBuilder;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly WarmStartEngine warmStartEngine;
 
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly ICCDEngine ccdEngine;
 
-		#endregion
+        #endregion
 
-		#region Constructor
+        #endregion
 
-		public SharpEngine (
+        #region Constructor
+
+        public SharpEngine (
 			PhysicsEngineParameters simulationParameters,
 			CollisionEngineParameters collisionEngineParameters,
 			SolverParameters solverParameters)
@@ -190,9 +215,9 @@ namespace SharpPhysicsEngine
             CollisionJoints = new List<ICollisionJoint>();
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
-			linearProblemBuilder = new LinearProblemBuilder(EngineParameters);
-            integrateVelocity = new IntegrateVelocity(EngineParameters);
-			integratePosition = new IntegratePosition(EngineParameters);
+			LinearSystemBuilder = new LinearProblemBuilder(EngineParameters);
+            IntegrateVelocityEngine = new IntegrateVelocity(EngineParameters);
+			IntegratePositionEngine = new IntegratePosition(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
@@ -604,12 +629,12 @@ namespace SharpPhysicsEngine
 					{
                         double[] overallSolution = new double[jacobianConstraints.Length];
                                                                         	                      
-                        LinearProblemProperties overallLCP = linearProblemBuilder.BuildLCP(jacobianConstraints);
+                        LinearProblemProperties overallLCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
                                                                         
                         if (overallLCP != null)
 						    overallSolution = Solver.Solve(overallLCP, overallLCP.StartImpulse);
 
-                        integrateVelocity.UpdateVelocity(jacobianConstraints, overallSolution);
+                        IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
                     }
 				}
 			}
@@ -618,7 +643,7 @@ namespace SharpPhysicsEngine
 
             #region Position and Velocity integration
                         
-            integratePosition.IntegrateObjectsPosition(ref Shapes, TimeStep);
+            IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep);
 
             #endregion
 
