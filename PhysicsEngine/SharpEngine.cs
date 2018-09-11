@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.CollisionEngine;
 using SharpPhysicsEngine.LCPSolver;
@@ -191,6 +192,13 @@ namespace SharpPhysicsEngine
 
         #endregion
 
+        #region C++ Functions
+
+        [DllImport("HACD_Wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void ExecuteHACD();
+
+        #endregion
+
         #region Constructor
 
         public SharpEngine (
@@ -222,6 +230,9 @@ namespace SharpPhysicsEngine
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
             HierarchicalTree = new AABBTree(1);
+
+            //Test c++ dll
+            ExecuteHACD();
             
 			//int minWorker, minIOC;
 			//// Get the current settings.
@@ -378,8 +389,7 @@ namespace SharpPhysicsEngine
         {
             var result = new List<Tuple<Vector3, Vector3>>();
             int height = HierarchicalTree.GetMaxHeight();
-
-
+            
             for (int i = 0; i < Shapes.Length; i++)
             {
                 var overlaps = HierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(Shapes[i]));

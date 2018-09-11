@@ -72,3 +72,5 @@ TestPhysics/MIConvexHull.xml
 MathUtility/bin/x64/Debug/System.Numerics.Vectors.xml
 TestPhysics/bin/x64/Debug/OpenTK.xml
 TestPhysics/bin/x64/Debug/OpenTK.xml
+*.log
+*.tlog

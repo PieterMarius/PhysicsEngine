@@ -69,7 +69,9 @@
     <Compile Include="CollisionEngine\Common\ICollisionEngine.cs" />
     <Compile Include="CollisionEngine\Common\Support.cs" />
     <Compile Include="CollisionEngine\Common\SupportTriangle.cs" />
+    <Compile Include="CollisionEngine\Dynamic Bounding Tree\AABBNode.cs" />
     <Compile Include="CollisionEngine\Dynamic Bounding Tree\AABBTree.cs" />
+    <Compile Include="CollisionEngine\Dynamic Bounding Tree\IAABB.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\Edge.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPA.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\EPA\EPAOutput.cs" />
