@@ -32,7 +32,7 @@ namespace SharpEngineMathUtility
 	{
 		#region Properties
 
-		public readonly Vector3 Vertex;
+		public readonly Vector3d Vertex;
 		public readonly double Angle;
 
 		#endregion
@@ -40,7 +40,7 @@ namespace SharpEngineMathUtility
 		#region Constructor
 
 		public Vertices (
-			Vector3 vertex,
+			Vector3d vertex,
 			double angle)
 		{
 			Vertex = vertex;

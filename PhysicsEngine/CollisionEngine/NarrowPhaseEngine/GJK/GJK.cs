@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public double GJKManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		private readonly Vector3 origin = new Vector3();
+		private readonly Vector3d origin = new Vector3d();
 		private readonly double constTolerance = 0.0000001;
 		
 		#endregion
@@ -83,23 +83,23 @@ namespace SharpPhysicsEngine.CollisionEngine
 				indexB);
 		}
 
-		private Vector3 GetDirectionOnSimplex2(Simplex simplex)
+		private Vector3d GetDirectionOnSimplex2(Simplex simplex)
 		{
-			Vector3 simplexAB = simplex.Support [1].s - simplex.Support [0].s;
-			Vector3 simplexAO = simplex.Support [0].s * - 1.0;
+			Vector3d simplexAB = simplex.Support [1].s - simplex.Support [0].s;
+			Vector3d simplexAO = simplex.Support [0].s * - 1.0;
 
-			return Vector3.Cross(
-					Vector3.Cross(simplexAB, simplexAO), 
+			return Vector3d.Cross(
+					Vector3d.Cross(simplexAB, simplexAO), 
 					simplexAB);
 		}
 
-		private Vector3 GetMinDistance(
+		private Vector3d GetMinDistance(
 			ref List<SupportTriangle> triangles,
-			Vector3 point,
+			Vector3d point,
 			ref int minTriangleIndex)
 		{
-			var result = new Vector3();
-			var distanceBuf = new Vector3();
+			var result = new Vector3d();
+			var distanceBuf = new Vector3d();
 			double s = 0; double t = 0;
 
 			var buffer = new SupportTriangle();
@@ -132,7 +132,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 				triangles[i] = buffer;
 
-				double distance = Vector3.Length(distanceBuf);
+				double distance = Vector3d.Length(distanceBuf);
 
 				if (distance < minDistance)
 				{
@@ -157,33 +157,33 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private double ExecuteGJKAlgorithm(
 			VertexProperties[] vertexShape1,
 			VertexProperties[] vertexShape2,
-			ref Vector3 collisionNormal,
+			ref Vector3d collisionNormal,
 			ref CollisionPoint cp,
 			ref List<SupportTriangle> triangles,
-			ref Vector3 centroid,
+			ref Vector3d centroid,
 			ref bool isIntersection)
 		{
 			double minDistance = double.MaxValue;
 			int minTriangleIndex = -1;
 			var result = new EngineCollisionPoint();
-			var oldDirection = new Vector3();
+			var oldDirection = new Vector3d();
 			var simplex = new Simplex();
 
 			//Primo punto del simplex
 			simplex.Support.Add(GetFarthestPoint(vertexShape1, vertexShape2, vertexShape2.Length / 2));
 
 			//Secondo punto del simplex
-			Vector3 direction = Vector3.Normalize(simplex.Support[0].s * -1.0);
+			Vector3d direction = Vector3d.Normalize(simplex.Support[0].s * -1.0);
 			if (!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(vertexShape1, vertexShape2, direction)))
 				return -1.0;
 
 			//Terzo punto del simplex
-			direction = Vector3.Normalize(GetDirectionOnSimplex2(simplex));
+			direction = Vector3d.Normalize(GetDirectionOnSimplex2(simplex));
 			if(!simplex.AddSupport(Helper.GetMinkowskiFarthestPoint(vertexShape1, vertexShape2, direction)))
 				return -1.0;
 
 			//Quarto punto del simplex
-			direction = Vector3.Normalize(GeometryUtilities.CalculateNormal(
+			direction = Vector3d.Normalize(GeometryUtilities.CalculateNormal(
 				simplex.Support[0].s,
 				simplex.Support[1].s,
 				simplex.Support[2].s));
@@ -203,10 +203,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return -1.0;
 			}
 
-			Vector3 triangleDistance = GetMinDistance(ref triangles, origin, ref minTriangleIndex);
+			Vector3d triangleDistance = GetMinDistance(ref triangles, origin, ref minTriangleIndex);
 
 			result.SetDist(triangleDistance);
-			result.SetNormal(Vector3.Normalize(triangleDistance));
+			result.SetNormal(Vector3d.Normalize(triangleDistance));
 			Helper.GetVertexFromMinkowsky(triangles[minTriangleIndex], vertexShape1, vertexShape2, ref result);
 
 			minDistance = triangleDistance.Length();
@@ -215,7 +215,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				direction = -1.0 * triangleDistance.Normalize();
 
-				if (Vector3.Length(direction) < constTolerance)
+				if (Vector3d.Length(direction) < constTolerance)
 				{
 					direction = origin - centroid;
 				}
@@ -292,9 +292,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexObjB)
 		{
 			var collisionPoint = new CollisionPoint();
-			var collisionNormal = new Vector3();
+			var collisionNormal = new Vector3d();
 			var supportTriangles = new List<SupportTriangle>();
-			var centroid = new Vector3();
+			var centroid = new Vector3d();
 			bool isIntersection = false;
 			
 			//TODO refactoring

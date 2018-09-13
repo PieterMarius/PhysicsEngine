@@ -39,15 +39,15 @@ namespace SharpPhysicsEngine
 
         double SpringCoefficientHingeAxis;
         double SpringCoefficientRotationAxis;
-        readonly Vector3 StartAnchorPoint;
-        readonly Vector3 StartErrorAxis1;
-        readonly Vector3 StartErrorAxis2;
+        readonly Vector3d StartAnchorPoint;
+        readonly Vector3d StartErrorAxis1;
+        readonly Vector3d StartErrorAxis2;
         readonly Quaternion RelativeOrientation1;
         readonly Quaternion RelativeOrientation2;
-        readonly Vector3 HingeAxis;
-        readonly Vector3 RotationAxis;
+        readonly Vector3d HingeAxis;
+        readonly Vector3d RotationAxis;
 
-        Vector3 AnchorPoint;
+        Vector3d AnchorPoint;
 
         #endregion
 
@@ -56,9 +56,9 @@ namespace SharpPhysicsEngine
         public AngularConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3d startAnchorPosition,
+            Vector3d hingeAxis,
+            Vector3d rotationAxis,
             double errorReductionParam,
             double springCoefficientHingeAxis,
             double springCoefficientRotationAxis)
@@ -70,7 +70,7 @@ namespace SharpPhysicsEngine
             HingeAxis = hingeAxis.Normalize();
             RotationAxis = rotationAxis.Normalize();
 
-            Vector3 relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
+            Vector3d relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
             relativePos = ShapeA.RotationMatrix * relativePos;
 
             AnchorPoint = relativePos + ShapeA.Position;
@@ -81,8 +81,8 @@ namespace SharpPhysicsEngine
             StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
                                      (AnchorPoint - ShapeB.Position);
 
-            Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
-            Vector3 rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
+            Vector3d rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
+            Vector3d rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
             RelativeOrientation1 = CalculateRelativeOrientation(
                 rHingeAxis,
@@ -114,12 +114,12 @@ namespace SharpPhysicsEngine
 
             #region Init Angular
 
-            Vector3 hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
-            Vector3 rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
+            Vector3d hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
+            Vector3d rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
 
             double k = hingeAxis.Dot(rotationAxis);
-            Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
-            Vector3 t1 = hingeAxis.Cross(tempPerpendicular).Normalize();
+            Vector3d tempPerpendicular = rotationAxis - k * hingeAxis;
+            Vector3d t1 = hingeAxis.Cross(tempPerpendicular).Normalize();
 
             double hingeAngle = GetAngle1(
                     hingeAxis,
@@ -174,7 +174,7 @@ namespace SharpPhysicsEngine
 
         #region IConstraint
 
-        public override Vector3 GetAnchorPosition()
+        public override Vector3d GetAnchorPosition()
         {
             return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.InitCenterOfMass)) +
@@ -225,9 +225,9 @@ namespace SharpPhysicsEngine
         #region Private Methods
 
         double GetAngle2(
-            Vector3 axis1,
-            Vector3 axis2,
-            Vector3 startAxis,
+            Vector3d axis1,
+            Vector3d axis2,
+            Vector3d startAxis,
             Quaternion rotationStatus,
             Quaternion startRelativeRotation)
         {
@@ -235,9 +235,9 @@ namespace SharpPhysicsEngine
         }
 
         double GetAngle1(
-            Vector3 axis1,
-            Vector3 axis2,
-            Vector3 startAxis,
+            Vector3d axis1,
+            Vector3d axis2,
+            Vector3d startAxis,
             Quaternion rotationStatus,
             Quaternion startRelativeRotation)
         {
@@ -247,7 +247,7 @@ namespace SharpPhysicsEngine
             Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
             Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
 
-            var quaternionVectorPart = new Vector3(
+            var quaternionVectorPart = new Vector3d(
                 mult2.b,
                 mult2.c,
                 mult2.d);
@@ -256,8 +256,8 @@ namespace SharpPhysicsEngine
         }
 
         Quaternion CalculateRelativeOrientation(
-            Vector3 axis1,
-            Vector3 axis2,
+            Vector3d axis1,
+            Vector3d axis2,
             Quaternion bodyRotationStatus)
         {
             Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix(axis1, axis2);

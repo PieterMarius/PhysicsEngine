@@ -16,7 +16,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpPhysicsEngine", "Physi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsUnitTest", "PhysicsUnitTest\PhysicsUnitTest.csproj", "{9BDB80C5-9509-467A-803F-EF3A6065423D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WrapperTest", "WrapperTest\WrapperTest.vcxproj", "{CC61A117-7C15-4539-811C-5C40A4ECBFF5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HACD_Wrapper", "WrapperTest\WrapperTest.vcxproj", "{CC61A117-7C15-4539-811C-5C40A4ECBFF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HACD", "HACD\HACD.csproj", "{47272875-B89A-4880-9ED7-BEFD5F63FE07}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +96,18 @@ Global
 		{CC61A117-7C15-4539-811C-5C40A4ECBFF5}.Release|x64.Build.0 = Release|x64
 		{CC61A117-7C15-4539-811C-5C40A4ECBFF5}.Release|x86.ActiveCfg = Release|Win32
 		{CC61A117-7C15-4539-811C-5C40A4ECBFF5}.Release|x86.Build.0 = Release|Win32
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|x64.Build.0 = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Debug|x86.Build.0 = Debug|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|x64.ActiveCfg = Release|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|x64.Build.0 = Release|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|x86.ActiveCfg = Release|Any CPU
+		{47272875-B89A-4880-9ED7-BEFD5F63FE07}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

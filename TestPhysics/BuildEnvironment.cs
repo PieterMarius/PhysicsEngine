@@ -178,12 +178,12 @@ namespace TestPhysics
             objects[0] = new ConvexShape(
                 geom0.VertexPoint, 
                 geom0.TriagleIdx, 
-                new Vector3(0.0, -4.0, 0.0), 0.0,
+                new Vector3d(0.0, -4.0, 0.0), 0.0,
                 true);
             
-            objects[0].SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            objects[0].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects[0].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[0].SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects[0].SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects[0].SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects[0].SetRestitutionCoeff(0.1);
             objects[0].SetDynamicFrictionCoeff(1.0);
             objects[0].SetStaticFrictionCoeff(1.0);
@@ -197,10 +197,10 @@ namespace TestPhysics
             TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            objects[1] = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(3.0, 4.0, 7.0), 1.0);
+            objects[1] = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3d(3.0, 4.0, 7.0), 1.0);
             objects[1].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
-            objects[1].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects[1].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[1].SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects[1].SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects[1].SetRestitutionCoeff(0.1);
             objects[1].SetDynamicFrictionCoeff(0.8);
             objects[1].SetStaticFrictionCoeff(0.9);
@@ -212,10 +212,10 @@ namespace TestPhysics
             TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            objects[2] = new ConvexShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
+            objects[2] = new ConvexShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3d(0.0, 1.2, 7.0), 1.0);
             objects[2].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
-            objects[2].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects[2].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[2].SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects[2].SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects[2].SetRestitutionCoeff(0.1);
             objects[2].SetDynamicFrictionCoeff(0.8);
             objects[2].SetStaticFrictionCoeff(0.9);
@@ -227,10 +227,10 @@ namespace TestPhysics
             TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom3 = GetObjectGeometry(ShapeFilename[3][0], ShapeScale[3][0]);
-            objects[3] = new ConvexShape(geom3.VertexPoint, geom3.TriagleIdx, new Vector3(-3.0, 1.2, 7.0), 1.0);
+            objects[3] = new ConvexShape(geom3.VertexPoint, geom3.TriagleIdx, new Vector3d(-3.0, 1.2, 7.0), 1.0);
             objects[3].SetRotationStatus(new Quaternion(1.0, 0.0, 0.0, 0.0));
-            objects[3].SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects[3].SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            objects[3].SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects[3].SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects[3].SetRestitutionCoeff(0.5);
             objects[3].SetDynamicFrictionCoeff(0.8);
             objects[3].SetStaticFrictionCoeff(0.9);
@@ -251,10 +251,10 @@ namespace TestPhysics
 			TextureFilename[0] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0][0], ShapeScale[0][0]);
-            var objects0 = new ConvexShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3(0.0, -4.0, 0.0), 0.0, true);
-            objects0.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            objects0.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects0.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            var objects0 = new ConvexShape(geom0.VertexPoint, geom0.TriagleIdx, new Vector3d(0.0, -4.0, 0.0), 0.0, true);
+            objects0.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects0.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects0.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects0.SetRestitutionCoeff(0.1);
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
@@ -272,10 +272,10 @@ namespace TestPhysics
 			TextureFilename[1] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom1 = GetObjectGeometry(ShapeFilename[1][0], ShapeScale[1][0]);
-            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3(0.0, 1.2, 9.5), 1.0);
-            objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects1.SetAngularVelocity(new Vector3(0.0, 2.0, 0.0));
+            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, new Vector3d(0.0, 1.2, 9.5), 1.0);
+            objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects1.SetAngularVelocity(new Vector3d(0.0, 2.0, 0.0));
             objects1.SetRestitutionCoeff(0.5);
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
@@ -289,10 +289,10 @@ namespace TestPhysics
 			TextureFilename[2] = new string[1] { "texture/woodbox.bmp" };
 
             GeometryProperties geom2 = GetObjectGeometry(ShapeFilename[2][0], ShapeScale[2][0]);
-            var objects2 = new ConvexShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3(0.0, 1.2, 7.0), 1.0);
-            objects2.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-            objects2.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-            objects2.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+            var objects2 = new ConvexShape(geom2.VertexPoint, geom2.TriagleIdx, new Vector3d(0.0, 1.2, 7.0), 1.0);
+            objects2.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects2.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects2.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects2.SetRestitutionCoeff(0.1);
             objects2.SetDynamicFrictionCoeff(0.8);
             objects2.SetStaticFrictionCoeff(0.9);
@@ -307,7 +307,7 @@ namespace TestPhysics
             ShapeFilename[3] = new string[1] { softObject };
 			ShapeScale[3] = new float[1] { 1 };
             
-			var objects3 = BuildSoftBody(softObject, 1, new Vector3(0.0, 0.0, 0.0));
+			var objects3 = BuildSoftBody(softObject, 1, new Vector3d(0.0, 0.0, 0.0));
             objects3.SetStaticFrictionCoeff(0.5);
             objects3.SetDynamicFrictionCoeff(0.5);
             objects3.SetRestitutionCoeff(1.0);
@@ -326,11 +326,11 @@ namespace TestPhysics
 
         public class GeometryProperties
         {
-            public Vector3[] VertexPoint { get; private set; }
+            public Vector3d[] VertexPoint { get; private set; }
             public int[][] TriagleIdx { get; private set; }
 
             public GeometryProperties(
-                Vector3[] vertexPoint,
+                Vector3d[] vertexPoint,
                 int[][] triangleIndexes)
             {
                 VertexPoint = vertexPoint;
@@ -373,7 +373,7 @@ namespace TestPhysics
 			ObjImporter importer = new ObjImporter();
 			ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
 
-			Vector3[] vertexStartPoint = new Vector3[mesh.vertices.Length];
+			Vector3d[] vertexStartPoint = new Vector3d[mesh.vertices.Length];
 
 			for (int i = 0; i < mesh.vertices.Length; i++)
 				vertexStartPoint[i] = mesh.vertices[i];
@@ -390,7 +390,7 @@ namespace TestPhysics
 		private SoftShape BuildSoftBody(
 			string fileName,
 			double scale,
-			Vector3 position)
+			Vector3d position)
 		{
 			GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
 
@@ -409,11 +409,11 @@ namespace TestPhysics
 		}
 
 
-        private void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
+        private void RotateObj(ref GenericUtility.ObjProperties obj, Vector3d versor, double angle)
         {
             for (int i = 0; i < obj.vertexPoint.Length; i++)
             {
-                obj.vertexPoint[i] = Vector3.RotatePoint(obj.vertexPoint[i], versor, angle);
+                obj.vertexPoint[i] = Vector3d.RotatePoint(obj.vertexPoint[i], versor, angle);
             }
         }
 

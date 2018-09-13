@@ -88,7 +88,7 @@ namespace Utility
 		/// <param name="nObject">N object.</param>
 		public static int[][] LoadGLObjects(
 			ObjImporter.meshStruct[][] objects,
-			Vector3[][] translate,
+			Vector3d[][] translate,
 			int nObject,
 			bool GLM_TEXTURE = false, 
 			bool GLM_FLAT = false,
@@ -140,7 +140,7 @@ namespace Utility
 
 					GL.NewList(displayList[i][j], ListMode.CompileAndExecute);
 
-					GLDrawSolid(objects[i][j], new Vector3(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
+					GLDrawSolid(objects[i][j], new Vector3d(), GLM_TEXTURE, GLM_FLAT, GLM_SMOOTH);
 
 					GL.EndList();
 				}
@@ -206,7 +206,7 @@ namespace Utility
 			return scale;
 		}
 
-		public static double UnitizeObject(ref Vector3[] vertices)
+		public static double UnitizeObject(ref Vector3d[] vertices)
 		{
 			double xMax, xMin, yMax, yMin, zMax, zMin;
 			double cx, cy, cz, w, h, d;
@@ -252,7 +252,7 @@ namespace Utility
 			/* translate around center then scale */
 			for (int i = 0; i < vertices.Length; i++)
 			{
-				var vertex = new Vector3(
+				var vertex = new Vector3d(
 					(vertices[i].x - cx) * scale,
 					(vertices[i].y - cy) * scale,
 					(vertices[i].z - cz) * scale);
@@ -279,12 +279,12 @@ namespace Utility
 		}
 
 		public static void ScaleObject(
-			ref Vector3[] vertices,
+			ref Vector3d[] vertices,
 			double scale)
 		{
 			for (int i = 0; i < vertices.Length; i++)
 			{
-				var vertex = new Vector3(
+				var vertex = new Vector3d(
 					(vertices[i].x) * scale,
 					(vertices[i].y) * scale,
 					(vertices[i].z) * scale);
@@ -425,18 +425,18 @@ namespace Utility
 			GL.End ();
 		}
 
-		public static List<Line> BuildBoxLine(Vector3 Min, Vector3 Max)
+		public static List<Line> BuildBoxLine(Vector3d Min, Vector3d Max)
 		{
-			Vector3[] verts = new Vector3[8];
+			Vector3d[] verts = new Vector3d[8];
 			verts[0] = Min;
-			verts[1] = new Vector3(Min.x, Min.y, Max.z); //Z
-			verts[2] = new Vector3(Min.x, Max.y, Min.z); //Y
-			verts[3] = new Vector3(Max.x, Min.y, Min.z); //X
+			verts[1] = new Vector3d(Min.x, Min.y, Max.z); //Z
+			verts[2] = new Vector3d(Min.x, Max.y, Min.z); //Y
+			verts[3] = new Vector3d(Max.x, Min.y, Min.z); //X
 
 			verts[7] = Max;
-			verts[4] = new Vector3(Max.x, Max.y, Min.z); //Z
-			verts[5] = new Vector3(Max.x, Min.y, Max.z); //Y
-			verts[6] = new Vector3(Min.x, Max.y, Max.z); //X
+			verts[4] = new Vector3d(Max.x, Max.y, Min.z); //Z
+			verts[5] = new Vector3d(Max.x, Min.y, Max.z); //Y
+			verts[6] = new Vector3d(Min.x, Max.y, Max.z); //X
 
 
             var boxLines = new List<Line>
@@ -461,21 +461,21 @@ namespace Utility
 		}
 
 		public static void glLookAt(
-			Vector3 eye,
-			Vector3 center,
-			Vector3 up)
+			Vector3d eye,
+			Vector3d center,
+			Vector3d up)
 		{
-			Vector3 forward = center - eye;
+			Vector3d forward = center - eye;
 
-			forward = Vector3.Normalize(forward);
+			forward = Vector3d.Normalize(forward);
 
-			var upBuf = new Vector3(up.x, up.y, up.z);
+			var upBuf = new Vector3d(up.x, up.y, up.z);
 
-			var side = Vector3.Cross(forward, upBuf);
+			var side = Vector3d.Cross(forward, upBuf);
 
-			side = Vector3.Normalize(side);
+			side = Vector3d.Normalize(side);
 
-			upBuf = Vector3.Cross(side, forward);
+			upBuf = Vector3d.Cross(side, forward);
 
 			var matrix = new float[] {
 				Convert.ToSingle (side.x), Convert.ToSingle (up.x), Convert.ToSingle (-forward.x),
@@ -488,8 +488,8 @@ namespace Utility
 		}
 
 		public static void DrawLine(
-			Vector3 a,
-			Vector3 b)
+			Vector3d a,
+			Vector3d b)
 		{
 			GL.Begin(PrimitiveType.Lines);
 			GL.Vertex3(a.x, a.y, a.z);
@@ -507,7 +507,7 @@ namespace Utility
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		private static void GLDrawSolid(
 			ObjImporter.meshStruct solid,
-			Vector3 translate,
+			Vector3d translate,
 			bool GLM_TEXTURE, 
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)
@@ -538,22 +538,22 @@ namespace Utility
 
 				if (GLM_FLAT) 
 				{
-					var a = new Vector3(
+					var a = new Vector3d(
 						solid.vertices[indicedata[index]].x,
 						solid.vertices[indicedata[index]].y,
 						solid.vertices[indicedata[index]].z);
 					
-					var b = new Vector3 (
+					var b = new Vector3d (
 						solid.vertices[indicedata [index + 1]].x, 
 						solid.vertices[indicedata [index + 1]].y, 
 						solid.vertices[indicedata [index + 1]].z);
 
-					var c = new Vector3 (
+					var c = new Vector3d (
 						solid.vertices[indicedata [index + 2]].x, 
 						solid.vertices[indicedata [index + 2]].y, 
 						solid.vertices[indicedata [index + 2]].z);
 
-					Vector3 normal = 
+					Vector3d normal = 
 						GeometryUtilities.CalculateNormal (a, b, c);
 
 					GL.Normal3 (normal.x, normal.y, normal.z);	
@@ -668,7 +668,7 @@ namespace Utility
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		public static void GLDrawSolid(
 			double[][] faces,
-			Vector3 translate,
+			Vector3d translate,
 			bool GLM_TEXTURE,
 			bool GLM_FLAT,
 			bool GLM_SMOOTH)
@@ -777,8 +777,8 @@ namespace Utility
 		/// <param name="GLM_TEXTURE">If set to <c>true</c> GL add texture coordinates.</param>
 		/// <param name="GLM_FLAT">If set to <c>true</c> GL add plane normal.</param>
 		public static void GLDrawSolid(
-            Vector3[][] faces,
-            Vector3 translate,
+            Vector3d[][] faces,
+            Vector3d translate,
             bool GLM_TEXTURE,
             bool GLM_FLAT,
             bool GLM_SMOOTH)

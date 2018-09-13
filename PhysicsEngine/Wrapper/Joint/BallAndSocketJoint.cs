@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         public BallAndSocketJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPos,
+            Vector3d startAnchorPos,
             double restoreCoeff,
             double springCoeff)
         {
@@ -62,7 +62,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return ballAndSocketConstraint.GetAnchorPosition();
         }

@@ -135,7 +135,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             return collisionPairs;
         }
 
-        public Vector3 Execute(AABB boxA, AABB boxB)
+        public Vector3d Execute(AABB boxA, AABB boxB)
         {
             return AABB.GetDist(boxA, boxB);
         }

@@ -78,7 +78,7 @@ namespace SharpEngineMathUtility
 		/// </summary>
 		/// <param name="versor">Versor.</param>
 		/// <param name="angle">Angle.</param>
-		public Quaternion(Vector3 versor, double angle)
+		public Quaternion(Vector3d versor, double angle)
 		{
 			double coeff = Math.Sin (angle * 0.5);
 
@@ -139,13 +139,13 @@ namespace SharpEngineMathUtility
 		/// <returns>The vector.</returns>
 		/// <param name="q1">Q1.</param>
 		/// <param name="q2">Q2.</param>
-		public static Vector3 GetVector(Quaternion q1, Quaternion q2)
+		public static Vector3d GetVector(Quaternion q1, Quaternion q2)
 		{
 			double x = (q1.a * q2.b + q1.b * q2.a + q1.c * q2.d - q1.d * q2.c);
 			double y = (q1.a * q2.c - q1.b * q2.d + q1.c * q2.a + q1.d * q2.b);
 			double z = (q1.a * q2.d + q1.b * q2.c - q1.c * q2.b + q1.d * q2.a);
 
-			return new Vector3 (x, y, z);
+			return new Vector3d (x, y, z);
 		}
 
 		public static Quaternion GetQuaternion(Matrix3x3 a)
@@ -311,10 +311,10 @@ namespace SharpEngineMathUtility
 
 		public static Quaternion IntegrateQuaternion(
 			Quaternion q, 
-			Vector3 v, 
+			Vector3d v, 
 			double delta)
 		{
-			Vector3 theta = v * (delta * 0.5);
+			Vector3d theta = v * (delta * 0.5);
 
 			double ra = 0.0;
 			double rb = theta.x;
@@ -324,7 +324,7 @@ namespace SharpEngineMathUtility
 			return Normalize (new Quaternion(ra,rb,rc,rd) * q);
 		}
 
-		public static Vector3 GetEuler(Quaternion q)
+		public static Vector3d GetEuler(Quaternion q)
 		{
 			double test = q.b * q.c + q.d * q.a;
 			double heading, attitude, bank;
@@ -335,7 +335,7 @@ namespace SharpEngineMathUtility
 				heading = 2.0 * Math.Atan2 (q.b, q.a);
 				attitude = Math.PI / 2.0;
 				bank = 0.0;
-				return new Vector3 (bank, heading, attitude);
+				return new Vector3d (bank, heading, attitude);
 			}
 
 			// singularity at south pole
@@ -343,7 +343,7 @@ namespace SharpEngineMathUtility
 				heading = -2.0 * Math.Atan2 (q.b, q.a);
 				attitude = -Math.PI / 2.0;
 				bank = 0.0;
-				return new Vector3 (bank, heading, attitude);
+				return new Vector3d (bank, heading, attitude);
 			}
 
 			double sqx = q.b * q.b;
@@ -361,7 +361,7 @@ namespace SharpEngineMathUtility
 			bank = Math.Atan2 (2.0 * q.b * q.a - 2.0 * q.c * q.d, 
 				               1.0 - 2.0 * sqx - 2.0 * sqz); 
 			
-			return new Vector3 (bank, heading, attitude);
+			return new Vector3d (bank, heading, attitude);
 		}
 
 		public static double GetAngle(Quaternion q)
@@ -369,13 +369,13 @@ namespace SharpEngineMathUtility
 			return 2.0 * Math.Acos(q.a);
 		}
 
-		public static Vector3 GetVector(Quaternion q)
+		public static Vector3d GetVector(Quaternion q)
 		{
 			double s = Math.Sqrt(1 - q.a * q.a);
 			if (s < 0.00001)
-				return new Vector3(q.b, q.c, q.d);
+				return new Vector3d(q.b, q.c, q.d);
 			else
-				return new Vector3(q.b / s, q.c / s, q.d / s);
+				return new Vector3d(q.b / s, q.c / s, q.d / s);
 		}
 
 		#endregion

@@ -30,12 +30,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 {
 	public struct Support
 	{
-		public readonly Vector3 s;
+		public readonly Vector3d s;
 		public readonly int a;
 		public readonly int b;
 
 		public Support (
-			Vector3 s,
+			Vector3d s,
 			int a,
 			int b)
 		{

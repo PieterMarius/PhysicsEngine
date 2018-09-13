@@ -37,12 +37,12 @@ namespace SharpPhysicsEngine
 
         const JointType jointType = JointType.SoftJoint;
 
-        readonly Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
-        readonly Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
-        readonly Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
-        readonly Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
-        readonly Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
-        readonly Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
+        readonly Vector3d xVec = new Vector3d(1.0, 0.0, 0.0);
+        readonly Vector3d xVecNeg = new Vector3d(-1.0, 0.0, 0.0);
+        readonly Vector3d yVec = new Vector3d(0.0, 1.0, 0.0);
+        readonly Vector3d yVecNeg = new Vector3d(0.0, -1.0, 0.0);
+        readonly Vector3d zVec = new Vector3d(0.0, 0.0, 1.0);
+        readonly Vector3d zVecNeg = new Vector3d(0.0, 0.0, -1.0);
 
         readonly ISoftShape Shape;
         SoftShapePoint PointA;
@@ -52,11 +52,11 @@ namespace SharpPhysicsEngine
         
         double SpringCoeff;
         double AngularSpringCoeff;
-        readonly Vector3 StartAnchorPoint;
+        readonly Vector3d StartAnchorPoint;
 
-        Vector3 AnchorPoint;
-        Vector3 StartErrorAxis1;
-        Vector3 StartErrorAxis2;
+        Vector3d AnchorPoint;
+        Vector3d StartErrorAxis1;
+        Vector3d StartErrorAxis2;
         double ErrorReductionParam;
         double AngularErrorReductionParam;
         Quaternion RelativeOrientation;
@@ -90,7 +90,7 @@ namespace SharpPhysicsEngine
             
             StartAnchorPoint = (PointB.StartPosition + PointA.StartPosition) * 0.5;
 
-            Vector3 relativePos = PointA.RotationMatrix * (StartAnchorPoint - PointA.StartPosition);
+            Vector3d relativePos = PointA.RotationMatrix * (StartAnchorPoint - PointA.StartPosition);
 
             AnchorPoint = relativePos + PointA.Position;
 
@@ -130,16 +130,16 @@ namespace SharpPhysicsEngine
 
             #region Init Linear
 
-            Vector3 r1 = PointA.RotationMatrix *
+            Vector3d r1 = PointA.RotationMatrix *
                          StartErrorAxis1;
 
-            Vector3 r2 = PointB.RotationMatrix *
+            Vector3d r2 = PointB.RotationMatrix *
                          StartErrorAxis2;
 
-            Vector3 p1 = PointA.Position + r1;
-            Vector3 p2 = PointB.Position + r2;
+            Vector3d p1 = PointA.Position + r1;
+            Vector3d p2 = PointB.Position + r2;
 
-            Vector3 linearError = p2 - p1;
+            Vector3d linearError = p2 - p1;
 
             Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix();
             Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix();
@@ -148,7 +148,7 @@ namespace SharpPhysicsEngine
 
             #region Init Angular
 
-            Vector3 angularError = JacobianCommon.GetFixedAngularError(
+            Vector3d angularError = JacobianCommon.GetFixedAngularError(
                 PointA,
                 PointB,
                 RelativeOrientation);
@@ -170,8 +170,8 @@ namespace SharpPhysicsEngine
             softConstraints.Add(JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
-                new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
-                new Vector3(skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
+                new Vector3d(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+                new Vector3d(skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
                 PointA,
                 PointB,
                 0.0,
@@ -187,8 +187,8 @@ namespace SharpPhysicsEngine
             softConstraints.Add(JacobianCommon.GetDOF(
                 yVec,
                 yVecNeg,
-                new Vector3(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
-                new Vector3(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
+                new Vector3d(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+                new Vector3d(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
                 PointA,
                 PointB,
                 0.0,
@@ -204,8 +204,8 @@ namespace SharpPhysicsEngine
             softConstraints.Add(JacobianCommon.GetDOF(
                 zVec,
                 zVecNeg,
-                new Vector3(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
-                new Vector3(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
+                new Vector3d(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+                new Vector3d(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
                 PointA,
                 PointB,
                 0.0,
@@ -294,12 +294,12 @@ namespace SharpPhysicsEngine
             return KeyIndex;
         }
 
-        public Vector3 GetStartAnchorPosition()
+        public Vector3d GetStartAnchorPosition()
         {
             return StartAnchorPoint;
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return (PointA.RotationMatrix *
                    (StartAnchorPoint - PointA.StartPosition)) +

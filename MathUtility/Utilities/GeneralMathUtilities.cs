@@ -114,13 +114,13 @@ namespace SharpEngineMathUtility
             return Math.Truncate(value * tPrecision) / tPrecision;
         }
 
-        public static Vector3 Truncate(
-            Vector3 value,
+        public static Vector3d Truncate(
+            Vector3d value,
             int precision)
         {
             var tPrecision = Math.Pow(10, precision);
 
-            return new Vector3(
+            return new Vector3d(
                 Math.Truncate(value.x * tPrecision) / tPrecision,
                 Math.Truncate(value.y * tPrecision) / tPrecision,
                 Math.Truncate(value.z * tPrecision) / tPrecision);
@@ -152,7 +152,7 @@ namespace SharpEngineMathUtility
             }
         }
 
-        public static double[][] GetArrayFromVector3(Vector3[] array)
+        public static double[][] GetArrayFromVector3(Vector3d[] array)
         {
             var result = new double[array.Length][];
 
@@ -162,7 +162,7 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[][][] GetMatrixFromVector3Matrix(Vector3[][] matrix)
+        public static double[][][] GetMatrixFromVector3Matrix(Vector3d[][] matrix)
         {
             var result = new double[matrix.Length][][];
 
@@ -172,7 +172,7 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[][] GetArrayFromVector2(Vector2[] array)
+        public static double[][] GetArrayFromVector2(Vector2d[] array)
         {
             var result = new double[array.Length][];
 
@@ -182,7 +182,7 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[][][] GetMatrixFromVector2Matrix(Vector2[][] matrix)
+        public static double[][][] GetMatrixFromVector2Matrix(Vector2d[][] matrix)
         {
             var result = new double[matrix.Length][][];
 
@@ -192,13 +192,13 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static Vector3[] GetVector3ArrayFromMatrix(double[][] input)
+        public static Vector3d[] GetVector3ArrayFromMatrix(double[][] input)
         {
-            var result = new Vector3[input.Length];
+            var result = new Vector3d[input.Length];
 
             for (int i = 0; i < input.Length; i++)
             {
-                result[i] = new Vector3(input[i]);
+                result[i] = new Vector3d(input[i]);
             }
 
             return result;

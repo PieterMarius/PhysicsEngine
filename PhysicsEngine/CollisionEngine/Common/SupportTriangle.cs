@@ -37,7 +37,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public Support C { get; private set; }
 		public double S { get; private set; }
 		public double T { get; private set; }
-		public Vector3 Normal { get; private set; } 
+		public Vector3d Normal { get; private set; } 
 
 		#endregion
 
@@ -49,7 +49,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Support c,
 			double s,
 			double t,
-			Vector3 normal)
+			Vector3d normal)
 			:this()
 		{
 			this.A = a;

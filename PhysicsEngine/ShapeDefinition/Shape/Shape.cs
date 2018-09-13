@@ -44,41 +44,41 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public int SleepingFrameCount { get; protected set; }
 
-        public Vector3 InitCenterOfMass { get; protected set; }
+        public Vector3d InitCenterOfMass { get; protected set; }
 
         public double StaticFrictionCoeff { get; protected set; }
 
-        public Vector3 TorqueValue { get; protected set; }
+        public Vector3d TorqueValue { get; protected set; }
 
         public int ID { get; protected set; }
 
         public ObjectType ObjectType { get; protected set; }
 
-        public Vector3 Position { get; protected set; }
+        public Vector3d Position { get; protected set; }
 
-        public Vector3[] Vertices { get; protected set; }
+        public Vector3d[] Vertices { get; protected set; }
 
-        public Vector3[] VerticesRelPos { get; protected set; }
+        public Vector3d[] VerticesRelPos { get; protected set; }
 
-        public Vector3 LinearVelocity { get; protected set; }
+        public Vector3d LinearVelocity { get; protected set; }
 
-        public Vector3 AngularVelocity { get; protected set; }
+        public Vector3d AngularVelocity { get; protected set; }
 
         public MassData MassInfo { get; protected set; }
 
         public Matrix3x3 RotationMatrix { get; protected set; }
                 
-        public Vector3 TempAngularVelocity { get; protected set; }
+        public Vector3d TempAngularVelocity { get; protected set; }
 
-        public Vector3 TempLinearVelocity { get; protected set; }
+        public Vector3d TempLinearVelocity { get; protected set; }
 
-        public Vector3 ForceValue { get; protected set; }
+        public Vector3d ForceValue { get; protected set; }
 
         public bool IsStatic { get; protected set; }
 
         public AABB AABBox { get; protected set; }
 
-        public Vector3 FarthestPoint { get; protected set; }
+        public Vector3d FarthestPoint { get; protected set; }
 
         public bool ActiveCCD { get; protected set; }
 
@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
-        public abstract void Rotate(Vector3 versor, double angle);
+        public abstract void Rotate(Vector3d versor, double angle);
 
         public abstract void SetAABB();
 
@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             AABBox = box;
         }
 
-        public void SetAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             AngularVelocity = inputAngularVelocity;
         }
@@ -126,7 +126,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             ExcludeFromCollisionDetection = excludeFromCollisionDetection;
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             ForceValue = force;
         }
@@ -141,14 +141,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
             MassInfo.InverseInertiaTensor = inertiaTensor;
         }
 
-        public void SetLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetLinearVelocity(Vector3d inputLinearVelocity)
         {
             LinearVelocity = inputLinearVelocity;
         }
 
         public abstract void SetMass(double mass);
 
-        public void SetPosition(Vector3 inputPosition)
+        public void SetPosition(Vector3d inputPosition)
         {
             Position = inputPosition;
         }
@@ -183,17 +183,17 @@ namespace SharpPhysicsEngine.ShapeDefinition
             StaticFrictionCoeff = staticFrictionCoeff;
         }
 
-        public void SetTempAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetTempAngularVelocity(Vector3d inputAngularVelocity)
         {
             TempAngularVelocity = inputAngularVelocity;
         }
 
-        public void SetTempLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetTempLinearVelocity(Vector3d inputLinearVelocity)
         {
             TempLinearVelocity = inputLinearVelocity;
         }
 
-        public void SetTorque(Vector3 torque)
+        public void SetTorque(Vector3d torque)
         {
             TorqueValue = torque;
         }

@@ -33,7 +33,7 @@ namespace SharpPhysicsEngine
 	internal interface IConstraint
 	{
 		#region Get Methods
-        	Vector3 GetAnchorPosition ();
+        	Vector3d GetAnchorPosition ();
 		JointType GetJointType();
 		int GetObjectIndexA();
 		int GetObjectIndexB();

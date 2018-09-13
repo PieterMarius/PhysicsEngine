@@ -31,7 +31,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
 {
     internal interface IConvexHullEngine
     {
-        ConvexHullData GetConvexHull(Vector3[] points);
+        ConvexHullData GetConvexHull(Vector3d[] points);
         ConvexHullData GetConvexHull(Vertex3Index[] points);
     }
 }

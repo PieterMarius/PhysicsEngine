@@ -36,15 +36,15 @@ namespace Utility
 
         public struct meshStruct
         {
-            public Vector3[] vertices;
-            public Vector3[] normals;
-            public Vector2[] uv;
-            public Vector2[] uv1;
-            public Vector2[] uv2;
+            public Vector3d[] vertices;
+            public Vector3d[] normals;
+            public Vector2d[] uv;
+            public Vector2d[] uv1;
+            public Vector2d[] uv2;
             public int[] triangles;
             public int[] faceVerts;
             public int[] faceUVs;
-            public Vector3[] faceData;
+            public Vector3d[] faceData;
             public string name;
             public string fileName;
         }
@@ -117,10 +117,10 @@ namespace Utility
                 }
             }
             mesh.triangles = new int[triangles];
-            mesh.vertices = new Vector3[vertices];
-            mesh.uv = new Vector2[vt];
-            mesh.normals = new Vector3[vn];
-            mesh.faceData = new Vector3[face];
+            mesh.vertices = new Vector3d[vertices];
+            mesh.uv = new Vector2d[vt];
+            mesh.normals = new Vector3d[vn];
+            mesh.faceData = new Vector3d[face];
             return mesh;
         }
 
@@ -173,28 +173,28 @@ namespace Utility
                             case "mtllib":
                                 break;
                             case "v":
-                                mesh.vertices[v] = new Vector3(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
+                                mesh.vertices[v] = new Vector3d(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
                                                                GenericUtility.InvariantCultureDoubleConverter(brokenString[2]),
                                                                GenericUtility.InvariantCultureDoubleConverter(brokenString[3]));
                                 v++;
                                 break;
                             case "vt":
-                                mesh.uv[vt] = new Vector2(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]), 
+                                mesh.uv[vt] = new Vector2d(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]), 
                                                           GenericUtility.InvariantCultureDoubleConverter(brokenString[2]));
                                 vt++;
                                 break;
                             case "vt1":
-                                mesh.uv[vt1] = new Vector2(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
+                                mesh.uv[vt1] = new Vector2d(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
                                                            GenericUtility.InvariantCultureDoubleConverter(brokenString[2]));
                                 vt1++;
                                 break;
                             case "vt2":
-                                mesh.uv[vt2] = new Vector2(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
+                                mesh.uv[vt2] = new Vector2d(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
                                                            GenericUtility.InvariantCultureDoubleConverter(brokenString[2]));
                                 vt2++;
                                 break;
                             case "vn":
-                                mesh.normals[vn] = new Vector3(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
+                                mesh.normals[vn] = new Vector3d(GenericUtility.InvariantCultureDoubleConverter(brokenString[1]),
                                                                GenericUtility.InvariantCultureDoubleConverter(brokenString[2]),
                                                                GenericUtility.InvariantCultureDoubleConverter(brokenString[3]));
                                 vn++;
@@ -220,7 +220,7 @@ namespace Utility
                                     }
                                     j++;
 
-                                    mesh.faceData[f2] = new Vector3((double)tempX, (double)tempY, (double)tempZ);
+                                    mesh.faceData[f2] = new Vector3d((double)tempX, (double)tempY, (double)tempZ);
                                     intArray.Add(f2);
                                     f2++;
                                 }

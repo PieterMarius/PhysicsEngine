@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace SharpEngineMathUtility
 {
-	public struct Vector3: IComparable, IEquatable<Vector3>
+	public struct Vector3d: IComparable, IEquatable<Vector3d>
 	{
 		#region Public Properties
 
@@ -41,7 +41,7 @@ namespace SharpEngineMathUtility
         
         #region Constructors
 
-        public Vector3 (
+        public Vector3d (
 			double x, 
 			double y, 
 			double z)
@@ -51,7 +51,7 @@ namespace SharpEngineMathUtility
 			this.z = z;
         }
 
-		public Vector3(double[] vec)
+		public Vector3d(double[] vec)
 		{
 			if (vec.Length == 3) 
 			{
@@ -65,7 +65,7 @@ namespace SharpEngineMathUtility
 			}
 		}
 
-		public Vector3(Vector3 v)
+		public Vector3d(Vector3d v)
 		{
 			x = v.x;
 			y = v.y;
@@ -77,50 +77,50 @@ namespace SharpEngineMathUtility
 
 		#region Public Methods
 
-		public static Vector3 operator+(Vector3 a, Vector3 b)
+		public static Vector3d operator+(Vector3d a, Vector3d b)
 		{
-			return new Vector3 (a.x + b.x, a.y + b.y, a.z + b.z);
+			return new Vector3d (a.x + b.x, a.y + b.y, a.z + b.z);
 		}
 
-		public static Vector3 operator+(Vector3 a, double b)
+		public static Vector3d operator+(Vector3d a, double b)
 		{
-			return new Vector3 (a.x + b, a.y + b, a.z + b);
+			return new Vector3d (a.x + b, a.y + b, a.z + b);
 		}
 
-		public static Vector3 operator+(double b, Vector3 a)
+		public static Vector3d operator+(double b, Vector3d a)
 		{
-			return new Vector3 (a.x + b, a.y + b, a.z + b);
+			return new Vector3d (a.x + b, a.y + b, a.z + b);
 		}
 
-		public static Vector3 operator-(Vector3 a, Vector3 b)
+		public static Vector3d operator-(Vector3d a, Vector3d b)
 		{
-			return new Vector3 (a.x - b.x, a.y - b.y, a.z - b.z);
+			return new Vector3d (a.x - b.x, a.y - b.y, a.z - b.z);
 		}
 
-		public static Vector3 operator*(Vector3 a, Vector3 b)
+		public static Vector3d operator*(Vector3d a, Vector3d b)
 		{
-			return new Vector3 (a.x * b.x, a.y * b.y, a.z * b.z);
+			return new Vector3d (a.x * b.x, a.y * b.y, a.z * b.z);
 		}
 
-		public static Vector3 operator*(Vector3 a, double b)
+		public static Vector3d operator*(Vector3d a, double b)
 		{
-			return new Vector3 (a.x * b, a.y * b, a.z * b);
+			return new Vector3d (a.x * b, a.y * b, a.z * b);
 		}
 
-		public static Vector3 operator*(double b, Vector3 a)
+		public static Vector3d operator*(double b, Vector3d a)
 		{
-			return new Vector3 (a.x * b, a.y * b, a.z * b);
+			return new Vector3d (a.x * b, a.y * b, a.z * b);
 		}
 
-		public static Vector3 operator/(Vector3 a, Vector3 b)
+		public static Vector3d operator/(Vector3d a, Vector3d b)
 		{
-			return new Vector3 (a.x / b.x, a.y / b.y, a.z / b.z);
+			return new Vector3d (a.x / b.x, a.y / b.y, a.z / b.z);
 		}
 
-		public static Vector3 operator/(Vector3 a, double d)
+		public static Vector3d operator/(Vector3d a, double d)
 		{
             var dp = 1.0 / d;
-			return new Vector3 (a.x * dp, a.y * dp, a.z * dp);
+			return new Vector3d (a.x * dp, a.y * dp, a.z * dp);
 		}
         		
 		public double[] Array
@@ -157,7 +157,7 @@ namespace SharpEngineMathUtility
 			}
 		}
 
-		public static bool operator>(Vector3 a, Vector3 b)
+		public static bool operator>(Vector3d a, Vector3d b)
 		{
 			if (Length (a) + ConstValues.precision > Length (b) + ConstValues.precision)
 				return true;
@@ -165,7 +165,7 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static bool operator==(Vector3 a, Vector3 b)
+		public static bool operator==(Vector3d a, Vector3d b)
 		{
 			if (Math.Abs (a.x - b.x) < ConstValues.precision &&
 				Math.Abs (a.y - b.y) < ConstValues.precision &&
@@ -175,7 +175,7 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static bool operator!=(Vector3 a, Vector3 b)
+		public static bool operator!=(Vector3d a, Vector3d b)
 		{
 			if (!(a == b))
 				return true;
@@ -183,7 +183,7 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static bool operator<(Vector3 a, Vector3 b)
+		public static bool operator<(Vector3d a, Vector3d b)
 		{
 			if (Length (a) + ConstValues.precision < Length (b) + ConstValues.precision)
 				return true;
@@ -191,7 +191,7 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static bool operator<=(Vector3 a, Vector3 b)
+		public static bool operator<=(Vector3d a, Vector3d b)
 		{
 			if (Length (a) + ConstValues.precision <= Length (b) + ConstValues.precision)
 				return true;
@@ -199,7 +199,7 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static bool operator>=(Vector3 a, Vector3 b)
+		public static bool operator>=(Vector3d a, Vector3d b)
 		{
 			if (Length (a) + ConstValues.precision >= Length (b) + ConstValues.precision)
 				return true;
@@ -207,31 +207,31 @@ namespace SharpEngineMathUtility
 			return false;
 		}
 
-		public static double Dot(Vector3 a, Vector3 b)
+		public static double Dot(Vector3d a, Vector3d b)
 		{
             return Dot(ref a, ref b);
 		}
 
-        public static double Dot(ref Vector3 a, ref Vector3 b)
+        public static double Dot(ref Vector3d a, ref Vector3d b)
         {
             return a.x * b.x +
                    a.y * b.y +
                    a.z * b.z;
         }
 
-        public double Dot(ref Vector3 a)
+        public double Dot(ref Vector3d a)
         {
             return x * a.x +
                    y * a.y +
                    z * a.z;
         }
 
-        public double Dot(Vector3 a)
+        public double Dot(Vector3d a)
 		{
 			return Dot(ref a);
 		}
 
-		public static double Length(Vector3 a)
+		public static double Length(Vector3d a)
 		{
 			return Math.Sqrt (Dot (a, a));
 		}
@@ -241,27 +241,27 @@ namespace SharpEngineMathUtility
 			return Math.Sqrt (Dot (this));
 		}
 
-		public static Vector3 ToZero()
+		public static Vector3d ToZero()
 		{
-			return new Vector3 (0.0, 0.0, 0.0);
+			return new Vector3d (0.0, 0.0, 0.0);
 		}
 
-        public static Vector3 Random(double min, double max)
+        public static Vector3d Random(double min, double max)
         {
-            return new Vector3(
+            return new Vector3d(
                 GeometryUtilities.GetRandom(min, max), 
                 GeometryUtilities.GetRandom(min, max), 
                 GeometryUtilities.GetRandom(min, max));
         }
 
-		public static Vector3 Normalize(Vector3 a)
+		public static Vector3d Normalize(Vector3d a)
 		{
 			double l = Length (a);
 			if (l > 0.0) {
 				
 				l = 1.0 / l;
 
-				return new Vector3 (
+				return new Vector3d (
 					a.x * l, 
 					a.y * l, 
 					a.z * l);
@@ -270,17 +270,17 @@ namespace SharpEngineMathUtility
 			return a;
 		}
 
-		public Vector3 Normalize()
+		public Vector3d Normalize()
 		{
 			return Normalize (this);
 		}
 
-		public static Vector3 Zero()
+		public static Vector3d Zero()
 		{
-			return new Vector3(0.0, 0.0, 0.0);
+			return new Vector3d(0.0, 0.0, 0.0);
 		}
 
-		public static Vector3 RotatePoint(Vector3 a, Vector3 versor, double angle)
+		public static Vector3d RotatePoint(Vector3d a, Vector3d versor, double angle)
 		{
 			var p= versor * versor;
             double c = Math.Cos (angle);
@@ -291,40 +291,40 @@ namespace SharpEngineMathUtility
             double Y = (a.x * ((t * versor.x * versor.y) + (s * versor.z))) + (a.y * (p.y + (1.0 - p.y) * c)) + (a.z * ((t * versor.y * versor.z) - (s * versor.x)));
             double Z = (a.x * ((t * versor.z * versor.x) - (s * versor.y))) + (a.y * ((t * versor.z * versor.y) + (s * versor.x))) + (a.z * (p.z + (1.0 - p.z) * c));
 
-			return new Vector3 (X, Y, Z);
+			return new Vector3d (X, Y, Z);
 		}
 
-		public static Vector3 Cross(Vector3 a, Vector3 b) {
-			return new Vector3(
+		public static Vector3d Cross(Vector3d a, Vector3d b) {
+			return new Vector3d(
 				(a.y * b.z)-(a.z * b.y),
 				(a.z * b.x)-(a.x * b.z),
 				(a.x * b.y)-(a.y * b.x));
 		}
 
-		public Vector3 Cross(Vector3 a)
+		public Vector3d Cross(Vector3d a)
 		{
 			return Cross (this, a);
 		}
 
-		public static Vector3 ProjectVectorOnPlane(Vector3 normal)
+		public static Vector3d ProjectVectorOnPlane(Vector3d normal)
 		{
 			if (Math.Abs(normal.x) < ConstValues.precision)
-				return new Vector3 (1.0, 0.0, 0.0);
+				return new Vector3d (1.0, 0.0, 0.0);
 
 			if (Math.Abs(normal.y) < ConstValues.precision) 
-				return new Vector3 (0.0, 1.0, 0.0);
+				return new Vector3d (0.0, 1.0, 0.0);
 
 			if (Math.Abs(normal.z) < ConstValues.precision) 
-				return new Vector3 (0.0, 0.0, 1.0);
+				return new Vector3d (0.0, 0.0, 1.0);
 
 			double X = 1.0;
 			double Y = 1.0;
 			double Z = -(normal.x * X + normal.y * Y) / normal.z;
 
-			return Normalize (new Vector3 (X, Y, Z));
+			return Normalize (new Vector3d (X, Y, Z));
 		}
 
-		public static bool TestIfPointAreAligned(Vector3 a, Vector3 b, Vector3 c)
+		public static bool TestIfPointAreAligned(Vector3d a, Vector3d b, Vector3d c)
 		{
 			double det = 
 				-(a.z * b.y * c.x) + 
@@ -347,7 +347,7 @@ namespace SharpEngineMathUtility
 				-y, x, 0.0);
 		}
 
-		public static Vector3 UniformSign(Vector3 input, Vector3 sign)
+		public static Vector3d UniformSign(Vector3d input, Vector3d sign)
 		{
 			if (input.Dot(sign) >= 0.0)
 				return input;
@@ -368,10 +368,10 @@ namespace SharpEngineMathUtility
 			    Math.Sign(sign.z) != 0)
 				c = -input.z;
 
-			return new Vector3(a, b, c);
+			return new Vector3d(a, b, c);
 		}
 
-        public static bool CheckZeroWithTolerance(Vector3 input, double tolerance)
+        public static bool CheckZeroWithTolerance(Vector3d input, double tolerance)
         {
             if (Math.Abs(input.x) < tolerance &&
                 Math.Abs(input.y) < tolerance &&
@@ -383,59 +383,59 @@ namespace SharpEngineMathUtility
 
         #region Round
 
-        public static Vector3 Round(Vector3 v1)
+        public static Vector3d Round(Vector3d v1)
         {
-            return new Vector3(Math.Round(v1.x), Math.Round(v1.y), Math.Round(v1.z));
+            return new Vector3d(Math.Round(v1.x), Math.Round(v1.y), Math.Round(v1.z));
         }
 
-        public static Vector3 Round(Vector3 v1, MidpointRounding mode)
+        public static Vector3d Round(Vector3d v1, MidpointRounding mode)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(v1.x, mode),
                 Math.Round(v1.y, mode),
                 Math.Round(v1.z, mode));
         }
 
-        public Vector3 Round()
+        public Vector3d Round()
         {
-            return new Vector3(Math.Round(this.x), Math.Round(this.y), Math.Round(this.z));
+            return new Vector3d(Math.Round(this.x), Math.Round(this.y), Math.Round(this.z));
         }
 
-        public Vector3 Round(MidpointRounding mode)
+        public Vector3d Round(MidpointRounding mode)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(this.x, mode),
                 Math.Round(this.y, mode),
                 Math.Round(this.z, mode));
         }
 
-        public static Vector3 Round(Vector3 v1, int digits)
+        public static Vector3d Round(Vector3d v1, int digits)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(v1.x, digits),
                 Math.Round(v1.y, digits),
                 Math.Round(v1.z, digits));
         }
 
-        public static Vector3 Round(Vector3 v1, int digits, MidpointRounding mode)
+        public static Vector3d Round(Vector3d v1, int digits, MidpointRounding mode)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(v1.x, digits, mode),
                 Math.Round(v1.y, digits, mode),
                 Math.Round(v1.z, digits, mode));
         }
 
-        public Vector3 Round(int digits)
+        public Vector3d Round(int digits)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(this.x, digits),
                 Math.Round(this.y, digits),
                 Math.Round(this.z, digits));
         }
 
-        public Vector3 Round(int digits, MidpointRounding mode)
+        public Vector3d Round(int digits, MidpointRounding mode)
         {
-            return new Vector3(
+            return new Vector3d(
                 Math.Round(this.x, digits, mode),
                 Math.Round(this.y, digits, mode),
                 Math.Round(this.z, digits, mode));
@@ -457,15 +457,15 @@ namespace SharpEngineMathUtility
 
         public int CompareTo (object obj)
 		{
-			if (obj is Vector3)
+			if (obj is Vector3d)
 			{
-				return CompareTo((Vector3)obj);
+				return CompareTo((Vector3d)obj);
 			}
 
 			throw new ArgumentException ();
 		}
 
-		public int CompareTo(Vector3 other)
+		public int CompareTo(Vector3d other)
 		{
 			if (this < other)
 			{
@@ -484,14 +484,14 @@ namespace SharpEngineMathUtility
         
 		#region IEquatable implementation
 
-		public bool Equals (Vector3 other)
+		public bool Equals (Vector3d other)
 		{
 			return this == other;
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (obj is Vector3 otherVector)
+			if (obj is Vector3d otherVector)
 			{
 				return otherVector.Equals(this);
 			}

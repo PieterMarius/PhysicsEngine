@@ -131,10 +131,10 @@ namespace SharpPhysicsEngine.SolutionIntegration
             double timeStep)
         {
             UpdateLinearVelocity(shape, timeStep);
-            shape.SetForce(new Vector3());
+            shape.SetForce(new Vector3d());
 
             UpdateAngularVelocity(shape, timeStep);
-            shape.SetTorque(new Vector3());
+            shape.SetTorque(new Vector3d());
         }
 
         private void UpdateShapeProperties(IShape shape)
@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             
             if (angularVelocity >= EngineParameters.AngularVelocityMinLimit)
             {
-                Vector3 versor = shape.AngularVelocity.Normalize();
+                Vector3d versor = shape.AngularVelocity.Normalize();
 
                 double rotationAngle = angularVelocity * timeStep;
 
@@ -229,7 +229,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
                     if (updateExtForce)
                     {
                         UpdatePointLinearVelocity(point, timeStep);
-                        point.SetForce(new Vector3());
+                        point.SetForce(new Vector3d());
                     }
 
                     #endregion
@@ -238,7 +238,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
 
                     double angularVelocity = point.AngularVelocity.Length();
 
-                    Vector3 versor = point.AngularVelocity.Normalize();
+                    Vector3d versor = point.AngularVelocity.Normalize();
 
                     double rotationAngle = angularVelocity * timeStep;
 
@@ -268,8 +268,8 @@ namespace SharpPhysicsEngine.SolutionIntegration
                     simulationObj.SetSleepingFrameCount(simulationObj.SleepingFrameCount + 1);
                 else
                 {
-                    simulationObj.SetLinearVelocity(new Vector3());
-                    simulationObj.SetAngularVelocity(new Vector3());
+                    simulationObj.SetLinearVelocity(new Vector3d());
+                    simulationObj.SetAngularVelocity(new Vector3d());
                     simulationObj.SetIsSleeping(true);
                 }
             }

@@ -191,14 +191,7 @@ namespace SharpPhysicsEngine
         #endregion
 
         #endregion
-
-        #region C++ Functions
-
-        [DllImport("HACD_Wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void ExecuteHACD();
-
-        #endregion
-
+                
         #region Constructor
 
         public SharpEngine (
@@ -231,17 +224,14 @@ namespace SharpPhysicsEngine
             ccdEngine = new ConservativeAdvancement();
             HierarchicalTree = new AABBTree(1);
 
-            //Test c++ dll
-            ExecuteHACD();
-            
-			//int minWorker, minIOC;
-			//// Get the current settings.
-			//ThreadPool.GetMinThreads(out minWorker, out minIOC);
-			//// Change the minimum number of worker threads to four, but
-			//// keep the old setting for minimum asynchronous I/O 
-			//// completion threads.
-			//ThreadPool.SetMinThreads(4, minIOC);
-		}
+            //int minWorker, minIOC;
+            //// Get the current settings.
+            //ThreadPool.GetMinThreads(out minWorker, out minIOC);
+            //// Change the minimum number of worker threads to four, but
+            //// keep the old setting for minimum asynchronous I/O 
+            //// completion threads.
+            //ThreadPool.SetMinThreads(4, minIOC);
+        }
 
 		public SharpEngine()
 			: this(new PhysicsEngineParameters(), new CollisionEngineParameters(), new SolverParameters())
@@ -347,37 +337,37 @@ namespace SharpPhysicsEngine
 			return CollisionShapes.ToArray();
 		}
 
-        public List<Tuple<Vector3,Vector3>> GetHierarchicalTreeAABB()
+        public List<Tuple<Vector3d,Vector3d>> GetHierarchicalTreeAABB()
         {
-            var result = new List<Tuple<Vector3, Vector3>>();
+            var result = new List<Tuple<Vector3d, Vector3d>>();
             var nodes = HierarchicalTree.GetNodes();
             
             for (int i = 0; i < nodes.Count; i++)
             {
                 //if (nodes[i].Obj != null)
-                    result.Add(new Tuple<Vector3, Vector3>(nodes[i].aabb.Min, nodes[i].aabb.Max));
+                    result.Add(new Tuple<Vector3d, Vector3d>(nodes[i].aabb.Min, nodes[i].aabb.Max));
             }
 
             return result;
         }
 
-        public List<Tuple<Vector3, Vector3>> GetShapesAABB()
+        public List<Tuple<Vector3d, Vector3d>> GetShapesAABB()
         {
-            var result = new List<Tuple<Vector3, Vector3>>();
+            var result = new List<Tuple<Vector3d, Vector3d>>();
 
             for (int i = 0; i < Shapes.Length; i++)
             {
                 if (Shapes[i] is ShapeDefinition.ConvexShape)
-                    result.Add(new Tuple<Vector3, Vector3>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+                    result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
                 else if (Shapes[i] is ShapeDefinition.ConcaveShape)
                 {
                     var shapesGeom = ((ShapeDefinition.ConcaveShape)Shapes[i]).ConvexShapesGeometry;
 
                     for (int j = 0; j < shapesGeom.Length; j++)
                     {
-                        result.Add(new Tuple<Vector3, Vector3>(shapesGeom[j].AABBox.Min, shapesGeom[j].AABBox.Max));
+                        result.Add(new Tuple<Vector3d, Vector3d>(shapesGeom[j].AABBox.Min, shapesGeom[j].AABBox.Max));
                     }
-                    result.Add(new Tuple<Vector3, Vector3>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+                    result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
                 }
             }
 
@@ -385,9 +375,9 @@ namespace SharpPhysicsEngine
         }
 
         //TODO Test Hierarchical tree intersection
-        public List<Tuple<Vector3, Vector3>> GetHierarchicalIntersection()
+        public List<Tuple<Vector3d, Vector3d>> GetHierarchicalIntersection()
         {
-            var result = new List<Tuple<Vector3, Vector3>>();
+            var result = new List<Tuple<Vector3d, Vector3d>>();
             int height = HierarchicalTree.GetMaxHeight();
             
             for (int i = 0; i < Shapes.Length; i++)
@@ -396,7 +386,7 @@ namespace SharpPhysicsEngine
                 foreach (var item in overlaps)
                 {
                     var aabb = item.GetAABB();
-                    result.Add(new Tuple<Vector3, Vector3>(aabb.Min, aabb.Max));
+                    result.Add(new Tuple<Vector3d, Vector3d>(aabb.Min, aabb.Max));
                 }
             }
             return result;

@@ -111,12 +111,12 @@ namespace TestPhysics
             stopwatch.Reset();
             stopwatch.Start();
 
-            SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
+            SharpEngineMathUtility.Vector3d[] testVector1 = new SharpEngineMathUtility.Vector3d[nvalue];
 
             for (int i = 0; i < nvalue; i++)
-                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+                testVector1[i] = new SharpEngineMathUtility.Vector3d(2.0, 3.0, 5.0);
 
-            SharpEngineMathUtility.Vector3 test1;
+            SharpEngineMathUtility.Vector3d test1;
             for (int i = 0; i < nvalue; i++)
                 test1 = testVector1[i] * 2.0;
 
@@ -129,7 +129,7 @@ namespace TestPhysics
             //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
 
             for (int i = 0; i < nvalue; i++)
-                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+                testVector1[i] = new SharpEngineMathUtility.Vector3d(2.0, 3.0, 5.0);
 
             //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
 
@@ -163,7 +163,7 @@ namespace TestPhysics
             //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
 
             for (int i = 0; i < nvalue; i++)
-                testVector1[i] = new SharpEngineMathUtility.Vector3(2.0, 3.0, 5.0);
+                testVector1[i] = new SharpEngineMathUtility.Vector3d(2.0, 3.0, 5.0);
 
             //{ new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0) };
 
@@ -312,7 +312,7 @@ namespace TestPhysics
         private SoftShape BuildSoftBody(
             string fileName,
             double scale,
-            SharpEngineMathUtility.Vector3 position)
+            SharpEngineMathUtility.Vector3d position)
         {
             GenericUtility.ObjProperties prop = GenericUtility.GetImportedObjectProperties(fileName, scale);
 
@@ -713,7 +713,7 @@ namespace TestPhysics
             else
             {
                 Matrix3x3 rotatioMatrix = shape.RotationMatrix;
-                SharpEngineMathUtility.Vector3 position = shape.Position;
+                SharpEngineMathUtility.Vector3d position = shape.Position;
 
                 ObjectType type = shape.ObjectType;
 
@@ -722,7 +722,7 @@ namespace TestPhysics
                     GL.PushMatrix();
                     GL.Enable(EnableCap.Texture2D);
 
-                    SharpEngineMathUtility.Vector3 compoundPos = new SharpEngineMathUtility.Vector3();
+                    SharpEngineMathUtility.Vector3d compoundPos = new SharpEngineMathUtility.Vector3d();
 
                     if (shape is CompoundRigidShape)
                         compoundPos = ((CompoundRigidShape)shape).StartCompoundPositionObjects[i];
@@ -763,7 +763,7 @@ namespace TestPhysics
                     //Ruoto
                     GL.MultMatrix(dmviewData);
                     //Traslo nella posizione desiderata
-                    SharpEngineMathUtility.Vector3 positionMt = shape.GetCenterOfMassShiftValue(i);
+                    SharpEngineMathUtility.Vector3d positionMt = shape.GetCenterOfMassShiftValue(i);
                     //SharpEngineMathUtility.Vector3 positionMt = compoundPos;
 
                     //TODO Verificare che la rotazione sia corretta
@@ -796,7 +796,7 @@ namespace TestPhysics
             int i = 0;
             foreach (var item in softShape.GetVertices())
             {
-                SharpEngineMathUtility.Vector3 relativePosition = item;
+                SharpEngineMathUtility.Vector3d relativePosition = item;
 
                 GL.PushMatrix();
 
@@ -1121,8 +1121,8 @@ namespace TestPhysics
 			ICollisionShape[] simObj = physicsEngine.GetShapes();
 			for (int i = 0; i < simObj.Length; i++)
 			{
-				SharpEngineMathUtility.Vector3 min = simObj[i].GetMinAABB();
-                SharpEngineMathUtility.Vector3 max = simObj[i].GetMaxAABB();
+				SharpEngineMathUtility.Vector3d min = simObj[i].GetMinAABB();
+                SharpEngineMathUtility.Vector3d max = simObj[i].GetMaxAABB();
 
                 GL.PushMatrix();
 
@@ -1175,15 +1175,15 @@ namespace TestPhysics
 
             for (int i = 0; i < aabb.Count; i++)
             {
-                SharpEngineMathUtility.Vector3 b1 = aabb[i].Item1;
-                SharpEngineMathUtility.Vector3 b2 = aabb[i].Item2;
+                SharpEngineMathUtility.Vector3d b1 = aabb[i].Item1;
+                SharpEngineMathUtility.Vector3d b2 = aabb[i].Item2;
 
-                SharpEngineMathUtility.Vector3 b3 = new SharpEngineMathUtility.Vector3(b1.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3 b4 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b1.z);
-                SharpEngineMathUtility.Vector3 b5 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b1.z);
-                SharpEngineMathUtility.Vector3 b6 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b2.z);
-                SharpEngineMathUtility.Vector3 b7 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3 b8 = new SharpEngineMathUtility.Vector3(b2.x, b2.y, b1.z);
+                SharpEngineMathUtility.Vector3d b3 = new SharpEngineMathUtility.Vector3d(b1.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3d b4 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b1.z);
+                SharpEngineMathUtility.Vector3d b5 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b1.z);
+                SharpEngineMathUtility.Vector3d b6 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b2.z);
+                SharpEngineMathUtility.Vector3d b7 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3d b8 = new SharpEngineMathUtility.Vector3d(b2.x, b2.y, b1.z);
 
                 OpenGLUtilities.DrawLine(b6, b2);
                 OpenGLUtilities.DrawLine(b2, b8);
@@ -1209,15 +1209,15 @@ namespace TestPhysics
 
             for (int i = 0; i < aabb.Count; i++)
             {
-                SharpEngineMathUtility.Vector3 b1 = aabb[i].Item1;
-                SharpEngineMathUtility.Vector3 b2 = aabb[i].Item2;
+                SharpEngineMathUtility.Vector3d b1 = aabb[i].Item1;
+                SharpEngineMathUtility.Vector3d b2 = aabb[i].Item2;
 
-                SharpEngineMathUtility.Vector3 b3 = new SharpEngineMathUtility.Vector3(b1.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3 b4 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b1.z);
-                SharpEngineMathUtility.Vector3 b5 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b1.z);
-                SharpEngineMathUtility.Vector3 b6 = new SharpEngineMathUtility.Vector3(b1.x, b2.y, b2.z);
-                SharpEngineMathUtility.Vector3 b7 = new SharpEngineMathUtility.Vector3(b2.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3 b8 = new SharpEngineMathUtility.Vector3(b2.x, b2.y, b1.z);
+                SharpEngineMathUtility.Vector3d b3 = new SharpEngineMathUtility.Vector3d(b1.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3d b4 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b1.z);
+                SharpEngineMathUtility.Vector3d b5 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b1.z);
+                SharpEngineMathUtility.Vector3d b6 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b2.z);
+                SharpEngineMathUtility.Vector3d b7 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b2.z);
+                SharpEngineMathUtility.Vector3d b8 = new SharpEngineMathUtility.Vector3d(b2.x, b2.y, b1.z);
 
                 GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -1260,11 +1260,11 @@ namespace TestPhysics
 
                 var convexHullShape = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
 
-                var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+                var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3d(y.Position)));
 
                 GL.Color3(GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0), GetRandomNumber(0.0, 1.0));
 
-                OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+                OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3d(0.0, 0.0, 0.0), false, false, false);
 
                 GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
             }
@@ -1312,9 +1312,9 @@ namespace TestPhysics
 
                     var convexHullShape = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
 
-                    var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+                    var convert = Array.ConvertAll(convexHullShape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3d(y.Position)));
 
-                    OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+                    OpenGLUtilities.GLDrawSolid(convert, new SharpEngineMathUtility.Vector3d(0.0, 0.0, 0.0), false, false, false);
                 }
                 catch (Exception ex)
                 {
@@ -1383,12 +1383,12 @@ namespace TestPhysics
 		}
 
         IVertex[][][] ConvexHullShapes;
-        SharpEngineMathUtility.Vector3[][][] ConvertConvexHull;
+        SharpEngineMathUtility.Vector3d[][][] ConvertConvexHull;
 
         private void InitTerrain()
         {
             ConvexHullShapes = new IVertex[TerrainShapes.Length][][];
-            ConvertConvexHull = new SharpEngineMathUtility.Vector3[TerrainShapes.Length][][];
+            ConvertConvexHull = new SharpEngineMathUtility.Vector3d[TerrainShapes.Length][][];
 
             for (int i = 0; i < TerrainShapes.Length; i++)
             {
@@ -1403,7 +1403,7 @@ namespace TestPhysics
 
                     ConvexHullShapes[i] = Array.ConvertAll(cHull.Faces.ToArray(), x => x.Vertices);
 
-                    ConvertConvexHull[i] = Array.ConvertAll(ConvexHullShapes[i], x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
+                    ConvertConvexHull[i] = Array.ConvertAll(ConvexHullShapes[i], x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3d(y.Position)));
 
                 }
             }
@@ -1434,7 +1434,7 @@ namespace TestPhysics
 
                     //var convert = Array.ConvertAll(shape, x => Array.ConvertAll(x, y => new SharpEngineMathUtility.Vector3(y.Position)));
 
-                    OpenGLUtilities.GLDrawSolid(shape, new SharpEngineMathUtility.Vector3(0.0, 0.0, 0.0), false, false, false);
+                    OpenGLUtilities.GLDrawSolid(shape, new SharpEngineMathUtility.Vector3d(0.0, 0.0, 0.0), false, false, false);
 
                     GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
                 }

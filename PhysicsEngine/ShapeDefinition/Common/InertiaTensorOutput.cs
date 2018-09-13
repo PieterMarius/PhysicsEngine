@@ -33,7 +33,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Fields
 
         public Matrix3x3 InertiaTensor { get; private set; }
-        public Vector3 CenterOfMass { get; private set; }
+        public Vector3d CenterOfMass { get; private set; }
         public double DensityMass { get; private set; }
 
         #endregion
@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public InertiaTensorOutput(
             Matrix3x3 inertiaTensor,
-            Vector3 centerOfMass,
+            Vector3d centerOfMass,
             double densityMass)
         {
             InertiaTensor = inertiaTensor;

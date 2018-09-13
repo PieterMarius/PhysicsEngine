@@ -34,7 +34,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         #region Fields
 
-        public Vector3 Vertex { get; private set; }
+        public Vector3d Vertex { get; private set; }
         public List<int> Adjacency {
             get
             {
@@ -58,7 +58,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Constructor
 
         public VertexProperties(
-            Vector3 vertex,
+            Vector3d vertex,
             HashSet<int> adjacency,
             int? id,
             int?[] linkedID)
@@ -79,24 +79,24 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public VertexProperties(
-            Vector3 vertex,
+            Vector3d vertex,
             HashSet<int> adjacency)
             : this(vertex, adjacency, null, null)
         { }
 
         public VertexProperties(
-            Vector3 vertex)
+            Vector3d vertex)
             : this(vertex, null, null, null)
         { }
 
         public VertexProperties(
-            Vector3 vertex,
+            Vector3d vertex,
             int? id)
             : this(vertex, null, id, null)
         { }
                 
         public VertexProperties(
-            Vector3 vertex,
+            Vector3d vertex,
             int?[] linkedID)
             : this(vertex, null, null, linkedID)
         { }
@@ -105,7 +105,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
-        public void SetVertexPosition(Vector3 position)
+        public void SetVertexPosition(Vector3d position)
         {
             Vertex = position;
         }

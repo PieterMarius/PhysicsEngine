@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper
         #region Constructor
 
         public ConcaveShape(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             int[][] inputTriangle,
-            Vector3 position,
+            Vector3d position,
             double mass,
             bool isStatic)
         {
@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 Position
+        public Vector3d Position
         {
             get
             {
@@ -81,7 +81,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 InitCenterOfMass
+        public Vector3d InitCenterOfMass
         {
             get
             {
@@ -89,7 +89,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 LinearVelocity
+        public Vector3d LinearVelocity
         {
             get
             {
@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 AngularVelocity
+        public Vector3d AngularVelocity
         {
             get
             {
@@ -145,7 +145,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 ForceValue
+        public Vector3d ForceValue
         {
             get
             {
@@ -166,7 +166,7 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetExcludeFromCollisionDetection(excludeFromCollisionDetection);
         }
 
-        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        public Vector3d GetCenterOfMassShiftValue(int index = 0)
         {
             return -1.0 * concaveShape.InitCenterOfMass;
         }
@@ -181,22 +181,22 @@ namespace SharpPhysicsEngine.Wrapper
             return concaveShape.ID;
         }
 
-        public Vector3 GetMaxAABB()
+        public Vector3d GetMaxAABB()
         {
             return CommonUtilities.GetAABBMaxValue(concaveShape.ConvexShapesGeometry);
         }
 
-        public Vector3 GetMinAABB()
+        public Vector3d GetMinAABB()
         {
             return CommonUtilities.GetAABBMinValue(concaveShape.ConvexShapesGeometry);
         }
 
-        public Vector3[] GetVertices()
+        public Vector3d[] GetVertices()
         {
             return concaveShape.Vertices;
         }
 
-        public void SetAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             concaveShape.SetAngularVelocity(inputAngularVelocity);
         }
@@ -216,7 +216,7 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetRestoreCoeff(value);
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             concaveShape.SetForce(force);
         }
@@ -231,7 +231,7 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetIsStatic(isStatic);
         }
 
-        public void SetLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetLinearVelocity(Vector3d inputLinearVelocity)
         {
             concaveShape.SetLinearVelocity(inputLinearVelocity);
         }
@@ -241,7 +241,7 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetMass(mass);
         }
 
-        public void SetPosition(Vector3 inputPosition)
+        public void SetPosition(Vector3d inputPosition)
         {
             concaveShape.SetPosition(inputPosition);
         }
@@ -271,18 +271,18 @@ namespace SharpPhysicsEngine.Wrapper
             concaveShape.SetStaticFrictionCoeff(staticFrictionCoeff);
         }
 
-        public void SetTorque(Vector3 torque)
+        public void SetTorque(Vector3d torque)
         {
             concaveShape.SetTorque(torque);
         }
 
         public double[][][] GetConvexShapeList()
         {
-            Vector3[][] result = new Vector3[concaveShape.ConvexShapesGeometry.Length][];
+            Vector3d[][] result = new Vector3d[concaveShape.ConvexShapesGeometry.Length][];
 
             for (int i = 0; i < concaveShape.ConvexShapesGeometry.Length; i++)
             {
-                var vtx = new Vector3[concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length];
+                var vtx = new Vector3d[concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length];
                 for (int j = 0; j < concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length; j++)
                 {
                     vtx[j]= (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].VerticesIdx[j].ID]) + concaveShape.Position;

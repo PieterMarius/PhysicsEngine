@@ -36,7 +36,7 @@ namespace Utility
     {
         public class ObjProperties
         {
-            public Vector3[] vertexPoint;
+            public Vector3d[] vertexPoint;
             public int[][] triangleIndex;
         }
 
@@ -54,7 +54,7 @@ namespace Utility
             ObjImporter importer = new ObjImporter();
             ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
 
-            Vector3[] vertexPoint = new Vector3[mesh.vertices.Length];
+            Vector3d[] vertexPoint = new Vector3d[mesh.vertices.Length];
 
             for (int i = 0; i < mesh.vertices.Length; i++)
                 vertexPoint[i] = mesh.vertices[i];

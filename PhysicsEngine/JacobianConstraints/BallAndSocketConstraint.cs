@@ -37,11 +37,11 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.BallAndSocket;
                 
-        readonly Vector3 StartAnchorPoint;
-		readonly Vector3 StartErrorAxis1;
-		readonly Vector3 StartErrorAxis2;
+        readonly Vector3d StartAnchorPoint;
+		readonly Vector3d StartErrorAxis1;
+		readonly Vector3d StartErrorAxis2;
         		
-		Vector3 AnchorPoint;
+		Vector3d AnchorPoint;
 
         #endregion
 
@@ -50,14 +50,14 @@ namespace SharpPhysicsEngine
         public BallAndSocketConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
+            Vector3d startAnchorPosition,
             double errorReductionParam,
             double springCoefficient)
             : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             StartAnchorPoint = startAnchorPosition;
 
-            Vector3 relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
+            Vector3d relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
             relativePos = ShapeA.RotationMatrix * relativePos;
 
             AnchorPoint = relativePos + ShapeA.Position;
@@ -89,19 +89,19 @@ namespace SharpPhysicsEngine
             
             #region Init Linear
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
+			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
+			Vector3d r2 = simulationObjectB.RotationMatrix *
 										  StartErrorAxis2;
 
 			Matrix3x3 skewR1 = r1.GetSkewSymmetricMatrix();
 			Matrix3x3 skewR2 = r2.GetSkewSymmetricMatrix();
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3d p1 = simulationObjectA.Position + r1;
+			Vector3d p2 = simulationObjectB.Position + r2;
 
-			Vector3 linearError = p2 - p1;
+			Vector3d linearError = p2 - p1;
 
             #endregion
 
@@ -125,8 +125,8 @@ namespace SharpPhysicsEngine
             ballSocketConstraints.Add(JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
-                new Vector3(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
-				new Vector3(skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
+                new Vector3d(-skewR1.r1c1, -skewR1.r1c2, -skewR1.r1c3),
+				new Vector3d(skewR2.r1c1, skewR2.r1c2, skewR2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -142,8 +142,8 @@ namespace SharpPhysicsEngine
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
                 yVec,
                 yVecNeg,
-                new Vector3(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
-				new Vector3(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
+                new Vector3d(-skewR1.r2c1, -skewR1.r2c2, -skewR1.r2c3),
+				new Vector3d(skewR2.r2c1, skewR2.r2c2, skewR2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -159,8 +159,8 @@ namespace SharpPhysicsEngine
 			ballSocketConstraints.Add(JacobianCommon.GetDOF(
                 zVec,
                 zVecNeg,
-                new Vector3(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
-				new Vector3(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
+                new Vector3d(-skewR1.r3c1, -skewR1.r3c2, -skewR1.r3c3),
+				new Vector3d(skewR2.r3c1, skewR2.r3c2, skewR2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -183,7 +183,7 @@ namespace SharpPhysicsEngine
 			return jointType;
 		}
         	
-		public override Vector3 GetAnchorPosition()
+		public override Vector3d GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.InitCenterOfMass)) +

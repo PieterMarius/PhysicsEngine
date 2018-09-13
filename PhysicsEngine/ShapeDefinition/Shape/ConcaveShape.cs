@@ -59,9 +59,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public ConcaveShape(
             TriangleMesh[] triangleMeshes,
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             IConvexHullEngine convexHullEngine,
-            Vector3 position,
+            Vector3d position,
             double mass,
             bool isStatic) : base()
         {
@@ -91,7 +91,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Public Methods
 
-        public override void Rotate(Vector3 versor, double angle)
+        public override void Rotate(Vector3d versor, double angle)
         {
             var rotationQuaternion = new Quaternion(versor, angle);
 
@@ -167,7 +167,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            VerticesRelPos = new Vector3[Vertices.Length];
+            VerticesRelPos = new Vector3d[Vertices.Length];
             double dist = double.MinValue;
 
             for (int i = 0; i < Vertices.Length; i++)

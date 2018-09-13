@@ -91,6 +91,7 @@
     <Compile Include="ConvexHullWrapper\ConvexHullEngine.cs" />
     <Compile Include="ConvexHullWrapper\ConvexHullVertex.cs" />
     <Compile Include="ConvexHullWrapper\IConvexHullEngine.cs" />
+    <Compile Include="ExternalFunctionsWrapper\ExtFuncsWrapper.cs" />
     <Compile Include="ExternalUtilities\SharpEngineUtilities.cs" />
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\CommonUtilities.cs" />

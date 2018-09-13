@@ -35,7 +35,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
     {
         #region Fields
 
-        public Vector3 Vector3 { get; private set; }
+        public Vector3d Vector3 { get; private set; }
         public HashSet<int> Indexes { get; private set; }
         public int ID { get; private set; }
 
@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
         #region Constructor
 
         public Vertex3Index(
-            Vector3 v, 
+            Vector3d v, 
             HashSet<int> index,
             int id)
         {

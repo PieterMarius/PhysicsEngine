@@ -74,3 +74,6 @@ TestPhysics/bin/x64/Debug/OpenTK.xml
 TestPhysics/bin/x64/Debug/OpenTK.xml
 *.log
 *.tlog
+*.exp
+x64/*
+*.obj

@@ -36,7 +36,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             AABB[] boxs,
             double distanceTolerance);
 
-        Vector3 Execute(
+        Vector3d Execute(
             AABB boxA,
             AABB boxB);
     }

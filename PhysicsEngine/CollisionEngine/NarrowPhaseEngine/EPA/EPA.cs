@@ -40,7 +40,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public double EPAManifoldTolerance { get; private set;}
 		public int ManifoldPointNumber { get; private set;}
 
-		readonly Vector3 origin = new Vector3();
+		readonly Vector3d origin = new Vector3d();
 
 		readonly double constTolerance = 0.0000001;
 
@@ -74,16 +74,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexShape1,
 			VertexProperties[] vertexShape2,
 			List<SupportTriangle> triangles,
-			Vector3 centroid)
+			Vector3d centroid)
 		{
 			var epaCollisionPoint = new EngineCollisionPoint();
 
 			double s = 0.0;
 			double t = 0.0;
 
-			var direction = new Vector3 ();
-			var oldDirection = new Vector3 ();
-			var vDistance = new Vector3 ();
+			var direction = new Vector3d ();
+			var oldDirection = new Vector3d ();
+			var vDistance = new Vector3d ();
 
 			SupportTriangle epaBuffer;
 
@@ -118,7 +118,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 							
 						triangles [i] = epaBuffer;
 
-						double distance = Vector3.Length (vDistance);
+						double distance = Vector3d.Length (vDistance);
 
 						if (distance < minDistance) 
 						{
@@ -138,7 +138,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 					}
 
 					//L'origine risiede su uno dei bordi del triangolo
-					if (Vector3.Length(direction) < constTolerance)
+					if (Vector3d.Length(direction) < constTolerance)
 					{
 						direction = origin - centroid;
 					}
@@ -179,7 +179,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexObjA,
 			VertexProperties[] vertexObjB,
 			List<SupportTriangle> startTriangles,
-			Vector3 centroid)
+			Vector3d centroid)
 		{
 			EngineCollisionPoint epaCollisionPoint = ExecuteEngine (
 													  vertexObjA,
@@ -187,7 +187,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 													  startTriangles,
 													  centroid);
 
-            var distance = Vector3.Length(epaCollisionPoint.Dist);
+            var distance = Vector3d.Length(epaCollisionPoint.Dist);
 
             var collisionPoint = new CollisionPoint (
 				epaCollisionPoint.A,

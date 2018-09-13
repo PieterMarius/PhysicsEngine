@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public double Distance { get; private set; }
         public bool Intersection { get; private set; }
-        public Vector3 CollisionNormal { get; private set; }
+        public Vector3d CollisionNormal { get; private set; }
         public List<StartImpulseProperties> StartImpulseValue { get; private set; }
 
         #region Constructor
@@ -46,7 +46,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         public CollisionPoint(
             VertexProperties collisionPointA,
             VertexProperties collisionPointB,
-            Vector3 collisionNormal,
+            Vector3d collisionNormal,
             double distance,
             bool intersection)
         {
@@ -87,7 +87,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             StartImpulseValue[2].SetStartValue(startImpulses[2].StartImpulseValue * regParam);
         }
 
-        public void SetNormal(Vector3 normal)
+        public void SetNormal(Vector3d normal)
         {
             CollisionNormal = normal;
         }
@@ -102,7 +102,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             Intersection = intersection;
         }
 
-        public Vector3 GetPointPosition()
+        public Vector3d GetPointPosition()
         {
             return CollisionPointA.Vertex;
         }

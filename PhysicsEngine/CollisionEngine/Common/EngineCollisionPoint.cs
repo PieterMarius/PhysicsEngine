@@ -33,20 +33,20 @@ namespace SharpPhysicsEngine.CollisionEngine
 	{
 		#region Public Properties
 
-		public Vector3 Dist { get; private set; }
+		public Vector3d Dist { get; private set; }
 		public VertexProperties A { get; private set; }
 		public VertexProperties B { get; private set; }
-		public Vector3 Normal { get; private set; }
+		public Vector3d Normal { get; private set; }
 		
 		#endregion
 
 		#region Constructor
 
 		public EngineCollisionPoint (
-			Vector3 dist,
+			Vector3d dist,
 			VertexProperties a,
 			VertexProperties b,
-			Vector3 normal)
+			Vector3d normal)
 		{
 			this.Dist = dist;
 			this.A = a;
@@ -71,12 +71,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			this.B = b;
 		}
 
-		public void SetDist(Vector3 dist)
+		public void SetDist(Vector3d dist)
 		{
 			this.Dist = dist;
 		}
 			
-		public void SetNormal(Vector3 normal)
+		public void SetNormal(Vector3d normal)
 		{
 			this.Normal = normal;
 		}

@@ -120,27 +120,27 @@ namespace SharpPhysicsEngine
                     double distanceWeigth = 1.0;
 
                     if (distanceSum > 0.0)
-                        distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex) / distanceSum;
+                        distanceWeigth = Vector3d.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex) / distanceSum;
                     if (distanceWeigth < 1E-10)
                         continue;
 
-                    Vector3 ra = Vector3.Zero();
-                    Vector3 rb = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex - objectB.Position;
+                    Vector3d ra = Vector3d.Zero();
+                    Vector3d rb = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex - objectB.Position;
 
                     ////Component
-                    Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
-                    Vector3 linearComponentB = -1.0 * linearComponentA;
+                    Vector3d linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
+                    Vector3d linearComponentB = -1.0 * linearComponentA;
 
-                    Vector3 angularComponentA = Vector3.Zero();
-                    Vector3 angularComponentB = -1.0 * rb.Cross(linearComponentA);
+                    Vector3d angularComponentA = Vector3d.Zero();
+                    Vector3d angularComponentB = -1.0 * rb.Cross(linearComponentA);
 
                     ////Velocity
-                    Vector3 velocityA = softShapePoint.LinearVelocity;
+                    Vector3d velocityA = softShapePoint.LinearVelocity;
 
-                    Vector3 velocityB = objectB.LinearVelocity +
+                    Vector3d velocityB = objectB.LinearVelocity +
                                         objectB.AngularVelocity.Cross(rb);
 
-                    Vector3 relativeVelocity = velocityB - velocityA;
+                    Vector3d relativeVelocity = velocityB - velocityA;
 
 
                     if (relativeVelocity.Length() < 1E-12 &&
@@ -246,28 +246,28 @@ namespace SharpPhysicsEngine
                     double distanceWeigth = 1.0;
 
                     if (distanceSum > 0.0)
-                        distanceWeigth = Vector3.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex) / distanceSum;
+                        distanceWeigth = Vector3d.Length(softShapePoint.Position - collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointB.Vertex) / distanceSum;
                     if (distanceWeigth < 1E-10)
                         continue;
 
-                    Vector3 ra = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex - objectA.Position;
-                    Vector3 rb = Vector3.Zero();
+                    Vector3d ra = collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionPointA.Vertex - objectA.Position;
+                    Vector3d rb = Vector3d.Zero();
                     
                     ////Component
-                    Vector3 linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
-                    Vector3 linearComponentB = -1.0 * linearComponentA;
+                    Vector3d linearComponentA = (-1.0 * collisionPointStr.CollisionPointBase[h].CollisionPoint.CollisionNormal).Normalize();
+                    Vector3d linearComponentB = -1.0 * linearComponentA;
 
-                    Vector3 angularComponentA = ra.Cross(linearComponentA);
-                    Vector3 angularComponentB = Vector3.Zero();
+                    Vector3d angularComponentA = ra.Cross(linearComponentA);
+                    Vector3d angularComponentB = Vector3d.Zero();
 
                     ////Velocity
                     
-                    Vector3 velocityA = objectA.LinearVelocity +
+                    Vector3d velocityA = objectA.LinearVelocity +
                                         objectA.AngularVelocity.Cross(ra);
 
-                    Vector3 velocityB = softShapePoint.LinearVelocity;
+                    Vector3d velocityB = softShapePoint.LinearVelocity;
 
-                    Vector3 relativeVelocity = velocityB - velocityA;
+                    Vector3d relativeVelocity = velocityB - velocityA;
                     
                     if (relativeVelocity.Length() < 1E-12 &&
                         collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection &&
@@ -341,7 +341,7 @@ namespace SharpPhysicsEngine
         }
          
         private static double GetSoftBodyPointDistanceSum(
-            Vector3 collisionPoint,
+            Vector3d collisionPoint,
             ISoftShape softShape, 
             int?[] linkedID)
         {
@@ -354,7 +354,7 @@ namespace SharpPhysicsEngine
                 if (softShapePoint == null)
                     continue;
 
-                distanceSum += Vector3.Length(softShapePoint.Position - collisionPoint);
+                distanceSum += Vector3d.Length(softShapePoint.Position - collisionPoint);
             }
 
             return distanceSum;
@@ -406,22 +406,22 @@ namespace SharpPhysicsEngine
 				{
 					CollisionPoint collisionPoint = collisionPointBase.CollisionPoints[k];
 
-					Vector3 ra = collisionPoint.CollisionPointA.Vertex - objectA.Position;
-					Vector3 rb = collisionPoint.CollisionPointB.Vertex - objectB.Position;
+					Vector3d ra = collisionPoint.CollisionPointA.Vertex - objectA.Position;
+					Vector3d rb = collisionPoint.CollisionPointB.Vertex - objectB.Position;
 
-					Vector3 linearComponentA = (-1.0 * collisionPoint.CollisionNormal).Normalize();
-					Vector3 linearComponentB = -1.0 * linearComponentA;
+					Vector3d linearComponentA = (-1.0 * collisionPoint.CollisionNormal).Normalize();
+					Vector3d linearComponentB = -1.0 * linearComponentA;
 
-					Vector3 angularComponentA = ra.Cross(linearComponentA);
-					Vector3 angularComponentB = -1.0 * rb.Cross(linearComponentA);
+					Vector3d angularComponentA = ra.Cross(linearComponentA);
+					Vector3d angularComponentB = -1.0 * rb.Cross(linearComponentA);
 
-					Vector3 velocityA = objectA.LinearVelocity +
+					Vector3d velocityA = objectA.LinearVelocity +
 										objectA.AngularVelocity.Cross(ra);
 
-					Vector3 velocityB = objectB.LinearVelocity +
+					Vector3d velocityB = objectB.LinearVelocity +
 										objectB.AngularVelocity.Cross(rb);
 
-					Vector3 relativeVelocity = velocityB - velocityA;
+					Vector3d relativeVelocity = velocityB - velocityA;
 
 					if (relativeVelocity.Length() < 1E-12 &&
                         collisionPointBase.CollisionPoint.Intersection &&
@@ -496,24 +496,24 @@ namespace SharpPhysicsEngine
 			IShape objectA,
 			IShape objectB,
 			PhysicsEngineParameters simulationParameters,
-			Vector3 normal,
-			Vector3 relativeVelocity,
-			Vector3 ra,
-			Vector3 rb,
+			Vector3d normal,
+			Vector3d relativeVelocity,
+			Vector3d ra,
+			Vector3d rb,
 			StartImpulseProperties[] startImpulseProperties,
             SoftShapePoint softShapePoint)
 		{
             JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
 
-            Vector3[] frictionDirection = GetFrictionCone(normal, frictionDirections);
+            Vector3d[] frictionDirection = GetFrictionCone(normal, frictionDirections);
 
             double constraintLimit = 0.0;
 
-            Vector3 tangentialVelocity = relativeVelocity -
+            Vector3d tangentialVelocity = relativeVelocity -
                                          normal.Dot(relativeVelocity) *
                                          normal;
 
-            if (Vector3.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
+            if (Vector3d.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
                 constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
             else
                 constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
@@ -549,23 +549,23 @@ namespace SharpPhysicsEngine
             IShape objectA,
             IShape objectB,
             PhysicsEngineParameters simulationParameters,
-            Vector3 normal,
-            Vector3 relativeVelocity,
-            Vector3 ra,
-            Vector3 rb,
+            Vector3d normal,
+            Vector3d relativeVelocity,
+            Vector3d ra,
+            Vector3d rb,
             StartImpulseProperties[] startImpulseProperties)
         {
             JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
 
-            Vector3[] frictionDirection = GetFrictionCone(normal, frictionDirections);
+            Vector3d[] frictionDirection = GetFrictionCone(normal, frictionDirections);
             
             double constraintLimit = 0.0;
 
-            Vector3 tangentialVelocity = relativeVelocity -
+            Vector3d tangentialVelocity = relativeVelocity -
                                          normal.Dot(relativeVelocity) *
                                          normal;
             
-            if (Vector3.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
+            if (Vector3d.Length(tangentialVelocity) > simulationParameters.ShiftToStaticFrictionTolerance)
                 constraintLimit = 0.5 * (objectA.DynamicFrictionCoeff + objectB.DynamicFrictionCoeff);
             else
                 constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
@@ -597,12 +597,12 @@ namespace SharpPhysicsEngine
             return friction;
         }
 
-        private Vector3[] GetFrictionCone(Vector3 normal, int nDirection)
+        private Vector3d[] GetFrictionCone(Vector3d normal, int nDirection)
         {
-            var coneDirection = new Vector3[nDirection];
+            var coneDirection = new Vector3d[nDirection];
 
-            var tx = new Vector3();
-            var ty = new Vector3();
+            var tx = new Vector3d();
+            var ty = new Vector3d();
                        
             GeometryUtilities.ComputeBasis(
                 normal,

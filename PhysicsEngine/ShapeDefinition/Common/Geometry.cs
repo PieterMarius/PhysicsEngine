@@ -95,9 +95,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			AABBox = box;
 		}
         
-        public Vector3[] GetVertices()
+        public Vector3d[] GetVertices()
         {
-            var result = new Vector3[VerticesIdx.Length];
+            var result = new Vector3d[VerticesIdx.Length];
 
             for (int i = 0; i < VerticesIdx.Length; i++)
                 result[i] = Shape.Vertices[VerticesIdx[i].ID];

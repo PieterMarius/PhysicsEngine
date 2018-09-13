@@ -1,8 +1,10 @@
 #include <Windows.h>
 #include <string>
+#include <array>
 #include <iostream>
 #include <hacdHACD.h>
 #include <hacdMicroAllocator.h>
+#include <exception>
 
 #ifdef _WIN32
 #define PATH_SEP "\\"
@@ -20,7 +22,7 @@ bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> >
 {
 	FILE * fid;
 	//fileName.c_str()
-	errno_t err= fopen_s(&fid, fileName.c_str(), "r");
+	errno_t err = fopen_s(&fid, fileName.c_str(), "r");
 	if (fid)
 	{
 		std::cout << "caricamento file" << std::endl;
@@ -101,7 +103,8 @@ bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> >
 
 extern "C"
 {
-	__declspec(dllexport) void ExecuteHACD()
+	__declspec(dllexport) void ExecuteHACD(
+		const char* ifilename, std::vector<double[3]> points1, double triangle1[])
 	{
 		HACD::HeapManager * heapManager = HACD::createHeapManager(65536 * (1000));
 		HACD::HACD * const myHACD = HACD::CreateHACD(heapManager);
@@ -111,7 +114,7 @@ extern "C"
 		std::vector< HACD::Vec3<HACD::Real> > points;
 		std::vector< HACD::Vec3<long> > triangles;
 
-		const std::string fileName("C:\\Users\\vanduin\\Documents\\GitHub\\PhysicsEngine\\TestPhysics\\bin\\x64\\Debug\\Sketched-Brunnen.off");
+		const std::string fileName(ifilename);
 		std::string folder;
 		int found = fileName.find_last_of(PATH_SEP);
 		std::string file(fileName.substr(found + 1));
@@ -130,9 +133,7 @@ extern "C"
 		bool invert = false;
 
 		LoadOFF(fileName, points, triangles, invert);
-
-		
-
+				
 		/*
 		const std::string fileName("/Users/khaledmammou/Dev/HACD/data/Sketched-Brunnen.off");
 		size_t nClusters = 1;
@@ -217,6 +218,53 @@ extern "C"
 
 		HACD::DestroyHACD(myHACD);
 		HACD::releaseHeapManager(heapManager);
+	}
+
+
+	__declspec(dllexport) bool ExtractOFFData(
+		const char *fileName,
+		double*** points,
+		int* nPoints, 
+		long*** triangles,
+		int* nTriangles,
+		bool invert)
+	{
+		
+		std::vector< HACD::Vec3<HACD::Real> > points_buf;
+		std::vector< HACD::Vec3<long> > triangles_buf;
+
+		std::string fileNameInternal(fileName);
+
+		bool res = LoadOFF(fileNameInternal, points_buf, triangles_buf, invert);
+
+		if (res)
+		{
+			*points = (double**)::CoTaskMemAlloc(sizeof(double*) * points_buf.size());
+			*nPoints = points_buf.size();
+
+			for (size_t i = 0; i < points_buf.size(); i++)
+			{
+				(*points)[i] = (double(*))::CoTaskMemAlloc(sizeof(double) * 3);
+
+				(*points)[i][0] = points_buf[i].X();
+				(*points)[i][1] = points_buf[i].Y();
+				(*points)[i][2] = points_buf[i].Z();
+			}
+
+			*triangles = (long**)::CoTaskMemAlloc(sizeof(long*) * triangles_buf.size());
+			*nTriangles = triangles_buf.size();
+
+			for (size_t i = 0; i < triangles_buf.size(); i++)
+			{
+				(*triangles)[i] = (long(*))::CoTaskMemAlloc(sizeof(long) * 3);
+
+				(*triangles)[i][0] = triangles_buf[i].X();
+				(*triangles)[i][1] = triangles_buf[i].Y();
+				(*triangles)[i][2] = triangles_buf[i].Z();
+			}
+		}
+
+		return res;
 	}
 }
 

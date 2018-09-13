@@ -185,9 +185,9 @@ namespace SharpEngineMathUtility
 				r3x, r3y, r3z);
 		}
 
-		public static Vector3 operator*(Matrix3x3 a, Vector3 v)
+		public static Vector3d operator*(Matrix3x3 a, Vector3d v)
 		{
-			var result = new Vector3 (
+			var result = new Vector3d (
 								 a.r1c1 * v.x + a.r1c2 * v.y + a.r1c3 * v.z,
 								 a.r2c1 * v.x + a.r2c2 * v.y + a.r2c3 * v.z,
 								 a.r3c1 * v.x + a.r3c2 * v.y + a.r3c3 * v.z);
@@ -330,12 +330,12 @@ namespace SharpEngineMathUtility
 		/// <param name="a">The alpha component.</param>
 		public static Matrix3x3 NormalizeRows(Matrix3x3 a)
 		{
-			var r1 = new Vector3 (a.r1c1, a.r1c2, a.r1c3);
-			var r2 = new Vector3 (a.r2c1, a.r2c2, a.r2c3);
-			var r3 = new Vector3 (a.r3c1, a.r3c2, a.r3c3);
-			r1 = Vector3.Normalize (r1);
-			r2 = Vector3.Normalize (r2);
-			r3 = Vector3.Normalize (r3);
+			var r1 = new Vector3d (a.r1c1, a.r1c2, a.r1c3);
+			var r2 = new Vector3d (a.r2c1, a.r2c2, a.r2c3);
+			var r3 = new Vector3d (a.r3c1, a.r3c2, a.r3c3);
+			r1 = Vector3d.Normalize (r1);
+			r2 = Vector3d.Normalize (r2);
+			r3 = Vector3d.Normalize (r3);
 
 			return new Matrix3x3 (
 				r1.x, r1.y, r1.z,
@@ -349,9 +349,9 @@ namespace SharpEngineMathUtility
 		/// <returns>The rotation matrix.</returns>
 		/// <param name="versor">versor.</param>
 		/// <param name="angle">angle.</param>
-		public static Matrix3x3 GetRotationMatrix(Vector3 versor, double angle)
+		public static Matrix3x3 GetRotationMatrix(Vector3d versor, double angle)
 		{
-			Vector3 p = versor * versor;
+			Vector3d p = versor * versor;
 			double c = Math.Cos(angle);
 			double s = Math.Sin(angle);
 			double t = 1.0 - c;
@@ -374,7 +374,7 @@ namespace SharpEngineMathUtility
 				r3x, r3y, r3z);
 		}
 
-		public static Matrix3x3 GetSkewSymmetricMatrix(Vector3 input)
+		public static Matrix3x3 GetSkewSymmetricMatrix(Vector3d input)
 		{
 			return new Matrix3x3 (
 				0.0, -input.z, input.y,
@@ -382,7 +382,7 @@ namespace SharpEngineMathUtility
 				-input.y, input.x, 0.0);
 		}
 
-		public static Matrix3x3 GetRotationMatrix(Vector3 a, Vector3 b)
+		public static Matrix3x3 GetRotationMatrix(Vector3d a, Vector3d b)
 		{
 			a = a.Normalize ();
 			b = b.Normalize ();
@@ -391,7 +391,7 @@ namespace SharpEngineMathUtility
 				a.Length () > 0 &&
 				b.Length () > 0) 
 			{
-				Vector3 c = a.Cross (b);
+				Vector3d c = a.Cross (b);
 				return new Matrix3x3 (
 					a.x, b.x, c.x,
 					a.y, b.y, c.y,
@@ -402,7 +402,7 @@ namespace SharpEngineMathUtility
 			return new Matrix3x3 ();
 		}
 
-		public static Matrix3x3 OuterProduct(Vector3 a, Vector3 b)
+		public static Matrix3x3 OuterProduct(Vector3d a, Vector3d b)
 		{
 			return new Matrix3x3(
 				a.x * b.x, a.x * b.y, a.x * b.z,

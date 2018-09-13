@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         public AngularJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPos,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3d startAnchorPos,
+            Vector3d hingeAxis,
+            Vector3d rotationAxis,
             double restoreCoefficient,
             double springCoefficientHingeAxis,
             double springCoefficientRotationAxis)
@@ -70,7 +70,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return angularConstraint.GetAnchorPosition();
         }

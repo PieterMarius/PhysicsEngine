@@ -28,7 +28,7 @@ using System;
 
 namespace SharpEngineMathUtility
 {
-    public struct Vector2
+    public struct Vector2d
     {
         #region Public Properties
 
@@ -39,7 +39,7 @@ namespace SharpEngineMathUtility
 
         #region Constructors
 
-        public Vector2(
+        public Vector2d(
             double x,
             double y)
         {
@@ -47,7 +47,7 @@ namespace SharpEngineMathUtility
             this.y = y;
         }
 
-        public Vector2(double[] vec)
+        public Vector2d(double[] vec)
         {
             if (vec.Length == 2)
             {
@@ -60,7 +60,7 @@ namespace SharpEngineMathUtility
             }
         }
 
-        public Vector2(Vector2 v)
+        public Vector2d(Vector2d v)
         {
             x = v.x;
             y = v.y;

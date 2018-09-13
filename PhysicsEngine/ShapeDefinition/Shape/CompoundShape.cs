@@ -69,16 +69,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// <summary>
         /// Gets the start position of each elements of composite Objects
         /// </summary>
-        public Vector3[] StartCompoundPositionObjects { get; private set; }
+        public Vector3d[] StartCompoundPositionObjects { get; private set; }
         
         #endregion
         
         #region Constructor
 
         public CompoundShape(
-            List<Vector3[]> inputVertexPosition,
+            List<Vector3d[]> inputVertexPosition,
             List<int[][]> inputTriangle,
-            Vector3[] compoundPosition,
+            Vector3d[] compoundPosition,
             double[] mass) : base()
         {
             ObjectType = ObjectType.CompoundShape;
@@ -145,12 +145,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 MassInfo.InverseMass = 1.0 / MassInfo.Mass;
         }
 
-        public void SetCompoundPosition(Vector3[] compoundPosition)
+        public void SetCompoundPosition(Vector3d[] compoundPosition)
         {
             StartCompoundPositionObjects = compoundPosition;
         }
 
-        public override void Rotate(Vector3 versor, double angle)
+        public override void Rotate(Vector3d versor, double angle)
         {
             throw new NotImplementedException();
         }
@@ -160,11 +160,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Private Methods
         
         private IGeometry[] GetShapesGeometry(
-            List<Vector3[]> inputVertexPosition,
+            List<Vector3d[]> inputVertexPosition,
             List<int[][]> inputTriangle)
         {
             IGeometry[] geometry = new IGeometry[inputVertexPosition.Count];
-            List<Vector3> verticesSum = new List<Vector3>();
+            List<Vector3d> verticesSum = new List<Vector3d>();
             
             for (int i = 0; i < inputVertexPosition.Count; i++)
             {
@@ -237,7 +237,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                     InitCenterOfMass,
                     PartialMass[i]).InertiaTensor;
 
-                Vector3[] vertexPosition = vertices;
+                Vector3d[] vertexPosition = vertices;
 
                 totalVertex += ShapesGeometry[i].VerticesIdx.Length;
             }
@@ -254,7 +254,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            VerticesRelPos = new Vector3[Vertices.Length];
+            VerticesRelPos = new Vector3d[Vertices.Length];
             double dist = double.MinValue;
 
             for (int i = 0; i < Vertices.Length; i++)
@@ -271,13 +271,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
             }
         }
 
-        private Vector3 CalculateCenterOfMass()
+        private Vector3d CalculateCenterOfMass()
         {
-            Vector3 startPosition = new Vector3();
+            Vector3d startPosition = new Vector3d();
 
             for (int i = 0; i < ShapesGeometry.Length; i++)
             {
-                Vector3[] vertices = ShapesGeometry[i].GetVertices();
+                Vector3d[] vertices = ShapesGeometry[i].GetVertices();
 
                 var centerOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                     vertices,
@@ -290,7 +290,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             if (MassInfo.Mass > 0.0)
                 return startPosition / MassInfo.Mass;
 
-            return Vector3.ToZero();
+            return Vector3d.ToZero();
         }
 
         #endregion

@@ -36,18 +36,18 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Fields
 
         public int ID { get; private set; }
-        public Vector3 Position { get; private set; }
-        public Vector3 StartPosition { get; private set; }
-        public Vector3 AngularVelocity { get; private set; }
-        public Vector3 LinearVelocity { get; private set; }
+        public Vector3d Position { get; private set; }
+        public Vector3d StartPosition { get; private set; }
+        public Vector3d AngularVelocity { get; private set; }
+        public Vector3d LinearVelocity { get; private set; }
         public Matrix3x3 RotationMatrix { get; private set; }
         public Quaternion RotationStatus { get; private set; }
         public double Diameter { get; private set; }
         public MassData MassInfo { get; private set; }
         public ObjectType ObjectType { get; private set; }
-        public Vector3 TempAngularVelocity { get; private set; }
-        public Vector3 TempLinearVelocity { get; private set; }
-        public Vector3 ForceValue { get; private set; }
+        public Vector3d TempAngularVelocity { get; private set; }
+        public Vector3d TempLinearVelocity { get; private set; }
+        public Vector3d ForceValue { get; private set; }
         public HashSet<int> TriangleIndex { get; private set; }
         public bool IsStatic { get; private set; }
 
@@ -77,27 +77,27 @@ namespace SharpPhysicsEngine.ShapeDefinition
             MassInfo.Mass = mass;
         }
 
-        public void SetPosition(Vector3 position)
+        public void SetPosition(Vector3d position)
         {
             Position = position;
         }
 
-        public void SetAngularVelocity(Vector3 angularVelocity)
+        public void SetAngularVelocity(Vector3d angularVelocity)
         {
             AngularVelocity = angularVelocity;
         }
 
-        public void SetLinearVelocity(Vector3 linearVelocity)
+        public void SetLinearVelocity(Vector3d linearVelocity)
         {
             LinearVelocity = linearVelocity;
         }
 
-        public void SetTempAngularVelocity(Vector3 angularVelocity)
+        public void SetTempAngularVelocity(Vector3d angularVelocity)
         {
             TempAngularVelocity = angularVelocity;
         }
 
-        public void SetTempLinearVelocity(Vector3 linearVelocity)
+        public void SetTempLinearVelocity(Vector3d linearVelocity)
         {
             TempLinearVelocity = linearVelocity;
         }
@@ -118,7 +118,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             MassInfo.InverseBaseInertiaTensor = inertiaTensor;
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             ForceValue = force;
         }
@@ -138,7 +138,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             RotationMatrix = inputRotationMatrix;
         }
 
-        public void SetStartPosition(Vector3 startPosition)
+        public void SetStartPosition(Vector3d startPosition)
         {
             StartPosition = startPosition;
         }

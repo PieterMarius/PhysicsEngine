@@ -32,31 +32,31 @@ namespace SharpPhysicsEngine.Wrapper
     public interface ICollisionShape
     {
         ObjectType ObjectType { get; }
-        Vector3 Position { get; }
-        Vector3 InitCenterOfMass { get; }
-        Vector3 LinearVelocity { get; }
-        Vector3 AngularVelocity { get; }
+        Vector3d Position { get; }
+        Vector3d InitCenterOfMass { get; }
+        Vector3d LinearVelocity { get; }
+        Vector3d AngularVelocity { get; }
         Matrix3x3 InertiaTensor { get; }
         Matrix3x3 BaseInertiaTensor { get; }
         Matrix3x3 RotationMatrix { get; }
         double Mass { get; }
         double InverseMass { get; }
-        Vector3 ForceValue { get; }
+        Vector3d ForceValue { get; }
         bool IsStatic { get; }
 
         int GetID();
         int GetGeometryCount();
-        Vector3 GetMinAABB();
-        Vector3 GetMaxAABB();
-        Vector3[] GetVertices();
-        Vector3 GetCenterOfMassShiftValue(int index = 0);
+        Vector3d GetMinAABB();
+        Vector3d GetMaxAABB();
+        Vector3d[] GetVertices();
+        Vector3d GetCenterOfMassShiftValue(int index = 0);
         void SetMass(double mass);
-        void SetPosition(Vector3 inputPosition);
-        void SetLinearVelocity(Vector3 inputLinearVelocity);
-        void SetAngularVelocity(Vector3 inputAngularVelocity);
+        void SetPosition(Vector3d inputPosition);
+        void SetLinearVelocity(Vector3d inputLinearVelocity);
+        void SetAngularVelocity(Vector3d inputAngularVelocity);
         void SetInverseInertiaTensor(Matrix3x3 inertiaTensor);
         void SetBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
-        void SetForce(Vector3 force);
+        void SetForce(Vector3d force);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
         void SetErrorReductionParam(double value);
         void SetDynamicFrictionCoeff(double dynamicFrictionCoeff);
@@ -65,7 +65,7 @@ namespace SharpPhysicsEngine.Wrapper
         void SetRotationStatus(Quaternion inputRotationStatus);
         void SetSleepingFrameCount(int frameCount);
         void SetStaticFrictionCoeff(double staticFrictionCoeff);
-        void SetTorque(Vector3 torque);
+        void SetTorque(Vector3d torque);
         void SetIsStatic(bool isStatic);
     }
 }

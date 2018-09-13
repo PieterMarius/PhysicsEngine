@@ -65,7 +65,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             throw new NotImplementedException();
         }
 
-        public Vector3 Execute(AABB boxA, AABB boxB)
+        public Vector3d Execute(AABB boxA, AABB boxB)
         {
             throw new NotImplementedException();
         }

@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         public Hinge2Joint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3d startAnchorPosition,
+            Vector3d hingeAxis,
+            Vector3d rotationAxis,
             double restoreCoefficient,
             double springCoefficientHingeAxis,
             double springCoefficient)
@@ -65,9 +65,9 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             ICollisionShape shapeA,
             ICollisionShape shapeB,
             ICollisionShape externalSyncShape,
-            Vector3 startAnchorPosition,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3d startAnchorPosition,
+            Vector3d hingeAxis,
+            Vector3d rotationAxis,
             double restoreCoefficient,
             double springCoefficientHingeAxis,
             double springCoefficient)
@@ -94,7 +94,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.AddTorque(torqueAxis1, torqueAxis2);
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return hinge2Constraint.GetAnchorPosition();
         }

@@ -44,8 +44,8 @@ namespace SharpPhysicsEngine.Wrapper
 
         public SoftShape(
             int[][] triangleIndex,
-            Vector3[] shapePoint,
-            Vector3 startPosition,
+            Vector3d[] shapePoint,
+            Vector3d startPosition,
             double mass,
             double decompositionParam,
             double dampingCoefficient,
@@ -69,8 +69,8 @@ namespace SharpPhysicsEngine.Wrapper
 
         public SoftShape(
             int[][] triangleIndex,
-            Vector3[] shapePoint,
-            Vector3 startPosition,
+            Vector3d[] shapePoint,
+            Vector3d startPosition,
             double mass,
             double decompositionParam,
             double dampingCoefficient,
@@ -90,7 +90,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public SoftShape(
             int[][] triangleIndex,
-            Vector3[] shapePoint,
+            Vector3d[] shapePoint,
             ConstraintIndex[] softJoint,
             double mass,
             double decompositionParam,
@@ -107,13 +107,13 @@ namespace SharpPhysicsEngine.Wrapper
         #region Public Methods
 
         public void SetGeometry(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             int[][] inputTriangle)
         {
             throw new NotImplementedException();
         }
 
-        public Vector3 AngularVelocity
+        public Vector3d AngularVelocity
         {
             get
             {
@@ -129,7 +129,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 ForceValue
+        public Vector3d ForceValue
         {
             get
             {
@@ -153,7 +153,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 LinearVelocity
+        public Vector3d LinearVelocity
         {
             get
             {
@@ -177,7 +177,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 Position
+        public Vector3d Position
         {
             get
             {
@@ -193,7 +193,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 InitCenterOfMass
+        public Vector3d InitCenterOfMass
         {
             get
             {
@@ -219,7 +219,7 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.ID;
         }
 
-        public void SetAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             throw new NotSupportedException();
         }
@@ -234,7 +234,7 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.SetDynamicFrictionCoeff(dynamicFrictionCoeff);
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             throw new NotImplementedException();
         }
@@ -244,7 +244,7 @@ namespace SharpPhysicsEngine.Wrapper
             throw new NotImplementedException();
         }
 
-        public void SetLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetLinearVelocity(Vector3d inputLinearVelocity)
         {
             throw new NotImplementedException();
         }
@@ -254,7 +254,7 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.SetMass(mass);
         }
 
-        public void SetPosition(Vector3 inputPosition)
+        public void SetPosition(Vector3d inputPosition)
         {
             
             throw new NotSupportedException();
@@ -306,7 +306,7 @@ namespace SharpPhysicsEngine.Wrapper
             softShape.SetStaticFrictionCoeff(staticFrictionCoeff);
         }
 
-        public void SetTorque(Vector3 torque)
+        public void SetTorque(Vector3d torque)
         {
             throw new NotImplementedException();
         }
@@ -321,12 +321,12 @@ namespace SharpPhysicsEngine.Wrapper
             return 0;
         }
 
-        public Vector3 GetMinAABB()
+        public Vector3d GetMinAABB()
         {
             return softShape.AABBox.Min;
         }
 
-        public Vector3 GetMaxAABB()
+        public Vector3d GetMaxAABB()
         {
             return softShape.AABBox.Max;
         }
@@ -336,7 +336,7 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.ShapePoints.Length;
         }
 
-        public Vector3[] GetVertices()
+        public Vector3d[] GetVertices()
         {
             return Array.ConvertAll(softShape.ShapePoints, x => x.Position);
         }
@@ -346,7 +346,7 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.SoftConstraint.Count;
         }
 
-        public Vector3[] GetShapeConstraintsPosition()
+        public Vector3d[] GetShapeConstraintsPosition()
         {
             return softShape.SoftConstraint.Select(x => x.GetAnchorPosition()).ToArray();
         }
@@ -371,7 +371,7 @@ namespace SharpPhysicsEngine.Wrapper
             return softShape.DecompositionParameter;
         }
 
-        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        public Vector3d GetCenterOfMassShiftValue(int index = 0)
         {
             throw new NotImplementedException();
         }

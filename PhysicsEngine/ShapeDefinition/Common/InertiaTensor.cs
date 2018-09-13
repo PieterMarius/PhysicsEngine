@@ -32,13 +32,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
 	{
 		#region Private properties
 
-		Vector3 massCenter;
+		Vector3d massCenter;
 		Matrix3x3 inertiaTensor;
         double densityMass;
         readonly bool bodyCoords;
 		readonly double objMass;
         
-		readonly Vector3[] vertexStartPosition;
+		readonly Vector3d[] vertexStartPosition;
 		readonly TriangleMesh[] triangleVertexIndex;
                 
 		readonly double[] mult =
@@ -64,7 +64,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		#region Constructor
 
 		public InertiaTensorEngine (
-			Vector3[] vertexStartPosition,
+			Vector3d[] vertexStartPosition,
             TriangleMesh[] triangleVertexIndex,
 			double mass,
             bool bodyCoords)
@@ -74,12 +74,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
             this.bodyCoords = bodyCoords;
 			objMass = mass;
 
-			massCenter = new Vector3 ();
+			massCenter = new Vector3d ();
 			inertiaTensor = new Matrix3x3 ();
 		}
 
         public InertiaTensorEngine(
-            Vector3[] vertexStartPosition,
+            Vector3d[] vertexStartPosition,
             TriangleMesh[] triangleVertexIndex,
             double mass) :
             this(vertexStartPosition, triangleVertexIndex, mass, true)
@@ -109,18 +109,18 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			for (int i = 0; i < triangleVertexIndex.Length; i++) 
 			{
                 //Vertice 1 triangolo
-                Vector3 v0 = vertexStartPosition[triangleVertexIndex[i].a];
+                Vector3d v0 = vertexStartPosition[triangleVertexIndex[i].a];
 
                 //Vertice 2 triangolo
-                Vector3 v1 = vertexStartPosition[triangleVertexIndex[i].b];
+                Vector3d v1 = vertexStartPosition[triangleVertexIndex[i].b];
 
                 //Vertice 3 triangolo
-                Vector3 v2 = vertexStartPosition[triangleVertexIndex[i].c];
+                Vector3d v2 = vertexStartPosition[triangleVertexIndex[i].c];
 
                 // Get cross product of edges and normal vector.
-                Vector3 V1mV0 = v1 - v0;
-                Vector3 V2mV0 = v2 - v0;
-                Vector3 N = Vector3.Cross(V1mV0, V2mV0);
+                Vector3d V1mV0 = v1 - v0;
+                Vector3d V2mV0 = v2 - v0;
+                Vector3d N = Vector3d.Cross(V1mV0, V2mV0);
 
                 // Compute integral terms.
                 double tmp0, tmp1, tmp2;
@@ -181,7 +181,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			double massCenterY = intg [2] / mass;
 			double massCenterZ = intg [3] / mass;
 
-			massCenter = new Vector3 (massCenterX, massCenterY, massCenterZ);
+			massCenter = new Vector3d (massCenterX, massCenterY, massCenterZ);
 
             double r1x = intg[5] + intg[6];
             double r2y = intg[4] + intg[6];

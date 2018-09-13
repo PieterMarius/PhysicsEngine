@@ -32,25 +32,25 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         int ID { get; }
         ObjectType ObjectType { get; }
-        Vector3 Position { get; }
-        Vector3 LinearVelocity { get; }
-        Vector3 AngularVelocity { get; }
+        Vector3d Position { get; }
+        Vector3d LinearVelocity { get; }
+        Vector3d AngularVelocity { get; }
         MassData MassInfo { get; }
         Matrix3x3 RotationMatrix { get; }
-        Vector3 TempAngularVelocity { get; }
-        Vector3 TempLinearVelocity { get; }
-        Vector3 ForceValue { get; }
+        Vector3d TempAngularVelocity { get; }
+        Vector3d TempLinearVelocity { get; }
+        Vector3d ForceValue { get; }
         bool IsStatic { get; }
 
         void SetMass(double mass);
-        void SetPosition(Vector3 inputPosition);
-        void SetLinearVelocity(Vector3 inputLinearVelocity);
-        void SetAngularVelocity(Vector3 inputAngularVelocity);
+        void SetPosition(Vector3d inputPosition);
+        void SetLinearVelocity(Vector3d inputLinearVelocity);
+        void SetAngularVelocity(Vector3d inputAngularVelocity);
         void SetInverseInertiaTensor(Matrix3x3 inertiaTensor);
         void SetInverseBaseInertiaTensor(Matrix3x3 inputIntertiaTensor);
-        void SetForce(Vector3 force);
-        void SetTempAngularVelocity(Vector3 inputAngularVelocity);
-        void SetTempLinearVelocity(Vector3 inputLinearVelocity);
+        void SetForce(Vector3d force);
+        void SetTempAngularVelocity(Vector3d inputAngularVelocity);
+        void SetTempLinearVelocity(Vector3d inputLinearVelocity);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
         void SetIsStatic(bool isStatic);
     }

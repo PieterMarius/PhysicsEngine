@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine.Helper
             return triangleMeshes;
         }
 
-        public static Vector3 GetAABBMinValue(IGeometry[] geometry)
+        public static Vector3d GetAABBMinValue(IGeometry[] geometry)
         {
             double xMin = double.MaxValue;
             double yMin = double.MaxValue;
@@ -70,10 +70,10 @@ namespace SharpPhysicsEngine.Helper
                     zMin = item.AABBox.Min.z;
             }
 
-            return new Vector3(xMin, yMin, zMin);
+            return new Vector3d(xMin, yMin, zMin);
         }
 
-        public static Vector3 GetAABBMaxValue(IGeometry[] geometry)
+        public static Vector3d GetAABBMaxValue(IGeometry[] geometry)
         {
             double xMax = double.MinValue;
             double yMax = double.MinValue;
@@ -89,7 +89,7 @@ namespace SharpPhysicsEngine.Helper
                     zMax = item.AABBox.Max.z;
             }
 
-            return new Vector3(xMax, yMax, zMax);
+            return new Vector3d(xMax, yMax, zMax);
         }
     }
 }

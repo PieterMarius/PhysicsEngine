@@ -51,22 +51,22 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// The linear component object A.
 		/// </summary>
-		public readonly Vector3? LinearComponentA;
+		public readonly Vector3d? LinearComponentA;
 
 		/// <summary>
 		/// The linear component object B.
 		/// </summary>
-		public readonly Vector3? LinearComponentB;
+		public readonly Vector3d? LinearComponentB;
 
 		/// <summary>
 		/// The angular component object A.
 		/// </summary>
-		public readonly Vector3 AngularComponentA;
+		public readonly Vector3d AngularComponentA;
 
 		/// <summary>
 		/// The angular component object B.
 		/// </summary>
-		public readonly Vector3 AngularComponentB;
+		public readonly Vector3d AngularComponentB;
 
 		/// <summary>
 		/// The type of contact (collision, friction, joint).
@@ -106,10 +106,10 @@ namespace SharpPhysicsEngine
             IShapeCommon objectA,
             IShapeCommon objectB,
 			int? contactReference,
-			Vector3? linearComponentA,
-			Vector3? linearComponentB,
-			Vector3 angularComponentA,
-			Vector3 angularComponentB,
+			Vector3d? linearComponentA,
+			Vector3d? linearComponentB,
+			Vector3d angularComponentA,
+			Vector3d angularComponentB,
 			ConstraintType type,
 			double B,
 			double correctionValue,
@@ -135,10 +135,10 @@ namespace SharpPhysicsEngine
         public JacobianConstraint(
             IShapeCommon objectA,
             IShapeCommon objectB,
-            Vector3 linearComponentA,
-            Vector3 linearComponentB,
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d linearComponentA,
+            Vector3d linearComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             ConstraintType type,
             double B,
             double correctionValue,
@@ -150,8 +150,8 @@ namespace SharpPhysicsEngine
         public JacobianConstraint(
             IShapeCommon objectA,
             IShapeCommon objectB,
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             ConstraintType type,
             double B,
             double correctionValue,

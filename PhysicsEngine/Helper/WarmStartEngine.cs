@@ -114,8 +114,8 @@ namespace SharpPhysicsEngine.Helper
                             double minDistance = double.MaxValue;
                             foreach (var point in cPoint.CollisionPointBase[0].CollisionPoints)
                             {
-                                double distAA = Vector3.Length(point.CollisionPointA.Vertex - value.CollisionPointA.Vertex);
-                                double distBA = Vector3.Length(point.CollisionPointB.Vertex - value.CollisionPointA.Vertex);
+                                double distAA = Vector3d.Length(point.CollisionPointA.Vertex - value.CollisionPointA.Vertex);
+                                double distBA = Vector3d.Length(point.CollisionPointB.Vertex - value.CollisionPointA.Vertex);
 
                                 if(distAA < minDistance ||
                                    distBA < minDistance)
@@ -158,11 +158,11 @@ namespace SharpPhysicsEngine.Helper
         #region Private Methods
 
         private bool CheckCollisionPointDistance(
-            Vector3 a,
-            Vector3 b,
+            Vector3d a,
+            Vector3d b,
             double tolerance)
         {
-            if (Vector3.Length(a - b) < tolerance)
+            if (Vector3d.Length(a - b) < tolerance)
                 return true;
 
             return false;

@@ -37,8 +37,8 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Piston;
 
-        readonly Vector3 StartAnchorPoint;
-		readonly Vector3 PistonAxis;
+        readonly Vector3d StartAnchorPoint;
+		readonly Vector3d PistonAxis;
 
 		double? AngularLimitMin;
 		double? AngularLimitMax;
@@ -51,9 +51,9 @@ namespace SharpPhysicsEngine
 		double? AngularSpeedValue;
 		double? AngularForceLimit;
 
-		Vector3 AnchorPoint;
-		Vector3 StartErrorAxis1;
-		Vector3 StartErrorAxis2;
+		Vector3d AnchorPoint;
+		Vector3d StartErrorAxis1;
+		Vector3d StartErrorAxis2;
 		Quaternion RelativeOrientation;
 
         #endregion
@@ -63,8 +63,8 @@ namespace SharpPhysicsEngine
         public PistonConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 pistonAxis,
+            Vector3d startAnchorPosition,
+            Vector3d pistonAxis,
             double errorReductionParam,
             double springCoefficient)
             : base(shapeA, shapeB, errorReductionParam, springCoefficient)
@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine
 
             PistonAxis = -1.0 * pistonAxis.Normalize();
 
-            Vector3 relativePos = ShapeA.RotationMatrix *
+            Vector3d relativePos = ShapeA.RotationMatrix *
                 (startAnchorPosition - ShapeA.InitCenterOfMass);
 
             AnchorPoint = relativePos + ShapeA.Position;
@@ -108,25 +108,25 @@ namespace SharpPhysicsEngine
             			
 			#region Init Linear
 
-			Vector3 sliderAxis = simulationObjectA.RotationMatrix * PistonAxis;
+			Vector3d sliderAxis = simulationObjectA.RotationMatrix * PistonAxis;
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
-			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
+			Vector3d t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
+			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
+			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
+			Vector3d r2 = simulationObjectB.RotationMatrix *
 										  StartErrorAxis2;
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3d p1 = simulationObjectA.Position + r1;
+			Vector3d p2 = simulationObjectB.Position + r2;
 
-			Vector3 linearError = p2 - p1;
+			Vector3d linearError = p2 - p1;
 
 			#endregion
 
-			Vector3 angularError = sliderAxis.Cross (
+			Vector3d angularError = sliderAxis.Cross (
 				                       (simulationObjectB.RotationMatrix * PistonAxis));
 
             #region Jacobian Constraint
@@ -178,13 +178,13 @@ namespace SharpPhysicsEngine
 
 			//DOF 3
 
-			double constraintLimit = errorReduction * Vector3.Dot (t1,linearError);
+			double constraintLimit = errorReduction * Vector3d.Dot (t1,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t1,
 				-1.0 * t1,
-				Vector3.Cross (r1, t1),
-				-1.0 * Vector3.Cross (r2, t1),
+				Vector3d.Cross (r1, t1),
+				-1.0 * Vector3d.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -195,13 +195,13 @@ namespace SharpPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = errorReduction * Vector3.Dot (t2,linearError);
+			constraintLimit = errorReduction * Vector3d.Dot (t2,linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t2,
 				-1.0 * t2,
-				Vector3.Cross (r1, t2),
-				-1.0 * Vector3.Cross (r2, t2),
+				Vector3d.Cross (r1, t2),
+				-1.0 * Vector3d.Cross (r2, t2),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -253,7 +253,7 @@ namespace SharpPhysicsEngine
 			return jointType;
 		}
 
-		public override Vector3 GetAnchorPosition()
+		public override Vector3d GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                     (StartAnchorPoint -
@@ -293,9 +293,9 @@ namespace SharpPhysicsEngine
         
 		public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			Vector3 pistonAxis = ShapeA.RotationMatrix * PistonAxis;
+			Vector3d pistonAxis = ShapeA.RotationMatrix * PistonAxis;
 
-			Vector3 torque = PistonAxis * torqueAxis1;
+			Vector3d torque = PistonAxis * torqueAxis1;
 
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
@@ -319,9 +319,9 @@ namespace SharpPhysicsEngine
 		List<JacobianConstraint> GetLinearLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
-			Vector3 sliderAxis,
-			Vector3 r1,
-			Vector3 r2,
+			Vector3d sliderAxis,
+			Vector3d r1,
+			Vector3d r2,
             double errorReduction)
 		{
 			var linearConstraints = new List<JacobianConstraint>();
@@ -348,7 +348,7 @@ namespace SharpPhysicsEngine
 		List<JacobianConstraint> GetAnguarLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
-			Vector3 sliderAxis,
+			Vector3d sliderAxis,
             double errorReduction)
 		{
 			var angularConstraints = new List<JacobianConstraint>();
@@ -383,7 +383,7 @@ namespace SharpPhysicsEngine
 		List<JacobianConstraint> GetMotorConstraint(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
-			Vector3 sliderAxis)
+			Vector3d sliderAxis)
 		{
 			var motorConstraints = new List<JacobianConstraint>();
 
@@ -393,8 +393,8 @@ namespace SharpPhysicsEngine
 				motorConstraints.Add(JacobianCommon.GetDOF(
 					sliderAxis,
 					-1.0 * sliderAxis,
-					new Vector3(),
-					new Vector3(),
+					new Vector3d(),
+					new Vector3d(),
 					simulationObjectA,
 					simulationObjectB,
 					LinearSpeedValue.Value,
@@ -408,8 +408,8 @@ namespace SharpPhysicsEngine
 			   AngularSpeedValue.HasValue)
 			{
 				motorConstraints.Add(JacobianCommon.GetDOF(
-					new Vector3(),
-					new Vector3(),
+					new Vector3d(),
+					new Vector3d(),
 					sliderAxis,
 					-1.0 * sliderAxis,
 					simulationObjectA,

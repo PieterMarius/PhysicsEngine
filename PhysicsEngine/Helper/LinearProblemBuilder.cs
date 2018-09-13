@@ -431,8 +431,8 @@ namespace SharpPhysicsEngine.Helper
             KeyValuePair<HashSetStruct, List<DictionaryConstraintValue>> constraintCheckItem,
             HashSetStruct constraintValuesKey,
             HashSetStruct symmetricHashSet,
-            Vector3? linearComponentA,
-            Vector3 angularComponentA,
+            Vector3d? linearComponentA,
+            Vector3d angularComponentA,
             MassData massData, 
             bool componentA)
         {
@@ -469,10 +469,10 @@ namespace SharpPhysicsEngine.Helper
         }
 
         private double GetLCPMatrixValue(
-            Vector3? linearComponentA,
-            Vector3? linearComponentB,
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d? linearComponentA,
+            Vector3d? linearComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             MassData massData)
         {
             double LCPValue = 0.0;

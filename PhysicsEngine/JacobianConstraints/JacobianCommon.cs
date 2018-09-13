@@ -32,7 +32,7 @@ namespace SharpPhysicsEngine
 {
     internal static class JacobianCommon
 	{
-		public static Vector3 GetFixedAngularError(
+		public static Vector3d GetFixedAngularError(
 			IShape objectA,
 			IShape objectB,
 			Quaternion relativeOrientation)
@@ -43,14 +43,14 @@ namespace SharpPhysicsEngine
 			Quaternion relativeOrientationError = relativeOrientation.Inverse () *
 			                                      currentRelativeOrientation;
 
-			var angularError = new Vector3 (
+			var angularError = new Vector3d (
 				relativeOrientationError.b, 
 				relativeOrientationError.c, 
 				relativeOrientationError.d);
 
 			if (relativeOrientationError.a < 0.0) 
 			{
-				angularError = new Vector3 (
+				angularError = new Vector3d (
 					-angularError.x,
 					-angularError.y,
 					-angularError.z);
@@ -59,7 +59,7 @@ namespace SharpPhysicsEngine
 			return objectA.RotationMatrix * angularError;
 		}
 
-        public static Vector3 GetFixedAngularError(
+        public static Vector3d GetFixedAngularError(
             SoftShapePoint objectA,
             SoftShapePoint objectB,
             Quaternion relativeOrientation)
@@ -70,14 +70,14 @@ namespace SharpPhysicsEngine
             Quaternion relativeOrientationError = relativeOrientation.Inverse() *
                                                   currentRelativeOrientation;
 
-            var angularError = new Vector3(
+            var angularError = new Vector3d(
                 relativeOrientationError.b,
                 relativeOrientationError.c,
                 relativeOrientationError.d);
 
             if (relativeOrientationError.a < 0.0)
             {
-                angularError = new Vector3(
+                angularError = new Vector3d(
                     -angularError.x,
                     -angularError.y,
                     -angularError.z);
@@ -87,9 +87,9 @@ namespace SharpPhysicsEngine
         }
         
         public static double GetRotationAngle(
-			Vector3 rotationStatus,
+			Vector3d rotationStatus,
 			double rotationValue,
-			Vector3 rotationAxis)
+			Vector3d rotationAxis)
 		{
 			double angle = 0.0;
 
@@ -105,7 +105,7 @@ namespace SharpPhysicsEngine
 			IShape simulationObjectA,
 			IShape simulationObjectB,
 			Quaternion relativeRotation,
-			Vector3 rotationAxis)
+			Vector3d rotationAxis)
 		{
 			Quaternion currentRelativeOrientation = simulationObjectA.RotationStatus.Inverse () *
 				                                    simulationObjectB.RotationStatus;
@@ -113,7 +113,7 @@ namespace SharpPhysicsEngine
 			Quaternion relativeOrientation = relativeRotation.Inverse () *
 				                             currentRelativeOrientation;
 
-			var quaternionVectorPart = new Vector3 (
+			var quaternionVectorPart = new Vector3d (
 				relativeOrientation.b,
 				relativeOrientation.c,
 				relativeOrientation.d);
@@ -127,10 +127,10 @@ namespace SharpPhysicsEngine
 		}
 
 		public static JacobianConstraint GetDOF(
-			Vector3 linearComponentA,
-			Vector3 linearComponentB,
-			Vector3 angularComponentA,
-			Vector3 angularComponentB,
+			Vector3d linearComponentA,
+			Vector3d linearComponentB,
+			Vector3d angularComponentA,
+			Vector3d angularComponentB,
             IShapeCommon simulationObjectA,
             IShapeCommon simulationObjectB,
 			double constraintValue,
@@ -168,8 +168,8 @@ namespace SharpPhysicsEngine
 		}
 
         public static JacobianConstraint GetDOF(
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             IShapeCommon simulationObjectA,
             IShapeCommon simulationObjectB,
             double constraintValue,
@@ -205,8 +205,8 @@ namespace SharpPhysicsEngine
         }
 
         public static JacobianConstraint GetDOF(
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             IShape simulationObjectA,
             IShape simulationObjectB,
             double constraintValue,
@@ -230,10 +230,10 @@ namespace SharpPhysicsEngine
         }
 
         public static JacobianConstraint GetDOF(
-            Vector3 linearComponentA,
-            Vector3 linearComponentB,
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d linearComponentA,
+            Vector3d linearComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             IShape simulationObjectA,
             IShape simulationObjectB,
             double constraintValue,
@@ -259,10 +259,10 @@ namespace SharpPhysicsEngine
         }
 
         public static JacobianConstraint GetDOF(
-            Vector3 linearComponentA,
-            Vector3 linearComponentB,
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d linearComponentA,
+            Vector3d linearComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             SoftShapePoint softShapePointA,
             SoftShapePoint softShapePointB,
             double constraintValue,
@@ -293,8 +293,8 @@ namespace SharpPhysicsEngine
         }
 
         public static JacobianConstraint GetDOF(
-            Vector3 angularComponentA,
-            Vector3 angularComponentB,
+            Vector3d angularComponentA,
+            Vector3d angularComponentB,
             SoftShapePoint softShapePointA,
             SoftShapePoint softShapePointB,
             double constraintValue,
@@ -323,9 +323,9 @@ namespace SharpPhysicsEngine
         public static JacobianConstraint GetLinearLimit (
 			IShape simulationObjectA, 
 			IShape simulationObjectB, 
-			Vector3 sliderAxis,
-			Vector3 r1, 
-			Vector3 r2,
+			Vector3d sliderAxis,
+			Vector3d r1, 
+			Vector3d r2,
 			double K,
 			double C,
 			double linearLimitMin,
@@ -341,8 +341,8 @@ namespace SharpPhysicsEngine
 				return GetDOF (
 					sliderAxis, 
 					-1.0 * sliderAxis, 
-					-1.0 * Vector3.Cross (r1, sliderAxis), 
-					Vector3.Cross (r2, sliderAxis), 
+					-1.0 * Vector3d.Cross (r1, sliderAxis), 
+					Vector3d.Cross (r2, sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB,
 					0.0,
@@ -359,8 +359,8 @@ namespace SharpPhysicsEngine
 				return GetDOF (
                     -1.0 * sliderAxis, 
 					sliderAxis, 
-					Vector3.Cross (r1, sliderAxis), 
-					-1.0 * Vector3.Cross (r2, sliderAxis), 
+					Vector3d.Cross (r1, sliderAxis), 
+					-1.0 * Vector3d.Cross (r2, sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB,
 					0.0,
@@ -379,7 +379,7 @@ namespace SharpPhysicsEngine
 			double C,
 			IShape simulationObjectA, 
 			IShape simulationObjectB,
-			Vector3 rotationAxis,
+			Vector3d rotationAxis,
 			double angularLimitMin,
 			double angularLimitMax)
 		{
@@ -390,8 +390,8 @@ namespace SharpPhysicsEngine
 					(angle - angularLimitMax);
 
 				return GetDOF (
-                    new Vector3 (), 
-					new Vector3 (), 
+                    new Vector3d (), 
+					new Vector3d (), 
 					rotationAxis, 
 					-1.0 * rotationAxis, 
 					simulationObjectA, 
@@ -412,8 +412,8 @@ namespace SharpPhysicsEngine
 					(angularLimitMin - angle);
 
 				return GetDOF (
-                    new Vector3 (), 
-					new Vector3 (), 
+                    new Vector3d (), 
+					new Vector3d (), 
 					-1.0 * rotationAxis, 
 					rotationAxis, 
 					simulationObjectA, 

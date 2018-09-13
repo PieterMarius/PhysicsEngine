@@ -33,8 +33,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         #region Fields
 
-        public Vector3 Min { get; set; }
-        public Vector3 Max { get; set; }
+        public Vector3d Min { get; set; }
+        public Vector3d Max { get; set; }
         public object ObjectReference { get; set; }
         public bool positionAABBChanged { get; private set; }
         public double SurfaceArea { get; }
@@ -53,16 +53,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
             object objectID,
 			bool positionChanged)
 		{
-			Min = new Vector3(minX, minY, minZ);
-			Max = new Vector3(maxX, maxY, maxZ);
+			Min = new Vector3d(minX, minY, minZ);
+			Max = new Vector3d(maxX, maxY, maxZ);
             ObjectReference = objectID;
 			positionAABBChanged = positionChanged;
             SurfaceArea = CalculateSurfaceArea();
 		}
 
 		public AABB(
-            Vector3 min, 
-            Vector3 max,
+            Vector3d min, 
+            Vector3d max,
             object objectID)
 		{
 			Min = min;
@@ -87,7 +87,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 				   Min.z <= box.Min.z && Max.z >= box.Max.z;
 		}
 
-		public bool Contains(Vector3 point)
+		public bool Contains(Vector3d point)
 		{
 			return point.x >= Min.x && point.x <= Max.x &&
 				   point.y >= Min.y && point.y <= Max.y &&
@@ -178,7 +178,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             IGeometry simObject,
             object objectID)
 		{
-			Vector3 vertexPos = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[0].ID);
+			Vector3d vertexPos = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[0].ID);
 			double xMax = vertexPos.x;
 			double xMin = vertexPos.x;
 			double yMax = vertexPos.y;
@@ -188,7 +188,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			for (int i = 1; i < simObject.VerticesIdx.Length; i++)
 			{
-				Vector3 vertex = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[i].ID);
+				Vector3d vertex = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[i].ID);
 
 				if (vertex.x < xMin)
 					xMin = vertex.x;
@@ -210,10 +210,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		}
 
         public static AABB GetGeometryAABB(
-            Vector3[] vertices,
+            Vector3d[] vertices,
             object objectID)
         {
-            Vector3 vertexPos = vertices[0];
+            Vector3d vertexPos = vertices[0];
             double xMax = vertexPos.x;
             double xMin = vertexPos.x;
             double yMax = vertexPos.y;
@@ -223,7 +223,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             for (int i = 1; i < vertices.Length; i++)
             {
-                Vector3 vertex = vertices[i];
+                Vector3d vertex = vertices[i];
 
                 if (vertex.x < xMin)
                     xMin = vertex.x;
@@ -248,7 +248,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SoftShapePoint[] shapePoint,
             int? objectID)
 		{
-			Vector3 vertexPos = shapePoint[0].Position;
+			Vector3d vertexPos = shapePoint[0].Position;
 			double xMax = vertexPos.x;
 			double xMin = vertexPos.x;
 			double yMax = vertexPos.y;
@@ -258,7 +258,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			for (int i = 1; i < shapePoint.Length; i++)
 			{
-				Vector3 vertex = shapePoint[i].Position;
+				Vector3d vertex = shapePoint[i].Position;
 
 				if (vertex.x < xMin)
 					xMin = vertex.x;
@@ -280,10 +280,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		}
 
 		public static AABB GetTriangleAABB(
-            Vector3[] triangle,
+            Vector3d[] triangle,
             int? objectID)
 		{
-			Vector3 vertexPos = triangle[0];
+			Vector3d vertexPos = triangle[0];
 			double xMax = vertexPos.x;
 			double xMin = vertexPos.x;
 			double yMax = vertexPos.y;
@@ -293,7 +293,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 			for (int i = 1; i < triangle.Length; i++)
 			{
-				Vector3 vertex = triangle[i];
+				Vector3d vertex = triangle[i];
 
 				if (vertex.x < xMin)
 					xMin = vertex.x;
@@ -314,7 +314,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			return new AABB(xMin, xMax, yMin, yMax, zMin, zMax, objectID, false);
 		}
 
-        public static Vector3 GetDist(AABB boxA, AABB boxB)
+        public static Vector3d GetDist(AABB boxA, AABB boxB)
         {
             double[] sqrDist = new double[3];
 
@@ -332,7 +332,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 }
             }
 
-            return new Vector3(sqrDist);
+            return new Vector3d(sqrDist);
         }
 
         #endregion

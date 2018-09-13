@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         public UniversalJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 hingeAxis,
-            Vector3 rotationAxis,
+            Vector3d startAnchorPosition,
+            Vector3d hingeAxis,
+            Vector3d rotationAxis,
             double restoreCoefficient,
             double springCoefficient)
         {
@@ -68,7 +68,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return universalConstraint.GetAnchorPosition();
         }

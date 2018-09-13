@@ -134,7 +134,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             CollisionPoints = lst.ToArray();
         }
 
-        public Vector3 GetPointPosition()
+        public Vector3d GetPointPosition()
         {
             return CollisionPoint.CollisionPointA.Vertex;
         }

@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper
         #region Constructor
 
         public ConvexShape(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             int[][] inputTriangle,
-            Vector3 position,
+            Vector3d position,
             double mass,
             bool isStatic)
         {
@@ -59,16 +59,16 @@ namespace SharpPhysicsEngine.Wrapper
                 isStatic);
         }
         public ConvexShape(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             int[][] inputTriangle,
-            Vector3 position,
+            Vector3d position,
             double mass) :
             this(inputVertexPosition, inputTriangle, position, mass, false)
         { }
 
         public ConvexShape(
-            Vector3[] inputVertexPosition,
-            Vector3 position,
+            Vector3d[] inputVertexPosition,
+            Vector3d position,
             double mass,
             bool isStatic)
         {
@@ -85,8 +85,8 @@ namespace SharpPhysicsEngine.Wrapper
         }
 
         public ConvexShape(
-            Vector3[] inputVertexPosition,
-            Vector3 position,
+            Vector3d[] inputVertexPosition,
+            Vector3d position,
             double mass) :
             this(inputVertexPosition, position, mass, false)
         { }
@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.Wrapper
             return convexShape;
         }
                 
-        public Vector3 AngularVelocity
+        public Vector3d AngularVelocity
         {
             get
             {
@@ -116,7 +116,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 ForceValue
+        public Vector3d ForceValue
         {
             get
             {
@@ -140,7 +140,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 LinearVelocity
+        public Vector3d LinearVelocity
         {
             get
             {
@@ -164,7 +164,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 Position
+        public Vector3d Position
         {
             get
             {
@@ -180,7 +180,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 InitCenterOfMass
+        public Vector3d InitCenterOfMass
         {
             get
             {
@@ -201,7 +201,7 @@ namespace SharpPhysicsEngine.Wrapper
             return convexShape.ID;
         }
 
-        public void SetAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             convexShape.SetAngularVelocity(inputAngularVelocity);
         }
@@ -221,7 +221,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetExcludeFromCollisionDetection(excludeFromCollisionDetection);
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             convexShape.SetForce(force);
         }
@@ -231,7 +231,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetInverseInertiaTensor(inertiaTensor);
         }
 
-        public void SetLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetLinearVelocity(Vector3d inputLinearVelocity)
         {
             convexShape.SetLinearVelocity(inputLinearVelocity);
         }
@@ -241,7 +241,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetMass(mass);
         }
 
-        public void SetPosition(Vector3 inputPosition)
+        public void SetPosition(Vector3d inputPosition)
         {
             convexShape.SetPosition(inputPosition);
         }
@@ -276,7 +276,7 @@ namespace SharpPhysicsEngine.Wrapper
             convexShape.SetStaticFrictionCoeff(staticFrictionCoeff);
         }
 
-        public void SetTorque(Vector3 torque)
+        public void SetTorque(Vector3d torque)
         {
             convexShape.SetTorque(torque);
         }
@@ -286,19 +286,19 @@ namespace SharpPhysicsEngine.Wrapper
             return 1;
         }
 
-        public Vector3 GetMinAABB()
+        public Vector3d GetMinAABB()
         {
             return convexShape.ObjectGeometry.AABBox.Min;
         }
 
-        public Vector3 GetMaxAABB()
+        public Vector3d GetMaxAABB()
         {
             return convexShape.ObjectGeometry.AABBox.Max;
         }
 
-        public Vector3[] GetVertices()
+        public Vector3d[] GetVertices()
         {
-            Vector3[] vertices = new Vector3[convexShape.ObjectGeometry.VerticesIdx.Length];
+            Vector3d[] vertices = new Vector3d[convexShape.ObjectGeometry.VerticesIdx.Length];
             for (int i = 0; i < convexShape.ObjectGeometry.VerticesIdx.Length; i++)
                 vertices[i] = CommonUtilities.GetVertexPosition(convexShape.ObjectGeometry, i).Vertex;
 
@@ -315,7 +315,7 @@ namespace SharpPhysicsEngine.Wrapper
             throw new NotImplementedException();
         }
 
-        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        public Vector3d GetCenterOfMassShiftValue(int index = 0)
         {
             return -1.0 * convexShape.InitCenterOfMass;
         }

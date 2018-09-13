@@ -32,8 +32,8 @@ namespace SharpPhysicsEngine.ExternalUtilities
 {
     public static class SharpEngineUtilities
     {
-        public static Vector3 GetCenterOfMass(
-            Vector3[] vertices,
+        public static Vector3d GetCenterOfMass(
+            Vector3d[] vertices,
             int[][] triangleMeshes,
             double mass)
         {

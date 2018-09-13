@@ -37,10 +37,10 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Hinge;
         
-        readonly Vector3 StartAnchorPoint;
-		readonly Vector3 HingeAxis;
-		readonly Vector3 StartErrorAxis1;
-		readonly Vector3 StartErrorAxis2;
+        readonly Vector3d StartAnchorPoint;
+		readonly Vector3d HingeAxis;
+		readonly Vector3d StartErrorAxis1;
+		readonly Vector3d StartErrorAxis2;
 		readonly Quaternion RelativeOrientation;
 
 		double? AngularLimitMin;
@@ -48,7 +48,7 @@ namespace SharpPhysicsEngine
 		double? SpeedValue;
 		double? ForceLimit;
         		
-		Vector3 AnchorPoint;
+		Vector3d AnchorPoint;
 
         #endregion
 
@@ -57,15 +57,15 @@ namespace SharpPhysicsEngine
         public HingeConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 hingeAxis,
+            Vector3d startAnchorPosition,
+            Vector3d hingeAxis,
             double errorReductionParam,
             double springCoefficient)
             : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             StartAnchorPoint = startAnchorPosition;
 
-            Vector3 relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
+            Vector3d relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
             relativePos = ShapeA.RotationMatrix * relativePos;
 
             AnchorPoint = relativePos + ShapeA.Position;
@@ -102,30 +102,30 @@ namespace SharpPhysicsEngine
             
             #region Init Linear
 
-			Vector3 axisRotated = simulationObjectA.RotationMatrix * HingeAxis;
+			Vector3d axisRotated = simulationObjectA.RotationMatrix * HingeAxis;
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (axisRotated).Normalize ();
-			Vector3 t2 = Vector3.Cross (axisRotated, t1).Normalize ();
+			Vector3d t1 = GeometryUtilities.GetPerpendicularVector (axisRotated).Normalize ();
+			Vector3d t2 = Vector3d.Cross (axisRotated, t1).Normalize ();
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
+			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
+			Vector3d r2 = simulationObjectB.RotationMatrix *
 										  StartErrorAxis2;
 
 			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
 			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3d p1 = simulationObjectA.Position + r1;
+			Vector3d p2 = simulationObjectB.Position + r2;
 
-			Vector3 linearError = p2 - p1;
+			Vector3d linearError = p2 - p1;
 
 			#endregion
 
 			#region Init Angular
 
-			Vector3 angularError = JacobianCommon.GetFixedAngularError (
+			Vector3d angularError = JacobianCommon.GetFixedAngularError (
 				simulationObjectA,
 				simulationObjectB,
 				RelativeOrientation);
@@ -152,8 +152,8 @@ namespace SharpPhysicsEngine
 			hingeConstraints.Add (JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
-                new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
-				new Vector3 (skewP2.r1c1,skewP2.r1c2,skewP2.r1c3),
+                new Vector3d (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
+				new Vector3d (skewP2.r1c1,skewP2.r1c2,skewP2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -169,8 +169,8 @@ namespace SharpPhysicsEngine
 			hingeConstraints.Add (JacobianCommon.GetDOF (
                 yVec,
                 yVecNeg,
-                new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
-				new Vector3 (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
+                new Vector3d (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
+				new Vector3d (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -186,8 +186,8 @@ namespace SharpPhysicsEngine
 			hingeConstraints.Add (JacobianCommon.GetDOF (
                 zVec,
                 zVecNeg,
-                new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
-				new Vector3 (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
+                new Vector3d (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
+				new Vector3d (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -294,7 +294,7 @@ namespace SharpPhysicsEngine
 			return jointType;
 		}
 
-		public override Vector3 GetAnchorPosition()
+		public override Vector3d GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.InitCenterOfMass)) +
@@ -315,9 +315,9 @@ namespace SharpPhysicsEngine
 
 		public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-			Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
+			Vector3d hingeAxis = ShapeA.RotationMatrix * HingeAxis;
 
-			Vector3 torque = hingeAxis * torqueAxis1;
+			Vector3d torque = hingeAxis * torqueAxis1;
 
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);

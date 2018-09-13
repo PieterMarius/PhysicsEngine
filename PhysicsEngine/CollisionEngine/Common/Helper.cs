@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public static Support GetMinkowskiFarthestPoint(
 			VertexProperties[] vertexObjA,
 			VertexProperties[] vertexObjB,
-			Vector3 direction)
+			Vector3d direction)
 		{
 			int a = GetFarthestPoint(vertexObjA, direction);
 			int b = GetFarthestPoint(vertexObjB, direction * -1.0);
@@ -53,7 +53,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static int GetFarthestPoint(
 			VertexProperties[] vertexObj,
-			Vector3 direction)
+			Vector3d direction)
 		{
 			if (vertexObj[0].Adjacency != null && 
                 vertexObj[0].Adjacency.Count > 0)
@@ -66,15 +66,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static int GetFarthestPointWithoutAdj(
 			VertexProperties[] vertexObj,
-			Vector3 direction)
+			Vector3d direction)
 		{
 			int index = 0;
-			double maxDot = Vector3.Dot(vertexObj[index].Vertex, direction);
+			double maxDot = Vector3d.Dot(vertexObj[index].Vertex, direction);
 
 			for (int i = 1; i < vertexObj.Length; i++)
 			{
-				Vector3 vertex = vertexObj[i].Vertex;
-				double dot = Vector3.Dot(vertex, direction);
+				Vector3d vertex = vertexObj[i].Vertex;
+				double dot = Vector3d.Dot(vertex, direction);
 
 				if (dot > maxDot)
 				{
@@ -87,11 +87,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static int GetFarthestPointWithAdj(
 			VertexProperties[] vertexObj,
-			Vector3 direction)
+			Vector3d direction)
 		{
 			int index = 0;
 			bool check = true;
-			double maxDot = Vector3.Dot(vertexObj[index].Vertex, direction);
+			double maxDot = Vector3d.Dot(vertexObj[index].Vertex, direction);
 
 			while (check)
 			{
@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                 foreach (var vtx in vertexObj[index].Adjacency)
                 {
-                    double dot = Vector3.Dot(vertexObj[vtx].Vertex, direction);
+                    double dot = Vector3d.Dot(vertexObj[vtx].Vertex, direction);
                     if (dot > maxDot)
                     {
                         maxDot = dot;
@@ -119,7 +119,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public static List<SupportTriangle> AddPointToConvexPolygon(
 			List<SupportTriangle> triangles,
 			Support vt,
-			Vector3 centroid)
+			Vector3d centroid)
 		{
 			var result = new List<SupportTriangle>(triangles);
 
@@ -128,10 +128,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			while (i < result.Count)
 			{
-				Vector3 center = result[i].A.s;
-				Vector3 dir = Vector3.Normalize(vt.s - center);
+				Vector3d center = result[i].A.s;
+				Vector3d dir = Vector3d.Normalize(vt.s - center);
 
-                if (Vector3.Dot(result[i].Normal, dir) > 0.0)
+                if (Vector3d.Dot(result[i].Normal, dir) > 0.0)
                 {
                     //Edge 1
                     var edge = new Edge(
@@ -175,18 +175,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 			List<Support> supportPoint,
 			Support vt)
 		{
-			Vector3 centroid = FindPolygonCentroid(supportPoint);
+			Vector3d centroid = FindPolygonCentroid(supportPoint);
 			return AddPointToConvexPolygon(triangles, vt, centroid);
 		}
 
 		public static SupportTriangle TurnClockWiseNormal(
 			SupportTriangle triangle,
-			Vector3 v)
+			Vector3d v)
 		{
-			Vector3 centroidDiff = triangle.A.s - v;
-			Vector3 normal = triangle.Normal;
+			Vector3d centroidDiff = triangle.A.s - v;
+			Vector3d normal = triangle.Normal;
 
-			if (Vector3.Dot(triangle.Normal, centroidDiff) < 0.0)
+			if (Vector3d.Dot(triangle.Normal, centroidDiff) < 0.0)
 				normal = triangle.Normal * -1.0;
 
 			var tr = new SupportTriangle(
@@ -200,9 +200,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return tr;
 		}
 
-		public static Vector3 FindPolygonCentroid(List<Support> vertex)
+		public static Vector3d FindPolygonCentroid(List<Support> vertex)
 		{
-			var sum = new Vector3();
+			var sum = new Vector3d();
 
 			for (int i = 0; i < vertex.Count; i++)
 			{
@@ -212,7 +212,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return sum * (1.0 / vertex.Count);
 		}
 
-		public static Vector3 SetStartTriangle(
+		public static Vector3d SetStartTriangle(
 			ref List<SupportTriangle> triangles,
 			Support[] startPoint)
 		{
@@ -256,7 +256,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				triangleSupport[2],
 				triangleSupport[3]));
 
-			Vector3 centroid = FindPolygonCentroid(triangleSupport);
+			Vector3d centroid = FindPolygonCentroid(triangleSupport);
 
 			triangles[0] = TurnClockWiseNormal(triangles[0], centroid);
 			triangles[1] = TurnClockWiseNormal(triangles[1], centroid);
@@ -269,12 +269,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		public static bool IsInConvexPoly(
-			Vector3 p,
+			Vector3d p,
 			List<SupportTriangle> triangles)
 		{
 			foreach (SupportTriangle spt in triangles)
 			{
-				Vector3 p2f = spt.A.s - p;         // f.v[0] is an arbitrary point on f
+				Vector3d p2f = spt.A.s - p;         // f.v[0] is an arbitrary point on f
 				double d = p2f.Dot(spt.Normal);
 				d /= p2f.Length();                 // for numeric stability
 
@@ -292,13 +292,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 			VertexProperties[] vertexShape2,
 			ref EngineCollisionPoint collisionPoint)
 		{
-			Vector3 a1 = vertexShape1[triangle.A.a].Vertex;
-			Vector3 ba1 = vertexShape1[triangle.B.a].Vertex - a1;
-			Vector3 ca1 = vertexShape1[triangle.C.a].Vertex - a1;
+			Vector3d a1 = vertexShape1[triangle.A.a].Vertex;
+			Vector3d ba1 = vertexShape1[triangle.B.a].Vertex - a1;
+			Vector3d ca1 = vertexShape1[triangle.C.a].Vertex - a1;
 
-			Vector3 a2 = vertexShape2[triangle.A.b].Vertex;
-			Vector3 ba2 = vertexShape2[triangle.B.b].Vertex - a2;
-			Vector3 ca2 = vertexShape2[triangle.C.b].Vertex - a2;
+			Vector3d a2 = vertexShape2[triangle.A.b].Vertex;
+			Vector3d ba2 = vertexShape2[triangle.B.b].Vertex - a2;
+			Vector3d ca2 = vertexShape2[triangle.C.b].Vertex - a2;
 
 			collisionPoint.SetA(
 				new VertexProperties(a1 + (ba1 * triangle.S) + (ca1 * triangle.T),
@@ -322,7 +322,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public static VertexProperties[] SetVertexPosition(
             IGeometry obj,
-            Vector3[] vertices)
+            Vector3d[] vertices)
         {
             VertexProperties[] vertexPosition = new VertexProperties[obj.VerticesIdx.Length];
 
@@ -332,9 +332,9 @@ namespace SharpPhysicsEngine.CollisionEngine
             return vertexPosition;
         }
 
-        public static Vector3[] GetVertexPosition(IShape shape)
+        public static Vector3d[] GetVertexPosition(IShape shape)
         {
-            Vector3[] vertexPosition = new Vector3[shape.Vertices.Length];
+            Vector3d[] vertexPosition = new Vector3d[shape.Vertices.Length];
 
             for (int i = 0; i < shape.Vertices.Length; i++)
                 vertexPosition[i] = shape.Position + (shape.RotationMatrix * shape.VerticesRelPos[i]);
@@ -360,7 +360,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			List<Edge> edge,
 			List<SupportTriangle> triangles,
 			Support p,
-			Vector3 centroid)
+			Vector3d centroid)
 		{
 			var result = new List<SupportTriangle>(triangles);
 

@@ -42,7 +42,7 @@ namespace SharpPhysicsEngine.Terrain
     {
         #region Fields
 
-        public List<Vector3> Position { get; private set; }
+        public List<Vector3d> Position { get; private set; }
         public AABB Box { get; private set; }
 
         #endregion
@@ -51,14 +51,14 @@ namespace SharpPhysicsEngine.Terrain
 
         public TerrainElement()
         {
-            Position = new List<Vector3>();
+            Position = new List<Vector3d>();
         }
 
         #endregion
 
         #region Public Methods
 
-        public void AddPosition(Vector3 position)
+        public void AddPosition(Vector3d position)
         {
             Position.Add(position);
         }
@@ -110,9 +110,9 @@ namespace SharpPhysicsEngine.Terrain
 
         private TerrainElement[,] terrainElements;
 
-        private readonly Vector3[] positions;
-        private readonly Vector3[] normalsArr;
-        private readonly Vector2[][] textureCoords;
+        private readonly Vector3d[] positions;
+        private readonly Vector3d[] normalsArr;
+        private readonly Vector2d[][] textureCoords;
         private double incx;
         private double incz;
         private double startx;
@@ -141,8 +141,8 @@ namespace SharpPhysicsEngine.Terrain
 
             var bufferStream = LoadBitmap(heightMapFile);
                         
-            textureCoords = new Vector2[Height][];
-            positions = new Vector3[Height * Width];
+            textureCoords = new Vector2d[Height][];
+            positions = new Vector3d[Height * Width];
             Init(bufferStream, textInc);
             //indicesArr = indices.ToArray();
             normalsArr = CalcNormals(positions);
@@ -153,24 +153,24 @@ namespace SharpPhysicsEngine.Terrain
 
         #region Public Methods
 
-        public Vector3[] GetPosition()
+        public Vector3d[] GetPosition()
         {
             return positions;
         }
 
-        public Vector3[] GetNormalArray()
+        public Vector3d[] GetNormalArray()
         {
             return normalsArr;
         }
 
-        public Vector2[][] GetTextureCoords()
+        public Vector2d[][] GetTextureCoords()
         {
             return textureCoords;
         }
 
-        public Vector3[][] GetConvexShapes()
+        public Vector3d[][] GetConvexShapes()
         {
-            Vector3[][] result = new Vector3[convexShapes.Count][];
+            Vector3d[][] result = new Vector3d[convexShapes.Count][];
 
             for (int i = 0; i < convexShapes.Count; i++)
                 result[i] = convexShapes[i].Vertex3Idx.Select(x => x.Vector3).ToArray();
@@ -246,7 +246,7 @@ namespace SharpPhysicsEngine.Terrain
 
             for (int row = 0; row < Height; row++)
             {
-                textureCoords[row] = new Vector2[Width];
+                textureCoords[row] = new Vector2d[Width];
 
                 for (int col = 0; col < Width; col++)
                 {
@@ -254,13 +254,13 @@ namespace SharpPhysicsEngine.Terrain
                     double pX = startx + col * incx;
                     double pZ = startz + row * incz;
                     double pY = GetHeight(col, row, Width, bufferStream);
-                    var vBuf = new Vector3(pX, pY, pZ);
+                    var vBuf = new Vector3d(pX, pY, pZ);
 
                     int posIndex = row * Width + col;
-                    positions[posIndex] = new Vector3(vBuf);
+                    positions[posIndex] = new Vector3d(vBuf);
 
                     // Set texture coordinates
-                    textureCoords[row][col] = new Vector2(
+                    textureCoords[row][col] = new Vector2d(
                         (double)textInc * (double)col / (double)Width,
                         (double)textInc * (double)row / (double)Height);
 
@@ -342,19 +342,19 @@ namespace SharpPhysicsEngine.Terrain
                 | blue))) & 0xffffffffL);
         }
 
-        private Vector3[] CalcNormals(Vector3[] posArr)
+        private Vector3d[] CalcNormals(Vector3d[] posArr)
         {
-            Vector3 v0 = new Vector3();
-            Vector3 v1 = new Vector3();
-            Vector3 v2 = new Vector3();
-            Vector3 v3 = new Vector3();
-            Vector3 v4 = new Vector3();
-            Vector3 v12 = new Vector3();
-            Vector3 v23 = new Vector3();
-            Vector3 v34 = new Vector3();
-            Vector3 v41 = new Vector3();
-            Vector3[] normals = new Vector3[Height * Width];
-            Vector3 normal = new Vector3();
+            Vector3d v0 = new Vector3d();
+            Vector3d v1 = new Vector3d();
+            Vector3d v2 = new Vector3d();
+            Vector3d v3 = new Vector3d();
+            Vector3d v4 = new Vector3d();
+            Vector3d v12 = new Vector3d();
+            Vector3d v23 = new Vector3d();
+            Vector3d v34 = new Vector3d();
+            Vector3d v41 = new Vector3d();
+            Vector3d[] normals = new Vector3d[Height * Width];
+            Vector3d normal = new Vector3d();
 
             for (int row = 0; row < Height; row++)
             {
@@ -363,22 +363,22 @@ namespace SharpPhysicsEngine.Terrain
                     if (row > 0 && row < Height - 1 && col > 0 && col < Width - 1)
                     {
                         int posIndex = row * Width + col;
-                        v0 = new Vector3(posArr[posIndex]);
+                        v0 = new Vector3d(posArr[posIndex]);
 
                         posIndex = row * Width + col - 1;
-                        v1 = new Vector3(posArr[posIndex]);
+                        v1 = new Vector3d(posArr[posIndex]);
                         v1 = v1 - v0;
 
                         posIndex = (row + 1) * Width + col;
-                        v2 = new Vector3(posArr[posIndex]);
+                        v2 = new Vector3d(posArr[posIndex]);
                         v2 = v2 - v0;
                         
                         posIndex = row * Width + col + 1;
-                        v3 = new Vector3(posArr[posIndex]);
+                        v3 = new Vector3d(posArr[posIndex]);
                         v3 = v3 - v0;
                         
                         posIndex = (row - 1) * Width + col;
-                        v4 = new Vector3(posArr[posIndex]);
+                        v4 = new Vector3d(posArr[posIndex]);
                         v4 = v4 - v0;
                         
                         v12 = v1.Cross(v2).Normalize();
@@ -395,7 +395,7 @@ namespace SharpPhysicsEngine.Terrain
                     }
                     else
                     {
-                        normals[row * Height + col] = new Vector3(0.0, 1.0, 0.0);
+                        normals[row * Height + col] = new Vector3d(0.0, 1.0, 0.0);
                     }
 
                 }
@@ -414,7 +414,7 @@ namespace SharpPhysicsEngine.Terrain
         }
 
         private Vertex3Index[] SetVertexAdjacency(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             TriangleMesh[] triangle)
         {
             Vertex3Index[] vertexPosition = Array.ConvertAll(inputVertexPosition, x => new Vertex3Index(x, new HashSet<int>(), -1));

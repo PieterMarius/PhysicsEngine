@@ -33,8 +33,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         #region Public Methods
 
-        public static Vector3 CalculateCenterOfMass(
-            Vector3[] vertices,
+        public static Vector3d CalculateCenterOfMass(
+            Vector3d[] vertices,
             TriangleMesh[] triangleMeshes,
             double mass)
         {
@@ -48,9 +48,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         }
 
         public static InertiaTensorOutput GetInertiaTensor(
-            Vector3[] vertexPosition,
+            Vector3d[] vertexPosition,
             TriangleMesh[] triangleMeshes,
-            Vector3 position,
+            Vector3d position,
             double mass)
         {
             var inertiaTensor = new InertiaTensorEngine(
@@ -61,7 +61,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
             var inertiaTensorRes = inertiaTensor.Execute();
 
-            Vector3 r = inertiaTensorRes.CenterOfMass - position;
+            Vector3d r = inertiaTensorRes.CenterOfMass - position;
             Matrix3x3 baseTensors= inertiaTensorRes.InertiaTensor +
                             (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) *
                             mass;

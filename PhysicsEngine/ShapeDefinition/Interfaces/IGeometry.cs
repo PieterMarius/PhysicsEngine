@@ -38,6 +38,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         SupportIndex[] VerticesIdx { get; }
 
         void SetAABB(AABB box);
-        Vector3[] GetVertices();
+        Vector3d[] GetVertices();
     }
 }

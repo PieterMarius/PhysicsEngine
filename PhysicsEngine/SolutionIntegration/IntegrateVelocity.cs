@@ -120,20 +120,20 @@ namespace SharpPhysicsEngine.SolutionIntegration
 
         private void UpdateObjectVelocity(
             IShapeCommon simObj,
-            Vector3 linearComponent,
-            Vector3 angularComponent,
+            Vector3d linearComponent,
+            Vector3d angularComponent,
             double x,
             object sync)
         {
             if (!simObj.IsStatic)
             {
-                Vector3 linearImpulse = x * linearComponent;
-                Vector3 angularImpuse = x * angularComponent;
+                Vector3d linearImpulse = x * linearComponent;
+                Vector3d angularImpuse = x * angularComponent;
 
-                Vector3 linearVelocity = linearImpulse *
+                Vector3d linearVelocity = linearImpulse *
                                          simObj.MassInfo.InverseMass;
 
-                Vector3 angularVelocity = simObj.MassInfo.InverseInertiaTensor *
+                Vector3d angularVelocity = simObj.MassInfo.InverseInertiaTensor *
                                           angularImpuse;
 
                 //Critical Section
@@ -147,15 +147,15 @@ namespace SharpPhysicsEngine.SolutionIntegration
 
         private void UpdateObjectVelocity(
             IShapeCommon simObj,
-            Vector3 angularComponent,
+            Vector3d angularComponent,
             double X,
             object sync)
         {
             if (!simObj.IsStatic)
             {
-                Vector3 angularImpuse = X * angularComponent;
+                Vector3d angularImpuse = X * angularComponent;
 
-                Vector3 angularVelocity = simObj.MassInfo.InverseInertiaTensor *
+                Vector3d angularVelocity = simObj.MassInfo.InverseInertiaTensor *
                                           angularImpuse;
 
                 //Critical Section

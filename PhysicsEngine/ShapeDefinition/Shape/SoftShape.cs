@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SimSoftShape(
             TriangleMesh[] triangleIndex,
-            Vector3[] shapePoint,
+            Vector3d[] shapePoint,
             ConstraintIndex[] softConstraints,
             double mass,
             double decompositionParam,
@@ -86,7 +86,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SimSoftShape(
             TriangleMesh[] triangleIndex,
-            Vector3[] shapePoint,
+            Vector3d[] shapePoint,
             ConstraintIndex[] softConstraints,
             double mass,
             double decompositionParam,
@@ -97,8 +97,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SimSoftShape(
             TriangleMesh[] triangleIndex,
-            Vector3[] shapePoint,
-            Vector3 startPosition,
+            Vector3d[] shapePoint,
+            Vector3d startPosition,
             double mass,
             double decompositionParam,
             double errorReductionParam,
@@ -124,8 +124,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public SimSoftShape(
             TriangleMesh[] triangleIndex,
-            Vector3[] shapePoint,
-            Vector3 startPosition,
+            Vector3d[] shapePoint,
+            Vector3d startPosition,
             double mass,
             double decompositionParam,
             double errorReductionParam,
@@ -197,7 +197,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             DecompositionParameter = decompositionParam;
         }
 
-        public override void Rotate(Vector3 versor, double angle)
+        public override void Rotate(Vector3d versor, double angle)
         {
             throw new NotImplementedException();
         }
@@ -232,7 +232,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Private Methods
 
         private void AddSoftShapePoint(
-            Vector3[] points)
+            Vector3d[] points)
         {
             ShapePoints = new SoftShapePoint[points.Length];
 
@@ -248,7 +248,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 ShapePoints[i].SetStartPosition(points[i]);
                 ShapePoints[i].SetPosition(points[i] + Position);
 
-                Vector3 r = -1.0 * ShapePoints[i].StartPosition;
+                Vector3d r = -1.0 * ShapePoints[i].StartPosition;
                 var baseInertiaTensor = inertiaTensor + (Matrix3x3.IdentityMatrix() * r.Dot(r) - Matrix3x3.OuterProduct(r, r)) * mass;
 
                 Matrix3x3 baseTensors = Matrix3x3.Invert(baseInertiaTensor);

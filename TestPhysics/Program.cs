@@ -90,17 +90,17 @@ namespace TestPhysics
 
             Random rnd = new Random();
 
-            SharpEngineMathUtility.Vector3[] testVector1 = new SharpEngineMathUtility.Vector3[nvalue];
+            SharpEngineMathUtility.Vector3d[] testVector1 = new SharpEngineMathUtility.Vector3d[nvalue];
 
             for (int i = 0; i < nvalue; i++)
-                testVector1[i] = new SharpEngineMathUtility.Vector3(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble());
+                testVector1[i] = new SharpEngineMathUtility.Vector3d(rnd.NextDouble(), rnd.NextDouble(), rnd.NextDouble());
 
             stopwatch.Reset();
             stopwatch.Start();
 
             double test1 = 0.0;
             for (int i = 0; i < nvalue; i++)
-                test1 = SharpEngineMathUtility.Vector3.Dot(testVector1[i], testVector1[i]);
+                test1 = SharpEngineMathUtility.Vector3d.Dot(testVector1[i], testVector1[i]);
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);

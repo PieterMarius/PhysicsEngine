@@ -38,17 +38,17 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Slider;
                 
-        readonly Vector3 StartAnchorPoint;
-		readonly Vector3 SliderAxis;
-		readonly Vector3 StartErrorAxis1;
-		readonly Vector3 StartErrorAxis2;
+        readonly Vector3d StartAnchorPoint;
+		readonly Vector3d SliderAxis;
+		readonly Vector3d StartErrorAxis1;
+		readonly Vector3d StartErrorAxis2;
 		readonly Quaternion RelativeOrientation;
 
 		double? LinearLimitMin;
 		double? LinearLimitMax;
 		double? SpeedValue;
 		double? ForceLimit;
-		Vector3 AnchorPoint;
+		Vector3d AnchorPoint;
 
         #endregion
 
@@ -57,8 +57,8 @@ namespace SharpPhysicsEngine
         public SliderConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 sliderAxis,
+            Vector3d startAnchorPosition,
+            Vector3d sliderAxis,
             double errorReductionParam,
             double springCoefficient)
             : base(shapeA, shapeB, errorReductionParam, springCoefficient)
@@ -66,7 +66,7 @@ namespace SharpPhysicsEngine
             StartAnchorPoint = startAnchorPosition;
             SliderAxis = -1.0 * sliderAxis.Normalize();
 
-            Vector3 relativePos = ShapeA.RotationMatrix *
+            Vector3d relativePos = ShapeA.RotationMatrix *
                 (startAnchorPosition - ShapeA.InitCenterOfMass);
 
             AnchorPoint = relativePos + ShapeA.Position;
@@ -101,27 +101,27 @@ namespace SharpPhysicsEngine
             			
 			#region Init Linear
 
-			Vector3 sliderAxis = simulationObjectA.RotationMatrix * SliderAxis;
+			Vector3d sliderAxis = simulationObjectA.RotationMatrix * SliderAxis;
 
-			Vector3 t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
-			Vector3 t2 = Vector3.Cross (sliderAxis, t1).Normalize ();
+			Vector3d t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
+			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
+			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
+			Vector3d r2 = simulationObjectB.RotationMatrix *
 										  StartErrorAxis2;
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3d p1 = simulationObjectA.Position + r1;
+			Vector3d p2 = simulationObjectB.Position + r2;
 
-			Vector3 linearError = p2 - p1;
+			Vector3d linearError = p2 - p1;
 
 			#endregion
 
 			#region Init Angular
 
-			Vector3 angularError = JacobianCommon.GetFixedAngularError (
+			Vector3d angularError = JacobianCommon.GetFixedAngularError (
 				simulationObjectA,
 				simulationObjectB,
 				RelativeOrientation);
@@ -188,13 +188,13 @@ namespace SharpPhysicsEngine
 
 			//DOF 4
 
-			constraintLimit = errorReduction * Vector3.Dot (t1,linearError);
+			constraintLimit = errorReduction * Vector3d.Dot (t1,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				t1,
 				-1.0 * t1,
-				Vector3.Cross (r1, t1),
-				-1.0 * Vector3.Cross (r2, t1),
+				Vector3d.Cross (r1, t1),
+				-1.0 * Vector3d.Cross (r2, t1),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -205,13 +205,13 @@ namespace SharpPhysicsEngine
 
 			//DOF 5
 
-			constraintLimit = errorReduction * Vector3.Dot (t2,linearError);
+			constraintLimit = errorReduction * Vector3d.Dot (t2,linearError);
 
 			sliderConstraints.Add (JacobianCommon.GetDOF (
 				t2,
 				-1.0 * t2,
-				Vector3.Cross (r1, t2),
-				-1.0 * Vector3.Cross (r2, t2),
+				Vector3d.Cross (r1, t2),
+				-1.0 * Vector3d.Cross (r2, t2),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -252,8 +252,8 @@ namespace SharpPhysicsEngine
 				sliderConstraints.Add (JacobianCommon.GetDOF (
 					sliderAxis,
 					-1.0 * sliderAxis,
-					new Vector3(),
-					new Vector3(),
+					new Vector3d(),
+					new Vector3d(),
 					simulationObjectA,
 					simulationObjectB,
 					SpeedValue.Value,
@@ -279,7 +279,7 @@ namespace SharpPhysicsEngine
 			return jointType;
 		}
 
-		public override Vector3 GetAnchorPosition()
+		public override Vector3d GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                     (StartAnchorPoint - ShapeA.InitCenterOfMass)) +

@@ -40,7 +40,7 @@ namespace TestPhysics
 
         public struct NonConvexPoint
         {
-            public Vector3 IntersectionPoint; //Max => 8 index points
+            public Vector3d IntersectionPoint; //Max => 8 index points
             public VertexProperties[] Triangle;
         };
 

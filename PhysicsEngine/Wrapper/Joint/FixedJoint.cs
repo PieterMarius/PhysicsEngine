@@ -63,7 +63,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return fixedJointConstraint.GetAnchorPosition();
         }

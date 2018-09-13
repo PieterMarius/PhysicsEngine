@@ -58,8 +58,8 @@
     <Compile Include="Utilities\HashSetStruct.cs" />
     <Compile Include="Utilities\Line.cs" />
     <Compile Include="Utilities\SIMDMathUtility.cs" />
-    <Compile Include="BaseStruct\Vector2.cs" />
-    <Compile Include="BaseStruct\Vector3.cs" />
+    <Compile Include="BaseStruct\Vector2d.cs" />
+    <Compile Include="BaseStruct\Vector3d.cs" />
     <Compile Include="Utilities\ConstValues.cs" />
     <Compile Include="BaseStruct\Matrix3x3.cs" />
     <Compile Include="BaseStruct\Quaternion.cs" />

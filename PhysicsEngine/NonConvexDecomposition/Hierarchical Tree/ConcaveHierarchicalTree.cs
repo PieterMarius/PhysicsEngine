@@ -118,7 +118,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.Hierarchical_Tree
                         for (int i = 0; i < 4 - shape.Vertex3Idx.Count; i++)
                         {
                             bufVertex.Add(new Vertex3Index(
-                                shape.Vertex3Idx.First().Vector3 + Vector3.Random(-perturbationValue, perturbationValue),
+                                shape.Vertex3Idx.First().Vector3 + Vector3d.Random(-perturbationValue, perturbationValue),
                                 new HashSet<int> { int.MaxValue - i },
                                 0));
                         }

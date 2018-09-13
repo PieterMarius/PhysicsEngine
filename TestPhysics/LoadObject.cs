@@ -112,7 +112,7 @@ namespace TestPhysics
 			for (int i = 0; i < xmlList.Count; i++)
 			{
 				//Rotation Status
-				var versor = new Vector3(
+				var versor = new Vector3d(
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["x"].Value),
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["y"].Value),
 					Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["z"].Value));
@@ -120,7 +120,7 @@ namespace TestPhysics
 				double angle = Convert.ToDouble(xmlList[i][rotationStatusAttribute].Attributes["angle"].Value);
 
 				//Position
-				var position = new Vector3(
+				var position = new Vector3d(
 					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["x"].Value),
 					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["y"].Value),
 					Convert.ToDouble(xmlList[i][positionAttribute].Attributes["z"].Value));
@@ -129,7 +129,7 @@ namespace TestPhysics
 
 				GeometryProperties[] objGeometry = new GeometryProperties[xmlGeometryList.Count];
 				double[] mass = new double[xmlGeometryList.Count];
-				Vector3[] startCompositePosition = new Vector3[xmlGeometryList.Count];
+				Vector3d[] startCompositePosition = new Vector3d[xmlGeometryList.Count];
                 
 				for (int j = 0; j < xmlGeometryList.Count; j++)
 				{
@@ -144,7 +144,7 @@ namespace TestPhysics
 
 					objGeometry[j] = GetObjectGeometry(geometryFileName, scale, mass[j]);
 
-					startCompositePosition[j] = new Vector3(
+					startCompositePosition[j] = new Vector3d(
 						Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["x"].Value),
 						Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["y"].Value),
 						Convert.ToDouble(xmlGeometryList[j][compositePosition].Attributes["z"].Value));
@@ -170,13 +170,13 @@ namespace TestPhysics
 				objects[i].SetRotationStatus(new Quaternion(versor, angle));
 
 				//Linear Velocity
-				objects [i].SetLinearVelocity (new Vector3 (
+				objects [i].SetLinearVelocity (new Vector3d (
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["x"].Value),
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["y"].Value),
 					Convert.ToDouble (xmlList [i] [linearVelAttribute].Attributes ["z"].Value)));
 
 				//Angular Velocity
-				objects [i].SetAngularVelocity (new Vector3 (
+				objects [i].SetAngularVelocity (new Vector3d (
 					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["x"].Value),
 					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["y"].Value),
 					Convert.ToDouble (xmlList [i] [angularVelAttribute].Attributes ["z"].Value)));
@@ -236,13 +236,13 @@ namespace TestPhysics
 					double C = Convert.ToDouble(jointPropertiesList[j][stretchCoeffAttribute].InnerText);
 
 					//Position
-					var startAnchorPosition = new Vector3(
+					var startAnchorPosition = new Vector3d(
 						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["x"].Value),
 						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["y"].Value),
 						Convert.ToDouble(jointPropertiesList[j][positionJointAttribute].Attributes["z"].Value));
 
 					//Action Axis
-					var actionAxis = new Vector3(
+					var actionAxis = new Vector3d(
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["x"].Value),
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["y"].Value),
 						Convert.ToDouble(jointPropertiesList[j][this.actionAxis].Attributes["z"].Value));
@@ -319,7 +319,7 @@ namespace TestPhysics
                                 objects[indexB],
                                 startAnchorPosition,
                                 actionAxis,
-                                new Vector3(1.0, 0.0, 0.0),
+                                new Vector3d(1.0, 0.0, 0.0),
                                 K,
                                 C);
 
@@ -337,7 +337,7 @@ namespace TestPhysics
                                 objects[indexB],
                                 startAnchorPosition,
                                 actionAxis,
-                                new Vector3(1.0, 0.0, 0.0),
+                                new Vector3d(1.0, 0.0, 0.0),
                                 K,
                                 1.0,
                                 C);
@@ -355,8 +355,8 @@ namespace TestPhysics
                                 objects[indexA],
                                 objects[indexB],
                                 startAnchorPosition,
-                                new Vector3(1.0, 0.0, 0.0),
-                                new Vector3(0.0, 1.0, 0.0),
+                                new Vector3d(1.0, 0.0, 0.0),
+                                new Vector3d(0.0, 1.0, 0.0),
                                 0.16,
                                 0.008,
                                 0.008);
@@ -411,13 +411,13 @@ namespace TestPhysics
 
 			ObjImporter.meshStruct[][] loadObjects = new ObjImporter.meshStruct[xmlList.Count][];
 
-			Vector3[][] translate = new Vector3[xmlList.Count][];
+			Vector3d[][] translate = new Vector3d[xmlList.Count][];
 
 			for (int i = 0; i < xmlList.Count; i++)
 			{
 				XmlNodeList xmlGeometryList = xmlList[i].SelectNodes(nodePathGeometry);
 
-				translate[i] = new Vector3[xmlGeometryList.Count];
+				translate[i] = new Vector3d[xmlGeometryList.Count];
 				loadObjects[i] = new ObjImporter.meshStruct[xmlGeometryList.Count];
 
 				for (int j = 0; j < xmlGeometryList.Count; j++)
@@ -451,9 +451,9 @@ namespace TestPhysics
 
 			loadObjects[0][0] = LoadObjSolid(fileName, scale);
 
-			Vector3[][] translate = new Vector3[1][];
+			Vector3d[][] translate = new Vector3d[1][];
 
-			translate[0] = new Vector3[] { new Vector3(0, 0, 0) };
+			translate[0] = new Vector3d[] { new Vector3d(0, 0, 0) };
 
 			return OpenGLUtilities.LoadGLObjects(
 				loadObjects,
@@ -475,7 +475,7 @@ namespace TestPhysics
 			ObjImporter importer = new ObjImporter();
 			ObjImporter.meshStruct mesh = importer.ImportFile(fileName);
 
-			Vector3[] vertexStartPoint = new Vector3[mesh.vertices.Length];
+			Vector3d[] vertexStartPoint = new Vector3d[mesh.vertices.Length];
 
 			for (int i = 0; i < mesh.vertices.Length; i++)
 				vertexStartPoint[i] = mesh.vertices[i];
@@ -491,11 +491,11 @@ namespace TestPhysics
 
         public class GeometryProperties
         {
-            public Vector3[] VertexPoint { get; private set; }
+            public Vector3d[] VertexPoint { get; private set; }
             public int[][] TriagleIdx { get; private set; }
 
             public GeometryProperties(
-                Vector3[] vertexPoint,
+                Vector3d[] vertexPoint,
                 int[][] triangleIndexes)
             {
                 VertexPoint = vertexPoint;
@@ -512,18 +512,18 @@ namespace TestPhysics
             GenericUtility.ObjProperties properties = GenericUtility.GetImportedObjectProperties(fileName, scale);
 
             if (mass != 0.0)
-                RotateObj(ref properties, new Vector3(1.0, 0.0, 0.0), 0.75);
+                RotateObj(ref properties, new Vector3d(1.0, 0.0, 0.0), 0.75);
 
             return new GeometryProperties(
                 properties.vertexPoint,
                 properties.triangleIndex);
         }
 
-        private static void RotateObj(ref GenericUtility.ObjProperties obj, Vector3 versor, double angle)
+        private static void RotateObj(ref GenericUtility.ObjProperties obj, Vector3d versor, double angle)
         {
             for (int i = 0; i < obj.vertexPoint.Length; i++)
             {
-                obj.vertexPoint[i] = Vector3.RotatePoint(obj.vertexPoint[i], versor, angle);
+                obj.vertexPoint[i] = Vector3d.RotatePoint(obj.vertexPoint[i], versor, angle);
             }
         }
 

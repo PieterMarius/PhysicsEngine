@@ -41,9 +41,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Constructor
 
         public ConvexShape(
-            Vector3[] inputVertexPosition,
+            Vector3d[] inputVertexPosition,
             TriangleMesh[] triangleMeshes,
-            Vector3 position,
+            Vector3d position,
             double mass,
             bool isStatic) : base()
         {
@@ -91,7 +91,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 throw new Exception("Invalid mass value " + mass);
         }
 
-        public override void Rotate(Vector3 versor, double angle)
+        public override void Rotate(Vector3d versor, double angle)
         {
             var rotationQuaternion = new Quaternion(versor, angle);
 
@@ -126,7 +126,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            VerticesRelPos = new Vector3[ObjectGeometry.VerticesIdx.Length];
+            VerticesRelPos = new Vector3d[ObjectGeometry.VerticesIdx.Length];
             double dist = 0.0;
 
             if (Vertices.Length > 0)

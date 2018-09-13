@@ -34,12 +34,12 @@ namespace SharpPhysicsEngine
     {
         #region Fields
 
-        protected Vector3 xVec = new Vector3(1.0, 0.0, 0.0);
-        protected Vector3 xVecNeg = new Vector3(-1.0, 0.0, 0.0);
-        protected Vector3 yVec = new Vector3(0.0, 1.0, 0.0);
-        protected Vector3 yVecNeg = new Vector3(0.0, -1.0, 0.0);
-        protected Vector3 zVec = new Vector3(0.0, 0.0, 1.0);
-        protected Vector3 zVecNeg = new Vector3(0.0, 0.0, -1.0);
+        protected Vector3d xVec = new Vector3d(1.0, 0.0, 0.0);
+        protected Vector3d xVecNeg = new Vector3d(-1.0, 0.0, 0.0);
+        protected Vector3d yVec = new Vector3d(0.0, 1.0, 0.0);
+        protected Vector3d yVecNeg = new Vector3d(0.0, -1.0, 0.0);
+        protected Vector3d zVec = new Vector3d(0.0, 0.0, 1.0);
+        protected Vector3d zVecNeg = new Vector3d(0.0, 0.0, -1.0);
 
         protected IShape ShapeA;
         protected IShape ShapeB;
@@ -104,7 +104,7 @@ namespace SharpPhysicsEngine
         }
 
         public abstract List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null);
-        public abstract Vector3 GetAnchorPosition();
+        public abstract Vector3d GetAnchorPosition();
         public abstract JointType GetJointType();
         public abstract void AddTorque(double torqueAxis1, double torqueAxis2);
         public abstract void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);

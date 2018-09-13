@@ -31,7 +31,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 {
     internal static class Helper
     {
-        public static Vector3 GetVertexPosition(
+        public static Vector3d GetVertexPosition(
             IShape obj,
             int vertexIndex)
         {
@@ -40,9 +40,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 (obj.RotationMatrix * obj.VerticesRelPos[vertexIndex]);
         }
 
-        public static Vector3 GetVertexPosition(
+        public static Vector3d GetVertexPosition(
             IShape obj,
-            Vector3 relativePos)
+            Vector3d relativePos)
         {
             return
                 obj.Position +

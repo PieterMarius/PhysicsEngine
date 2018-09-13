@@ -47,8 +47,8 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         public PistonJoint(
             ICollisionShape shapeA,
             ICollisionShape shapeB,
-            Vector3 startAnchorPosition,
-            Vector3 pistonAxis,
+            Vector3d startAnchorPosition,
+            Vector3d pistonAxis,
             double restoreCoefficient,
             double springCoefficient)
         {
@@ -70,7 +70,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public Vector3 GetAnchorPosition()
+        public Vector3d GetAnchorPosition()
         {
             return pistonConstraint.GetAnchorPosition();
         }

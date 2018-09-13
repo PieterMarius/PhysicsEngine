@@ -32,10 +32,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
     {
         IGeometry[] ShapesGeometry { get; }
         double[] PartialMass { get; }
-        Vector3[] StartCompoundPositionObjects { get; }
+        Vector3d[] StartCompoundPositionObjects { get; }
         int CompoundingConvexObjCount { get; }
                 
         void SetPartialMass(double[] mass);
-        void SetCompoundPosition(Vector3[] compoundPosition);
+        void SetCompoundPosition(Vector3d[] compoundPosition);
     }
 }

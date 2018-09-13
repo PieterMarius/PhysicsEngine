@@ -32,20 +32,20 @@ namespace SharpPhysicsEngine.Helper
     {
         #region Public Fields
 
-        public readonly Vector3 Position;
+        public readonly Vector3d Position;
         public readonly Quaternion RotationStatus;
-        public readonly Vector3 LinearVelocity;
-        public readonly Vector3 AngularVelocity;
+        public readonly Vector3d LinearVelocity;
+        public readonly Vector3d AngularVelocity;
 
         #endregion
 
         #region Constructor
 
         public StabilizationValues(
-            Vector3 position,
+            Vector3d position,
             Quaternion rotationStatus,
-            Vector3 linearVelocity,
-            Vector3 angularVelocity)
+            Vector3d linearVelocity,
+            Vector3d angularVelocity)
         {
             Position = position;
             RotationStatus = rotationStatus;

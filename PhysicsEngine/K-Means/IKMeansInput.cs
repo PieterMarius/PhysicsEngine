@@ -30,6 +30,6 @@ namespace SharpPhysicsEngine.K_Means
 {
     internal interface IKMeansInput
     {
-        Vector3 GetPointPosition();
+        Vector3d GetPointPosition();
     }
 }

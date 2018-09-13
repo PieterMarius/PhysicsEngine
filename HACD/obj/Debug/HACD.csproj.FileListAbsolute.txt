@@ -1,0 +1,6 @@
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\bin\Debug\HACD.dll
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\bin\Debug\HACD.pdb
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\obj\Debug\HACD.csprojAssemblyReference.cache
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\obj\Debug\HACD.csproj.CoreCompileInputs.cache
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\obj\Debug\HACD.dll
+C:\Users\vanduin\Documents\GitHub\PhysicsEngine\HACD\obj\Debug\HACD.pdb

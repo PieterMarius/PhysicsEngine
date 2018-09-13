@@ -43,9 +43,9 @@ namespace SharpPhysicsEngine.Wrapper
         #region Constructor
 
         public CompoundRigidShape(
-            List<Vector3[]> inputVertexPosition,
+            List<Vector3d[]> inputVertexPosition,
             List<int[][]> inputTriangle,
-            Vector3[] compoundPosition,
+            Vector3d[] compoundPosition,
             double[] mass)
         {
             compoundShape = new CompoundShape(
@@ -65,12 +65,12 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetPartialMass(mass);
         }
 
-        public void SetCompoundPosition(Vector3[] compoundPosition)
+        public void SetCompoundPosition(Vector3d[] compoundPosition)
         {
             compoundShape.SetCompoundPosition(compoundPosition);
         }
 
-        public Vector3[] StartCompoundPositionObjects
+        public Vector3d[] StartCompoundPositionObjects
         {
             get
             {
@@ -79,7 +79,7 @@ namespace SharpPhysicsEngine.Wrapper
         }
 
 
-        public Vector3 AngularVelocity
+        public Vector3d AngularVelocity
         {
             get
             {
@@ -95,7 +95,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 ForceValue
+        public Vector3d ForceValue
         {
             get
             {
@@ -119,7 +119,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 LinearVelocity
+        public Vector3d LinearVelocity
         {
             get
             {
@@ -143,7 +143,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 Position
+        public Vector3d Position
         {
             get
             {
@@ -159,7 +159,7 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3 InitCenterOfMass
+        public Vector3d InitCenterOfMass
         {
             get
             {
@@ -167,9 +167,9 @@ namespace SharpPhysicsEngine.Wrapper
             }
         }
 
-        public Vector3[] GetVertices()
+        public Vector3d[] GetVertices()
         {
-            List<Vector3> vertices = new List<Vector3>();
+            List<Vector3d> vertices = new List<Vector3d>();
             for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
             {
                 for (int j = 0; j < compoundShape.ShapesGeometry[i].VerticesIdx.Length; j++)
@@ -202,7 +202,7 @@ namespace SharpPhysicsEngine.Wrapper
             return compoundShape;
         }
 
-        public void SetAngularVelocity(Vector3 inputAngularVelocity)
+        public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             compoundShape.SetAngularVelocity(inputAngularVelocity);
         }
@@ -217,7 +217,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetDynamicFrictionCoeff(dynamicFrictionCoeff);
         }
 
-        public void SetForce(Vector3 force)
+        public void SetForce(Vector3d force)
         {
             compoundShape.SetForce(force);
         }
@@ -227,7 +227,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetInverseInertiaTensor(inertiaTensor);
         }
 
-        public void SetLinearVelocity(Vector3 inputLinearVelocity)
+        public void SetLinearVelocity(Vector3d inputLinearVelocity)
         {
             compoundShape.SetLinearVelocity(inputLinearVelocity);
         }
@@ -237,7 +237,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetMass(mass);
         }
 
-        public void SetPosition(Vector3 inputPosition)
+        public void SetPosition(Vector3d inputPosition)
         {
             compoundShape.SetPosition(inputPosition);
         }
@@ -272,7 +272,7 @@ namespace SharpPhysicsEngine.Wrapper
             compoundShape.SetStaticFrictionCoeff(staticFrictionCoeff);
         }
 
-        public void SetTorque(Vector3 torque)
+        public void SetTorque(Vector3d torque)
         {
             compoundShape.SetTorque(torque);
         }
@@ -287,12 +287,12 @@ namespace SharpPhysicsEngine.Wrapper
             return compoundShape.ShapesGeometry.Length;
         }
 
-        public Vector3 GetMinAABB()
+        public Vector3d GetMinAABB()
         {
             return CommonUtilities.GetAABBMinValue(compoundShape.ShapesGeometry);
         }
 
-        public Vector3 GetMaxAABB()
+        public Vector3d GetMaxAABB()
         {
             return CommonUtilities.GetAABBMaxValue(compoundShape.ShapesGeometry);
         }
@@ -302,7 +302,7 @@ namespace SharpPhysicsEngine.Wrapper
             throw new NotImplementedException();
         }
 
-        public Vector3 GetCenterOfMassShiftValue(int index = 0)
+        public Vector3d GetCenterOfMassShiftValue(int index = 0)
         {
             return compoundShape.StartCompoundPositionObjects[index] - compoundShape.InitCenterOfMass;
         }

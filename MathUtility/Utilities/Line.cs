@@ -30,16 +30,16 @@ namespace SharpEngineMathUtility
     {
         #region Public Properties
 
-        public readonly Vector3 a;
-        public readonly Vector3 b;
+        public readonly Vector3d a;
+        public readonly Vector3d b;
         
         #endregion
 
         #region Constructors
 
         public Line(
-            Vector3 a,
-            Vector3 b)
+            Vector3d a,
+            Vector3d b)
         {
             this.a = a;
             this.b = b;

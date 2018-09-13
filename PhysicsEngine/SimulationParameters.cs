@@ -78,7 +78,7 @@ namespace SharpPhysicsEngine
 		/// Gets the external force.
 		/// </summary>
 		/// <value>The external force.</value>
-		public Vector3 ExternalForce { get; private set; }
+		public Vector3d ExternalForce { get; private set; }
                         		
 		/// <summary>
 		/// Gets the linear velocity tolerance for object disabling.
@@ -165,7 +165,7 @@ namespace SharpPhysicsEngine
 			CCD = false;
 			CollisionDistance = 0.003;
             CompenetrationTolerance = 0.05;
-			ExternalForce = new Vector3(0.0, -9.81, 0.0);
+			ExternalForce = new Vector3d(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;
 			MaxCorrectionValue = 10000.0;
@@ -187,7 +187,7 @@ namespace SharpPhysicsEngine
 			double collisionDistance,
 			double compenetrationTolerance,
 			double warmStartiongValue,
-			Vector3 externalForce,
+			Vector3d externalForce,
 			int maxThreadNumber)
 		{
 			TimeStep = timeStep;
@@ -238,7 +238,7 @@ namespace SharpPhysicsEngine
 			ShiftToStaticFrictionTolerance = shiftToStaticFrictionTolerance;
 		}
 
-		public void SetExternalForce(Vector3 externalForce)
+		public void SetExternalForce(Vector3d externalForce)
 		{
 			ExternalForce = externalForce;
 		}

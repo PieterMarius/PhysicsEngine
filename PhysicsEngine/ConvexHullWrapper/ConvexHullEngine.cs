@@ -47,7 +47,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
             return GetConvexHullData1(vtx);
         }
 
-        public ConvexHullData GetConvexHull(Vector3[] points)
+        public ConvexHullData GetConvexHull(Vector3d[] points)
         {
             ConvexHullVertex[] vtx = new ConvexHullVertex[points.Length];
 
@@ -69,7 +69,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
                 var faces = cHull.Faces.ToArray();
 
                 TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
-                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3(x.Position), null, x.Index));
+                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3d(x.Position), null, x.Index));
 
                 var pointsList = cHull.Points.ToList();
 
@@ -101,7 +101,7 @@ namespace SharpPhysicsEngine.ConvexHullWrapper
                 var faces = cHull.Faces.ToArray();
 
                 TriangleMesh[] triangleMeshes = new TriangleMesh[faces.Length];
-                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3(x.Position), null, x.Index));
+                Vertex3Index[] vertices = Array.ConvertAll(cHull.Points.ToArray(), x => new Vertex3Index(new Vector3d(x.Position), null, x.Index));
 
                 var pointsList = cHull.Points.ToList();
 

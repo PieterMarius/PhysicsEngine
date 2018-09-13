@@ -58,18 +58,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public List<CollisionPoint> GetManifoldPoints(
-			Vector3[] vertexObjA,
-			Vector3[] vertexObjB,
+			Vector3d[] vertexObjA,
+			Vector3d[] vertexObjB,
 			CollisionPoint collisionPoint)
 		{
             if (ManifoldPointNumber > 1)
             {
-                List<Vector3> collisionA = GetNearestPoint(
+                List<Vector3d> collisionA = GetNearestPoint(
                     vertexObjA,
                     collisionPoint.CollisionPointA.Vertex,
                     collisionPoint.CollisionNormal);
 
-                List<Vector3> collisionB = GetNearestPoint(
+                List<Vector3d> collisionB = GetNearestPoint(
                     vertexObjB,
                     collisionPoint.CollisionPointB.Vertex,
                     collisionPoint.CollisionNormal);
@@ -96,7 +96,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         private void SetCollisionNormal(
             List<CollisionPoint> collisionPoints,
-            Vector3 cNormal)
+            Vector3d cNormal)
         {
             if(collisionPoints.Count > 2)
             {
@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     collisionPoints[2].CollisionPointA.Vertex);
 
                 foreach (var point in collisionPoints)
-                    point.SetNormal(Vector3.UniformSign(normal, cNormal));
+                    point.SetNormal(Vector3d.UniformSign(normal, cNormal));
             }
         }
 
@@ -116,22 +116,22 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <returns>The nearest point.</returns>
 		/// <param name="shape">Shape.</param>
 		/// <param name="collisionPoint">Collision point.</param>z
-		private List<Vector3> GetNearestPoint(
-			Vector3[] vertexObj,
-			Vector3 collisionPoint,
-			Vector3 planeNormal)
+		private List<Vector3d> GetNearestPoint(
+			Vector3d[] vertexObj,
+			Vector3d collisionPoint,
+			Vector3d planeNormal)
 		{
-			var collisionPoints = new List<Vector3> ();
+			var collisionPoints = new List<Vector3d> ();
 
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
-                Vector3 diff = collisionPoint - vertexObj[i];
-                if (diff == Vector3.Zero())
+                Vector3d diff = collisionPoint - vertexObj[i];
+                if (diff == Vector3d.Zero())
                     continue;
 
-				Vector3 nt = Vector3.Normalize(diff);
+				Vector3d nt = Vector3d.Normalize(diff);
 
-                if (Math.Abs(Vector3.Dot(nt, planeNormal)) < ManifoldPlaneTolerance)
+                if (Math.Abs(Vector3d.Dot(nt, planeNormal)) < ManifoldPlaneTolerance)
 					collisionPoints.Add(vertexObj[i]);
 			}
 
@@ -139,8 +139,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		}
 
 		private List<CollisionPoint> FindCollisionPoints(
-			Vector3[] ca,
-			Vector3[] cb,
+			Vector3d[] ca,
+			Vector3d[] cb,
 			CollisionPoint cp)
 		{
 			var result = new List<CollisionPoint> ();
@@ -264,10 +264,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="initPoint">Init point.</param>
 		/// <param name="na">Na.</param>
 		private List<CollisionPoint> TestPointIsOnPlane(
-			Vector3[] ca,
-			Vector3[] cb,
+			Vector3d[] ca,
+			Vector3d[] cb,
 			CollisionPoint initPoint,
-			Vector3 na)
+			Vector3d na)
 		{
 			var result = new List<CollisionPoint>();
 
@@ -275,9 +275,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				for (int i = 0; i < ca.Length; i++)
 				{
-					Vector3 project = ca[i] -
-						(na * (Vector3.Dot(na, ca[i]) +
-							Vector3.Dot(na * -1.0, initPoint.CollisionPointB.Vertex)));
+					Vector3d project = ca[i] -
+						(na * (Vector3d.Dot(na, ca[i]) +
+							Vector3d.Dot(na * -1.0, initPoint.CollisionPointB.Vertex)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon(
 						cb,
@@ -303,9 +303,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				for (int i = 0; i < cb.Length; i++)
 				{
-					Vector3 project = cb[i] -
-						(na * (Vector3.Dot(na, cb[i]) +
-							Vector3.Dot(na * -1.0, initPoint.CollisionPointA.Vertex)));
+					Vector3d project = cb[i] -
+						(na * (Vector3d.Dot(na, cb[i]) +
+							Vector3d.Dot(na * -1.0, initPoint.CollisionPointA.Vertex)));
 
 					double angle = GeometryUtilities.TestPointInsidePolygon(
 						ca,
@@ -331,11 +331,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		private List<CollisionPoint> ExtractCollisionPoints(
             List<CollisionPoint> cpList,
-            Vector3 normal)
+            Vector3d normal)
 		{
             if (cpList.Count > ManifoldPointNumber) 
 			{
-				var center = new Vector3();
+				var center = new Vector3d();
 				for (int i = 0; i < cpList.Count; i++)
 					center = center + cpList [i].CollisionPointA.Vertex;
 
@@ -360,14 +360,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return cpList;
 		}
 
-        private Vector3[] GetConeDirection(
-            Vector3 normal,
+        private Vector3d[] GetConeDirection(
+            Vector3d normal,
             int nDirection)
         {
-            var coneDirection = new Vector3[nDirection];
+            var coneDirection = new Vector3d[nDirection];
 
-            var tx = new Vector3();
-            var ty = new Vector3();
+            var tx = new Vector3d();
+            var ty = new Vector3d();
 
             GeometryUtilities.ComputeBasis(
                 normal,
@@ -386,14 +386,14 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         private List<CollisionPoint> ExtractFourCollisionPoints(
             List<CollisionPoint> cpList,
-            Vector3 normal)
+            Vector3d normal)
         {
             if (cpList.Count > 4)
             {
                 var result = new List<CollisionPoint>();
 
                 //Point 1
-                Vector3 A = cpList[0].CollisionPointA.Vertex;
+                Vector3d A = cpList[0].CollisionPointA.Vertex;
                 result.Add(cpList[0]);
                 cpList.RemoveAt(0);
 
@@ -412,7 +412,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                         index = i;
                     }
                 }
-                Vector3 B = farthestPoint.CollisionPointA.Vertex;
+                Vector3d B = farthestPoint.CollisionPointA.Vertex;
                 result.Add(farthestPoint);
                 cpList.RemoveAt(index);
 
@@ -432,7 +432,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                         index = i;
                     }
                 }
-                Vector3 C = third.CollisionPointA.Vertex;
+                Vector3d C = third.CollisionPointA.Vertex;
                 result.Add(third);
                 cpList.RemoveAt(index);
 
@@ -479,25 +479,25 @@ namespace SharpPhysicsEngine.CollisionEngine
         }
 
         private double CalculateArea(
-            Vector3 A,
-            Vector3 B,
-            Vector3 C,
-            Vector3 normal)
+            Vector3d A,
+            Vector3d B,
+            Vector3d C,
+            Vector3d normal)
         {
-            Vector3 CA = C - A;
-            Vector3 CB = C - B;
-            return Math.Abs(0.5 * Vector3.Dot(Vector3.Cross(CA, CB), normal));
+            Vector3d CA = C - A;
+            Vector3d CB = C - B;
+            return Math.Abs(0.5 * Vector3d.Dot(Vector3d.Cross(CA, CB), normal));
         }
 
         private CollisionPoint TestEdgesIntersection(
-			Vector3 p1,
-			Vector3 p2,
-			Vector3 p3,
-			Vector3 p4,
+			Vector3d p1,
+			Vector3d p2,
+			Vector3d p3,
+			Vector3d p4,
 			CollisionPoint point)
 		{
-			var a = new Vector3 ();
-			var b = new Vector3 ();
+			var a = new Vector3d ();
+			var b = new Vector3d ();
 			double mua = 0.0;
 			double mub = 0.0;
 
@@ -525,15 +525,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public int GetFarthestPoint(
             CollisionPoint[] vertexObj,
-            Vector3 direction)
+            Vector3d direction)
         {
             int index = 0;
-            double maxDot = Vector3.Dot(vertexObj[index].CollisionPointA.Vertex, direction);
+            double maxDot = Vector3d.Dot(vertexObj[index].CollisionPointA.Vertex, direction);
 
             for (int i = 1; i < vertexObj.Length; i++)
             {
-                Vector3 vertex = vertexObj[i].CollisionPointA.Vertex;
-                double dot = Vector3.Dot(vertex, direction);
+                Vector3d vertex = vertexObj[i].CollisionPointA.Vertex;
+                double dot = Vector3d.Dot(vertex, direction);
 
                 if (dot > maxDot)
                 {

@@ -35,8 +35,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public readonly double CollisionDistance;
 		public readonly CollisionPoint CollisionPoint;
-		public readonly Vector3 CollisionNormal;
-		public readonly Vector3 Centroid;
+		public readonly Vector3d CollisionNormal;
+		public readonly Vector3d Centroid;
 		public readonly bool Intersection;
 		public readonly List<SupportTriangle> SupportTriangles;
 
@@ -47,8 +47,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		public GJKOutput (
 			double collisionDistance,
 			CollisionPoint collisionPoint,
-			Vector3 collisionNormal,
-			Vector3 centroid,
+			Vector3d collisionNormal,
+			Vector3d centroid,
 			bool intersection,
 			List<SupportTriangle> supportTriangles)
 		{

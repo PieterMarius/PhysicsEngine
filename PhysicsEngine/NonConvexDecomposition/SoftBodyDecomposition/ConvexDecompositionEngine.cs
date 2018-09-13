@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             //we can't guarantee that all bounding regions will be relative to the origin, so to keep the math
             //simple, we're going to translate the existing region to be oriented off the origin and remember the translation.
             //find the min offset from (0,0,0) and translate by it for a short while
-            Vector3 offset = Vector3.Zero() - region.Min;
+            Vector3d offset = Vector3d.Zero() - region.Min;
             region.Min += offset;
             region.Max += offset;
 
@@ -137,7 +137,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             {
                 if (highX == 1 << bit)
                 {
-                    region.Max = new Vector3(highX, highX, highX);
+                    region.Max = new Vector3d(highX, highX, highX);
 
                     region.Min -= offset;
                     region.Max -= offset;
@@ -149,7 +149,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             //example: 63 -> 64; 65 -> 128;
             int x = GeneralMathUtilities.SigBit(highX);
 
-            region.Max = new Vector3(x, x, x);
+            region.Max = new Vector3d(x, x, x);
 
             region.Min -= offset;
             region.Max -= offset;
@@ -183,9 +183,9 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
             if (VertexPosition.Count <= 1)
                 return;
 
-            Vector3 dimensions = region.Max - region.Min;
+            Vector3d dimensions = region.Max - region.Min;
 
-            if (dimensions == Vector3.Zero())
+            if (dimensions == Vector3d.Zero())
             {
                 region = FindEnclosingCube(region);
                 dimensions = region.Max - region.Min;
@@ -197,19 +197,19 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
                 return;
             }
 
-            Vector3 half = dimensions * 0.5;
-            Vector3 center = region.Min + half;
+            Vector3d half = dimensions * 0.5;
+            Vector3d center = region.Min + half;
 
             //Create subdivided regions for each octant
             AABB[] octant = new AABB[8];
             octant[0] = new AABB(region.Min, center, null);
-            octant[1] = new AABB(new Vector3(center.x, region.Min.y, region.Min.z), new Vector3(region.Max.x, center.y, center.z), null);
-            octant[2] = new AABB(new Vector3(center.x, region.Min.y, center.z), new Vector3(region.Max.x, center.y, region.Max.z), null);
-            octant[3] = new AABB(new Vector3(region.Min.x, region.Min.y, center.z), new Vector3(center.x, center.y, region.Max.z), null);
-            octant[4] = new AABB(new Vector3(region.Min.x, center.y, region.Min.z), new Vector3(center.x, region.Max.y, center.z), null);
-            octant[5] = new AABB(new Vector3(center.x, center.y, region.Min.z), new Vector3(region.Max.x, region.Max.y, center.z), null);
+            octant[1] = new AABB(new Vector3d(center.x, region.Min.y, region.Min.z), new Vector3d(region.Max.x, center.y, center.z), null);
+            octant[2] = new AABB(new Vector3d(center.x, region.Min.y, center.z), new Vector3d(region.Max.x, center.y, region.Max.z), null);
+            octant[3] = new AABB(new Vector3d(region.Min.x, region.Min.y, center.z), new Vector3d(center.x, center.y, region.Max.z), null);
+            octant[4] = new AABB(new Vector3d(region.Min.x, center.y, region.Min.z), new Vector3d(center.x, region.Max.y, center.z), null);
+            octant[5] = new AABB(new Vector3d(center.x, center.y, region.Min.z), new Vector3d(region.Max.x, region.Max.y, center.z), null);
             octant[6] = new AABB(center, region.Max, null);
-            octant[7] = new AABB(new Vector3(region.Min.x, center.y, center.z), new Vector3(center.x, region.Max.y, region.Max.z), null);
+            octant[7] = new AABB(new Vector3d(region.Min.x, center.y, center.z), new Vector3d(center.x, region.Max.y, region.Max.z), null);
 
             //This will contain all of our objects which fit within each respective octant.
             List<Vertex3Index>[] octList = new List<Vertex3Index>[8];

@@ -36,13 +36,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
         double RestitutionCoeff { get; }
         Quaternion RotationStatus { get; }
         int SleepingFrameCount { get; }
-        Vector3 InitCenterOfMass { get; }
-        Vector3[] Vertices { get; }
-        Vector3[] VerticesRelPos { get; }
+        Vector3d InitCenterOfMass { get; }
+        Vector3d[] Vertices { get; }
+        Vector3d[] VerticesRelPos { get; }
         double StaticFrictionCoeff { get; }
-        Vector3 TorqueValue { get; }
+        Vector3d TorqueValue { get; }
         AABB AABBox { get; }
-        Vector3 FarthestPoint { get; }
+        Vector3d FarthestPoint { get; }
         bool ActiveCCD { get; }
         bool IsSleeping { get; }
 
@@ -56,8 +56,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetRotationStatus(Quaternion inputRotationStatus);
         void SetSleepingFrameCount(int frameCount);
         void SetStaticFrictionCoeff(double staticFrictionCoeff);
-        void SetTorque(Vector3 torque);
-        void Rotate(Vector3 versor, double angle);
+        void SetTorque(Vector3d torque);
+        void Rotate(Vector3d versor, double angle);
         void SetActiveCCD(bool isActive);
         void SetIsSleeping(bool isSleep);
     }

@@ -37,7 +37,7 @@ namespace SharpPhysicsEngine.K_Means
 
         public struct Centroid
         {
-            public Vector3 Position;
+            public Vector3d Position;
             public List<Tuple<IKMeansInput, double>> Points;
         }
 
@@ -56,7 +56,7 @@ namespace SharpPhysicsEngine.K_Means
         {
             var centroid = GetStartCentroid(points, nCluster);
             var newCentroid = Array.ConvertAll(centroid, x => x.Position);
-            var oldCentroid = new Vector3[centroid.Length];
+            var oldCentroid = new Vector3d[centroid.Length];
             
             while (CheckCentroid(oldCentroid, newCentroid))
             {
@@ -101,9 +101,9 @@ namespace SharpPhysicsEngine.K_Means
             return result;
         }
 
-        private Vector3 CalculateCentroid(List<Tuple<IKMeansInput, double>> centroidPoints)
+        private Vector3d CalculateCentroid(List<Tuple<IKMeansInput, double>> centroidPoints)
         {
-            var result = new Vector3();
+            var result = new Vector3d();
 
             for (int i = 0; i < centroidPoints.Count; i++)
                 result = result + centroidPoints[i].Item1.GetPointPosition();
@@ -120,7 +120,7 @@ namespace SharpPhysicsEngine.K_Means
 
             for (int i = 0; i < centroid.Length; i++)
             {
-                Vector3 dist = point.GetPointPosition() - centroid[i].Position;
+                Vector3d dist = point.GetPointPosition() - centroid[i].Position;
                 double distance = dist.Dot(dist);
 
                 if (distance < minDistance)
@@ -134,8 +134,8 @@ namespace SharpPhysicsEngine.K_Means
         }
 
         private bool CheckCentroid(
-            Vector3[] newCentroid, 
-            Vector3[] oldCentroid)
+            Vector3d[] newCentroid, 
+            Vector3d[] oldCentroid)
         {
             for (int i = 0; i < newCentroid.Length; i++)
             {

@@ -37,11 +37,11 @@ namespace SharpPhysicsEngine
 
 		const JointType jointType = JointType.Universal;
                 
-		readonly Vector3 StartAnchorPoint;
-		readonly Vector3 HingeAxis;
-		readonly Vector3 RotationAxis;
-		readonly Vector3 StartErrorAxis1;
-		readonly Vector3 StartErrorAxis2;
+		readonly Vector3d StartAnchorPoint;
+		readonly Vector3d HingeAxis;
+		readonly Vector3d RotationAxis;
+		readonly Vector3d StartErrorAxis1;
+		readonly Vector3d StartErrorAxis2;
 		readonly Quaternion RelativeOrientation1;
 		readonly Quaternion RelativeOrientation2;
 
@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine
 		double? ForceHingeAxisLimit;
 		double? SpeedRotationAxisLimit;
 		double? ForceRotationAxisLimit;
-		Vector3 AnchorPoint;
+		Vector3d AnchorPoint;
 		
 		#endregion
 
@@ -63,9 +63,9 @@ namespace SharpPhysicsEngine
 		public UniversalConstraint(
             IShape shapeA,
             IShape shapeB,
-            Vector3 startAnchorPosition,
-			Vector3 hingeAxis,
-			Vector3 rotationAxis,
+            Vector3d startAnchorPosition,
+			Vector3d hingeAxis,
+			Vector3d rotationAxis,
 			double erroReductionParam,
 			double springCoefficient)
             : base(shapeA, shapeB, erroReductionParam, springCoefficient)
@@ -74,7 +74,7 @@ namespace SharpPhysicsEngine
 			HingeAxis = hingeAxis.Normalize ();
 			RotationAxis = rotationAxis.Normalize ();
 
-			Vector3 relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
+			Vector3d relativePos = startAnchorPosition - ShapeA.InitCenterOfMass;
 			relativePos = ShapeA.RotationMatrix * relativePos;
 
 			AnchorPoint = relativePos + ShapeA.Position;
@@ -85,8 +85,8 @@ namespace SharpPhysicsEngine
 			StartErrorAxis2 = ShapeB.RotationMatrix.Transpose() *
 									 (AnchorPoint - ShapeB.Position);
 
-			Vector3 rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
-			Vector3 rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
+			Vector3d rHingeAxis = ShapeA.RotationMatrix * HingeAxis;
+			Vector3d rRotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
 			RelativeOrientation1 = CalculateRelativeOrientation (
 				rHingeAxis,
@@ -124,30 +124,30 @@ namespace SharpPhysicsEngine
 
 			#region Init Linear
 
-			Vector3 r1 = simulationObjectA.RotationMatrix *
+			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
 
-			Vector3 r2 = simulationObjectB.RotationMatrix *
+			Vector3d r2 = simulationObjectB.RotationMatrix *
 										  StartErrorAxis2;
 
 			Matrix3x3 skewP1 = Matrix3x3.GetSkewSymmetricMatrix (r1);
 			Matrix3x3 skewP2 = Matrix3x3.GetSkewSymmetricMatrix (r2);
 
-			Vector3 p1 = simulationObjectA.Position + r1;
-			Vector3 p2 = simulationObjectB.Position + r2;
+			Vector3d p1 = simulationObjectA.Position + r1;
+			Vector3d p2 = simulationObjectB.Position + r2;
 
-			Vector3 linearError = p2 - p1;
+			Vector3d linearError = p2 - p1;
 
 			#endregion
 
 			#region Init Angular
 
-			Vector3 hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
-			Vector3 rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
+			Vector3d hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
+			Vector3d rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
 
 			double k = hingeAxis.Dot (rotationAxis);
-			Vector3 tempPerpendicular = rotationAxis - k * hingeAxis;
-			Vector3 t1 = hingeAxis.Cross (tempPerpendicular).Normalize ();
+			Vector3d tempPerpendicular = rotationAxis - k * hingeAxis;
+			Vector3d t1 = hingeAxis.Cross (tempPerpendicular).Normalize ();
 
             #endregion
 
@@ -171,8 +171,8 @@ namespace SharpPhysicsEngine
 			universalConstraints.Add (JacobianCommon.GetDOF(
                 xVec,
                 xVecNeg,
-                new Vector3 (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
-				new Vector3 (skewP2.r1c1,skewP2.r1c2,skewP2.r1c3),
+                new Vector3d (-skewP1.r1c1, -skewP1.r1c2, -skewP1.r1c3),
+				new Vector3d (skewP2.r1c1,skewP2.r1c2,skewP2.r1c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -188,8 +188,8 @@ namespace SharpPhysicsEngine
 			universalConstraints.Add (JacobianCommon.GetDOF (
                 yVec,
                 yVecNeg,
-                new Vector3 (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
-				new Vector3 (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
+                new Vector3d (-skewP1.r2c1, -skewP1.r2c2, -skewP1.r2c3),
+				new Vector3d (skewP2.r2c1,skewP2.r2c2,skewP2.r2c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -205,8 +205,8 @@ namespace SharpPhysicsEngine
 			universalConstraints.Add (JacobianCommon.GetDOF (
                 zVec,
                 zVecNeg,
-                new Vector3 (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
-				new Vector3 (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
+                new Vector3d (-skewP1.r3c1, -skewP1.r3c2, -skewP1.r3c3),
+				new Vector3d (skewP2.r3c1,skewP2.r3c2,skewP2.r3c3),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -258,7 +258,7 @@ namespace SharpPhysicsEngine
             return jointType;
         }
 
-        public override Vector3 GetAnchorPosition()
+        public override Vector3d GetAnchorPosition()
 		{
 			return (ShapeA.RotationMatrix *
                    (StartAnchorPoint - ShapeA.InitCenterOfMass)) +
@@ -293,10 +293,10 @@ namespace SharpPhysicsEngine
 			double torqueAxis1, 
 			double torqueAxis2)
 		{
-			Vector3 hingeAxis = ShapeA.RotationMatrix * HingeAxis;
-			Vector3 rotationAxis = ShapeB.RotationMatrix * RotationAxis;
+			Vector3d hingeAxis = ShapeA.RotationMatrix * HingeAxis;
+			Vector3d rotationAxis = ShapeB.RotationMatrix * RotationAxis;
 
-			Vector3 torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
+			Vector3d torque = hingeAxis * torqueAxis1 + rotationAxis * torqueAxis2;
 
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
@@ -320,8 +320,8 @@ namespace SharpPhysicsEngine
 		List<JacobianConstraint> GetAngularLimit(
 			IShape simulationObjectA,
 			IShape simulationObjectB,
-			Vector3 hingeAxis,
-			Vector3 rotationAxis,
+			Vector3d hingeAxis,
+			Vector3d rotationAxis,
             double errorReduction)
 		{
 			var angularConstraint = new List<JacobianConstraint>();
@@ -381,9 +381,9 @@ namespace SharpPhysicsEngine
 		}
 
 		double GetAngle2(
-			Vector3 axis1,
-			Vector3 axis2,
-			Vector3 startAxis,
+			Vector3d axis1,
+			Vector3d axis2,
+			Vector3d startAxis,
 			Quaternion rotationStatus,
 			Quaternion startRelativeRotation)
 		{
@@ -391,9 +391,9 @@ namespace SharpPhysicsEngine
 		}
 
 		double GetAngle1(
-			Vector3 axis1,
-			Vector3 axis2,
-			Vector3 startAxis,
+			Vector3d axis1,
+			Vector3d axis2,
+			Vector3d startAxis,
 			Quaternion rotationStatus,
 			Quaternion startRelativeRotation)
 		{
@@ -403,7 +403,7 @@ namespace SharpPhysicsEngine
 			Quaternion mult1 = Quaternion.Multiply1(rotationStatus, rotationQ);
 			Quaternion mult2 = Quaternion.Multiply2(mult1, startRelativeRotation);
 
-			var quaternionVectorPart = new Vector3(
+			var quaternionVectorPart = new Vector3d(
 				mult2.b,
 				mult2.c,
 				mult2.d);
@@ -412,8 +412,8 @@ namespace SharpPhysicsEngine
 		}
 
 		Quaternion CalculateRelativeOrientation(
-			Vector3 axis1,
-			Vector3 axis2,
+			Vector3d axis1,
+			Vector3d axis2,
 			Quaternion bodyRotationStatus)
 		{
 			Matrix3x3 rotationMatrix = Matrix3x3.GetRotationMatrix(axis1, axis2);

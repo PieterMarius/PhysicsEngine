@@ -39,7 +39,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
         private readonly IBroadPhase broadPhaseEngine;
         private readonly IntegratePosition integratePosition;
 
-        private Vector3[] bufPosition;
+        private Vector3d[] bufPosition;
         private Quaternion[] bufRotStatus;
         private Matrix3x3[] bufRotMatrix;
         private Matrix3x3[] bufInertiaTensor;
@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             SaveBaseData(shapeA, shapeB);
 
             // relative linear velocity
-            Vector3 rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
+            Vector3d rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
             double maxAngularVelocity = shapeA.AngularVelocity.Length() * shapeA.FarthestPoint.Length() +
                                         shapeB.AngularVelocity.Length() * shapeB.FarthestPoint.Length();
                         
@@ -121,13 +121,13 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             SaveBaseData(shapeA, shapeB);
 
             // relative linear velocity
-            Vector3 rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
+            Vector3d rLinearVelocity = shapeB.LinearVelocity - shapeA.LinearVelocity;
             double maxAngularVelocity = shapeA.AngularVelocity.Length() * shapeA.FarthestPoint.Length() +
                                         shapeB.AngularVelocity.Length() * shapeB.FarthestPoint.Length();
 
             double radius = 1E-4;
             double t = 0.0;
-            Vector3 collisionPoint = GetAABBDist(shapeA, shapeB);
+            Vector3d collisionPoint = GetAABBDist(shapeA, shapeB);
                         
             double distance = collisionPoint.Length();
                         
@@ -175,7 +175,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             return collisionPoint.CollisionPointBase[0].CollisionPoint;
         }
 
-        private Vector3 GetAABBDist(
+        private Vector3d GetAABBDist(
             IShape shapeA,
             IShape shapeB)
         {
@@ -186,7 +186,7 @@ namespace SharpPhysicsEngine.ContinuosCollisionDetection
             IShape shapeA,
             IShape shapeB)
         {
-            bufPosition = new Vector3[] { shapeA.Position, shapeB.Position };
+            bufPosition = new Vector3d[] { shapeA.Position, shapeB.Position };
             bufRotStatus = new Quaternion[] { shapeA.RotationStatus, shapeB.RotationStatus };
             bufRotMatrix = new Matrix3x3[] { shapeA.RotationMatrix, shapeB.RotationMatrix };
             bufInertiaTensor = new Matrix3x3[] { shapeA.MassInfo.InverseInertiaTensor, shapeB.MassInfo.InverseInertiaTensor };
