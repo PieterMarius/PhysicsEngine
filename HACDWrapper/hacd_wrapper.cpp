@@ -18,14 +18,16 @@ void CallBack(const char * msg, double progress, double concavity, size_t nVerti
 	std::cout << msg;
 }
 
-bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> > & points, std::vector< HACD::Vec3<long> > & triangles, bool invert)
+bool LoadOFF(
+	const std::string & fileName, 
+	std::vector< HACD::Vec3<HACD::Real> > & points, 
+	std::vector< HACD::Vec3<long> > & triangles, 
+	bool invert)
 {
 	FILE * fid;
-	//fileName.c_str()
 	errno_t err = fopen_s(&fid, fileName.c_str(), "r");
 	if (fid)
 	{
-		std::cout << "caricamento file" << std::endl;
 		const std::string strOFF("OFF");
 		char temp[1024];
 		fscanf_s(fid, "%s", temp, _countof(temp));
@@ -39,7 +41,6 @@ bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> >
 		}
 		else
 		{
-			std::cout << "caricamento vertici" << std::endl;
 			int nv = 0;
 			int nf = 0;
 			int ne = 0;
@@ -48,7 +49,6 @@ bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> >
 			fscanf_s(fid, "%i", &ne);
 			points.resize(nv);
 			triangles.resize(nf);
-			HACD::Vec3<HACD::Real> coord;
 			float x = 0;
 			float y = 0;
 			float z = 0;
@@ -100,11 +100,104 @@ bool LoadOFF(const std::string & fileName, std::vector< HACD::Vec3<HACD::Real> >
 	return true;
 }
 
+bool LoadOFF(
+	const std::string & fileName,
+	double** points,
+	int* nPoints,
+	long** triangles,
+	int* nTriangles,
+	bool invert)
+{
+	FILE * fid;
+	errno_t err = fopen_s(&fid, fileName.c_str(), "r");
+	if (fid)
+	{
+		const std::string strOFF("OFF");
+		char temp[1024];
+		fscanf_s(fid, "%s", temp, _countof(temp));
+
+		if (std::string(temp) != strOFF)
+		{
+			printf("Loading error: format not recognized \n");
+			fclose(fid);
+
+			return false;
+		}
+		else
+		{
+			int nv = 0;
+			int nf = 0;
+			int ne = 0;
+			fscanf_s(fid, "%i", &nv);
+			fscanf_s(fid, "%i", &nf);
+			fscanf_s(fid, "%i", &ne);
+			points = (double**)::CoTaskMemAlloc(sizeof(double*) * nv);
+			triangles = (long**)::CoTaskMemAlloc(sizeof(long*) * nf);
+			*nPoints = nv;
+			*nTriangles = nf;
+			float x = 0;
+			float y = 0;
+			float z = 0;
+			for (long p = 0; p < nv; p++)
+			{
+				fscanf_s(fid, "%f", &x);
+				fscanf_s(fid, "%f", &y);
+				fscanf_s(fid, "%f", &z);
+				points[p] = (double(*))::CoTaskMemAlloc(sizeof(double) * 3);
+				points[p][0] = x;
+				points[p][1] = y;
+				points[p][2] = z;
+			}
+			int i = 0;
+			int j = 0;
+			int k = 0;
+			int s = 0;
+			for (long t = 0; t < nf; ++t) {
+				fscanf_s(fid, "%i", &s);
+				if (s == 3)
+				{
+					fscanf_s(fid, "%i", &i);
+					fscanf_s(fid, "%i", &j);
+					fscanf_s(fid, "%i", &k);
+					triangles[i] = (long(*))::CoTaskMemAlloc(sizeof(long) * 3);
+					triangles[t][0] = i;
+					if (invert)
+					{
+						triangles[t][1] = k;
+						triangles[t][2] = j;
+					}
+					else
+					{
+						triangles[t][1] = j;
+						triangles[t][2] = k;
+					}
+				}
+				else			// Fix me: support only triangular meshes
+				{
+					for (long h = 0; h < s; ++h) fscanf_s(fid, "%i", &s);
+				}
+			}
+			fclose(fid);
+		}
+	}
+	else
+	{
+		printf("Loading error: file not found \n");
+		return false;
+	}
+	return true;
+}
+
 
 extern "C"
 {
 	__declspec(dllexport) void ExecuteHACD(
-		const char* ifilename, std::vector<double[3]> points1, double triangle1[])
+		const char* ifilename, 
+		double**** pointsOut, 
+		long**** triangleOut,
+		int* nCluster,
+		int** nOutPoints,
+		int** nOutTriangles)
 	{
 		HACD::HeapManager * heapManager = HACD::createHeapManager(65536 * (1000));
 		HACD::HACD * const myHACD = HACD::CreateHACD(heapManager);
@@ -171,6 +264,12 @@ extern "C"
 
 		std::cout << "Compute" << std::endl;
 
+		*nCluster = nClusters;
+		*nOutPoints = (int*)::CoTaskMemAlloc(sizeof(int) * nClusters);
+		*nOutTriangles = (int*)::CoTaskMemAlloc(sizeof(int) * nClusters);
+		*pointsOut= (double***)::CoTaskMemAlloc(sizeof(double**) * nClusters);
+		*triangleOut = (long***)::CoTaskMemAlloc(sizeof(long**) * nClusters);
+
 		//TODO modificare nClusters
 		for (size_t c = 0; c < nClusters; ++c)
 		{
@@ -181,16 +280,35 @@ extern "C"
 			HACD::Vec3<long> * trianglesCH = new HACD::Vec3<long>[nTriangles];
 			myHACD->GetCH(c, pointsCH, trianglesCH);
 			std::cout << "Points " << nPoints << std::endl;
+			
+			*nOutPoints[c] = static_cast<int>(nPoints);
+			*nOutTriangles[c] = static_cast<int>(nTriangles);
+			*pointsOut[c] = (double**)::CoTaskMemAlloc(sizeof(double*) * nTriangles);
+			*triangleOut[c] = (long**)::CoTaskMemAlloc(sizeof(long*) * nTriangles);
+
 			for (size_t v = 0; v < nPoints; ++v)
 			{
+				*pointsOut[c][v] = (double*)::CoTaskMemAlloc(sizeof(double) * 3);
+
+				*pointsOut[c][v][0] = pointsCH[v].X();
+				*pointsOut[c][v][1] = pointsCH[v].Y();
+				*pointsOut[c][v][2] = pointsCH[v].Z();
+
 				std::cout << v << "\t"
 					<< pointsCH[v].X() << "\t"
 					<< pointsCH[v].Y() << "\t"
 					<< pointsCH[v].Z() << std::endl;
 			}
+
 			std::cout << "Triangles " << nTriangles << std::endl;
 			for (size_t f = 0; f < nTriangles; ++f)
 			{
+				*triangleOut[c][f] = (long*)::CoTaskMemAlloc(sizeof(long) * 3);
+
+				*triangleOut[c][f][0] = trianglesCH[f].X();
+				*triangleOut[c][f][1] = trianglesCH[f].Y();
+				*triangleOut[c][f][2] = trianglesCH[f].Z();
+
 				std::cout << f << "\t"
 					<< trianglesCH[f].X() << "\t"
 					<< trianglesCH[f].Y() << "\t"
@@ -202,9 +320,7 @@ extern "C"
 
 		const HACD::Vec3<HACD::Real> * const decimatedPoints = myHACD->GetDecimatedPoints();
 		const HACD::Vec3<long> * const decimatedTriangles = myHACD->GetDecimatedTriangles();
-
 		
-
 		bool exportSepFiles = false;
 		if (exportSepFiles)
 		{
@@ -229,42 +345,9 @@ extern "C"
 		int* nTriangles,
 		bool invert)
 	{
-		
-		std::vector< HACD::Vec3<HACD::Real> > points_buf;
-		std::vector< HACD::Vec3<long> > triangles_buf;
-
 		std::string fileNameInternal(fileName);
 
-		bool res = LoadOFF(fileNameInternal, points_buf, triangles_buf, invert);
-
-		if (res)
-		{
-			*points = (double**)::CoTaskMemAlloc(sizeof(double*) * points_buf.size());
-			*nPoints = points_buf.size();
-
-			for (size_t i = 0; i < points_buf.size(); i++)
-			{
-				(*points)[i] = (double(*))::CoTaskMemAlloc(sizeof(double) * 3);
-
-				(*points)[i][0] = points_buf[i].X();
-				(*points)[i][1] = points_buf[i].Y();
-				(*points)[i][2] = points_buf[i].Z();
-			}
-
-			*triangles = (long**)::CoTaskMemAlloc(sizeof(long*) * triangles_buf.size());
-			*nTriangles = triangles_buf.size();
-
-			for (size_t i = 0; i < triangles_buf.size(); i++)
-			{
-				(*triangles)[i] = (long(*))::CoTaskMemAlloc(sizeof(long) * 3);
-
-				(*triangles)[i][0] = triangles_buf[i].X();
-				(*triangles)[i][1] = triangles_buf[i].Y();
-				(*triangles)[i][2] = triangles_buf[i].Z();
-			}
-		}
-
-		return res;
+		return LoadOFF(fileNameInternal, *points, nPoints, *triangles, nTriangles, invert);
 	}
 }
 
