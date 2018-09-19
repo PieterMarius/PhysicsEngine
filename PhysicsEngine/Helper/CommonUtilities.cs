@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.Helper
@@ -90,6 +91,28 @@ namespace SharpPhysicsEngine.Helper
             }
 
             return new Vector3d(xMax, yMax, zMax);
+        }
+
+        public static IAABB ExtractIAABBFromShape(IShape shape)
+        {
+            if (shape is ConvexShape)
+            {
+                return ((ConvexShape)shape).ObjectGeometry;
+            }
+            else if (shape is SimSoftShape)
+            {
+                return (SimSoftShape)shape;
+            }
+            else if (shape is ConcaveShape)
+            {
+                return ((ConcaveShape)shape).ObjectGeometry;
+            }
+            else if (shape is CompoundShape)
+            {
+                return null;
+            }
+
+            return null;
         }
     }
 }

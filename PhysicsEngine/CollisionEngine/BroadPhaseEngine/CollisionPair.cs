@@ -24,9 +24,11 @@
  *  
  *****************************************************************************/
 
+using System;
+
 namespace SharpPhysicsEngine.CollisionEngine
 {
-	internal struct CollisionPair
+	internal struct CollisionPair: IEquatable<CollisionPair>
 	{
 		public readonly int objectIndexA;
 		public readonly int objectIndexB;
@@ -38,6 +40,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			objectIndexA = indexA;
 			objectIndexB = indexB;
 		}
-	}
+
+        public bool Equals(CollisionPair other)
+        {
+            return (other.objectIndexA == objectIndexA && other.objectIndexB == objectIndexB) ||
+                   (other.objectIndexB == objectIndexA && other.objectIndexA == objectIndexB);
+        }
+    }
 }
 

@@ -42,6 +42,7 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine.ContinuosCollisionDetection;
 using SharpPhysicsEngine.SolutionIntegration;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
+using static SharpPhysicsEngine.Helper.CommonUtilities;
 
 namespace SharpPhysicsEngine
 {
@@ -557,28 +558,6 @@ namespace SharpPhysicsEngine
         private void RemoveObjFromHierarchicalTree(IShape shape)
         {
             HierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
-        }
-
-        private IAABB ExtractIAABBFromShape(IShape shape)
-        {
-            if (shape is ShapeDefinition.ConvexShape)
-            {
-                return ((ShapeDefinition.ConvexShape)shape).ObjectGeometry;
-            }
-            else if (shape is SimSoftShape)
-            {
-                return (SimSoftShape)shape;
-            }
-            else if (shape is ShapeDefinition.ConcaveShape)
-            {
-                return ((ShapeDefinition.ConcaveShape)shape).ObjectGeometry;
-            }
-            else if (shape is CompoundShape)
-            {
-                return null;
-            }
-
-            return null;
         }
 
         private void UpdateHierarchicalTree()

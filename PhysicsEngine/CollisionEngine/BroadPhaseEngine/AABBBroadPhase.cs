@@ -29,6 +29,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.LCPSolver;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -54,10 +55,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Public Methods
 
 		public List<CollisionPair> Execute(
-			AABB[] boxs,
+			IShape[] shapes,
 			double distanceTolerance)
 		{
-			var collisionPairs = new List<CollisionPair> ();
+            AABB[] boxs = Helper.GetAABB(shapes);
+            
+            var collisionPairs = new List<CollisionPair> ();
 
             var rangePartitioner = Partitioner.Create(0, boxs.Length, Convert.ToInt32(boxs.Length / collisionEngineParameters.MaxThreadNumber) + 1);
 

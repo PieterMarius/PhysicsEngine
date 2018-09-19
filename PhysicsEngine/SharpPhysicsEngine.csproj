@@ -59,7 +59,7 @@
     <Compile Include="CollisionEngine\BroadPhaseEngine\BroadPhaseEngineType.cs" />
     <Compile Include="CollisionEngine\BroadPhaseEngine\BruteForceBroadPhase.cs" />
     <Compile Include="CollisionEngine\BroadPhaseEngine\IBroadPhase.cs" />
-    <Compile Include="CollisionEngine\BroadPhaseEngine\SweepAndPrune.cs" />
+    <Compile Include="CollisionEngine\BroadPhaseEngine\HierarchicalTree.cs" />
     <Compile Include="CollisionEngine\CollisionDetectionEngine.cs" />
     <Compile Include="CollisionEngine\CollisionEngineParameters.cs" />
     <Compile Include="CollisionEngine\Common\CollisionPoint.cs" />
@@ -96,6 +96,7 @@
     <Compile Include="HashGenerator.cs" />
     <Compile Include="Helper\CommonUtilities.cs" />
     <Compile Include="Helper\DictionaryConstraintValue.cs" />
+    <Compile Include="Helper\PhysicsEngineConst.cs" />
     <Compile Include="K-Means\IKMeansInput.cs" />
     <Compile Include="K-Means\KMeans.cs" />
     <Compile Include="NonConvexDecomposition\Hierarchical Tree\ConcaveHierarchicalTree.cs" />

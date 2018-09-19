@@ -24,6 +24,7 @@
  *  
  *****************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.Helper;
@@ -350,6 +351,11 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             return a.Min[axisIndex] - b.Max[axisIndex] <= distanceTolerance &&
                    a.Max[axisIndex] - b.Min[axisIndex] >= -distanceTolerance;
+        }
+
+        public static AABB[] GetAABB(IShape[] shapes)
+        {
+            return Array.ConvertAll(shapes, x => x.AABBox);
         }
 
         #endregion

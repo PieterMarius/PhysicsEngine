@@ -29,20 +29,19 @@ using System.Collections.Generic;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
+using static SharpPhysicsEngine.Helper.PhysicsEngineConst;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
 	internal class CollisionDetectionEngine: ICollisionEngine
 	{
 		#region Private Fields
-
-		private const double normalTolerance = 1E-15;
-				
+        						
 		private readonly CollisionEngineParameters collisionEngineParameters;
         private INarrowPhase narrowPhase;
         private IBroadPhase broadPhaseEngine;
 
-        private AABBTree HierarchicalTree;
+        private readonly AABBTree HierarchicalTree;
 
         private readonly double CollisionDistance;
 
@@ -80,6 +79,14 @@ namespace SharpPhysicsEngine.CollisionEngine
            return ExecuteEngine(shapes); 
 		}
 
+
+        /// <summary>
+        /// Test collision between collision pair
+        /// </summary>
+        /// <param name="shapes"></param>
+        /// <param name="collisionPair"></param>
+        /// <param name="collisionDistance"></param>
+        /// <returns></returns>
         public List<CollisionPointStructure> Execute(
             IShape[] shapes,
             List<CollisionPair> collisionPair,
@@ -103,7 +110,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     break;
 
                 case BroadPhaseEngineType.HierarchicalTree:
-                    broadPhaseEngine = new HierarchicalTree(collisionEngineParameters, null);
+                    broadPhaseEngine = new HierarchicalTree(collisionEngineParameters, HierarchicalTree);
                     break;
 
                 case BroadPhaseEngineType.BruteForce:
@@ -115,9 +122,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         				
 		private List<CollisionPointStructure> ExecuteEngine(IShape[] shapes)
 		{
-            AABB[] boxs = GetAABB(shapes);
-			
-			List<CollisionPair> collisionPair = broadPhaseEngine.Execute (boxs, CollisionDistance);
+            List<CollisionPair> collisionPair = broadPhaseEngine.Execute (shapes, CollisionDistance);
 
             var result = narrowPhase.Execute(shapes, collisionPair, collisionEngineParameters.CollisionDistance);
 
@@ -132,10 +137,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             return narrowPhase.Execute(shapes, collisionPair, collisionDistance);
         }
 
-		private AABB[] GetAABB(IShape[] shapes)
-		{
-            return Array.ConvertAll(shapes, x => x.AABBox);
-		}
+		
         
         #endregion
 

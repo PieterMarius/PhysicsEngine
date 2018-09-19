@@ -24,53 +24,16 @@
  *  
  *****************************************************************************/
 
+using System;
 using System.Collections.Generic;
-using SharpEngineMathUtility;
-using SharpPhysicsEngine.ShapeDefinition;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SharpPhysicsEngine.CollisionEngine
+namespace SharpPhysicsEngine.Helper
 {
-    internal sealed class BruteForceBroadPhase : IBroadPhase
+    internal static class PhysicsEngineConst
     {
-        #region Fields
-
-        private readonly CollisionEngineParameters collisionEngineParameters;
-
-        #endregion
-
-        #region Contructor
-
-        public BruteForceBroadPhase(CollisionEngineParameters collisionEngineParameters)
-        {
-            this.collisionEngineParameters = collisionEngineParameters;
-        }
-
-        #endregion
-
-        #region Public Methods
-
-        public List<CollisionPair> Execute(
-            IShape[] shapes, 
-            double distanceTolerance)
-        {
-            AABB[] boxs = Helper.GetAABB(shapes);
-
-            var result = new List<CollisionPair>();
-
-            for (int i = 0; i < boxs.Length; i++)
-            {
-                for (int j = i; j < boxs.Length; j++)
-                    result.Add(new CollisionPair(i, j));
-            }
-
-            return result;
-        }
-
-        public Vector3d Execute(AABB boxA, AABB boxB)
-        {
-            return AABB.GetDist(boxA, boxB);
-        }
-
-        #endregion
+        public const double NormalTolerance = 1E-15;
     }
 }

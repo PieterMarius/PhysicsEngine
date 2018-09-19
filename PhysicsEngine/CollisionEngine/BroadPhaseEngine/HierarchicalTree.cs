@@ -31,6 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
+using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -58,11 +59,29 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         #region Public Methods
 
-        public List<CollisionPair> Execute(AABB[] boxs, double distanceTolerance)
+        public List<CollisionPair> Execute(
+            IShape[] shapes, 
+            double distanceTolerance)
         {
-            //hierarchicalTree.QueryOverlaps()
+            var result = new HashSet<CollisionPair>();
+            var IDs = new Dictionary<int, int>();
 
-            throw new NotImplementedException();
+            for (int i = 0; i < shapes.Length; i++)
+                IDs.Add(shapes[i].ID, i);
+            
+            for (int i = 0; i < shapes.Length; i++)
+            {
+                var overlaps = hierarchicalTree.QueryOverlaps(CommonUtilities.ExtractIAABBFromShape(shapes[i]));
+                foreach (var item in overlaps)
+                {
+                    var aabb = item.GetAABB();
+                    int ID = ((IShape)aabb.ObjectReference).ID;
+                    var cp = new CollisionPair(i, IDs[ID]);
+                    result.Add(cp);
+                }
+            }
+
+            return result.ToList();
         }
 
         public Vector3d Execute(AABB boxA, AABB boxB)

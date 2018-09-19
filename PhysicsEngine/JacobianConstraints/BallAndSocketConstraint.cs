@@ -35,13 +35,13 @@ namespace SharpPhysicsEngine
 	{
 		#region Fields
 
-		const JointType jointType = JointType.BallAndSocket;
-                
-        readonly Vector3d StartAnchorPoint;
-		readonly Vector3d StartErrorAxis1;
-		readonly Vector3d StartErrorAxis2;
-        		
-		Vector3d AnchorPoint;
+		private const JointType jointType = JointType.BallAndSocket;
+
+        private readonly Vector3d StartAnchorPoint;
+        private readonly Vector3d StartErrorAxis1;
+        private readonly Vector3d StartErrorAxis2;
+
+        private readonly Vector3d AnchorPoint;
 
         #endregion
 

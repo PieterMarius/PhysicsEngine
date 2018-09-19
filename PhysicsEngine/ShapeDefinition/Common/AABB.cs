@@ -25,11 +25,12 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using System;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal class AABB
+    internal class AABB: IAABB
     {
         #region Fields
 
@@ -168,6 +169,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public double GetDepth()
         {
             return Max.z - Min.z;
+        }
+
+        public AABB GetAABB()
+        {
+            return this;
+        }
+
+        public int CompareTo(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
