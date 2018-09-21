@@ -144,7 +144,7 @@ namespace SharpPhysicsEngine
         /// <summary>
         /// Hierarchical Tree of Simulation Object
         /// </summary>
-        private AABBTree HierarchicalTree;
+        //private AABBTree HierarchicalTree;
 
 
         #region Support Engines
@@ -208,11 +208,14 @@ namespace SharpPhysicsEngine
 
 			EngineParameters = simulationParameters;
 
-			CollisionEngine = new CollisionDetectionEngine(collisionEngineParameters, EngineParameters.CollisionDistance);
+            Shapes = new IShape[0];
+
+            CollisionEngine = new CollisionDetectionEngine(
+                collisionEngineParameters, 
+                EngineParameters.CollisionDistance);
 
 			contactPartitioningEngine = new ContactPartitioningEngine();
-
-			Shapes = new IShape[0];
+            			
             CollisionShapes = new List<ICollisionShape>();
             CollisionJoints = new List<ICollisionJoint>();
 			Joints = new List<IConstraint> ();
@@ -223,7 +226,7 @@ namespace SharpPhysicsEngine
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
-            HierarchicalTree = new AABBTree(1);
+            //HierarchicalTree = new AABBTree(1);
 
             //int minWorker, minIOC;
             //// Get the current settings.
@@ -276,7 +279,8 @@ namespace SharpPhysicsEngine
 
 			SoftShapes = Shapes.Where(x => (x as ISoftShape) != null).Cast<ISoftShape>().ToArray();
 
-            AddObjToHierarchicalTree(simObj);
+            CollisionEngine.AddShape(simObj);
+            //AddObjToHierarchicalTree(simObj);
 		}
 
 		public void RemoveShape(int shapeID)
@@ -306,7 +310,8 @@ namespace SharpPhysicsEngine
 
                     #region Remove shape
 
-                    RemoveObjFromHierarchicalTree(bufferList[shapeIndex]);
+                    //RemoveObjFromHierarchicalTree(bufferList[shapeIndex]);
+                    CollisionEngine.RemoveShape(bufferList[shapeIndex]);
 
 					bufferList.RemoveAt(shapeIndex);
 					Shapes = bufferList.ToArray();
@@ -338,18 +343,20 @@ namespace SharpPhysicsEngine
 			return CollisionShapes.ToArray();
 		}
 
-        public List<Tuple<Vector3d,Vector3d>> GetHierarchicalTreeAABB()
+        public List<Tuple<Vector3d, Vector3d>> GetHierarchicalTreeAABB()
         {
             var result = new List<Tuple<Vector3d, Vector3d>>();
-            var nodes = HierarchicalTree.GetNodes();
-            
-            for (int i = 0; i < nodes.Count; i++)
+            var nodes = CollisionEngine.GetHierarchicalTree();
+
+            if (nodes != null)
             {
-                //if (nodes[i].Obj != null)
+                for (int i = 0; i < nodes.Count; i++)
                     result.Add(new Tuple<Vector3d, Vector3d>(nodes[i].aabb.Min, nodes[i].aabb.Max));
+                
+                return result;
             }
 
-            return result;
+            return null;
         }
 
         public List<Tuple<Vector3d, Vector3d>> GetShapesAABB()
@@ -376,22 +383,22 @@ namespace SharpPhysicsEngine
         }
 
         //TODO Test Hierarchical tree intersection
-        public List<Tuple<Vector3d, Vector3d>> GetHierarchicalIntersection()
-        {
-            var result = new List<Tuple<Vector3d, Vector3d>>();
-            int height = HierarchicalTree.GetMaxHeight();
+        //public List<Tuple<Vector3d, Vector3d>> GetHierarchicalIntersection()
+        //{
+        //    var result = new List<Tuple<Vector3d, Vector3d>>();
+        //    int height = HierarchicalTree.GetMaxHeight();
             
-            for (int i = 0; i < Shapes.Length; i++)
-            {
-                var overlaps = HierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(Shapes[i]));
-                foreach (var item in overlaps)
-                {
-                    var aabb = item.GetAABB();
-                    result.Add(new Tuple<Vector3d, Vector3d>(aabb.Min, aabb.Max));
-                }
-            }
-            return result;
-        }
+        //    for (int i = 0; i < Shapes.Length; i++)
+        //    {
+        //        var overlaps = HierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(Shapes[i]));
+        //        foreach (var item in overlaps)
+        //        {
+        //            var aabb = item.GetAABB();
+        //            result.Add(new Tuple<Vector3d, Vector3d>(aabb.Min, aabb.Max));
+        //        }
+        //    }
+        //    return result;
+        //}
 
         #endregion
 
@@ -525,9 +532,9 @@ namespace SharpPhysicsEngine
             //TODO Test
             for (int i = 0; i < Shapes.Length; i++)
             {
-                HierarchicalTree.UpdateObject(ExtractIAABBFromShape(Shapes[i]));
+                CollisionEngine.UpdateShape(Shapes[i]);
             }
-		}
+        }
 
 		public void Simulate()
 		{
@@ -550,20 +557,20 @@ namespace SharpPhysicsEngine
             PhysicsExecutionFlow();
         }
 
-        private void AddObjToHierarchicalTree(IShape shape)
-        {
-            HierarchicalTree.InsertObject(ExtractIAABBFromShape(shape));
-        }
+        //private void AddObjToHierarchicalTree(IShape shape)
+        //{
+        //    HierarchicalTree.InsertObject(ExtractIAABBFromShape(shape));
+        //}
 
-        private void RemoveObjFromHierarchicalTree(IShape shape)
-        {
-            HierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
-        }
+        //private void RemoveObjFromHierarchicalTree(IShape shape)
+        //{
+        //    HierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
+        //}
 
-        private void UpdateHierarchicalTree()
-        {
-
-        }
+        //private void UpdateHierarchicalTree()
+        //{
+        //    HierarchicalTree.UpdateObject();
+        //}
 
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
 		{
@@ -686,7 +693,7 @@ namespace SharpPhysicsEngine
 
             //collisionDist = 100.0;
 
-           // var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair, collisionDist);
+            // var actualCollisionPoints = CollisionEngine.Execute(simShapes, collisionPair, collisionDist);
 
             var actualCollisionPoints = CollisionEngine.Execute(simShapes);
 

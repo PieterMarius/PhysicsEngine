@@ -217,6 +217,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ref List<SupportTriangle> triangles,
 			Support[] startPoint)
 		{
+            if (startPoint.Length < 4)
+                return new Vector3d();
+
             var triangleSupport = new List<Support>
             {
                 startPoint[0],
@@ -226,7 +229,6 @@ namespace SharpPhysicsEngine.CollisionEngine
             };
 
             //First triangle
-
             triangles.Add(
 				AddTriangle(
 				triangleSupport[0],
@@ -234,24 +236,21 @@ namespace SharpPhysicsEngine.CollisionEngine
 				triangleSupport[2]));
 
 			//Second triangle
-
-			triangles.Add(
+            triangles.Add(
 				AddTriangle(
 				triangleSupport[0],
 				triangleSupport[1],
 				triangleSupport[3]));
 
 			//Third triangle
-
-			triangles.Add(
+            triangles.Add(
 				AddTriangle(
 				triangleSupport[0],
 				triangleSupport[2],
 				triangleSupport[3]));
 
 			//Fourth triangle
-
-			triangles.Add(
+            triangles.Add(
 				AddTriangle(
 				triangleSupport[1],
 				triangleSupport[2],

@@ -33,6 +33,7 @@ using SharpEngineMathUtility;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
+using static SharpPhysicsEngine.Helper.CommonUtilities;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -40,19 +41,18 @@ namespace SharpPhysicsEngine.CollisionEngine
     {
         #region Fields
 
-        private CollisionEngineParameters collisionEngineParameters;
+        private readonly CollisionEngineParameters collisionEngineParameters;
         private readonly AABBTree hierarchicalTree;
-                    
+        
         #endregion
 
         #region Contructor
 
         public HierarchicalTree(
-            CollisionEngineParameters collisionEngineParameters,
-            AABBTree hierarchicalTree)
+            CollisionEngineParameters collisionEngineParameters)
         {
             this.collisionEngineParameters = collisionEngineParameters;
-            this.hierarchicalTree = hierarchicalTree;
+            this.hierarchicalTree = new AABBTree(1);
         }
 
         #endregion
@@ -60,7 +60,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         #region Public Methods
 
         public List<CollisionPair> Execute(
-            IShape[] shapes, 
+            IShape[] shapes,
             double distanceTolerance)
         {
             var result = new HashSet<CollisionPair>();
@@ -71,7 +71,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             
             for (int i = 0; i < shapes.Length; i++)
             {
-                var overlaps = hierarchicalTree.QueryOverlaps(CommonUtilities.ExtractIAABBFromShape(shapes[i]));
+                var overlaps = hierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(shapes[i]));
                 foreach (var item in overlaps)
                 {
                     var aabb = item.GetAABB();
@@ -87,6 +87,35 @@ namespace SharpPhysicsEngine.CollisionEngine
         public Vector3d Execute(AABB boxA, AABB boxB)
         {
             throw new NotImplementedException();
+        }
+
+        public void RemoveShape(IShape shape)
+        {
+            hierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
+        }
+
+        public void AddShape(IShape shape)
+        {
+            hierarchicalTree.InsertObject(ExtractIAABBFromShape(shape));
+        }
+
+        public void UpdateShape(IShape shape)
+        {
+            hierarchicalTree.UpdateObject(ExtractIAABBFromShape(shape));
+        }
+
+        public List<AABBNode> GetNodes()
+        {
+            return hierarchicalTree.GetNodes();
+        }
+
+        #endregion
+
+        #region Private Methods
+                
+        private void UpdateHierarchicalTree()
+        {
+
         }
 
         #endregion

@@ -104,7 +104,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ManifoldPointNumber = 4;
 			MaxThreadNumber = 2;
             CollisionDistance = 0.001;
-			BroadPhaseType = BroadPhaseEngineType.AABBBroadPhase;
+			BroadPhaseType = BroadPhaseEngineType.BruteForce;
 		}
 
 		public CollisionEngineParameters (

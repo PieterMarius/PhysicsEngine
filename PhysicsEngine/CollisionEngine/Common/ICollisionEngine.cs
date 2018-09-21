@@ -26,6 +26,7 @@
 
 using System.Collections.Generic;
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -39,6 +40,10 @@ namespace SharpPhysicsEngine.CollisionEngine
             List<CollisionPair> collisionPair,
             double collisionDistance);
 
+        void AddShape(IShape newShape);
+        void RemoveShape(IShape oldShape);
+        void UpdateShape(IShape shape);
+        List<AABBNode> GetHierarchicalTree();
     }
 }
 

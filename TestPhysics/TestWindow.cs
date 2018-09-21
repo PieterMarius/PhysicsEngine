@@ -1204,40 +1204,41 @@ namespace TestPhysics
 
         private void DisplayHierarchicalIntersection()
         {
-            var aabb = physicsEngine.GetHierarchicalIntersection();
-            //var aabb = physicsEngine.GetShapesAABB();
+            return;
+            //var aabb = physicsEngine.GetHierarchicalIntersection();
+            ////var aabb = physicsEngine.GetShapesAABB();
 
-            for (int i = 0; i < aabb.Count; i++)
-            {
-                SharpEngineMathUtility.Vector3d b1 = aabb[i].Item1;
-                SharpEngineMathUtility.Vector3d b2 = aabb[i].Item2;
+            //for (int i = 0; i < aabb.Count; i++)
+            //{
+            //    SharpEngineMathUtility.Vector3d b1 = aabb[i].Item1;
+            //    SharpEngineMathUtility.Vector3d b2 = aabb[i].Item2;
 
-                SharpEngineMathUtility.Vector3d b3 = new SharpEngineMathUtility.Vector3d(b1.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3d b4 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b1.z);
-                SharpEngineMathUtility.Vector3d b5 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b1.z);
-                SharpEngineMathUtility.Vector3d b6 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b2.z);
-                SharpEngineMathUtility.Vector3d b7 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b2.z);
-                SharpEngineMathUtility.Vector3d b8 = new SharpEngineMathUtility.Vector3d(b2.x, b2.y, b1.z);
+            //    SharpEngineMathUtility.Vector3d b3 = new SharpEngineMathUtility.Vector3d(b1.x, b1.y, b2.z);
+            //    SharpEngineMathUtility.Vector3d b4 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b1.z);
+            //    SharpEngineMathUtility.Vector3d b5 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b1.z);
+            //    SharpEngineMathUtility.Vector3d b6 = new SharpEngineMathUtility.Vector3d(b1.x, b2.y, b2.z);
+            //    SharpEngineMathUtility.Vector3d b7 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b2.z);
+            //    SharpEngineMathUtility.Vector3d b8 = new SharpEngineMathUtility.Vector3d(b2.x, b2.y, b1.z);
 
-                GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
+            //    GL.Color4(1.0f, 0.0f, 0.0f, 1.0f);
 
-                OpenGLUtilities.DrawLine(b6, b2);
-                OpenGLUtilities.DrawLine(b2, b8);
-                OpenGLUtilities.DrawLine(b8, b4);
-                OpenGLUtilities.DrawLine(b4, b6);
+            //    OpenGLUtilities.DrawLine(b6, b2);
+            //    OpenGLUtilities.DrawLine(b2, b8);
+            //    OpenGLUtilities.DrawLine(b8, b4);
+            //    OpenGLUtilities.DrawLine(b4, b6);
 
-                OpenGLUtilities.DrawLine(b3, b7);
-                OpenGLUtilities.DrawLine(b7, b5);
-                OpenGLUtilities.DrawLine(b5, b1);
-                OpenGLUtilities.DrawLine(b1, b3);
+            //    OpenGLUtilities.DrawLine(b3, b7);
+            //    OpenGLUtilities.DrawLine(b7, b5);
+            //    OpenGLUtilities.DrawLine(b5, b1);
+            //    OpenGLUtilities.DrawLine(b1, b3);
 
-                OpenGLUtilities.DrawLine(b6, b3);
-                OpenGLUtilities.DrawLine(b2, b7);
-                OpenGLUtilities.DrawLine(b8, b5);
-                OpenGLUtilities.DrawLine(b4, b1);
+            //    OpenGLUtilities.DrawLine(b6, b3);
+            //    OpenGLUtilities.DrawLine(b2, b7);
+            //    OpenGLUtilities.DrawLine(b8, b5);
+            //    OpenGLUtilities.DrawLine(b4, b1);
 
-                GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
-            }
+            //    GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+            //}
         }
 
         private void displayOctree()

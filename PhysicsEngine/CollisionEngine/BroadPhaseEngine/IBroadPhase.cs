@@ -33,12 +33,10 @@ namespace SharpPhysicsEngine.CollisionEngine
 {
     internal interface IBroadPhase
     {
-        List<CollisionPair> Execute(
-            IShape[] shapes,
-            double distanceTolerance);
-
-        Vector3d Execute(
-            AABB boxA,
-            AABB boxB);
+        List<CollisionPair> Execute(IShape[] shapes, double distanceTolerance);
+        Vector3d Execute(AABB boxA, AABB boxB);
+        void AddShape(IShape shape);
+        void RemoveShape(IShape shape);
+        void UpdateShape(IShape shape);
     }
 }

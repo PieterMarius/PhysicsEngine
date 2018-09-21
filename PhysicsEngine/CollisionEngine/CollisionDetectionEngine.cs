@@ -28,8 +28,8 @@ using System;
 using System.Collections.Generic;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using static SharpPhysicsEngine.Helper.PhysicsEngineConst;
+using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 
 namespace SharpPhysicsEngine.CollisionEngine
 {
@@ -40,9 +40,6 @@ namespace SharpPhysicsEngine.CollisionEngine
 		private readonly CollisionEngineParameters collisionEngineParameters;
         private INarrowPhase narrowPhase;
         private IBroadPhase broadPhaseEngine;
-
-        private readonly AABBTree HierarchicalTree;
-
         private readonly double CollisionDistance;
 
 		#endregion
@@ -51,15 +48,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public CollisionDetectionEngine (
 			CollisionEngineParameters collisionEngineParameters,
-			double collisionDistance)
+            double collisionDistance)
 		{
 			this.collisionEngineParameters = collisionEngineParameters;
-
+            
             narrowPhase = new NarrowPhase(collisionEngineParameters);
             SetBroadPhaseEngine();
 
 			CollisionDistance = collisionDistance;
-            HierarchicalTree = new AABBTree(1);
+            
         }
 
 		#endregion
@@ -95,6 +92,29 @@ namespace SharpPhysicsEngine.CollisionEngine
             return ExecuteEngine(shapes, collisionPair, collisionDistance);
         }
 
+        public void AddShape(IShape newShape)
+        {
+            broadPhaseEngine.AddShape(newShape);
+        }
+
+        public void RemoveShape(IShape oldShape)
+        {
+            broadPhaseEngine.RemoveShape(oldShape);
+        }
+
+        public void UpdateShape(IShape shape)
+        {
+            broadPhaseEngine.UpdateShape(shape);
+        }
+
+        public List<AABBNode> GetHierarchicalTree()
+        {
+            if (broadPhaseEngine is HierarchicalTree ht)
+                return ht.GetNodes();
+
+            return null;
+        }
+
         #endregion
 
         #endregion
@@ -110,7 +130,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     break;
 
                 case BroadPhaseEngineType.HierarchicalTree:
-                    broadPhaseEngine = new HierarchicalTree(collisionEngineParameters, HierarchicalTree);
+                    broadPhaseEngine = new HierarchicalTree(collisionEngineParameters);
                     break;
 
                 case BroadPhaseEngineType.BruteForce:
@@ -137,8 +157,6 @@ namespace SharpPhysicsEngine.CollisionEngine
             return narrowPhase.Execute(shapes, collisionPair, collisionDistance);
         }
 
-		
-        
         #endregion
 
     }

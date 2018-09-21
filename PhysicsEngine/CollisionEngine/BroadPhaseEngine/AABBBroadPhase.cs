@@ -40,61 +40,67 @@ namespace SharpPhysicsEngine.CollisionEngine
 		#region Fields
 
 		CollisionEngineParameters collisionEngineParameters;
+        private readonly IShape[] shapes;
 
-		#endregion
+        #endregion
 
-		#region Contructor
+        #region Contructor
 
-		public AABBBroadPhase(CollisionEngineParameters collisionEngineParameters)
+        public AABBBroadPhase(CollisionEngineParameters collisionEngineParameters)
+        {
+            this.collisionEngineParameters = collisionEngineParameters;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public List<CollisionPair> Execute(
+            IShape[] shapes, 
+            double distanceTolerance)
 		{
-			this.collisionEngineParameters = collisionEngineParameters;
-		}
+            if (shapes != null)
+            {
+                AABB[] boxs = Helper.GetAABB(shapes);
 
-		#endregion
+                var collisionPairs = new List<CollisionPair>();
 
-		#region Public Methods
+                var rangePartitioner = Partitioner.Create(0, boxs.Length, Convert.ToInt32(boxs.Length / collisionEngineParameters.MaxThreadNumber) + 1);
 
-		public List<CollisionPair> Execute(
-			IShape[] shapes,
-			double distanceTolerance)
-		{
-            AABB[] boxs = Helper.GetAABB(shapes);
-            
-            var collisionPairs = new List<CollisionPair> ();
+                var lockMe = new object();
 
-            var rangePartitioner = Partitioner.Create(0, boxs.Length, Convert.ToInt32(boxs.Length / collisionEngineParameters.MaxThreadNumber) + 1);
-
-            var lockMe = new object();
-
-			Parallel.ForEach (
-                rangePartitioner, 
-				new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
-                (range, loopState) => 
-                {
-                    for (int i = range.Item1; i < range.Item2; i++)
+                Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = collisionEngineParameters.MaxThreadNumber },
+                    (range, loopState) =>
                     {
-                        AABB box1 = boxs[i];
-
-                        for (int k = i + 1; k < boxs.Length; k++)
+                        for (int i = range.Item1; i < range.Item2; i++)
                         {
-                            AABB box2 = boxs[k];
+                            AABB box1 = boxs[i];
 
-                            if (box1 != null && box2 != null &&
-                                Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
-                                Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
-                                Helper.TestBoxes(box1, box2, 2, distanceTolerance))
+                            for (int k = i + 1; k < boxs.Length; k++)
                             {
-                                lock (lockMe)
+                                AABB box2 = boxs[k];
+
+                                if (box1 != null && box2 != null &&
+                                    Helper.TestBoxes(box1, box2, 0, distanceTolerance) &&
+                                    Helper.TestBoxes(box1, box2, 1, distanceTolerance) &&
+                                    Helper.TestBoxes(box1, box2, 2, distanceTolerance))
                                 {
-                                    collisionPairs.Add(new CollisionPair(i, k));
+                                    lock (lockMe)
+                                    {
+                                        collisionPairs.Add(new CollisionPair(i, k));
+                                    }
                                 }
                             }
                         }
-                    }
-					
-				});
 
-			return collisionPairs;
+                    });
+
+                return collisionPairs;
+            }
+
+            return null;
 		}
 
         public List<CollisionPair> Execute(
@@ -143,11 +149,26 @@ namespace SharpPhysicsEngine.CollisionEngine
             return AABB.GetDist(boxA, boxB);
         }
 
+        public void AddShape(IShape shape)
+        {
+            return;
+        }
+
+        public void RemoveShape(IShape shape)
+        {
+            return;
+        }
+
+        public void UpdateShape(IShape shape)
+        {
+            return;
+        }
+
         #endregion
 
         #region Private Methods
-               
-		#endregion
-	}
+
+        #endregion
+    }
 }
 

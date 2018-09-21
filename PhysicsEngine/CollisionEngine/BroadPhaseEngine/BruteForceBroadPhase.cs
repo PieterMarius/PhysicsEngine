@@ -35,7 +35,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         #region Fields
 
         private readonly CollisionEngineParameters collisionEngineParameters;
-
+        
         #endregion
 
         #region Contructor
@@ -44,7 +44,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             this.collisionEngineParameters = collisionEngineParameters;
         }
-
+        
         #endregion
 
         #region Public Methods
@@ -59,7 +59,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             for (int i = 0; i < boxs.Length; i++)
             {
-                for (int j = i; j < boxs.Length; j++)
+                for (int j = i + 1; j < boxs.Length; j++)
                     result.Add(new CollisionPair(i, j));
             }
 
@@ -69,6 +69,21 @@ namespace SharpPhysicsEngine.CollisionEngine
         public Vector3d Execute(AABB boxA, AABB boxB)
         {
             return AABB.GetDist(boxA, boxB);
+        }
+
+        public void RemoveShape(IShape shape)
+        {
+            return;
+        }
+
+        public void AddShape(IShape shape)
+        {
+            return;
+        }
+
+        public void UpdateShape(IShape shape)
+        {
+            return;
         }
 
         #endregion
