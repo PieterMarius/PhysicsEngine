@@ -28,7 +28,7 @@ using SharpEngineMathUtility;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
-    internal abstract class Shape : IShape, IDentity
+    internal abstract class Shape : IShape
     {
         #region Fields
 

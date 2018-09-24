@@ -37,8 +37,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
         public Vector3d Min { get; set; }
         public Vector3d Max { get; set; }
         public object ObjectReference { get; set; }
-        public bool positionAABBChanged { get; private set; }
-        public double SurfaceArea { get; }
+        public bool UpdateAABB { get; private set; }
+        public double SurfaceArea { get; private set; }
                 
 		#endregion
 
@@ -57,7 +57,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			Min = new Vector3d(minX, minY, minZ);
 			Max = new Vector3d(maxX, maxY, maxZ);
             ObjectReference = objectID;
-			positionAABBChanged = positionChanged;
+			UpdateAABB = positionChanged;
             SurfaceArea = CalculateSurfaceArea();
 		}
 
@@ -78,7 +78,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		public void SetPositionChanged(bool value)
 		{
-			positionAABBChanged = value; 
+			UpdateAABB = value; 
 		}
 
 		public bool Contains(AABB box)

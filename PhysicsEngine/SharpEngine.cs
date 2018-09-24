@@ -116,8 +116,7 @@ namespace SharpPhysicsEngine
 		/// Partitions elements
 		/// </summary>
 		private List<Partition> Partitions;
-
-		
+        		
 
         private Dictionary<int, StabilizationValues> PreviousShapesProperties;
 
@@ -201,12 +200,10 @@ namespace SharpPhysicsEngine
 			SolverParameters solverParameters)
 		{
 			SolverParameters = solverParameters;
+            CollisionEngineParam = collisionEngineParameters;
+            EngineParameters = simulationParameters;
 
-			SetSolverType(SolverType.ProjectedGaussSeidel);
-
-			CollisionEngineParam = collisionEngineParameters;
-
-			EngineParameters = simulationParameters;
+            SetSolverType(SolverType.ProjectedGaussSeidel);
 
             Shapes = new IShape[0];
 
@@ -226,8 +223,7 @@ namespace SharpPhysicsEngine
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
-            //HierarchicalTree = new AABBTree(1);
-
+            
             //int minWorker, minIOC;
             //// Get the current settings.
             //ThreadPool.GetMinThreads(out minWorker, out minIOC);
@@ -238,7 +234,10 @@ namespace SharpPhysicsEngine
         }
 
 		public SharpEngine()
-			: this(new PhysicsEngineParameters(), new CollisionEngineParameters(), new SolverParameters())
+			: this(
+                  new PhysicsEngineParameters(), 
+                  new CollisionEngineParameters(), 
+                  new SolverParameters())
 		{ }
 
 		#endregion
@@ -254,12 +253,12 @@ namespace SharpPhysicsEngine
 
             if (simObj is ISoftShape softShape)
             {
-                ((IDentity)softShape).SetID(HsGenerator.GetHash());
+                softShape.SetID(HsGenerator.GetHash());
                 foreach (var point in softShape.ShapePoints)
-                    ((IDentity)point).SetID(HsGenerator.GetHash());
+                    point.SetID(HsGenerator.GetHash());
             }
             else
-                ((IDentity)simObj).SetID(HsGenerator.GetHash());
+                simObj.SetID(HsGenerator.GetHash());
 
             if (Shapes != null && 
 				Shapes.Length > 0) 
@@ -277,10 +276,11 @@ namespace SharpPhysicsEngine
                 Shapes = bufferList.ToArray ();
 			}
 
-			SoftShapes = Shapes.Where(x => (x as ISoftShape) != null).Cast<ISoftShape>().ToArray();
+			SoftShapes = Shapes.Where(x => (x as ISoftShape) != null)
+                               .Cast<ISoftShape>()
+                               .ToArray();
 
             CollisionEngine.AddShape(simObj);
-            //AddObjToHierarchicalTree(simObj);
 		}
 
 		public void RemoveShape(int shapeID)
@@ -310,7 +310,6 @@ namespace SharpPhysicsEngine
 
                     #region Remove shape
 
-                    //RemoveObjFromHierarchicalTree(bufferList[shapeIndex]);
                     CollisionEngine.RemoveShape(bufferList[shapeIndex]);
 
 					bufferList.RemoveAt(shapeIndex);
@@ -528,12 +527,6 @@ namespace SharpPhysicsEngine
             }
             else
                 ExecuteFlow();
-
-            //TODO Test
-            for (int i = 0; i < Shapes.Length; i++)
-            {
-                CollisionEngine.UpdateShape(Shapes[i]);
-            }
         }
 
 		public void Simulate()
@@ -551,27 +544,10 @@ namespace SharpPhysicsEngine
         private void ExecuteFlow()
         {
             CollisionDetection();
-
             PartitionEngineExecute();
-
             PhysicsExecutionFlow();
         }
-
-        //private void AddObjToHierarchicalTree(IShape shape)
-        //{
-        //    HierarchicalTree.InsertObject(ExtractIAABBFromShape(shape));
-        //}
-
-        //private void RemoveObjFromHierarchicalTree(IShape shape)
-        //{
-        //    HierarchicalTree.RemoveObject(ExtractIAABBFromShape(shape));
-        //}
-
-        //private void UpdateHierarchicalTree()
-        //{
-        //    HierarchicalTree.UpdateObject();
-        //}
-
+                
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
 		{
 			var sorted = jacobianContact.Select((x, i) => new KeyValuePair<JacobianConstraint, int>(x, i)).
@@ -601,8 +577,6 @@ namespace SharpPhysicsEngine
             
             if (Partitions != null) 
 			{
-                Console.WriteLine("Partitions " + Partitions.Count);
-
                 for (int i = 0; i < Partitions.Count;i++)
 				{
                     JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
@@ -615,10 +589,10 @@ namespace SharpPhysicsEngine
 					{
                         double[] overallSolution = new double[jacobianConstraints.Length];
                                                                         	                      
-                        LinearProblemProperties overallLCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
+                        LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
                                                                         
-                        if (overallLCP != null)
-						    overallSolution = Solver.Solve(overallLCP, overallLCP.StartImpulse);
+                        if (LCP != null)
+						    overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
 
                         IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
                     }
@@ -630,6 +604,7 @@ namespace SharpPhysicsEngine
             #region Position and Velocity integration
                         
             IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep);
+            UpdateHierarchicalTree();
 
             #endregion
 
@@ -782,6 +757,12 @@ namespace SharpPhysicsEngine
             Console.WriteLine("TimeStep " + TimeStep);
 
             return collisionPair;
+        }
+
+        private void UpdateHierarchicalTree()
+        {
+            for (int i = 0; i < Shapes.Length; i++)
+                CollisionEngine.UpdateShape(Shapes[i]);
         }
 
 		#endregion

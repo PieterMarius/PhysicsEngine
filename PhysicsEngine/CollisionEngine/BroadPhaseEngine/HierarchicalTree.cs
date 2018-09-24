@@ -72,6 +72,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             for (int i = 0; i < shapes.Length; i++)
             {
                 var overlaps = hierarchicalTree.QueryOverlaps(ExtractIAABBFromShape(shapes[i]));
+
                 foreach (var item in overlaps)
                 {
                     var aabb = item.GetAABB();
@@ -101,7 +102,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 
         public void UpdateShape(IShape shape)
         {
-            hierarchicalTree.UpdateObject(ExtractIAABBFromShape(shape));
+            var box = ExtractIAABBFromShape(shape);
+            if (box.GetAABB().UpdateAABB)
+                hierarchicalTree.UpdateObject(box);
         }
 
         public List<AABBNode> GetNodes()

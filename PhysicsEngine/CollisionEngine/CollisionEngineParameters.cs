@@ -78,11 +78,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set;}
 
-		/// <summary>
-		/// Gets a value indicating whether this CollisionEngineParameters activate sweep and prune.
-		/// </summary>
-		/// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
-		public BroadPhaseEngineType BroadPhaseType { get; private set;}
+        /// <summary>
+        /// Gets a value indicating whether this CollisionEngineParameters activate sweep and prune.
+        /// </summary>
+        /// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
+        public readonly BroadPhaseEngineType BroadPhaseType;
 
         /// <summary>
         /// Collision distance
@@ -104,7 +104,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			ManifoldPointNumber = 4;
 			MaxThreadNumber = 2;
             CollisionDistance = 0.001;
-			BroadPhaseType = BroadPhaseEngineType.BruteForce;
+			BroadPhaseType = BroadPhaseEngineType.HierarchicalTree;
 		}
 
 		public CollisionEngineParameters (

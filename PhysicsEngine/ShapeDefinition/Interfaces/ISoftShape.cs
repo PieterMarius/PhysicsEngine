@@ -50,5 +50,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetConstraintsSpringCoefficient(double springCoeff);
         void AddToConstraintsErrorReductionParam(double value);
         void AddToConstraintsSpringCoefficient(double value);
+        void SetID(int id);
     }
 }

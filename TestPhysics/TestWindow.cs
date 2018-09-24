@@ -361,7 +361,7 @@ namespace TestPhysics
             //displayOrigin ();
             displayContact();
             //DisplayHierarchicalTree();
-            DisplayHierarchicalIntersection();
+            //DisplayHierarchicalIntersection();
             //DisplayConcaveShape(1);
             //DisplayConcaveShape(2);
             //displayBaseContact();

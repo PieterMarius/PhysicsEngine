@@ -53,5 +53,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         void SetTempLinearVelocity(Vector3d inputLinearVelocity);
         void SetRotationMatrix(Matrix3x3 inputRotationMatrix);
         void SetIsStatic(bool isStatic);
+        void SetID(int id);
     }
 }

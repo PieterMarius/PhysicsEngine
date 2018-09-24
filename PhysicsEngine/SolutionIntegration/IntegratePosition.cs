@@ -143,11 +143,13 @@ namespace SharpPhysicsEngine.SolutionIntegration
 
             double linearVelocity = shape.LinearVelocity.Length();
             double angularVelocity = shape.AngularVelocity.Length();
+            shape.AABBox.SetPositionChanged(false);
 
             if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
                 (linearVelocity > 0.0 || angularVelocity > 0.0))
             {
                 shape.SetAABB();
+                shape.AABBox.SetPositionChanged(true);
             }
 
             #endregion

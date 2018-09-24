@@ -74,7 +74,6 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
 
         #region Public Methods
 
-        //const
         public void InsertObject(IAABB obj)
         {
             int nodeIndex = AllocateNode();
@@ -85,7 +84,6 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             objectNodeIndexMap.Add(obj, nodeIndex);
         }
         
-        //const
         public void RemoveObject(IAABB obj)
         {
             int nodeIndex = objectNodeIndexMap[obj];
@@ -94,14 +92,12 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             objectNodeIndexMap.Remove(obj);
         }
 
-        //const
         public void UpdateObject(IAABB obj)
         {
             int nodeIndex = objectNodeIndexMap[obj];
             UpdateLeaf(nodeIndex, obj.GetAABB());
         }
         
-        //obj const and list
         public List<IAABB> QueryOverlaps(IAABB obj)
         {
             List<IAABB> overlaps = new List<IAABB>();
@@ -334,7 +330,6 @@ namespace SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree
             leafNode.ParentNodeIndex = null;
         }
 
-        //const newAABB
         private void UpdateLeaf(int leafNodeIndex, AABB newAABB)
         {
             AABBNode node = Nodes[leafNodeIndex];
