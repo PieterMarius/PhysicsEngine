@@ -236,7 +236,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new PerformaceAndStackTest();
+            var env = new FrictionTest();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -448,7 +448,7 @@ namespace TestPhysics
                     //    pause = true;
 
 
-                    //pause = true;
+                    pause = true;
                     //if (elapsedTime > 6.0)
                     //	Exit();
 

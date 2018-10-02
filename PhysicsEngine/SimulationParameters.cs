@@ -164,7 +164,7 @@ namespace SharpPhysicsEngine
 			ShiftToStaticFrictionTolerance = 0.05;
 			CCD = false;
 			CollisionDistance = 0.003;
-            CompenetrationTolerance = 0.05;
+            CompenetrationTolerance = 0.001;
 			ExternalForce = new Vector3d(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
 			MaxThreadNumber = 4;

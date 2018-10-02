@@ -126,8 +126,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			for (int i = 0; i < vertexObj.Length; i++) 
 			{
                 Vector3d diff = collisionPoint - vertexObj[i];
+
                 if (diff == Vector3d.Zero())
+                {
+                    collisionPoints.Add(vertexObj[i]);
                     continue;
+                }
 
 				Vector3d nt = Vector3d.Normalize(diff);
 
@@ -144,7 +148,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			CollisionPoint cp)
 		{
 			var result = new List<CollisionPoint> ();
-
+            
 			if (ca.Length == 2 && cb.Length == 2) 
 			{
 				CollisionPoint collisionP = TestEdgesIntersection (
@@ -243,15 +247,16 @@ namespace SharpPhysicsEngine.CollisionEngine
 					}
 				}
 			}
+            else
+            {
+                return result.Add(cp);
+            }
 
-            if (ManifoldPointNumber == 4)
+            if (ManifoldPointNumber == 4 && result.Count > 4)
                 result = ExtractFourCollisionPoints(result, cp.CollisionNormal);
             else
                 result = ExtractCollisionPoints(result, cp.CollisionNormal);
-
-            if (result.Count < 4)
-                result.Add(cp);
-
+                        
             return result;
         }
 

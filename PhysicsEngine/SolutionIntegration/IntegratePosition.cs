@@ -166,7 +166,8 @@ namespace SharpPhysicsEngine.SolutionIntegration
             IShape shape,
             double timeStep)
         {
-            ObjectSleep(shape);
+            if (EngineParameters.SleepingObject)
+                ObjectSleep(shape);
 
             #region Linear Velocity
 

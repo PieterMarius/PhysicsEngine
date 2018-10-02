@@ -161,7 +161,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             if (epaOutput.CollisionPoint.CollisionNormal.Length() < normalTolerance)
                 return null;
-
+                        
             List<CollisionPoint> collisionPointsList = null;
 
             collisionPointsList = manifoldEPAPointsGenerator.GetManifoldPoints(

@@ -71,8 +71,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 		/// <param name="shape2">Shape2.</param>
 		/// <param name="startPoint">Start point.</param>
 		private EngineCollisionPoint ExecuteEngine(
-			VertexProperties[] vertexShape1,
-			VertexProperties[] vertexShape2,
+			VertexProperties[] vertexShapeA,
+			VertexProperties[] vertexShapeB,
 			List<SupportTriangle> triangles,
 			Vector3d centroid)
 		{
@@ -131,8 +131,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                             Helper.GetVertexFromMinkowsky(
 								triangles[i],
-								vertexShape1,
-								vertexShape2,
+								vertexShapeA,
+								vertexShapeB,
 								ref epaCollisionPoint);
 						}
 					}
@@ -147,8 +147,8 @@ namespace SharpPhysicsEngine.CollisionEngine
 						break;
 
 					Support vt = Helper.GetMinkowskiFarthestPoint(
-							 vertexShape1,
-							 vertexShape2,
+							 vertexShapeA,
+							 vertexShapeB,
 							 direction.Normalize());
 
 					triangles = Helper.AddPointToConvexPolygon (

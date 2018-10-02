@@ -34,6 +34,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 		SoftJoint,
 		JointLimit,
 		JointMotor,
+        FrictionValue,
         None,
 	}
 }

@@ -46,8 +46,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Constructor
 
-        public LinearProblemBaseProperties(
-            int constraintLength)
+        public LinearProblemBaseProperties(int constraintLength)
         {
             B = new double[constraintLength];
             D = new double[constraintLength];

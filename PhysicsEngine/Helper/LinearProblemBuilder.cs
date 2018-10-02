@@ -266,9 +266,7 @@ namespace SharpPhysicsEngine.Helper
 
             return null;
         }
-
-
-
+                
         /// <summary>
         /// Builds the LCP matrix for solver.
         /// </summary>
@@ -409,6 +407,36 @@ namespace SharpPhysicsEngine.Helper
             }
 
             return null;
+        }
+
+        public LinearProblemProperties GetLCPFrictionMatrix(LinearProblemProperties linearProblem)
+        {
+            var frictionTerm = linearProblem.ConstraintType.Count(x => x == ConstraintType.Friction);
+            var lcpMatrixDim = linearProblem.Count + frictionTerm;
+
+            LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(lcpMatrixDim);
+                        
+            var b = linearProblem.B.ToList();
+            var d = linearProblem.D.ToList();
+            var invD = linearProblem.InvD.ToList();
+            var constraintType = linearProblem.ConstraintType.ToList();
+            var constraintLimit = linearProblem.ConstraintLimit.ToList();
+            var m = linearProblem.M.ToList();
+            var constraintsArray = linearProblem.Constraints.ToList();
+            var startValue = linearProblem.StartImpulse.ToList();
+
+            for (int i = 0; i < frictionTerm; i++)
+            {
+                constraintType.Add(ConstraintType.FrictionValue);
+                b.Add(0.0);
+                d.Add(0.0);
+                invD.Add(0.0);
+                constraintLimit.Add(0.0);
+            }
+            
+            var lcp = new LinearProblemProperties(baseProperties, null);
+
+            return lcp;
         }
 
         #endregion

@@ -26,6 +26,7 @@
 
 using System;
 using System.Linq;
+using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
 namespace SharpPhysicsEngine.LCPSolver
@@ -48,12 +49,34 @@ namespace SharpPhysicsEngine.LCPSolver
                         xValue;
 
                 case ConstraintType.Friction:
-                    double frictionLimit = X[input.Constraints[i].Value] * input.ConstraintLimit[i];
-                    
-                    if (xValue < -frictionLimit)
-                        return -frictionLimit;
-                    if (xValue > frictionLimit)
-                        return frictionLimit;
+
+                    //Isotropic friction -> sqrt(c1^2+c2^2) <= fn*U
+                    int normalIndex = input.Constraints[i].Value;
+                    double frictionLimit = X[normalIndex] * input.ConstraintLimit[i];
+
+                    if (frictionLimit == 0.0)
+                    {
+                        X[normalIndex + 1] = 0.0;
+                        X[normalIndex + 2] = 0.0;
+
+                        return 0.0;
+                    }
+
+                    double directionA = X[normalIndex + 1];
+                    double directionB = X[normalIndex + 2];
+                    double frictionValue = Math.Sqrt(directionA * directionA + directionB * directionB);
+
+                    if (frictionValue > frictionLimit)
+                    {
+                        Vector2d frictionNormal = new Vector2d(directionA / frictionValue, directionB / frictionValue);
+
+                        X[normalIndex + 1] = frictionNormal.x * frictionLimit;
+                        X[normalIndex + 2] = frictionNormal.y * frictionLimit;
+
+                        return (i - normalIndex == 1) ?
+                                X[normalIndex + 1] :
+                                X[normalIndex + 2];
+                    }
 
                     return xValue;
 
