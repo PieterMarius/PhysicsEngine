@@ -64,5 +64,13 @@ namespace SharpPhysicsEngine.LCPSolver
 
             return -1.0;
         }
+
+        public static double ComputeSolverError(
+            double[] x,
+            double[] oldx)
+        {
+            double[] actualSolverErrorDiff = GeneralMathUtilities.Minus(x, oldx);
+            return GeneralMathUtilities.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
+        }
     }
 }

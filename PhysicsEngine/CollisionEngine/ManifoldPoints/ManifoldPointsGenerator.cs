@@ -249,7 +249,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			}
             else
             {
-                return result.Add(cp);
+                result.Add(cp);
             }
 
             if (ManifoldPointNumber == 4 && result.Count > 4)

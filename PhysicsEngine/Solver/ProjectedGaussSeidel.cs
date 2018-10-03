@@ -55,17 +55,19 @@ namespace SharpPhysicsEngine.LCPSolver
             LinearProblemProperties input,
             double[] x)
         {
+            double[] oldX = new double[x.Length];
+            
             var rangePartitioner = Partitioner.Create(0, input.Count, Convert.ToInt32(input.Count / SolverParameters.MaxThreadNumber) + 1);
             for (int k = 0; k < SolverParameters.MaxIteration; k++)
             {
                 ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
 
-                double actualSolverError = SolverHelper.ComputeSolverError(input, x);
-
-                //Console.WriteLine("Error " + actualSolverError);
+                double actualSolverError = SolverHelper.ComputeSolverError(x, oldX);
 
                 if (actualSolverError < SolverParameters.ErrorTolerance)
                     return x;
+
+                Array.Copy(x, oldX, x.Length);
             }
             
             return x;

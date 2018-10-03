@@ -47,8 +47,10 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(150);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
+            physicsEnvironment.SolverParameters.SetSOR(1.0);
+            physicsEnvironment.SolverParameters.SetErrorTolerance(1E-8);
 
             return physicsEnvironment;
         }
