@@ -102,7 +102,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			EPAManifoldTolerance = 0.009;
 			ManifoldProjectionTolerance = 0.005;
 			ManifoldPointNumber = 4;
-			MaxThreadNumber = 2;
+			MaxThreadNumber = 1;
             CollisionDistance = 0.001;
 			BroadPhaseType = BroadPhaseEngineType.BruteForce;
 		}

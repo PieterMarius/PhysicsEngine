@@ -119,7 +119,8 @@ namespace SharpPhysicsEngine.CollisionEngine
                     ID_A,
                     ID_B);
             }
-            else if (gjkOutput.CollisionDistance <= collisionDistance)
+            else if (gjkOutput.CollisionDistance <= collisionDistance && 
+                     gjkOutput.CollisionDistance >= 0.0)
             {
                 if (gjkOutput.CollisionNormal.Length() < normalTolerance)
                     return null;

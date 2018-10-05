@@ -121,6 +121,8 @@ namespace SharpPhysicsEngine.LCPSolver
             Dictionary<RedBlackEnum, List<int>> redBlackDictionary,
             double[] x)
         {
+            double[] oldX = new double[x.Length];
+
             redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> red);
             redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> black);
 
@@ -163,10 +165,12 @@ namespace SharpPhysicsEngine.LCPSolver
                             });
                     }
 
-                    double actualSolverError = SolverHelper.ComputeSolverError(input, x);
-                                        
+                    double actualSolverError = SolverHelper.ComputeSolverError(x, oldX);
+                                                           
                     if (actualSolverError < SolverParameters.ErrorTolerance)
                         return x;
+
+                    Array.Copy(x, oldX, x.Length);
                 }
             }
             catch(Exception ex)

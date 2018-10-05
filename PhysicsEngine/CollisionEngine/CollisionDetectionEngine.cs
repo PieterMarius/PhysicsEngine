@@ -24,11 +24,9 @@
  *  
  *****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpEngineMathUtility;
-using static SharpPhysicsEngine.Helper.PhysicsEngineConst;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 
 namespace SharpPhysicsEngine.CollisionEngine
@@ -144,9 +142,27 @@ namespace SharpPhysicsEngine.CollisionEngine
 		{
             List<CollisionPair> collisionPair = broadPhaseEngine.Execute (shapes, CollisionDistance);
 
-            var result = narrowPhase.Execute(shapes, collisionPair, collisionEngineParameters.CollisionDistance);
+            var result = narrowPhase.Execute(shapes, collisionPair, CollisionDistance);
 
-			return result;
+            //TEST
+            var bbengine = new AABBBroadPhase(collisionEngineParameters);
+            List<CollisionPair> collisionPair1 = bbengine.Execute(shapes, CollisionDistance);
+            var res1 = narrowPhase.Execute(shapes, collisionPair1, CollisionDistance);
+            if(result.Count != res1.Count)
+            {
+                for (int i = 0; i < result.Count; i++)
+                {
+                    if(result[i].ObjectIndexA != res1[i].ObjectIndexA &&
+                        result[i].ObjectIndexB != res1[i].ObjectIndexB)
+                    {
+                        var rr = true;
+                    }
+                }
+
+                var tt = true;
+            }
+
+            return result;
 		}
 
         private List<CollisionPointStructure> ExecuteEngine(

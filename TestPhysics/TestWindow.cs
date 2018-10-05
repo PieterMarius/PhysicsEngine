@@ -236,7 +236,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new FrictionTest();
+            var env = new PerformaceAndStackTest();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
