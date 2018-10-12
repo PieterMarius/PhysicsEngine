@@ -63,9 +63,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return GetFarthestPointWithoutAdj(vertexObj, direction);
 		}
 
-		
-
-		public static int GetFarthestPointWithoutAdj(
+        public static int GetFarthestPointWithoutAdj(
 			VertexProperties[] vertexObj,
 			Vector3d direction)
 		{
@@ -187,7 +185,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Vector3d centroidDiff = triangle.A.s - v;
 			Vector3d normal = triangle.Normal;
 
-			if (Vector3d.Dot(triangle.Normal, centroidDiff) < 0.0)
+			if (Vector3d.Dot(triangle.Normal, centroidDiff) < -1E-10)
 				normal = triangle.Normal * -1.0;
 
 			var tr = new SupportTriangle(
@@ -234,7 +232,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				triangleSupport[0],
 				triangleSupport[1],
 				triangleSupport[2]));
-
+                        
 			//Second triangle
             triangles.Add(
 				AddTriangle(
@@ -242,21 +240,21 @@ namespace SharpPhysicsEngine.CollisionEngine
 				triangleSupport[1],
 				triangleSupport[3]));
 
-			//Third triangle
+            //Third triangle
             triangles.Add(
 				AddTriangle(
 				triangleSupport[0],
 				triangleSupport[2],
 				triangleSupport[3]));
 
-			//Fourth triangle
+            //Fourth triangle
             triangles.Add(
 				AddTriangle(
 				triangleSupport[1],
 				triangleSupport[2],
 				triangleSupport[3]));
 
-			Vector3d centroid = FindPolygonCentroid(triangleSupport);
+            Vector3d centroid = FindPolygonCentroid(triangleSupport);
 
 			triangles[0] = TurnClockWiseNormal(triangles[0], centroid);
 			triangles[1] = TurnClockWiseNormal(triangles[1], centroid);
@@ -270,18 +268,18 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static bool IsInConvexPoly(
 			Vector3d p,
-			List<SupportTriangle> triangles)
+            List<SupportTriangle> triangles)
 		{
-			foreach (SupportTriangle spt in triangles)
+            foreach (SupportTriangle spt in triangles)
 			{
-				Vector3d p2f = spt.A.s - p;         // f.v[0] is an arbitrary point on f
-				double d = p2f.Dot(spt.Normal);
-				d /= p2f.Length();                 // for numeric stability
+                Vector3d p2f = spt.A.s - p;         // spt.A.s is an arbitrary point on f
+                double d = p2f.Dot(spt.Normal);
+                d /= p2f.Length();                 // for numeric stability
 
-				double bound = -1e-15; // use 1e15 to exclude boundaries
-				if (d < bound)
-					return false;
-			}
+                double bound = -1e-15; // use 1e15 to exclude boundaries
+                if (d < bound)
+                    return false;
+            }
 
 			return true;
 		}
@@ -371,13 +369,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			for (int i = 0; i < edge.Count; i++)
 			{
-				var tri = new SupportTriangle(
+                var normal = GeometryUtilities.CalculateNormal(edge[i].A.s, edge[i].B.s, p.s);
+
+                var tri = new SupportTriangle(
 									  edge[i].A,
 									  edge[i].B,
 									  p,
 									  0.0,
 									  0.0,
-									  GeometryUtilities.CalculateNormal(edge[i].A.s, edge[i].B.s, p.s));
+									  normal);
 
 				tri = TurnClockWiseNormal(tri, centroid);
 				result.Add(tri);
@@ -416,16 +416,15 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Support b,
 			Support c)
 		{
-			var epaTriangle = new SupportTriangle(
+            var normal = GeometryUtilities.CalculateNormal(a.s, b.s, c.s);
+
+            var epaTriangle = new SupportTriangle(
 				a,
 				b,
 				c,
 				0.0,
 				0.0,
-				GeometryUtilities.CalculateNormal(
-					a.s,
-					b.s,
-					c.s));
+				normal);
 
 			return epaTriangle;
 		}

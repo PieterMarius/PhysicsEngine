@@ -82,7 +82,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         /// Gets a value indicating whether this CollisionEngineParameters activate sweep and prune.
         /// </summary>
         /// <value><c>true</c> if activate sweep and prune; otherwise, <c>false</c>.</value>
-        public readonly BroadPhaseEngineType BroadPhaseType;
+        public BroadPhaseEngineType BroadPhaseType { get; private set; }
 
         /// <summary>
         /// Collision distance
@@ -102,9 +102,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 			EPAManifoldTolerance = 0.009;
 			ManifoldProjectionTolerance = 0.005;
 			ManifoldPointNumber = 4;
-			MaxThreadNumber = 1;
+			MaxThreadNumber = 4;
             CollisionDistance = 0.001;
-			BroadPhaseType = BroadPhaseEngineType.BruteForce;
+			BroadPhaseType = BroadPhaseEngineType.AABBBroadPhase;
 		}
 
 		public CollisionEngineParameters (
@@ -158,6 +158,11 @@ namespace SharpPhysicsEngine.CollisionEngine
         public void SetCollisionDistance(double collisionDistance)
         {
             CollisionDistance = collisionDistance;
+        }
+
+        public void SetBroadPhaseEngine(BroadPhaseEngineType type)
+        {
+            BroadPhaseType = type;
         }
 			
 		#endregion

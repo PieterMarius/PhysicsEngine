@@ -120,7 +120,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             SetRotationMatrix();
             SetInertiaTensor();
-
             SetRelativePosition();
         }
 

@@ -118,14 +118,17 @@ namespace SharpPhysicsEngine.CollisionEngine
                         baseStructure.AddRange(cps.CollisionPointBase);
                 }
 
-                if (A is ConcaveShape || B is ConcaveShape)
+                if (A is ConcaveShape ||
+                    B is ConcaveShape)
                 {
                     var concaveCollisionPoints = ExtractConcaveShapeCollisionPoint(A, B, baseStructure).ToArray();
                     collisionPointStructure[0].SetBaseCollisionPoint(concaveCollisionPoints);
-                    
+
                 }
                 else
+                {
                     collisionPointStructure[0].SetBaseCollisionPoint(baseStructure.ToArray());
+                }
             }
 
             if (collisionPointStructure.Count > 0)
@@ -223,25 +226,13 @@ namespace SharpPhysicsEngine.CollisionEngine
 
             IGeometry[] geometryA = ShapeDefinition.Helper.GetGeometry(A);
             IGeometry[] geometryB = ShapeDefinition.Helper.GetGeometry(B);
-
-            Stopwatch watch = new Stopwatch();
-
-            watch.Start();
-
+                        
             List<CollisionPair> collisionPair = CheckGeometryAABB(
                 geometryA,
                 geometryB);
-
-            watch.Stop();
-
-            var time = watch.ElapsedMilliseconds;
-
-            watch.Reset();
-
+                        
             if (collisionPair.Count > 0)
             {
-                watch.Start();
-
                 var verticesA = Helper.GetVertexPosition(A);
                 var verticesB = Helper.GetVertexPosition(B);
 
@@ -266,13 +257,7 @@ namespace SharpPhysicsEngine.CollisionEngine
                     if (collision != null)
                         collisionPointStructure.Add(collision);
                 }
-
-                watch.Stop();
-
-                var endtime = watch.ElapsedMilliseconds;
             }
-
-            
 
             return collisionPointStructure;
         }

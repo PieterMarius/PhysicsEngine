@@ -243,12 +243,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 				triangles = Helper.AddPointToConvexPolygon(triangles, simplex.Support[simplex.Support.Count - 1], centroid);
 
-				//Verifico che l'origine sia contenuta nel poliedro
-				if (Helper.IsInConvexPoly(origin, triangles))
-				{
-					isIntersection = true;
-					return -1.0;
-				}
+                //Verifico che l'origine sia contenuta nel poliedro
+                if (Helper.IsInConvexPoly(origin, triangles))
+                {
+                    isIntersection = true;
+                    return -1.0;
+                }
 
 				triangleDistance = GetMinDistance(ref triangles, origin, ref minTriangleIndex);
 

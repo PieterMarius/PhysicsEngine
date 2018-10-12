@@ -223,14 +223,6 @@ namespace SharpPhysicsEngine
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
-            
-            //int minWorker, minIOC;
-            //// Get the current settings.
-            //ThreadPool.GetMinThreads(out minWorker, out minIOC);
-            //// Change the minimum number of worker threads to four, but
-            //// keep the old setting for minimum asynchronous I/O 
-            //// completion threads.
-            //ThreadPool.SetMinThreads(4, minIOC);
         }
 
 		public SharpEngine()
@@ -358,28 +350,28 @@ namespace SharpPhysicsEngine
             return null;
         }
 
-        public List<Tuple<Vector3d, Vector3d>> GetShapesAABB()
-        {
-            var result = new List<Tuple<Vector3d, Vector3d>>();
+        //public List<Tuple<Vector3d, Vector3d>> GetShapesAABB()
+        //{
+        //    var result = new List<Tuple<Vector3d, Vector3d>>();
 
-            for (int i = 0; i < Shapes.Length; i++)
-            {
-                if (Shapes[i] is ShapeDefinition.ConvexShape)
-                    result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
-                else if (Shapes[i] is ShapeDefinition.ConcaveShape)
-                {
-                    var shapesGeom = ((ShapeDefinition.ConcaveShape)Shapes[i]).ConvexShapesGeometry;
+        //    for (int i = 0; i < Shapes.Length; i++)
+        //    {
+        //        if (Shapes[i] is ShapeDefinition.ConvexShape)
+        //            result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+        //        else if (Shapes[i] is ShapeDefinition.ConcaveShape)
+        //        {
+        //            var shapesGeom = ((ShapeDefinition.ConcaveShape)Shapes[i]).ConvexShapesGeometry;
 
-                    for (int j = 0; j < shapesGeom.Length; j++)
-                    {
-                        result.Add(new Tuple<Vector3d, Vector3d>(shapesGeom[j].AABBox.Min, shapesGeom[j].AABBox.Max));
-                    }
-                    result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
-                }
-            }
+        //            for (int j = 0; j < shapesGeom.Length; j++)
+        //            {
+        //                result.Add(new Tuple<Vector3d, Vector3d>(shapesGeom[j].AABBox.Min, shapesGeom[j].AABBox.Max));
+        //            }
+        //            result.Add(new Tuple<Vector3d, Vector3d>(Shapes[i].AABBox.Min, Shapes[i].AABBox.Max));
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
 
         //TODO Test Hierarchical tree intersection
         //public List<Tuple<Vector3d, Vector3d>> GetHierarchicalIntersection()

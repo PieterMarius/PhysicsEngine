@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 						{
 							minDistance = distance;
 
-							direction = vDistance;
+                            direction = vDistance;
 							epaCollisionPoint.SetDist (vDistance);
 
                             epaCollisionPoint.SetNormal(triangles[i].Normal);
@@ -136,9 +136,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 								ref epaCollisionPoint);
 						}
 					}
-
-					//L'origine risiede su uno dei bordi del triangolo
-					if (Vector3d.Length(direction) < constTolerance)
+                    
+                    //L'origine risiede su uno dei bordi del triangolo
+                    if (Vector3d.Length(direction) < constTolerance)
 					{
 						direction = origin - centroid;
 					}

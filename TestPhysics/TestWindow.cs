@@ -215,7 +215,6 @@ namespace TestPhysics
             //TestNumeric();
             try
             {
-
                 //testConvexDecomp.Decompose(0.08);
 
                 //TestNumeric();
@@ -373,7 +372,7 @@ namespace TestPhysics
             //displayPartitionedContact();
 
             //for (int i = 0; i < physicsEngine.ObjectCount(); i++)
-            //    displayVertex(i);
+            //    displayVertex(i);                 
 
             //displayAABB();
             //displayVertex(0);

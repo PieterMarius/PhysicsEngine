@@ -38,10 +38,27 @@ namespace SharpPhysicsEngine.ExternalFunctionsWrapper
     {
         #region C++ External Functions
 
+        //const char* ifilename,
+
+        //double**** pointsOut,
+
+        //long**** triangleOut,
+
+        //int* nCluster,
+
+        //int** nOutPoints,
+
+        //int** nOutTriangles)
+
         [DllImport("HACD_Wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ExecuteHACD(
-            string fileName);
+            string fileName,
+            [Out] out IntPtr points,
+            [Out] out IntPtr triangle,
+            [Out] out int nCluster,
+            [Out] out IntPtr nPoints,
+            [Out] out IntPtr nTriangles);
 
         [DllImport("HACD_Wrapper.dll", CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -57,8 +74,7 @@ namespace SharpPhysicsEngine.ExternalFunctionsWrapper
 
         #region Public Methods
 
-        public static void GetOFFData(
-            string fileName)
+        public static void GetOFFData(string fileName)
         {
             IntPtr ptrPoints = IntPtr.Zero;
             IntPtr ptrTriangles = IntPtr.Zero;
@@ -99,6 +115,27 @@ namespace SharpPhysicsEngine.ExternalFunctionsWrapper
                 }
 
                 Marshal.FreeCoTaskMem(ptrPoints);
+            }
+        }
+
+        public static void ExecuteHACD(string fileName)
+        {
+            IntPtr ptrPoints = IntPtr.Zero;
+            IntPtr nPoints = IntPtr.Zero;
+            IntPtr ptrTriangles = IntPtr.Zero;
+            IntPtr nTriangles = IntPtr.Zero;
+
+            bool res = ExecuteHACD(
+                "C:\\Users\\vanduin\\Documents\\GitHub\\PhysicsEngine\\TestPhysics\\bin\\x64\\Debug\\Sketched-Brunnen.off", //fileName
+                out ptrPoints,
+                out ptrTriangles,
+                out int nCluster,
+                out nPoints,
+                out nTriangles);
+
+            if (res)
+            {
+                //IntPtr[][] ptrPointsVec = new IntPtr[ptrnPoints][];
             }
         }
 

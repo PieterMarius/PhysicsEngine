@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ConvexHullWrapper;
 using SharpPhysicsEngine.Helper;
@@ -190,12 +191,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             return CommonUtilities.GetAABBMinValue(concaveShape.ConvexShapesGeometry);
         }
-
-        public Vector3d[] GetVertices()
-        {
-            return concaveShape.Vertices;
-        }
-
+        
         public void SetAngularVelocity(Vector3d inputAngularVelocity)
         {
             concaveShape.SetAngularVelocity(inputAngularVelocity);
@@ -278,6 +274,33 @@ namespace SharpPhysicsEngine.Wrapper
 
         public double[][][] GetConvexShapeList()
         {
+            Vector3d[][] result = GetObjectsVertices();
+            
+            return GeneralMathUtilities.GetMatrixFromVector3Matrix(result);
+        }
+
+        public Vector3d[] GetVertices()
+        {
+            var vert = GetObjectsVertices();
+            List<Vector3d> result = new List<Vector3d>();
+            
+            foreach (var item in vert)
+            {
+                foreach (var vertex in item)
+                {
+                    result.Add(vertex);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private Vector3d[][] GetObjectsVertices()
+        {
             Vector3d[][] result = new Vector3d[concaveShape.ConvexShapesGeometry.Length][];
 
             for (int i = 0; i < concaveShape.ConvexShapesGeometry.Length; i++)
@@ -285,13 +308,13 @@ namespace SharpPhysicsEngine.Wrapper
                 var vtx = new Vector3d[concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length];
                 for (int j = 0; j < concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length; j++)
                 {
-                    vtx[j]= (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].VerticesIdx[j].ID]) + concaveShape.Position;
+                    vtx[j] = (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].VerticesIdx[j].ID]) + concaveShape.Position;
                 }
 
                 result[i] = vtx;
             }
-            
-            return GeneralMathUtilities.GetMatrixFromVector3Matrix(result);
+
+            return result;
         }
 
         #endregion
