@@ -54,6 +54,8 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public double AngularSpringCoeff { get; private set; }
 
+        public override Vector3d[] Vertices { get { return null; } }
+
         #endregion
 
         #region Private Const

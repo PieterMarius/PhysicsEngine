@@ -52,7 +52,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// Object triangle mesh index
         /// </summary>
         public TriangleMesh[] TriangleMeshes { get; private set; }
-        
+
+        public override Vector3d[] Vertices { get { return ObjectGeometry.BaseGeometry.VerticesPosition; } }
+
         #endregion
 
         #region Constructor
@@ -70,12 +72,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
             
             Position = position;
             TriangleMeshes = triangleMeshes;
-            Vertices = inputVertexPosition;
+            
+            //TODO
+            var baseGeometry = new CommonGeometry(inputVertexPosition, triangleMeshes);
             
             ObjectGeometry = new Geometry(
                 this, 
-                Enumerable.Range(0, inputVertexPosition.Length).ToArray(), 
-                triangleMeshes, 
+                baseGeometry,
                 ObjectGeometryType.ConcaveShape, 
                 true);
 
@@ -142,7 +145,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             Vertex3Index[] verticesIndex = new Vertex3Index[Vertices.Length];
 
             for (int i = 0; i < Vertices.Length; i++)
-                verticesIndex[i] = new Vertex3Index(Vertices[i], ObjectGeometry.VerticesIdx[i].GetGlobalAdjacencyList(), i);
+                verticesIndex[i] = new Vertex3Index(Vertices[i], ObjectGeometry.BaseGeometry.VerticesIdx[i].GetGlobalAdjacencyList(), i);
 
             ConvexDecompositionEngine convexDecomposition = new ConvexDecompositionEngine(region, verticesIndex, 0.2);
 
@@ -156,10 +159,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 var verticesIdx = Array.ConvertAll(convexHullData.Vertices, x => x.ID);
 
+                var baseGeometry = new CommonGeometry(null, convexHullData.TriangleMeshes, verticesIdx);
+
                 ConvexShapesGeometry[i] = new Geometry(
                     this,
-                    verticesIdx,
-                    convexHullData.TriangleMeshes,
+                    baseGeometry,
                     ObjectGeometryType.ConvexShape,
                     true);
             }
@@ -194,12 +198,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                 Vertices,
-                ObjectGeometry.Triangle,
+                ObjectGeometry.BaseGeometry.Triangle,
                 MassInfo.Mass);
 
             Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
                     Vertices,
-                    ObjectGeometry.Triangle,
+                    ObjectGeometry.BaseGeometry.Triangle,
                     InitCenterOfMass,
                     MassInfo.Mass).InertiaTensor;
 

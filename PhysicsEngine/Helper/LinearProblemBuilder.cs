@@ -53,218 +53,213 @@ namespace SharpPhysicsEngine.Helper
         #endregion
 
         #region Public Methods
-                
+
         public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints)
         {
-            if (constraints.Length > 0)
+            LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
+
+            Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
+
+            for (int i = 0; i < constraints.Length; i++)
             {
-                LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
+                JacobianConstraint itemConstraint = constraints[i];
 
-                Dictionary<HashSetStruct, List<DictionaryConstraintValue>> constraintsDictionary = new Dictionary<HashSetStruct, List<DictionaryConstraintValue>>();
+                HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.ID, itemConstraint.ObjectB.ID);
 
-                for (int i = 0; i < constraints.Length; i++)
+                if (constraintsDictionary.TryGetValue(hash, out List<DictionaryConstraintValue> jc))
+                    jc.Add(new DictionaryConstraintValue(itemConstraint, i));
+                else
+                    constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
+            }
+
+            Graph graph = new Graph(constraints.Length);
+
+            var dictionaryArray = constraintsDictionary.ToArray();
+
+            var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
+            var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
+
+            var rangePartitioner = Partitioner.Create(
+                0,
+                dictionaryArray.Length,
+                Convert.ToInt32(dictionaryArray.Length / EngineParameters.MaxThreadNumber) + 1);
+
+            Parallel.ForEach(
+                rangePartitioner,
+                new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                (range, loopState) =>
                 {
-                    JacobianConstraint itemConstraint = constraints[i];
-
-                    HashSetStruct hash = new HashSetStruct(itemConstraint.ObjectA.ID, itemConstraint.ObjectB.ID);
-
-                    if (constraintsDictionary.TryGetValue(hash, out List<DictionaryConstraintValue> jc))
-                        jc.Add(new DictionaryConstraintValue(itemConstraint, i));
-                    else
-                        constraintsDictionary.Add(hash, new List<DictionaryConstraintValue> { new DictionaryConstraintValue(itemConstraint, i) });
-                }
-
-                Graph graph = new Graph(constraints.Length);
-
-                var dictionaryArray = constraintsDictionary.ToArray();
-
-                var key_ID_A = constraintsDictionary.ToLookup(x => x.Key.ID_A);
-                var key_ID_B = constraintsDictionary.ToLookup(x => x.Key.ID_B);
-
-                var rangePartitioner = Partitioner.Create(
-                    0, 
-                    dictionaryArray.Length, 
-                    Convert.ToInt32(dictionaryArray.Length / EngineParameters.MaxThreadNumber) + 1);
-
-                Parallel.ForEach(
-                    rangePartitioner,
-                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                    (range, loopState) =>
+                    for (int i = range.Item1; i < range.Item2; i++)
                     {
-                        for (int i = range.Item1; i < range.Item2; i++)
+                        var constraintValues = dictionaryArray[i];
+                        var constraintValueKey = constraintValues.Key;
+
+                        int contactA_ID_A = constraintValues.Key.ID_A;
+                        int contactA_ID_B = constraintValues.Key.ID_B;
+
+                        for (int w = 0; w < constraintValues.Value.Count; w++)
                         {
-                            var constraintValues = dictionaryArray[i];
-                            var constraintValueKey = constraintValues.Key;
+                            JacobianConstraint contactA = constraintValues.Value[w].Constraint;
 
-                            int contactA_ID_A = constraintValues.Key.ID_A;
-                            int contactA_ID_B = constraintValues.Key.ID_B;
+                            List<int> index = new List<int>();
+                            List<double> values = new List<double>();
 
-                            for (int w = 0; w < constraintValues.Value.Count; w++)
-                            {
-                                JacobianConstraint contactA = constraintValues.Value[w].Constraint;
+                            int indexVal = constraintValues.Value[w].Index;
 
-                                List<int> index = new List<int>();
-                                List<double> values = new List<double>();
+                            double correctionValue = (contactA.CorrectionValue) < 0 ?
+                                                     Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
+                                                     Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue);
 
-                                int indexVal = constraintValues.Value[w].Index;
+                            baseProperties.B[indexVal] = correctionValue - contactA.B;
+                            baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
+                            baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
+                            baseProperties.ConstraintType[indexVal] = contactA.Type;
+                            baseProperties.StartValue[indexVal] = contactA.StartImpulse.StartImpulseValue;
 
-                                double correctionValue = (contactA.CorrectionValue) < 0 ? 
-                                                         Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
-                                                         Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue);
+                            //Diagonal value
+                            double mValue = GetLCPDiagonalValue(contactA) +
+                                        contactA.CFM +
+                                        EngineParameters.CFM +
+                                        1E-40;
 
-                                baseProperties.B[indexVal] = correctionValue - contactA.B;
-                                baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
-                                baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
-                                baseProperties.ConstraintType[indexVal] = contactA.Type;
-                                baseProperties.StartValue[indexVal] = contactA.StartImpulse.StartImpulseValue;
-
-                                //Diagonal value
-                                double mValue = GetLCPDiagonalValue(contactA) +
-                                                contactA.CFM +
-                                                EngineParameters.CFM +
-                                                1E-40;
-
-                                baseProperties.D[indexVal] = mValue;
-                                baseProperties.InvD[indexVal] = 1.0 / mValue;
+                            baseProperties.D[indexVal] = mValue;
+                            baseProperties.InvD[indexVal] = 1.0 / mValue;
 
                                 //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
                                 for (int j = 0; j < constraintValues.Value.Count; j++)
+                            {
+                                int innerIndex = constraintValues.Value[j].Index;
+
+                                if (innerIndex != indexVal)
                                 {
-                                    int innerIndex = constraintValues.Value[j].Index;
+                                    JacobianConstraint contactB = constraintValues.Value[j].Constraint;
+
+                                    mValue = GetLCPMatrixValue(
+                                        contactA.LinearComponentA,
+                                        contactB.LinearComponentA,
+                                        contactA.AngularComponentA,
+                                        contactB.AngularComponentA,
+                                        contactA.ObjectA.MassInfo);
+
+                                    mValue += GetLCPMatrixValue(
+                                            contactA.LinearComponentB,
+                                            contactB.LinearComponentB,
+                                            contactA.AngularComponentB,
+                                            contactB.AngularComponentB,
+                                            contactA.ObjectB.MassInfo);
+
+                                    AddValues(ref index, ref values, mValue, innerIndex);
+                                }
+                            }
+
+                                //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
+                                var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
+                            if (constraintsDictionary.TryGetValue(symmetricHashSet, out List<DictionaryConstraintValue> symmetricList))
+                            {
+                                foreach (var item in symmetricList)
+                                {
+                                    int innerIndex = item.Index;
 
                                     if (innerIndex != indexVal)
                                     {
-                                        JacobianConstraint contactB = constraintValues.Value[j].Constraint;
+                                        JacobianConstraint contactB = item.Constraint;
 
                                         mValue = GetLCPMatrixValue(
                                             contactA.LinearComponentA,
-                                            contactB.LinearComponentA,
+                                            contactB.LinearComponentB,
                                             contactA.AngularComponentA,
-                                            contactB.AngularComponentA,
+                                            contactB.AngularComponentB,
                                             contactA.ObjectA.MassInfo);
 
                                         mValue += GetLCPMatrixValue(
-                                                contactA.LinearComponentB,
-                                                contactB.LinearComponentB,
-                                                contactA.AngularComponentB,
-                                                contactB.AngularComponentB,
-                                                contactA.ObjectB.MassInfo);
+                                            contactA.LinearComponentB,
+                                            contactB.LinearComponentA,
+                                            contactA.AngularComponentB,
+                                            contactB.AngularComponentA,
+                                            contactA.ObjectB.MassInfo);
 
                                         AddValues(ref index, ref values, mValue, innerIndex);
                                     }
                                 }
-
-                                //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
-                                var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
-                                if (constraintsDictionary.TryGetValue(symmetricHashSet, out List<DictionaryConstraintValue> symmetricList))
-                                {
-                                    foreach (var item in symmetricList)
-                                    {
-                                        int innerIndex = item.Index;
-
-                                        if (innerIndex != indexVal)
-                                        {
-                                            JacobianConstraint contactB = item.Constraint;
-
-                                            mValue = GetLCPMatrixValue(
-                                                contactA.LinearComponentA,
-                                                contactB.LinearComponentB,
-                                                contactA.AngularComponentA,
-                                                contactB.AngularComponentB,
-                                                contactA.ObjectA.MassInfo);
-
-                                            mValue += GetLCPMatrixValue(
-                                                contactA.LinearComponentB,
-                                                contactB.LinearComponentA,
-                                                contactA.AngularComponentB,
-                                                contactB.AngularComponentA,
-                                                contactA.ObjectB.MassInfo);
-
-                                            AddValues(ref index, ref values, mValue, innerIndex);
-                                        }
-                                    }
-                                }
+                            }
 
                                 //contactA_ID_A == contactB_ID_A
                                 foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
-                                {
-                                    AddLCPValues(
-                                        ref index,
-                                        ref values,
-                                        indexVal,
-                                        constraintCheckItem,
-                                        constraintValueKey,
-                                        symmetricHashSet,
-                                        contactA.LinearComponentA,
-                                        contactA.AngularComponentA,
-                                        contactA.ObjectA.MassInfo,
-                                        true);
-                                }
+                            {
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValueKey,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentA,
+                                    contactA.AngularComponentA,
+                                    contactA.ObjectA.MassInfo,
+                                    true);
+                            }
 
                                 //contactA_ID_A == contactB_ID_B
                                 foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
-                                {
-                                    AddLCPValues(
-                                        ref index,
-                                        ref values,
-                                        indexVal,
-                                        constraintCheckItem,
-                                        constraintValueKey,
-                                        symmetricHashSet,
-                                        contactA.LinearComponentA,
-                                        contactA.AngularComponentA,
-                                        contactA.ObjectA.MassInfo,
-                                        false);
-                                }
+                            {
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValueKey,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentA,
+                                    contactA.AngularComponentA,
+                                    contactA.ObjectA.MassInfo,
+                                    false);
+                            }
 
                                 //contactA_ID_B == contactB_ID_A
                                 foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
-                                {
-                                    AddLCPValues(
-                                        ref index,
-                                        ref values,
-                                        indexVal,
-                                        constraintCheckItem,
-                                        constraintValueKey,
-                                        symmetricHashSet,
-                                        contactA.LinearComponentB,
-                                        contactA.AngularComponentB,
-                                        contactA.ObjectB.MassInfo,
-                                        true);
-                                }
+                            {
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValueKey,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentB,
+                                    contactA.AngularComponentB,
+                                    contactA.ObjectB.MassInfo,
+                                    true);
+                            }
 
                                 //contactA_ID_B == contactB_ID_B
                                 foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
-                                {
-                                    AddLCPValues(
-                                        ref index,
-                                        ref values,
-                                        indexVal,
-                                        constraintCheckItem,
-                                        constraintValueKey,
-                                        symmetricHashSet,
-                                        contactA.LinearComponentB,
-                                        contactA.AngularComponentB,
-                                        contactA.ObjectB.MassInfo,
-                                        false);
-                                }
+                            {
+                                AddLCPValues(
+                                    ref index,
+                                    ref values,
+                                    indexVal,
+                                    constraintCheckItem,
+                                    constraintValueKey,
+                                    symmetricHashSet,
+                                    contactA.LinearComponentB,
+                                    contactA.AngularComponentB,
+                                    contactA.ObjectB.MassInfo,
+                                    false);
+                            }
 
                                 //Sparse Matrix
                                 baseProperties.M[indexVal] = new SparseElement(
-                                    values.ToArray(),
-                                    index.ToArray());
+                                values.ToArray(),
+                                index.ToArray());
 
-                                UpdateGraph(ref graph, ref index, indexVal);
-                            }
+                            UpdateGraph(ref graph, ref index, indexVal);
                         }
-                    });
+                    }
+                });
 
-                return new LinearProblemProperties(
-                    baseProperties,
-                    graph);
-            }
-
-            return null;
+            return new LinearProblemProperties(
+                baseProperties,
+                graph);
         }
                 
         /// <summary>

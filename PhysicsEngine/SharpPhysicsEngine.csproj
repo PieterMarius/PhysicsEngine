@@ -101,6 +101,7 @@
     <Compile Include="K-Means\KMeans.cs" />
     <Compile Include="NonConvexDecomposition\Hierarchical Tree\ConcaveHierarchicalTree.cs" />
     <Compile Include="NonConvexDecomposition\Hierarchical Tree\HierarchicalTree.cs" />
+    <Compile Include="ShapeDefinition\Common\CommonGeometry.cs" />
     <Compile Include="ShapeDefinition\Common\SupportIndex.cs" />
     <Compile Include="SolutionIntegration\IntegratePosition.cs" />
     <Compile Include="SolutionIntegration\IntegrateVelocity.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Wrapper\Joint\SliderJoint.cs" />
     <Compile Include="Wrapper\Joint\UniversalJoint.cs" />
     <Compile Include="Wrapper\Shape\ConvexShape.cs" />
+    <Compile Include="Wrapper\Shape\ShapeGeometry.cs" />
     <Compile Include="Wrapper\Shape\SoftSimShape.cs" />
     <Compile Include="ShapeDefinition\Common\AABB.cs" />
     <Compile Include="ShapeDefinition\Shape\CompoundShape.cs" />

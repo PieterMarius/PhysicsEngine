@@ -34,8 +34,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         AABB AABBox { get; }
         ObjectGeometryType GeometryType { get; }
         IShape Shape { get; }
-        TriangleMesh[] Triangle { get; }
-        SupportIndex[] VerticesIdx { get; }
+        CommonGeometry BaseGeometry { get; }
 
         void SetAABB(AABB box);
         Vector3d[] GetVertices();

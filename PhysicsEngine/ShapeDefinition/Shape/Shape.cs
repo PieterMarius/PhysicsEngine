@@ -56,7 +56,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         public Vector3d Position { get; protected set; }
 
-        public Vector3d[] Vertices { get; protected set; }
+        abstract public Vector3d[] Vertices { get; }
 
         public Vector3d[] VerticesRelPos { get; protected set; }
 

@@ -567,28 +567,34 @@ namespace SharpPhysicsEngine
 
             SaveShapePreviousProperties(collisionPoints);
             
-            if (Partitions != null) 
+            if (Partitions != null && Partitions.Any()) 
 			{
-                for (int i = 0; i < Partitions.Count;i++)
-				{
-                    JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
-																        Partitions[i].PartitionedCollisionPoints.ToArray(),
-																        Partitions[i].PartitionedJoints,
-																        Shapes,
-																        EngineParameters);
+                var rangePartitioner = Partitioner.Create(
+                    0,
+                    Partitions.Count,
+                    Convert.ToInt32(Partitions.Count / EngineParameters.MaxThreadNumber) + 1);
 
-					if (jacobianConstraints.Length > 0)
-					{
-                        double[] overallSolution = new double[jacobianConstraints.Length];
-                                                                        	                      
-                        LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
-                                                                        
-                        if (LCP != null)
-						    overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
+                Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                    (range, loopState) =>
+                    {
+                        for (int i = range.Item1; i < range.Item2; i++)
+                        {
+                            JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
+                                                                        Partitions[i].PartitionedCollisionPoints.ToArray(),
+                                                                        Partitions[i].PartitionedJoints,
+                                                                        Shapes,
+                                                                        EngineParameters);
 
-                        IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
-                    }
-				}
+                            if (jacobianConstraints.Length > 0)
+                            {
+                                LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
+                                double[]  overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
+                                IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
+                            }
+                        }
+                    });
 			}
 
             #endregion

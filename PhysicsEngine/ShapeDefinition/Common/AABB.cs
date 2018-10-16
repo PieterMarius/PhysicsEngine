@@ -189,7 +189,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             IGeometry simObject,
             object objectID)
 		{
-			Vector3d vertexPos = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[0].ID);
+			Vector3d vertexPos = Helper.GetVertexPosition(simObject.Shape, simObject.BaseGeometry.VerticesIdx[0].ID);
 			double xMax = vertexPos.x;
 			double xMin = vertexPos.x;
 			double yMax = vertexPos.y;
@@ -197,9 +197,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
 			double zMax = vertexPos.z;
 			double zMin = vertexPos.z;
 
-			for (int i = 1; i < simObject.VerticesIdx.Length; i++)
+			for (int i = 1; i < simObject.BaseGeometry.VerticesIdx.Length; i++)
 			{
-				Vector3d vertex = Helper.GetVertexPosition(simObject.Shape, simObject.VerticesIdx[i].ID);
+				Vector3d vertex = Helper.GetVertexPosition(simObject.Shape, simObject.BaseGeometry.VerticesIdx[i].ID);
 
 				if (vertex.x < xMin)
 					xMin = vertex.x;

@@ -308,9 +308,9 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		public static VertexProperties[] SetVertexPosition(IGeometry obj)
 		{
-			VertexProperties[] vertexPosition = new VertexProperties[obj.VerticesIdx.Length];
+			VertexProperties[] vertexPosition = new VertexProperties[obj.BaseGeometry.VerticesIdx.Length];
 
-            for (int i = 0; i < obj.VerticesIdx.Length; i++)
+            for (int i = 0; i < obj.BaseGeometry.VerticesIdx.Length; i++)
             {
                 vertexPosition[i] = CommonUtilities.GetVertexPosition(obj, i);
             }
@@ -322,10 +322,10 @@ namespace SharpPhysicsEngine.CollisionEngine
             IGeometry obj,
             Vector3d[] vertices)
         {
-            VertexProperties[] vertexPosition = new VertexProperties[obj.VerticesIdx.Length];
+            VertexProperties[] vertexPosition = new VertexProperties[obj.BaseGeometry.VerticesIdx.Length];
 
-            for (int i = 0; i < obj.VerticesIdx.Length; i++)
-                vertexPosition[i] = new VertexProperties(vertices[obj.VerticesIdx[i].ID], obj.VerticesIdx[i].GetLocalAdjacencyList());
+            for (int i = 0; i < obj.BaseGeometry.VerticesIdx.Length; i++)
+                vertexPosition[i] = new VertexProperties(vertices[obj.BaseGeometry.VerticesIdx[i].ID], obj.BaseGeometry.VerticesIdx[i].GetLocalAdjacencyList());
             
             return vertexPosition;
         }

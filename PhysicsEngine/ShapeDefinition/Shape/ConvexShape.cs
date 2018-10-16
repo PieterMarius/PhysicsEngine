@@ -36,24 +36,23 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
 		public IGeometry ObjectGeometry { get; private set; }
 
+        public override Vector3d[] Vertices { get { return ObjectGeometry.BaseGeometry.VerticesPosition; } }
+
         #endregion
 
         #region Constructor
 
         public ConvexShape(
-            Vector3d[] inputVertexPosition,
-            TriangleMesh[] triangleMeshes,
+            CommonGeometry baseGeometry,
             Vector3d position,
             double mass,
             bool isStatic) : base()
         {
             ObjectType = ObjectType.RigidBody;
-            Vertices = inputVertexPosition;
-
+            
             ObjectGeometry = new Geometry(
                     this,
-                    Enumerable.Range(0,Vertices.Length).ToArray(),
-                    triangleMeshes,
+                    baseGeometry,
                     ObjectGeometryType.ConvexShape,
                     true);
 
@@ -66,7 +65,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #endregion
 
         #region Public methods
-
+                
         public override void SetAABB()
         {
             AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
@@ -125,7 +124,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetRelativePosition()
         {
-            VerticesRelPos = new Vector3d[ObjectGeometry.VerticesIdx.Length];
+            VerticesRelPos = new Vector3d[ObjectGeometry.BaseGeometry.VerticesIdx.Length];
             double dist = 0.0;
 
             if (Vertices.Length > 0)
@@ -154,12 +153,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                 Vertices,
-                ObjectGeometry.Triangle,
+                ObjectGeometry.BaseGeometry.Triangle,
                 MassInfo.Mass);
 
             Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
                     Vertices,
-                    ObjectGeometry.Triangle,
+                    ObjectGeometry.BaseGeometry.Triangle,
                     InitCenterOfMass,
                     MassInfo.Mass).InertiaTensor;
 

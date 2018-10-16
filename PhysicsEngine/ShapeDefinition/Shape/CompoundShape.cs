@@ -61,7 +61,9 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// Object triangle mesh index
         /// </summary>
         public TriangleMesh[] TriangleMeshes { get; private set; }
-                
+
+        public override Vector3d[] Vertices { get { return ObjectGeometry.BaseGeometry.VerticesPosition; } }
+
         #endregion
 
         #region Object dynamic properties
@@ -174,13 +176,16 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 for (int j = 0; j < inputVertexPosition[i].Length; j++)
                     idx[j] = verticesSum.Count + j;
+
+                var baseGeometry = new CommonGeometry(inputVertexPosition[i], triangleMeshes, idx);
                 
-                geometry[i] = new Geometry(this, idx, triangleMeshes, ObjectGeometryType.ConvexShape, true);
+                geometry[i] = new Geometry(this, baseGeometry, ObjectGeometryType.ConvexShape, true);
 
                 verticesSum.AddRange(inputVertexPosition[i].ToList());
             }
 
-            Vertices = verticesSum.ToArray();
+            //TODO
+            //Vertices = verticesSum.ToArray();
 
             SetGeometry();
 
@@ -203,12 +208,12 @@ namespace SharpPhysicsEngine.ShapeDefinition
             {
                 for (int i = 0; i < ShapesGeometry.Length; i++)
                 {
-                    if (ShapesGeometry[i].VerticesIdx != null &&
-                        ShapesGeometry[i].VerticesIdx.Length > 0)
+                    if (ShapesGeometry[i].BaseGeometry.VerticesIdx != null &&
+                        ShapesGeometry[i].BaseGeometry.VerticesIdx.Length > 0)
                     {
-                        for (int j = 0; j < ShapesGeometry[i].VerticesIdx.Length; j++)
+                        for (int j = 0; j < ShapesGeometry[i].BaseGeometry.VerticesIdx.Length; j++)
                         {
-                            Vertices[ShapesGeometry[i].VerticesIdx[j].ID] += StartCompoundPositionObjects[i];
+                            Vertices[ShapesGeometry[i].BaseGeometry.VerticesIdx[j].ID] += StartCompoundPositionObjects[i];
                         }
                     }
                 }
@@ -233,13 +238,13 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 baseTensors += ShapeCommonUtilities.GetInertiaTensor(
                     vertices,
-                    ShapesGeometry[i].Triangle,
+                    ShapesGeometry[i].BaseGeometry.Triangle,
                     InitCenterOfMass,
                     PartialMass[i]).InertiaTensor;
 
                 Vector3d[] vertexPosition = vertices;
 
-                totalVertex += ShapesGeometry[i].VerticesIdx.Length;
+                totalVertex += ShapesGeometry[i].BaseGeometry.VerticesIdx.Length;
             }
 
             RotationMatrix = Quaternion.ConvertToMatrix(Quaternion.Normalize(RotationStatus));
@@ -281,7 +286,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
                 var centerOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                     vertices,
-                    ShapesGeometry[i].Triangle,
+                    ShapesGeometry[i].BaseGeometry.Triangle,
                     PartialMass[i]);
                                 
                 startPosition += centerOfMass * PartialMass[i];

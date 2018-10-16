@@ -305,10 +305,10 @@ namespace SharpPhysicsEngine.Wrapper
 
             for (int i = 0; i < concaveShape.ConvexShapesGeometry.Length; i++)
             {
-                var vtx = new Vector3d[concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length];
-                for (int j = 0; j < concaveShape.ConvexShapesGeometry[i].VerticesIdx.Length; j++)
+                var vtx = new Vector3d[concaveShape.ConvexShapesGeometry[i].BaseGeometry.VerticesIdx.Length];
+                for (int j = 0; j < concaveShape.ConvexShapesGeometry[i].BaseGeometry.VerticesIdx.Length; j++)
                 {
-                    vtx[j] = (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].VerticesIdx[j].ID]) + concaveShape.Position;
+                    vtx[j] = (concaveShape.RotationMatrix * concaveShape.VerticesRelPos[concaveShape.ConvexShapesGeometry[i].BaseGeometry.VerticesIdx[j].ID]) + concaveShape.Position;
                 }
 
                 result[i] = vtx;

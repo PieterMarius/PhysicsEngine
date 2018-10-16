@@ -34,15 +34,11 @@ namespace SharpPhysicsEngine.ShapeDefinition
 	{
 		#region Object Properties
 
-		/// <summary>
-		/// Vertex Position
-		/// </summary>
-		public SupportIndex[] VerticesIdx { get; private set; }
-		/// <summary>
-		/// Triangle Index
-		/// </summary>
-		public TriangleMesh[] Triangle { get; private set; }
-		/// <summary>
+        /// <summary>
+        /// Base Geometry
+        /// </summary>
+        public CommonGeometry BaseGeometry { get; private set; }
+        /// <summary>
 		/// Bounding Box
 		/// </summary>
 		public AABB AABBox { get; private set; }
@@ -61,31 +57,22 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
 		public Geometry (
 			IShape shape,
-			int[] verticesIdx,
-			TriangleMesh[] inputTriangle,
+			CommonGeometry baseGeometry,
 			ObjectGeometryType geometryType,
 			bool getAdjacencyList)
 		{
 			Shape = shape;
 			GeometryType = geometryType;
-
-			if (inputTriangle != null)
-			{
-				Triangle = inputTriangle;
-				
-				SetVertexAdjacency(verticesIdx, getAdjacencyList);
-			}
-			else
-			    SetVertexAdjacency(verticesIdx, getAdjacencyList);
+            BaseGeometry = baseGeometry;
 		}
 
 		public Geometry(
 			IShape shape,
-            int[] verticesIdx,
+            CommonGeometry baseGeometry,
 			ObjectGeometryType geometryType)
-			: this(shape, verticesIdx, null, geometryType, false)
+			: this(shape, baseGeometry, geometryType, false)
 		{ }
-
+                
 		#endregion
 
 		#region Public Methods
@@ -97,10 +84,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
         
         public Vector3d[] GetVertices()
         {
-            var result = new Vector3d[VerticesIdx.Length];
+            var result = new Vector3d[BaseGeometry.VerticesIdx.Length];
 
-            for (int i = 0; i < VerticesIdx.Length; i++)
-                result[i] = Shape.Vertices[VerticesIdx[i].ID];
+            for (int i = 0; i < BaseGeometry.VerticesIdx.Length; i++)
+                result[i] = Shape.Vertices[BaseGeometry.VerticesIdx[i].ID];
 
             return result;
         }
@@ -118,42 +105,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #endregion
 
         #region Private Methods
-
-        private void SetVertexAdjacency(
-			int[] verticesIdx,
-			bool getAdjacencyList)
-		{
-            VerticesIdx = Array.ConvertAll(verticesIdx, x => new SupportIndex(x));
-
-            if (getAdjacencyList && Triangle != null)
-            {
-                var vList = VerticesIdx.ToList();
-
-                foreach (var tr in Triangle)
-                {
-                    var indexA = vList.FindIndex(x => x.ID == tr.a);
-                    var indexB = vList.FindIndex(x => x.ID == tr.b);
-                    var indexC = vList.FindIndex(x => x.ID == tr.c);
-
-                    vList[indexA].AddVertexToGlobalAdjList(tr.b);
-                    vList[indexA].AddVertexToGlobalAdjList(tr.c);
-                    vList[indexB].AddVertexToGlobalAdjList(tr.a);
-                    vList[indexB].AddVertexToGlobalAdjList(tr.c);
-                    vList[indexC].AddVertexToGlobalAdjList(tr.a);
-                    vList[indexC].AddVertexToGlobalAdjList(tr.b);
-
-                    vList[indexA].AddVertexToLocalAdjList(indexB);
-                    vList[indexA].AddVertexToLocalAdjList(indexC);
-                    vList[indexB].AddVertexToLocalAdjList(indexA);
-                    vList[indexB].AddVertexToLocalAdjList(indexC);
-                    vList[indexC].AddVertexToLocalAdjList(indexA);
-                    vList[indexC].AddVertexToLocalAdjList(indexB);
-                }
-
-                VerticesIdx = vList.ToArray();
-            }
-        }
-
+        
         #endregion
     }
 }

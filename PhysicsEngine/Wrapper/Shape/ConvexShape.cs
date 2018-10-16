@@ -50,10 +50,10 @@ namespace SharpPhysicsEngine.Wrapper
             bool isStatic)
         {
             TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle);
+            ShapeGeometry baseGeometry = new ShapeGeometry(inputVertexPosition, inputTriangle);
 
             convexShape = new ShapeDefinition.ConvexShape(
-                inputVertexPosition,
-                triangleMeshes,
+                baseGeometry.GetGeometry(),
                 position,
                 mass, 
                 isStatic);
@@ -72,13 +72,10 @@ namespace SharpPhysicsEngine.Wrapper
             double mass,
             bool isStatic)
         {
-            IConvexHullEngine convexHullEngine = new ConvexHullEngine();
-
-            ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertexPosition);
+            ShapeGeometry baseGeometry = new ShapeGeometry(inputVertexPosition);
 
             convexShape = new ShapeDefinition.ConvexShape(
-                Array.ConvertAll(convexHullData.Vertices, x => x.Vector3),
-                convexHullData.TriangleMeshes,
+                baseGeometry.GetGeometry(),
                 position,
                 mass,
                 isStatic);
@@ -90,6 +87,19 @@ namespace SharpPhysicsEngine.Wrapper
             double mass) :
             this(inputVertexPosition, position, mass, false)
         { }
+
+        public ConvexShape(
+            ShapeGeometry baseGeometry, 
+            Vector3d position,
+            double mass,
+            bool isStatic)
+        {
+            convexShape = new ShapeDefinition.ConvexShape(
+               baseGeometry.GetGeometry(),
+               position,
+               mass,
+               isStatic);
+        }
 
         #endregion
 
@@ -298,8 +308,8 @@ namespace SharpPhysicsEngine.Wrapper
 
         public Vector3d[] GetVertices()
         {
-            Vector3d[] vertices = new Vector3d[convexShape.ObjectGeometry.VerticesIdx.Length];
-            for (int i = 0; i < convexShape.ObjectGeometry.VerticesIdx.Length; i++)
+            Vector3d[] vertices = new Vector3d[convexShape.ObjectGeometry.BaseGeometry.VerticesIdx.Length];
+            for (int i = 0; i < convexShape.ObjectGeometry.BaseGeometry.VerticesIdx.Length; i++)
                 vertices[i] = CommonUtilities.GetVertexPosition(convexShape.ObjectGeometry, i).Vertex;
 
             return vertices;
