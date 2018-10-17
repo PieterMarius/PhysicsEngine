@@ -27,7 +27,6 @@
 using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.ConvexHullWrapper;
 using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.Wrapper

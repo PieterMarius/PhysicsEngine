@@ -442,7 +442,7 @@ namespace TestPhysics
                     Console.WriteLine();
 
 
-                    collPoint = physicsEngine.GetCollisionPointStrucureList();
+                    //collPoint = physicsEngine.GetCollisionPointStrucureList();
                     //if (collPoint.Count > 0)
                     //    pause = true;
 

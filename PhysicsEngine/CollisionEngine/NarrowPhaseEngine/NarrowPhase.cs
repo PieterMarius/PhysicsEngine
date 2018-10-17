@@ -266,13 +266,18 @@ namespace SharpPhysicsEngine.CollisionEngine
             IGeometry[] geometryA,
             IGeometry[] geometryB)
         {
-            var geometryBoxesA = Array.ConvertAll(geometryA, x => x.AABBox);
-            var geometryBoxesB = Array.ConvertAll(geometryB, x => x.AABBox);
-
-            if (geometryBoxesA.Length == 1 &&
-                geometryBoxesB.Length == 1)
+            if (geometryA.Length == 1 && geometryB.Length == 1)
                 return new List<CollisionPair>() { new CollisionPair(0, 0) };
 
+            foreach (var shape in geometryA)
+                shape.SetAABB(AABB.GetGeometryAABB(shape, shape));
+
+            foreach (var shape in geometryB)
+                shape.SetAABB(AABB.GetGeometryAABB(shape, shape));
+
+            var geometryBoxesA = Array.ConvertAll(geometryA, x => x.AABBox);
+            var geometryBoxesB = Array.ConvertAll(geometryB, x => x.AABBox);
+            
             return broadPhaseCollisionEngine.Execute(geometryBoxesA, geometryBoxesB, 0.000001);
         }
 

@@ -25,11 +25,7 @@
  *****************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.ConvexHullWrapper;
-using SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition;
 
 namespace SharpPhysicsEngine.ShapeDefinition
 {
@@ -47,12 +43,10 @@ namespace SharpPhysicsEngine.ShapeDefinition
         /// Object geometry
         /// </summary>
         public IGeometry ObjectGeometry { get; private set; }
-
+        
         /// <summary>
-        /// Object triangle mesh index
+        /// Vertices position
         /// </summary>
-        public TriangleMesh[] TriangleMeshes { get; private set; }
-
         public override Vector3d[] Vertices { get { return ObjectGeometry.BaseGeometry.VerticesPosition; } }
 
         #endregion
@@ -60,9 +54,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Constructor
 
         public ConcaveShape(
-            TriangleMesh[] triangleMeshes,
-            Vector3d[] inputVertexPosition,
-            IConvexHullEngine convexHullEngine,
+            CommonGeometry baseGeometry,
             Vector3d position,
             double mass,
             bool isStatic) : base()
@@ -71,11 +63,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetIsStatic(isStatic);
             
             Position = position;
-            TriangleMeshes = triangleMeshes;
-            
-            //TODO
-            var baseGeometry = new CommonGeometry(inputVertexPosition, triangleMeshes);
-            
+                                  
             ObjectGeometry = new Geometry(
                 this, 
                 baseGeometry,
@@ -85,7 +73,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
             SetRotationMatrix();
             SetMass(mass);
             
-            SetShapeGeometry(convexHullEngine);
+            SetShapeGeometry();
             SetRelativePosition();
             SetAABB();
         }
@@ -111,9 +99,6 @@ namespace SharpPhysicsEngine.ShapeDefinition
         {
             AABBox = AABB.GetGeometryAABB(ObjectGeometry, this);
             ObjectGeometry.SetAABB(AABBox);
-            
-            foreach (var shape in ConvexShapesGeometry)
-                shape.SetAABB(AABB.GetGeometryAABB(shape, shape));
         }
 
         public override void SetMass(double mass)
@@ -138,32 +123,14 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         #region Private Methods
 
-        private void SetShapeGeometry(IConvexHullEngine convexHullEngine)
+        private void SetShapeGeometry()
         {
-            AABB region = AABB.GetGeometryAABB(Vertices, this);
-                        
-            Vertex3Index[] verticesIndex = new Vertex3Index[Vertices.Length];
-
-            for (int i = 0; i < Vertices.Length; i++)
-                verticesIndex[i] = new Vertex3Index(Vertices[i], ObjectGeometry.BaseGeometry.VerticesIdx[i].GetGlobalAdjacencyList(), i);
-
-            ConvexDecompositionEngine convexDecomposition = new ConvexDecompositionEngine(region, verticesIndex, 0.2);
-
-            var convexShapes = convexDecomposition.Execute().GetConvexShapeList(true);
-
-            ConvexShapesGeometry = new Geometry[convexShapes.Count];
-
-            for (int i = 0; i < convexShapes.Count; i++)
+            ConvexShapesGeometry = new Geometry[ObjectGeometry.BaseGeometry.ConvexItem.Length];
+            for (int i = 0; i < ObjectGeometry.BaseGeometry.ConvexItem.Length; i++)
             {
-                ConvexHullData convexHullData = convexHullEngine.GetConvexHull(convexShapes[i].Vertex3Idx.ToArray());
-
-                var verticesIdx = Array.ConvertAll(convexHullData.Vertices, x => x.ID);
-
-                var baseGeometry = new CommonGeometry(null, convexHullData.TriangleMeshes, verticesIdx);
-
                 ConvexShapesGeometry[i] = new Geometry(
                     this,
-                    baseGeometry,
+                    ObjectGeometry.BaseGeometry.ConvexItem[i],
                     ObjectGeometryType.ConvexShape,
                     true);
             }

@@ -24,10 +24,8 @@
  *  
  *****************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using SharpEngineMathUtility;
-using SharpPhysicsEngine.ConvexHullWrapper;
 using SharpPhysicsEngine.Helper;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -50,11 +48,30 @@ namespace SharpPhysicsEngine.Wrapper
             double mass,
             bool isStatic)
         {
-            TriangleMesh[] triangleMeshes = CommonUtilities.GetTriangleMeshes(inputTriangle);
+            ShapeGeometry shapeGeometry = new ShapeGeometry(inputVertexPosition, inputTriangle);
+            shapeGeometry.SetConcaveCommonGeometry();
+            CommonGeometry baseGeometry = shapeGeometry.GetGeometry();
+                        
+            this.concaveShape = new ShapeDefinition.ConcaveShape(
+                baseGeometry, 
+                position, 
+                mass, 
+                isStatic);
+        }
 
-            IConvexHullEngine convexHullEngine = new ConvexHullEngine();
+        public ConcaveShape(
+            ShapeGeometry baseGeometry,
+            Vector3d position,
+            double mass,
+            bool isStatic)
+        {
+            baseGeometry.SetConcaveCommonGeometry();
 
-            this.concaveShape = new ShapeDefinition.ConcaveShape(triangleMeshes, inputVertexPosition, convexHullEngine, position, mass, isStatic);
+            this.concaveShape = new ShapeDefinition.ConcaveShape(
+                baseGeometry.GetGeometry(), 
+                position, 
+                mass, 
+                isStatic);
         }
 
         #endregion

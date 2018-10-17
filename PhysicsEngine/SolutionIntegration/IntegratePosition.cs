@@ -146,7 +146,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             shape.AABBox.SetPositionChanged(false);
 
             if (ShapeDefinition.Helper.GetGeometry(shape) != null &&
-                (linearVelocity > 0.0 || angularVelocity > 0.0))
+               (linearVelocity > 0.0 || angularVelocity > 0.0))
             {
                 shape.SetAABB();
                 shape.AABBox.SetPositionChanged(true);

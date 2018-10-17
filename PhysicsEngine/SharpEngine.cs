@@ -569,6 +569,8 @@ namespace SharpPhysicsEngine
             
             if (Partitions != null && Partitions.Any()) 
 			{
+                Console.WriteLine("nPartitions " + Partitions.Count);
+
                 var rangePartitioner = Partitioner.Create(
                     0,
                     Partitions.Count,
