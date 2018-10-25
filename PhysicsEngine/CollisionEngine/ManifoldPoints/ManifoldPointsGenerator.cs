@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             if(collisionPoints.Count > 2)
             {
-                var normal = GeometryUtilities.CalculateNormal(
+                var normal = GeometryUtils.CalculateNormal(
                     collisionPoints[0].CollisionPointA.Vertex, 
                     collisionPoints[1].CollisionPointA.Vertex,
                     collisionPoints[2].CollisionPointA.Vertex);
@@ -164,7 +164,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			} 
 			else if (ca.Length > 2 && cb.Length == 2) 
 			{
-				ca = GeometryUtilities.TurnVectorClockWise (
+				ca = GeometryUtils.TurnVectorClockWise (
 					ca,
                     cp.CollisionNormal);
 
@@ -191,7 +191,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			} 
 			else if (ca.Length == 2 && cb.Length > 2) 
 			{
-				cb = GeometryUtilities.TurnVectorClockWise (
+				cb = GeometryUtils.TurnVectorClockWise (
 					cb,
                     cp.CollisionNormal);
 
@@ -218,11 +218,11 @@ namespace SharpPhysicsEngine.CollisionEngine
 			} 
 			else if (ca.Length > 2 && cb.Length > 2) 
 			{
-				ca = GeometryUtilities.TurnVectorClockWise (
+				ca = GeometryUtils.TurnVectorClockWise (
 					ca,
                     cp.CollisionNormal);
 
-				cb = GeometryUtilities.TurnVectorClockWise (
+				cb = GeometryUtils.TurnVectorClockWise (
 					cb,
                     cp.CollisionNormal);
 
@@ -284,7 +284,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 						(na * (Vector3d.Dot(na, ca[i]) +
 							Vector3d.Dot(na * -1.0, initPoint.CollisionPointB.Vertex)));
 
-					double angle = GeometryUtilities.TestPointInsidePolygon(
+					double angle = GeometryUtils.TestPointInsidePolygon(
 						cb,
 						project,
 						na,
@@ -312,7 +312,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 						(na * (Vector3d.Dot(na, cb[i]) +
 							Vector3d.Dot(na * -1.0, initPoint.CollisionPointA.Vertex)));
 
-					double angle = GeometryUtilities.TestPointInsidePolygon(
+					double angle = GeometryUtils.TestPointInsidePolygon(
 						ca,
 						project,
 						na,
@@ -374,7 +374,7 @@ namespace SharpPhysicsEngine.CollisionEngine
             var tx = new Vector3d();
             var ty = new Vector3d();
 
-            GeometryUtilities.ComputeBasis(
+            GeometryUtils.ComputeBasis(
                 normal,
                 ref tx,
                 ref ty);
@@ -506,7 +506,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			double mua = 0.0;
 			double mub = 0.0;
 
-			if (GeometryUtilities.TestEdgesIntersect (
+			if (GeometryUtils.TestEdgesIntersect (
 				p1,
 				p2,
 				p3,

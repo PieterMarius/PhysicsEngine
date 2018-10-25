@@ -194,7 +194,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] bufValue = m.Value;
             int[] bufIndex = m.Index;
 
-            for (int j = 0; j < m.Count; j++)
+            for (int j = 0; j < bufIndex.Length; j++)
             {
                 int idx = bufIndex[j];
                 sumBuffer += bufValue[j] * x[idx];

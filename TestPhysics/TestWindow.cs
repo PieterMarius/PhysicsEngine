@@ -152,7 +152,7 @@ namespace TestPhysics
 
             }
 
-            test2 = SIMDMathUtility.SIMDArrayProductScalar(test3.ToArray(), 2.0);
+            test2 = SimdUtils.SIMDArrayProductScalar(test3.ToArray(), 2.0);
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);

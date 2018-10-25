@@ -26,7 +26,7 @@
 
 using SharpEngineMathUtility;
 using static SharpEngineMathUtility.SparseElement;
-using static SharpEngineMathUtility.GeneralMathUtilities;
+using static SharpEngineMathUtility.GeneralMathUtils;
 using System.Linq;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
@@ -94,27 +94,41 @@ namespace SharpPhysicsEngine.LCPSolver
 
             //if (checkBoundConstraints)
             redBlackDictionary = gaussSeidelSolver.GetRedBlackDictionary(linearProblemProperties);
-
+            gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(5);
             x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+            gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(2);
 
-            double[] xOld = x;
-
-            for (int i = 0; i < SolverParameters.MaxIteration; i++)
+            double[] xOld = new double[x.Length];
+            double sor = 1.1;
+            for (int i = 0; i < 45; i++)
             {
                 double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
 
                 double alphaCG = GetAlphaCG(Ap, r, p);
-
-                xOld = x;
+                
                 x = UpdateSolution(x, p, alphaCG);
                 //for (int j = 0; j < x.Length; j++)
                 //{
-                    //x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
-                    x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+                //    x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
+
                 //}
+                //gaussSeidelSolver.SolverParameters.SetSOR(1.0);
+                //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+                
+                //if (sor == 1.0)
+                //    sor = 1.1;
+                //else
+                //    sor = 1.0;
+                //var err = CheckErrorTest(x, A, linearProblemProperties);
+
+                double actualSolverError = SolverHelper.ComputeSolverError(x, xOld);
+                if (actualSolverError < SolverParameters.ErrorTolerance)
+                    return x;
+
+                Array.Copy(x, xOld, x.Length);
 
                 r = GetDirection(A, linearProblemProperties.B, x);
-                                
+
                 //double[] phiY = GetPhi(linearProblemProperties, x, r);
                 double[] phiY = r;
                 double[] partialValue = Ap;
@@ -125,7 +139,22 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 p = Minus(phiY, ParallelMultiply(beta, p, SolverParameters.MaxThreadNumber));
             }
+            //var erra = CheckErrorTest(x, A, linearProblemProperties);
+            //for (int j = 0; j < x.Length; j++)
+            //{
+            //    x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
+            //    //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);  
+            //}
 
+            //var errp = CheckErrorTest(x, A, linearProblemProperties);
+            //gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(25);
+            //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
+            //var err = CheckErrorTest(x, A, linearProblemProperties);
+
+            //gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(120);
+            //var y1 = new double[x.Length];
+            //var y = gaussSeidelSolver.Solve(linearProblemProperties, y1);
+            //var erry = CheckErrorTest(y, A, linearProblemProperties);
             //double[] checkConvergence = Minus(x, xOld);
 
             //if (Dot(checkConvergence, checkConvergence) > 1E-4)
@@ -136,8 +165,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
             //Console.WriteLine("Error diff " + Dot(test, test));
 
-            
-            
+
+
             //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
 
             return x;

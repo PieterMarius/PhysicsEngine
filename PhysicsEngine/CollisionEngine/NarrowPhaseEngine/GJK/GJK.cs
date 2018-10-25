@@ -110,12 +110,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 			{
 				buffer = triangles[i];
 
-				if (!GeometryUtilities.TestCollinearity(
+				if (!GeometryUtils.TestCollinearity(
 						buffer.A.s,
 						buffer.B.s,
 						buffer.C.s))
 				{
-					distanceBuf = GeometryUtilities.GetPointTriangleIntersection(
+					distanceBuf = GeometryUtils.GetPointTriangleIntersection(
 						buffer.A.s,
 						buffer.B.s,
 						buffer.C.s,
@@ -183,7 +183,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return -1.0;
 
 			//Quarto punto del simplex
-			direction = Vector3d.Normalize(GeometryUtilities.CalculateNormal(
+			direction = Vector3d.Normalize(GeometryUtils.CalculateNormal(
 				simplex.Support[0].s,
 				simplex.Support[1].s,
 				simplex.Support[2].s));

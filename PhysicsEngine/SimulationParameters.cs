@@ -167,7 +167,7 @@ namespace SharpPhysicsEngine
             CompenetrationTolerance = 0.001;
 			ExternalForce = new Vector3d(0.0, -9.81, 0.0);
 			WarmStartingValue = 0.75;
-			MaxThreadNumber = 4;
+			MaxThreadNumber = 1;
 			MaxCorrectionValue = 10000.0;
 			SleepingObject = false;
             SleepingFrameLimit = 7;

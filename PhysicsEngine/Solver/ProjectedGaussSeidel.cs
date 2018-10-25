@@ -108,7 +108,7 @@ namespace SharpPhysicsEngine.LCPSolver
                     double[] bufValue = m.Value;
                     int[] bufIndex = m.Index;
 
-                    for (int j = 0; j < m.Count; j++)
+                    for (int j = 0; j < bufIndex.Length; j++)
                     {
                         int idx = bufIndex[j];
                         if (idx < i)
@@ -153,12 +153,12 @@ namespace SharpPhysicsEngine.LCPSolver
 			//Avoid last row elaboration
 			if (i + 1 != input.Count)
             {
-                if (input.M[i].Count > 0)
+                if (input.M[i].Index.Length > 0)
                 {
                     double[] bufValue = input.M[i].Value;
                     int[] bufIndex = input.M[i].Index;
 
-                    for (int j = 0; j < input.M[i].Count; j++)
+                    for (int j = 0; j < bufIndex.Length; j++)
                     {
                         int idx = bufIndex[j];
                         if (idx > i)

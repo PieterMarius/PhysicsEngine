@@ -554,7 +554,7 @@ namespace Utility
 						solid.vertices[indicedata [index + 2]].z);
 
 					Vector3d normal = 
-						GeometryUtilities.CalculateNormal (a, b, c);
+						GeometryUtils.CalculateNormal (a, b, c);
 
 					GL.Normal3 (normal.x, normal.y, normal.z);	
 				}

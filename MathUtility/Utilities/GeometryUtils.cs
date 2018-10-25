@@ -29,7 +29,7 @@ using System.Collections.Generic;
 
 namespace SharpEngineMathUtility
 {
-	public static class GeometryUtilities
+	public static class GeometryUtils
 	{
 		#region Private Static Fields
 

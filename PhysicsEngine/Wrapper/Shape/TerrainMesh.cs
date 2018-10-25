@@ -63,22 +63,22 @@ namespace SharpPhysicsEngine.Wrapper
 
         public double[][] GetPositions()
         {
-            return GeneralMathUtilities.GetArrayFromVector3(terrain.GetPosition());
+            return GeneralMathUtils.GetArrayFromVector3(terrain.GetPosition());
         }
 
         public double[][] GetNormalArray()
         {
-            return GeneralMathUtilities.GetArrayFromVector3(terrain.GetNormalArray());
+            return GeneralMathUtils.GetArrayFromVector3(terrain.GetNormalArray());
         }
 
         public double[][][] GetTextureCoordMatrix()
         {
-            return GeneralMathUtilities.GetMatrixFromVector2Matrix(terrain.GetTextureCoords());
+            return GeneralMathUtils.GetMatrixFromVector2Matrix(terrain.GetTextureCoords());
         }
 
         public double[][][] GetConvexShapeList()
         {
-            return GeneralMathUtilities.GetMatrixFromVector3Matrix(terrain.GetConvexShapes());
+            return GeneralMathUtils.GetMatrixFromVector3Matrix(terrain.GetConvexShapes());
         }
 
         #endregion

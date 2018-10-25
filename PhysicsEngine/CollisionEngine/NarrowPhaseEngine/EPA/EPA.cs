@@ -97,12 +97,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 					{
 						epaBuffer = triangles [i];
 
-						if (!GeometryUtilities.TestCollinearity (
+						if (!GeometryUtils.TestCollinearity (
 								epaBuffer.A.s,
 								epaBuffer.B.s,
 								epaBuffer.C.s)) 
 						{
-							vDistance = GeometryUtilities.GetPointTriangleIntersection (
+							vDistance = GeometryUtils.GetPointTriangleIntersection (
 								epaBuffer.A.s,
 								epaBuffer.B.s,
 								epaBuffer.C.s,

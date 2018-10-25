@@ -52,20 +52,22 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Solver\GMRES.cs" />
+    <Compile Include="Solver\MINRES.cs" />
     <Compile Include="Utilities\BreadthFirstSearch.cs" />
-    <Compile Include="Utilities\GeneralMathUtilities.cs" />
+    <Compile Include="Utilities\GeneralMathUtils.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Utilities\HashSetStruct.cs" />
     <Compile Include="Utilities\Line.cs" />
-    <Compile Include="Utilities\SIMDMathUtility.cs" />
-    <Compile Include="BaseStruct\Vector2d.cs" />
-    <Compile Include="BaseStruct\Vector3d.cs" />
+    <Compile Include="Utilities\SimdUtils.cs" />
+    <Compile Include="Struct\Vector2d.cs" />
+    <Compile Include="Struct\Vector3d.cs" />
     <Compile Include="Utilities\ConstValues.cs" />
-    <Compile Include="BaseStruct\Matrix3x3.cs" />
-    <Compile Include="BaseStruct\Quaternion.cs" />
-    <Compile Include="Utilities\GeometryUtilities.cs" />
-    <Compile Include="BaseStruct\Vertices.cs" />
-    <Compile Include="BaseStruct\SparseElement.cs" />
+    <Compile Include="Struct\Matrix3x3.cs" />
+    <Compile Include="Struct\Quaternion.cs" />
+    <Compile Include="Utilities\GeometryUtils.cs" />
+    <Compile Include="Struct\Vertices.cs" />
+    <Compile Include="Struct\SparseElement.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="DotNetCross.Memory.Unsafe">
@@ -81,4 +83,5 @@
   <ItemGroup>
     <None Include="MathUtility.licenseheader" />
   </ItemGroup>
+  <ItemGroup />
 </Project>

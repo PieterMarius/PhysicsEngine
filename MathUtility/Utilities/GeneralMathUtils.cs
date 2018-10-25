@@ -27,12 +27,13 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SharpEngineMathUtility
 {
-    public static class GeneralMathUtilities
+    public static class GeneralMathUtils
     {
         public static double Dot(double[] a, double[] b)
         {
@@ -47,6 +48,19 @@ namespace SharpEngineMathUtility
             return result;
         }
 
+        public static double Normalize(double[] a)
+        {
+            if (a == null || a.Length == 0)
+                throw new Exception("Wrong vector length");
+
+            double result = 0.0;
+
+            for (int i = 0; i < a.Length; i++)
+                result += a[i] * a[i];
+
+            return Math.Sqrt(result);
+        }
+
         public static double[] Multiply(
             double scalar, 
             double[] vector)
@@ -56,6 +70,67 @@ namespace SharpEngineMathUtility
             for (int i = 0; i < vector.Length; i++)
                 result[i] = vector[i] * scalar;
             
+            return result;
+        }
+
+        public static double[] Multiply(
+            double scalar,
+            double[] vector,
+            int limit)
+        {
+            double[] result = new double[limit];
+
+            for (int i = 0; i < limit; i++)
+                result[i] = vector[i] * scalar;
+
+            return result;
+        }
+
+        public static double[] Multiply(double[][] m, double[] v, int length)
+        {
+            double[] result = new double[m.Length];
+            for (int i = 0; i < m.Length; i++)
+            {
+                double temp = 0.0;
+                for  (int j = 0; j < length; j++)
+                {
+                    temp += m[i][j] * v[j];
+                }
+                result[i] = temp;
+            }
+
+            return result;
+        }
+
+        public static double[] Div(double[][] m, double[] v, int length)
+        {
+            double[] result = new double[length];
+            for (int i = 0; i < length; i++)
+            {
+                double temp = 0.0;
+                for (int j = 0; j < length; j++)
+                {
+                    temp += m[i][j] / v[j];
+                }
+                result[i] = temp;
+            }
+
+            return result;
+        }
+
+        public static double[] Multiply(double[][] m, double[] v)
+        {
+            double[] result = new double[m.Length];
+            for (int i = 0; i < v.Length; i++)
+            {
+                double temp = 0.0;
+                for (int j = 0; j < m[i].Length; j++)
+                {
+                    temp += m[i][j] * v[j];
+                }
+                result[i] = temp;
+            }
+
             return result;
         }
 
@@ -102,6 +177,16 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < a.Length; i++)
                 result[i] = a[i] + b[i];
+
+            return result;
+        }
+
+        public static double[] Add(double[] a, double b)
+        {
+            double[] result = new double[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                result[i] += a[i] + b;
 
             return result;
         }
@@ -219,6 +304,23 @@ namespace SharpEngineMathUtility
             }
 
             return list1d.ToArray();
+        }
+
+        public static T[] GetRow<T>(this T[,] array, int row)
+        {
+            if (!typeof(T).IsPrimitive)
+                throw new InvalidOperationException("Not supported for managed types.");
+
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            int cols = array.GetUpperBound(1) + 1;
+            T[] result = new T[cols];
+            int size = Marshal.SizeOf<T>();
+
+            Buffer.BlockCopy(array, row * cols * size, result, 0, cols * size);
+
+            return result;
         }
     }
 }

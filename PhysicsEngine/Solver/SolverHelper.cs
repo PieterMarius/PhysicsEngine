@@ -52,7 +52,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                         double bValue = (1.0 / input.InvD[i]) * x[i];
 
-                        for (int j = 0; j < m.Count; j++)
+                        for (int j = 0; j < bufIndex.Length; j++)
                             bValue += bufValue[j] * x[bufIndex[j]];
 
                         error += (bValue - input.B[i]) * (bValue - input.B[i]);
@@ -69,8 +69,8 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x,
             double[] oldx)
         {
-            double[] actualSolverErrorDiff = GeneralMathUtilities.Minus(x, oldx);
-            return GeneralMathUtilities.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
+            double[] actualSolverErrorDiff = GeneralMathUtils.Minus(x, oldx);
+            return GeneralMathUtils.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
         }
     }
 }

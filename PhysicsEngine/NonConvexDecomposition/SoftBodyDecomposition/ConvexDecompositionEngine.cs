@@ -147,7 +147,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
             //We have a cube with non-power of two dimensions. We want to find the next highest power of two.
             //example: 63 -> 64; 65 -> 128;
-            int x = GeneralMathUtilities.SigBit(highX);
+            int x = GeneralMathUtils.SigBit(highX);
 
             region.Max = new Vector3d(x, x, x);
 

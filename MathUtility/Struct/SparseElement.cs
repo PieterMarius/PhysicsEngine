@@ -37,7 +37,7 @@ namespace SharpEngineMathUtility
 
 		public readonly double[] Value;
 		public readonly int[] Index;
-		public readonly int Count;
+		public readonly int Length;
 		
 		#endregion
 
@@ -45,11 +45,12 @@ namespace SharpEngineMathUtility
 
 		public SparseElement (
 			double[] value,
-			int[] index)
+			int[] index,
+            int length)
 		{
 			Value = value;
 			Index = index;
-			Count = value.Length;
+			Length = length;
 		}
 
         #endregion
@@ -86,7 +87,7 @@ namespace SharpEngineMathUtility
 
                         double bValue = 0.0;
 
-                        for (int j = 0; j < m.Count; j++)
+                        for (int j = 0; j < m.Index.Length; j++)
                             bValue += bufValue[j] * vector[bufIndex[j]];
 
                         result[i] = bValue;
@@ -96,9 +97,70 @@ namespace SharpEngineMathUtility
             return result;
         }
 
+        public static SparseElement[] Multiply(
+            SparseElement[] matrixA,
+            SparseElement[] matrixB,
+            int? maxThread = null)
+        {
+            if (matrixA.Length != matrixB.Length)
+                throw new Exception();
+
+            var result = new SparseElement[matrixA.Length];
+
+            for (int i = 0; i < matrixB.Length; i++)
+            {
+                var mul = Multiply(matrixB, GetArray(matrixA[i]));
+                result[i] = GetSparseElement(mul);
+            }
+
+            return result;
+        }
+
+        public static SparseElement[] Square(
+            SparseElement[] matrix,
+            int? maxThread = null)
+        {
+            var result = new SparseElement[matrix.Length];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                var mul = Multiply(matrix, GetArray(matrix[i]));
+                result[i] = GetSparseElement(mul);
+            }
+
+            return result;
+        }
+
+        public static SparseElement[] Transpose(SparseElement[] matrix)
+        {
+            SparseElement[] result = new SparseElement[matrix.Length];
+            
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                List<int> idx = new List<int>();
+                List<double> val = new List<double>();
+
+                for (int j = 0; j < matrix.Length; j++)
+                {
+                    for (int w = 0; w < matrix[j].Index.Length; w++)
+                    {
+                        if(matrix[j].Index[w] == i)
+                        {
+                            idx.Add(j);
+                            val.Add(matrix[j].Value[w]);
+                        }
+                    }                    
+                }
+
+                result[i] = new SparseElement(val.ToArray(), idx.ToArray(), matrix[i].Length);
+            }
+
+            return result;
+        }
+
         public bool Equals(SparseElement x, SparseElement y)
         {
-            if (x.Count != y.Count)
+            if (x.Length != y.Length)
                 return false;
 
             if (x.Index.Length != x.Index.Length)
@@ -115,7 +177,51 @@ namespace SharpEngineMathUtility
             throw new NotImplementedException();
         }
 
-        #endregion 
+        public double[] GetArray(int length)
+        {
+            double[] result = new double[length];
+
+            for (int i = 0; i < Index.Length; i++)
+            {
+                if (Index[i] < length)
+                    result[Index[i]] = Value[i]; 
+            }
+
+            return result;
+        }
+
+        public static double[] GetArray(SparseElement v)
+        {
+            double[] result = new double[v.Length];
+
+            for (int i = 0; i < v.Index.Length; i++)
+                result[v.Index[i]] = v.Value[i];
+            
+            return result;
+        }
+
+        public static SparseElement GetSparseElement(double[] v, double tol = 1E-50)
+        {
+            List<int> index = new List<int>();
+            List<double> value = new List<double>();
+            
+            for (int i = 0; i < v.Length; i++)
+            {
+                if(Math.Abs(v[i]) > tol)
+                {
+                    index.Add(i);
+                    value.Add(v[i]);
+                }
+            }
+
+            return new SparseElement(value.ToArray(), index.ToArray(), v.Length);
+        }
+
+        #endregion
+
+        #region Private Methods
+               
+        #endregion
 
     }
 }

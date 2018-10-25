@@ -293,7 +293,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             Vector3d[][] result = GetObjectsVertices();
             
-            return GeneralMathUtilities.GetMatrixFromVector3Matrix(result);
+            return GeneralMathUtils.GetMatrixFromVector3Matrix(result);
         }
 
         public Vector3d[] GetVertices()

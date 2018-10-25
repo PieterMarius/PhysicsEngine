@@ -249,8 +249,9 @@ namespace SharpPhysicsEngine.Helper
 
                                 //Sparse Matrix
                                 baseProperties.M[indexVal] = new SparseElement(
-                                values.ToArray(),
-                                index.ToArray());
+                                                                    values.ToArray(),
+                                                                    index.ToArray(),
+                                                                    baseProperties.M.Length);
 
                             UpdateGraph(ref graph, ref index, indexVal);
                         }
@@ -386,7 +387,8 @@ namespace SharpPhysicsEngine.Helper
                 {
                     M[i] = new SparseElement(
                         value[i].ToArray(),
-                        index[i].ToArray());
+                        index[i].ToArray(),
+                        constraint.Length);
                 }
 
                 return new LinearProblemProperties(

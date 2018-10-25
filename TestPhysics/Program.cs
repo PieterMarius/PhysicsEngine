@@ -24,6 +24,8 @@
  *  
  *****************************************************************************/
 
+using SharpEngineMathUtility;
+using SharpEngineMathUtility.Solver;
 using System;
 using System.Diagnostics;
 
@@ -38,10 +40,46 @@ namespace TestPhysics
                 //Test();
                 //TestBFS();
                 //test.VSync = VSyncMode.Adaptive;
+                //TestGmres();
                 test.Run(0.0, 0.0);
 
             }
 		}
+
+        private static void TestGmres()
+        {
+            var solver = new MINRES();
+
+            SparseElement[] A = new SparseElement[6];
+            A[0] = SparseElement.GetSparseElement(new double[] { 10.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+            A[1] = SparseElement.GetSparseElement(new double[] { 0.0, 10.0, -3.0, -1.0, 0.0, 0.0 });
+            A[2] = SparseElement.GetSparseElement(new double[] { 0.0, 0.0, 15.0, 0.0, 0.0, 0.0 });
+            A[3] = SparseElement.GetSparseElement(new double[] { -2.0, 0.0, 0.0, 10.0, -1.0, 0.0 });
+            A[4] = SparseElement.GetSparseElement(new double[] { -1.0, 0.0, 0.0, -5.0, 1.0, -3.0 });
+            A[5] = SparseElement.GetSparseElement(new double[] { -1.0, -2.0, 0.0, 0.0, 0.0, 6.0 });
+                        
+            double[] b = new double[] { 10.0, 7.0, 45.0, 33.0, -34.0, 31.0 };
+            double[] x = new double[b.Length];
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                x[i] = 0.0;
+            }
+
+            //symmetrize system
+            SparseElement[] At = SparseElement.Transpose(A);
+            SparseElement[] AA = SparseElement.Square(At);
+            double[] Ab = SparseElement.Multiply(At, b);
+
+
+            var out1 = solver.Solve(AA, Ab, x, 30000);
+
+            var solver1 = new GMRES();
+
+            var out2 = solver1.Solve(A, b, x, 30, 2);
+
+
+        }
 
         //private static void TestKMeans()
         //{

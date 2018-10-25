@@ -166,7 +166,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 valueList.Add(D[i]);
                 indexList.Add(i);
 
-                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray());
+                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray(), M[i].Length);
             }
 
             return originalMatrix;
@@ -247,7 +247,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             SparseElement element = M[index];
 
-            for (int i = 0; i < element.Count; i++)
+            for (int i = 0; i < element.Index.Length; i++)
                 row[element.Index[i]] = element.Value[i];
 
             return row;

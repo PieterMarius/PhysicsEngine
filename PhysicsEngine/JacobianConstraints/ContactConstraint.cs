@@ -604,7 +604,7 @@ namespace SharpPhysicsEngine
             var tx = new Vector3d();
             var ty = new Vector3d();
                        
-            GeometryUtilities.ComputeBasis(
+            GeometryUtils.ComputeBasis(
                 normal,
                 ref tx,
                 ref ty);

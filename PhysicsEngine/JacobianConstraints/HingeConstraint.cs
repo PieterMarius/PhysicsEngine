@@ -104,7 +104,7 @@ namespace SharpPhysicsEngine
 
 			Vector3d axisRotated = simulationObjectA.RotationMatrix * HingeAxis;
 
-			Vector3d t1 = GeometryUtilities.GetPerpendicularVector (axisRotated).Normalize ();
+			Vector3d t1 = GeometryUtils.GetPerpendicularVector (axisRotated).Normalize ();
 			Vector3d t2 = Vector3d.Cross (axisRotated, t1).Normalize ();
 
 			Vector3d r1 = simulationObjectA.RotationMatrix *

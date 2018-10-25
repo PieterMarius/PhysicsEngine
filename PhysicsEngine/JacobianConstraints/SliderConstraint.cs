@@ -103,7 +103,7 @@ namespace SharpPhysicsEngine
 
 			Vector3d sliderAxis = simulationObjectA.RotationMatrix * SliderAxis;
 
-			Vector3d t1 = GeometryUtilities.GetPerpendicularVector (sliderAxis).Normalize ();
+			Vector3d t1 = GeometryUtils.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
 
 			Vector3d r1 = simulationObjectA.RotationMatrix *
