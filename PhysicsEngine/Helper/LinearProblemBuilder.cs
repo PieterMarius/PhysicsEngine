@@ -408,8 +408,8 @@ namespace SharpPhysicsEngine.Helper
 
         public LinearProblemProperties GetLCPFrictionMatrix(LinearProblemProperties linearProblem)
         {
-            var frictionTerm = linearProblem.ConstraintType.Count(x => x == ConstraintType.Friction);
-            var lcpMatrixDim = linearProblem.Count + frictionTerm;
+            var collisionNumber = linearProblem.ConstraintType.Count(x => x == ConstraintType.Collision);
+            var lcpMatrixDim = linearProblem.Count + collisionNumber;
 
             LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(lcpMatrixDim);
                         
@@ -421,8 +421,16 @@ namespace SharpPhysicsEngine.Helper
             var m = linearProblem.M.ToList();
             var constraintsArray = linearProblem.Constraints.ToList();
             var startValue = linearProblem.StartImpulse.ToList();
+            var Edim = collisionNumber * EngineParameters.FrictionDirections;
 
-            for (int i = 0; i < frictionTerm; i++)
+            //Add fields to friction rows
+            for (int i = 0; i < Edim; i++)
+            {
+
+            }
+
+            //Add rows to matrix
+            for (int i = 0; i < collisionNumber; i++)
             {
                 constraintType.Add(ConstraintType.FrictionValue);
                 b.Add(0.0);

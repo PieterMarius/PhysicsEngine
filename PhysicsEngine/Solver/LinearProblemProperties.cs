@@ -61,10 +61,14 @@ namespace SharpPhysicsEngine.LCPSolver
         //Constraint joint
         public readonly int?[] Constraints;
 
+        //Constraints connection graph
         public readonly Graph ConstrGraph;
 
         //Size of the system
         public readonly int Count;
+
+        //Friction Direction 
+        public readonly int FrictionDirections;
 
         #endregion
 
@@ -97,10 +101,10 @@ namespace SharpPhysicsEngine.LCPSolver
             LinearProblemBaseProperties baseProperties,
             Graph constrGraph)
         {
-            this.M = baseProperties.M;
-            this.B = baseProperties.B;
-            this.D = baseProperties.D;
-            this.InvD = baseProperties.InvD;
+            M = baseProperties.M;
+            B = baseProperties.B;
+            D = baseProperties.D;
+            InvD = baseProperties.InvD;
             ConstraintLimit = baseProperties.ConstraintLimit;
             ConstraintType = baseProperties.ConstraintType;
             Constraints = baseProperties.ConstraintsArray;
@@ -234,7 +238,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public int GetHashCode(LinearProblemProperties obj)
         {
-            return this.GetHashCode();
+            return GetHashCode();
         }
 
         #endregion

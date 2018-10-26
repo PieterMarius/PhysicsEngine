@@ -26,6 +26,7 @@
 
 using SharpEngineMathUtility;
 using SharpEngineMathUtility.Solver;
+using SharpPhysicsEngine.LCPSolver;
 using System;
 using System.Diagnostics;
 
@@ -40,8 +41,8 @@ namespace TestPhysics
                 //Test();
                 //TestBFS();
                 //test.VSync = VSyncMode.Adaptive;
-                //TestGmres();
-                test.Run(0.0, 0.0);
+                TestGmres();
+                //test.Run(0.0, 0.0);
 
             }
 		}
@@ -77,6 +78,11 @@ namespace TestPhysics
             var solver1 = new GMRES();
 
             var out2 = solver1.Solve(A, b, x, 30, 2);
+
+            SolverParameters param = new SolverParameters(10, 1E-10, 1.0, 1);
+            var solver2 = new FisherNewton(param);
+
+            solver2.Solve(A, b, x, 1.0);
 
 
         }

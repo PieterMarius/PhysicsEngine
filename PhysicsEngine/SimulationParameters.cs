@@ -148,6 +148,11 @@ namespace SharpPhysicsEngine
         /// </summary>
         public double AngularVelocityMinLimit { get; private set; }
 
+        /// <summary>
+        /// Number of friction direction
+        /// </summary>
+        public int FrictionDirections { get; private set; }
+
         #endregion
 
         #region Constructors
@@ -173,12 +178,14 @@ namespace SharpPhysicsEngine
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;
             AngularVelocityMinLimit = 0.0;
+            FrictionDirections = 2;
         }
 
 		//TODO Update input parameters
 		public PhysicsEngineParameters (
 			double timeStep,
 			double cfm,
+            int frictionDirections,
 			double baumStabilization,
 			double linearVelDisable,
 			double angularVelDisable,
@@ -186,12 +193,13 @@ namespace SharpPhysicsEngine
 			bool discreteCCD,
 			double collisionDistance,
 			double compenetrationTolerance,
-			double warmStartiongValue,
-			Vector3d externalForce,
+			double warmStartingValue,
+            Vector3d externalForce,
 			int maxThreadNumber)
 		{
 			TimeStep = timeStep;
 			CFM = cfm;
+            FrictionDirections = frictionDirections;
 			BaumStabilization = baumStabilization;
 			LinearVelDisable = linearVelDisable;
 			AngularVelDisable = angularVelDisable;
@@ -200,7 +208,7 @@ namespace SharpPhysicsEngine
 			CollisionDistance = collisionDistance;
 			CompenetrationTolerance = compenetrationTolerance;
 			ExternalForce = externalForce;
-			WarmStartingValue = warmStartiongValue;
+			WarmStartingValue = warmStartingValue;
 			MaxThreadNumber = maxThreadNumber;
 		}
 			

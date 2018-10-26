@@ -168,7 +168,17 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[] Plus(double[] a, double[] b)
+        public static double[] Minus(double[] a, double b)
+        {
+            double[] result = new double[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                result[i] = a[i] - b;
+
+            return result;
+        }
+
+        public static double[] Add(double[] a, double[] b)
         {
             if (a.Length != b.Length)
                 throw new Exception("Wrong vector length");
@@ -189,6 +199,50 @@ namespace SharpEngineMathUtility
                 result[i] += a[i] + b;
 
             return result;
+        }
+
+        public static double[] Square(double[] a)
+        {
+            double[] res = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+            {
+                double val = a[i];
+                res[i] = val * val;
+            }
+
+            return res;
+        }
+
+        public static double[] Multiply(double[] a, double[] b)
+        {
+            if (a.Length != b.Length)
+                throw new Exception();
+
+            var res = new double[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                res[i] = a[i] * b[i];
+
+            return res;
+        }
+
+        public static double[] Max(double min, double[] v)
+        {
+            var res = new double[v.Length];
+
+            for (int i = 0; i < v.Length; i++)
+                res[i] = Math.Max(min, v[i]);
+
+            return res;
+        }
+
+        public static double[] SquareRoot(double[] a)
+        {
+            double[] res = new double[a.Length];
+            for (int i = 0; i < a.Length; i++)
+                res[i] = Math.Sqrt(a[i]);
+            
+            return res;
         }
 
         public static double Truncate(
@@ -321,6 +375,20 @@ namespace SharpEngineMathUtility
             Buffer.BlockCopy(array, row * cols * size, result, 0, cols * size);
 
             return result;
+        }
+
+        public static double[] GetRandom(
+            double min,
+            double max,
+            int length)
+        {
+            var res = new double[length];
+            for (int i = 0; i < length; i++)
+            {
+                res[i] = GeometryUtils.GetRandom(0.0, 1.0);
+            }
+
+            return res;
         }
     }
 }

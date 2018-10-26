@@ -37,12 +37,8 @@ namespace SharpPhysicsEngine
 	{
         #region Fields
 
-        //Box Constraints
-        private const int frictionDirections = 2;
         private readonly PhysicsEngineParameters simulationParameters;
-
-        public int ConstraintsNumber { get { return 3; } } 
-
+                
 		#endregion Fields
         
 		#region Constructor
@@ -503,9 +499,9 @@ namespace SharpPhysicsEngine
 			StartImpulseProperties[] startImpulseProperties,
             SoftShapePoint softShapePoint)
 		{
-            JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
+            JacobianConstraint[] friction = new JacobianConstraint[simulationParameters.FrictionDirections];
 
-            Vector3d[] frictionDirection = GetFrictionCone(normal, frictionDirections);
+            Vector3d[] frictionDirection = GetFrictionCone(normal, simulationParameters.FrictionDirections);
 
             double constraintLimit = 0.0;
 
@@ -518,7 +514,7 @@ namespace SharpPhysicsEngine
             else
                 constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
 
-            for (int i = 0; i < frictionDirections; i++)
+            for (int i = 0; i < simulationParameters.FrictionDirections; i++)
             {
                 var linearComponentA = frictionDirection[i];
                 var linearComponentB = -1.0 * linearComponentA;
@@ -555,9 +551,9 @@ namespace SharpPhysicsEngine
             Vector3d rb,
             StartImpulseProperties[] startImpulseProperties)
         {
-            JacobianConstraint[] friction = new JacobianConstraint[frictionDirections];
+            JacobianConstraint[] friction = new JacobianConstraint[simulationParameters.FrictionDirections];
 
-            Vector3d[] frictionDirection = GetFrictionCone(normal, frictionDirections);
+            Vector3d[] frictionDirection = GetFrictionCone(normal, simulationParameters.FrictionDirections);
             
             double constraintLimit = 0.0;
 
@@ -570,7 +566,7 @@ namespace SharpPhysicsEngine
             else
                 constraintLimit = 0.5 * (objectA.StaticFrictionCoeff + objectB.StaticFrictionCoeff);
 
-            for (int i = 0; i < frictionDirections; i++)
+            for (int i = 0; i < simulationParameters.FrictionDirections; i++)
             {
                 var linearComponentA = frictionDirection[i];
                 var linearComponentB = -1.0 * linearComponentA;
@@ -599,8 +595,7 @@ namespace SharpPhysicsEngine
 
         private Vector3d[] GetFrictionCone(Vector3d normal, int nDirection)
         {
-            var coneDirection = new Vector3d[nDirection];
-
+            //Box model friction
             var tx = new Vector3d();
             var ty = new Vector3d();
                        
@@ -609,9 +604,12 @@ namespace SharpPhysicsEngine
                 ref tx,
                 ref ty);
 
+            var coneDirection = new Vector3d[nDirection];
+
             coneDirection[0] = tx;
             coneDirection[1] = ty;
 
+            //Polyhedron model friction
             if (nDirection > 2)
             {
                 double step = Math.PI / nDirection;

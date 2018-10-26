@@ -32,6 +32,7 @@ namespace SharpEngineMathUtility
 		public const double PI = 3.14159265359;
 		public const double PI2 = 6.28318530718;
 		public const double collinearityTolerance = 1E-6;
+        public const double SqRoot2 = 1.414213562373;
 	}
 }
 

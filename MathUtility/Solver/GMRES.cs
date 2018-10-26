@@ -43,6 +43,16 @@ namespace SharpEngineMathUtility.Solver
         public double[] Solve(
             SparseElement[] A,
             double[] b,
+            int restrt)
+        {
+            var x = new double[b.Length];
+
+            return Solve(A, b, x, 1000, restrt);
+        }
+
+        public double[] Solve(
+            SparseElement[] A,
+            double[] b,
             double[] x,
             int maxIter,
             int restrt,
@@ -188,7 +198,7 @@ namespace SharpEngineMathUtility.Solver
 
             for (int i = 0; i <= k ; i++)
             {
-                x = Plus(x, Multiply(y[i], v[i]));
+                x = Add(x, Multiply(y[i], v[i]));
             }
 
             return x;

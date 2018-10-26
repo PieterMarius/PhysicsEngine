@@ -115,7 +115,7 @@ namespace SharpEngineMathUtility
 
             return result;
         }
-
+                
         public static SparseElement[] Square(
             SparseElement[] matrix,
             int? maxThread = null)
@@ -215,6 +215,11 @@ namespace SharpEngineMathUtility
             }
 
             return new SparseElement(value.ToArray(), index.ToArray(), v.Length);
+        }
+
+        public HashSet<int> GetIndexHashset()
+        {
+            return new HashSet<int>(Index);
         }
 
         #endregion

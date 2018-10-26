@@ -94,7 +94,7 @@ namespace SharpEngineMathUtility.Solver
                 //Update Solution
                 double[] w = Multiply((1.0 / p1), (Minus(Minus(v, Multiply(p3, w_1)), Multiply(p2, w0))));
 
-                x = Plus(x, Multiply(c1, Multiply(n, w)));
+                x = Add(x, Multiply(c1, Multiply(n, w)));
                 
                 n = -s1 * n;
 
