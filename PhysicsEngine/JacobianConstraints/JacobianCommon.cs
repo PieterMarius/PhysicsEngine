@@ -144,27 +144,26 @@ namespace SharpPhysicsEngine
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
 			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
-			                               angularComponentB.Dot (simulationObjectB.AngularVelocity);
-
-			jacobianVelocityValue -= constraintValue;
+			                               angularComponentB.Dot (simulationObjectB.AngularVelocity) -
+                                           constraintValue;
 
 			if (startImpulseProperties == null)
 				startImpulseProperties = new StartImpulseProperties(0.0);
 
-			return new JacobianConstraint (
-				simulationObjectA,
+            return new JacobianConstraint(
+                simulationObjectA,
                 simulationObjectB,
-				contactReference,
-				linearComponentA,
-				linearComponentB,
-				angularComponentA,
-				angularComponentB,
-				type,
-				jacobianVelocityValue,
-				correctionValue,
-				cfm,
-				constraintLimit,
-				startImpulseProperties);
+                contactReference,
+                linearComponentA,
+                linearComponentB,
+                angularComponentA,
+                angularComponentB,
+                type,
+                jacobianVelocityValue,
+                correctionValue,
+                cfm,
+                constraintLimit,
+                startImpulseProperties);
 		}
 
         public static JacobianConstraint GetDOF(
@@ -181,9 +180,8 @@ namespace SharpPhysicsEngine
             StartImpulseProperties startImpulseProperties)
         {
             double jacobianVelocityValue = angularComponentA.Dot(simulationObjectA.AngularVelocity) +
-                                           angularComponentB.Dot(simulationObjectB.AngularVelocity);
-
-            jacobianVelocityValue -= constraintValue;
+                                           angularComponentB.Dot(simulationObjectB.AngularVelocity) -
+                                           constraintValue;
 
             if (startImpulseProperties == null)
                 startImpulseProperties = new StartImpulseProperties(0.0);

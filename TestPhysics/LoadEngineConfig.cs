@@ -82,6 +82,7 @@ namespace TestPhysics
 			PhysicsEngineParameters simulationParameters = new PhysicsEngineParameters (
                                 Convert.ToDouble (xmlList [0] [this.timeStep].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.CFM].InnerText),
+                                2,
                                 Convert.ToDouble (xmlList [0] [this.baumStabilization].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.linearVelocityStabilization].InnerText),
                                 Convert.ToDouble (xmlList [0] [this.angularVelocityStabilization].InnerText),

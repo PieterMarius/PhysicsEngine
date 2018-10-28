@@ -247,16 +247,22 @@ namespace SharpPhysicsEngine.Helper
                                     false);
                             }
 
-                                //Sparse Matrix
-                                baseProperties.M[indexVal] = new SparseElement(
-                                                                    values.ToArray(),
-                                                                    index.ToArray(),
-                                                                    baseProperties.M.Length);
+                            //Sparse Matrix
+                            baseProperties.M[indexVal] = new SparseElement(
+                                                                values.ToArray(),
+                                                                index.ToArray(),
+                                                                baseProperties.M.Length);
 
                             UpdateGraph(ref graph, ref index, indexVal);
                         }
                     }
                 });
+
+            var lp = new LinearProblemProperties(
+                baseProperties,
+                graph);
+
+            GetLCPFrictionMatrix(lp);
 
             return new LinearProblemProperties(
                 baseProperties,
@@ -408,40 +414,101 @@ namespace SharpPhysicsEngine.Helper
 
         public LinearProblemProperties GetLCPFrictionMatrix(LinearProblemProperties linearProblem)
         {
-            var collisionNumber = linearProblem.ConstraintType.Count(x => x == ConstraintType.Collision);
-            var lcpMatrixDim = linearProblem.Count + collisionNumber;
+            var collisionIndexes = linearProblem.ConstraintType
+                                                .Select((constraint, index) => new { constraint, index })
+                                                .Where(x => x.constraint == ConstraintType.Collision).ToList();
 
-            LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(lcpMatrixDim);
-                        
-            var b = linearProblem.B.ToList();
-            var d = linearProblem.D.ToList();
-            var invD = linearProblem.InvD.ToList();
-            var constraintType = linearProblem.ConstraintType.ToList();
-            var constraintLimit = linearProblem.ConstraintLimit.ToList();
-            var m = linearProblem.M.ToList();
-            var constraintsArray = linearProblem.Constraints.ToList();
-            var startValue = linearProblem.StartImpulse.ToList();
-            var Edim = collisionNumber * EngineParameters.FrictionDirections;
-
-            //Add fields to friction rows
-            for (int i = 0; i < Edim; i++)
+            if (collisionIndexes.Count > 0)
             {
+                var numberOfCollision = collisionIndexes.Count;
+                var lcpMatrixDim = linearProblem.Count + numberOfCollision;
 
+                var frictionIndexes = linearProblem.ConstraintType
+                                                   .Select((constraint, index) => new { constraint, index })
+                                                   .Where(x => x.constraint == ConstraintType.Friction).ToList();
+
+                LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(lcpMatrixDim);
+
+                var b = linearProblem.B.ToList();
+                var d = linearProblem.D.ToList();
+                var invD = linearProblem.InvD.ToList();
+                var constraintType = linearProblem.ConstraintType.ToList();
+                var constraintLimit = linearProblem.ConstraintLimit.ToList();
+                var m = linearProblem.M.ToList();
+                var constraintsArray = linearProblem.Constraints.ToList();
+                var startValue = linearProblem.StartImpulse.ToList();
+                var E_dim = numberOfCollision * EngineParameters.FrictionDirections;
+                var newRowLength = b.Count + numberOfCollision - 1;
+
+                //Add fields to friction rows
+                for (int i = 0; i < numberOfCollision; i++)
+                {
+                    var colIdx = collisionIndexes[i].index;
+                    var fIndexes = new List<int>();
+
+                    for (int j = 0; j < frictionIndexes.Count; j++)
+                    {
+                        if (fIndexes.Count >= EngineParameters.FrictionDirections)
+                            break;
+
+                        var fIdx = frictionIndexes[j].index;
+                        var ct = constraintsArray[fIdx];
+                        if (ct.HasValue && ct.Value == colIdx)
+                            fIndexes.Add(fIdx);
+                    }
+
+                    //Columns update
+                    for (int j = 0; j < fIndexes.Count; j++)
+                    {
+                        var mIdx = m[fIndexes[j]];
+                        var bufIndex = new List<int>(mIdx.Index);
+                        var bufValue = new List<double>(mIdx.Value);
+                        bufIndex.Add(mIdx.Length + i);
+                        bufValue.Add(1.0);
+
+                        m[fIndexes[j]] = new SparseElement(
+                            bufValue.ToArray(),
+                            bufIndex.ToArray(),
+                            mIdx.Length + numberOfCollision);
+                    }
+
+                    //Rows Update
+                    constraintType.Add(ConstraintType.FrictionValue);
+                    b.Add(0.0);
+                    d.Add(0.0);
+                    invD.Add(0.0);
+                    constraintLimit.Add(0.0);
+
+                    //Add elements to matrix M
+                    var rowIndexes = new List<int>();
+                    var rowValues = new List<double>();
+
+                    //Add friction value
+                    rowIndexes.Add(collisionIndexes[i].index);
+                    rowValues.Add(constraintLimit[frictionIndexes[0].index]);
+
+                    for (int j = 0; j < fIndexes.Count; j++)
+                    {
+                        rowIndexes.Add(fIndexes[j]);
+                        rowValues.Add(-1.0);
+                    }
+
+                    var sparseElement = new SparseElement(
+                        rowValues.ToArray(), 
+                        rowIndexes.ToArray(), 
+                        newRowLength);
+
+                    m.Add(sparseElement);
+                }
+
+                var lcp = new LinearProblemProperties(baseProperties, null);
+
+                var test = lcp.GetOriginalMatrix();
+
+                return lcp;
             }
 
-            //Add rows to matrix
-            for (int i = 0; i < collisionNumber; i++)
-            {
-                constraintType.Add(ConstraintType.FrictionValue);
-                b.Add(0.0);
-                d.Add(0.0);
-                invD.Add(0.0);
-                constraintLimit.Add(0.0);
-            }
-            
-            var lcp = new LinearProblemProperties(baseProperties, null);
-
-            return lcp;
+            return linearProblem;
         }
 
         #endregion
