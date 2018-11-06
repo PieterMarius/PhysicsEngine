@@ -502,6 +502,11 @@ namespace SharpPhysicsEngine
                     SetLCP = true;
                     break;
 
+                case SolverType.Lemke:
+                    Solver = new Lemke(SolverParameters);
+                    SetLCP = true;
+                    break;
+
                 default:
 					Solver = new ProjectedGaussSeidel(SolverParameters);
 					break;

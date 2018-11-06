@@ -89,6 +89,7 @@ namespace SharpEngineMathUtility.Solver
 
             if (bas.Count > 0)
             {
+                //TODO
                 //var BCopy = 
             }
 

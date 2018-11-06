@@ -24,16 +24,49 @@
  *  
  *****************************************************************************/
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SharpEngineMathUtility.Solver;
+using static SharpEngineMathUtility.MathUtils;
+
 namespace SharpPhysicsEngine.LCPSolver
 {
-	public enum SolverType
-	{
-		ProjectedGaussSeidel = 0,
-		NonLinearConjugateGradient = 1,
-        ProjectedConjugateGradient = 2,
-        RedBlackProjectedGaussSeidel = 3,
-        Lemke = 4,
-        FischerNewton = 5,
+    internal class Lemke : ISolver
+    {
+        #region Fields
+
+        public readonly SolverParameters SolverParameters;
+
+        private readonly SharpEngineMathUtility.Solver.Lemke solver;
+
+        #endregion
+
+        #region Constructor
+
+        public Lemke(SolverParameters solverParameters)
+        {
+            SolverParameters = solverParameters;
+            solver = new SharpEngineMathUtility.Solver.Lemke();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public SolverParameters GetSolverParameters()
+        {
+            return SolverParameters;
+        }
+
+        public double[] Solve(LinearProblemProperties linearProblemProperties, double[] x)
+        {
+            return solver.Solve(linearProblemProperties.M, linearProblemProperties.B, SolverParameters.MaxIteration);
+
+        }
+
+        #endregion
     }
 }
-

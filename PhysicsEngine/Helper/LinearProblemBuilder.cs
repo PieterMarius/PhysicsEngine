@@ -436,7 +436,8 @@ namespace SharpPhysicsEngine.Helper
                 var invD = linearProblem.InvD.ToList();
                 var constraintType = linearProblem.ConstraintType.ToList();
                 var constraintLimit = linearProblem.ConstraintLimit.ToList();
-                var m = linearProblem.M.Rows.ToList();
+                var m = linearProblem.GetOriginalSparseMatrix().Rows.ToList();
+                //var m = linearProblem.M.Rows.ToList();
                 var constraintsArray = linearProblem.Constraints.ToList();
                 var startValue = linearProblem.StartImpulse.ToList();
                 var E_dim = numberOfCollision * EngineParameters.FrictionDirections;
