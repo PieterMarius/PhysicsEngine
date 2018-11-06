@@ -74,7 +74,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
                         
             physicsEnvironment.CollisionEngineParam.SetBroadPhaseEngine(BroadPhaseEngineType.HierarchicalTree);
-            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(30);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-6);

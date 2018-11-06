@@ -38,7 +38,7 @@ namespace SharpPhysicsEngine.LCPSolver
         #region Properties
                 
         //Matrix A (N*N)
-        public readonly SparseElement[] M;
+        public readonly SparseMatrix M;
 
         //Vector B (N)
         public readonly double[] B;
@@ -75,7 +75,7 @@ namespace SharpPhysicsEngine.LCPSolver
         #region Constructor
 
         public LinearProblemProperties(
-            SparseElement[] M,
+            SparseMatrix M,
             double[] B,
             double[] D,
             double[] InvD,
@@ -158,19 +158,19 @@ namespace SharpPhysicsEngine.LCPSolver
             return matrix;
         }
 
-        public SparseElement[] GetOriginalSparseMatrix()
+        public SparseMatrix GetOriginalSparseMatrix()
         {
-            SparseElement[] originalMatrix = new SparseElement[M.Length];
+            SparseMatrix originalMatrix = new SparseMatrix(M.n, M.m);
 
-            for (int i = 0; i < M.Length; i++)
+            for (int i = 0; i < M.n; i++)
             {
-                List<double> valueList = M[i].Value.ToList();
-                List<int> indexList = M[i].Index.ToList();
+                List<double> valueList = M.Rows[i].Value.ToList();
+                List<int> indexList = M.Rows[i].Index.ToList();
 
                 valueList.Add(D[i]);
                 indexList.Add(i);
 
-                originalMatrix[i] = new SparseElement(valueList.ToArray(), indexList.ToArray(), M[i].Length);
+                originalMatrix.Rows[i] = new SparseVector(valueList.ToArray(), indexList.ToArray(), M.m);
             }
 
             return originalMatrix;
@@ -200,7 +200,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public bool Equals(LinearProblemProperties x, LinearProblemProperties y)
         {
-            if (x.M.Length != y.M.Length)
+            if (x.M.n != y.M.n)
                 return false;
 
             if (x.B.Length != y.B.Length)
@@ -249,7 +249,7 @@ namespace SharpPhysicsEngine.LCPSolver
         {
             double[] row = new double[Count];
 
-            SparseElement element = M[index];
+            SparseVector element = M.Rows[index];
 
             for (int i = 0; i < element.Index.Length; i++)
                 row[element.Index[i]] = element.Value[i];

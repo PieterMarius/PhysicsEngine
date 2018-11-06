@@ -43,7 +43,7 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 for (int i = 0; i < input.Count; i++)
                 {
-                    SparseElement m = input.M[i];
+                    SparseVector m = input.M.Rows[i];
 
                     if (input.ConstraintType[i] != ShapeDefinition.ConstraintType.Friction)
                     {
@@ -69,8 +69,8 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x,
             double[] oldx)
         {
-            double[] actualSolverErrorDiff = GeneralMathUtils.Minus(x, oldx);
-            return GeneralMathUtils.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
+            double[] actualSolverErrorDiff = MathUtils.Minus(x, oldx);
+            return MathUtils.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
         }
     }
 }

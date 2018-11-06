@@ -141,6 +141,11 @@ namespace SharpPhysicsEngine
         private double GlobalTimestep;
 
         /// <summary>
+        /// Build LCP matrix for LCP solver
+        /// </summary>
+        private bool SetLCP = false;
+
+        /// <summary>
         /// Hierarchical Tree of Simulation Object
         /// </summary>
         //private AABBTree HierarchicalTree;
@@ -492,6 +497,11 @@ namespace SharpPhysicsEngine
                     Solver = new RedBlackProjectedGaussSeidel(SolverParameters);
                     break;
 
+                case SolverType.FischerNewton:
+                    Solver = new FischerNewton(SolverParameters);
+                    SetLCP = true;
+                    break;
+
                 default:
 					Solver = new ProjectedGaussSeidel(SolverParameters);
 					break;
@@ -591,7 +601,7 @@ namespace SharpPhysicsEngine
 
                             if (jacobianConstraints.Length > 0)
                             {
-                                LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
+                                LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints, SetLCP);
                                 double[]  overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
                                 IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
                             }

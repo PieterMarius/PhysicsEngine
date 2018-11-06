@@ -41,23 +41,38 @@ namespace TestPhysics
                 //Test();
                 //TestBFS();
                 //test.VSync = VSyncMode.Adaptive;
-                TestGmres();
-                //test.Run(0.0, 0.0);
+                //MultiplyMat();
+                //TestGmres();
+                test.Run(0.0, 0.0);
 
             }
 		}
+
+        private static void MultiplyMat()
+        {
+            SparseMatrix A = new SparseMatrix(2, 3);
+            A.Rows[0] = SparseVector.GetSparseElement(new double[] { 1, 2, 3 });
+            A.Rows[1] = SparseVector.GetSparseElement(new double[] { 4, 5, 6 });
+
+            SparseMatrix B = new SparseMatrix(3, 2);
+            B.Rows[0] = SparseVector.GetSparseElement(new double[] { 7, 8 });
+            B.Rows[1] = SparseVector.GetSparseElement(new double[] { 9, 10 });
+            B.Rows[2] = SparseVector.GetSparseElement(new double[] { 11, 12 });
+
+            var res = SparseMatrix.Multiply(A, B);
+        }
 
         private static void TestGmres()
         {
             var solver = new MINRES();
 
-            SparseElement[] A = new SparseElement[6];
-            A[0] = SparseElement.GetSparseElement(new double[] { 10.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-            A[1] = SparseElement.GetSparseElement(new double[] { 0.0, 10.0, -3.0, -1.0, 0.0, 0.0 });
-            A[2] = SparseElement.GetSparseElement(new double[] { 0.0, 0.0, 15.0, 0.0, 0.0, 0.0 });
-            A[3] = SparseElement.GetSparseElement(new double[] { -2.0, 0.0, 0.0, 10.0, -1.0, 0.0 });
-            A[4] = SparseElement.GetSparseElement(new double[] { -1.0, 0.0, 0.0, -5.0, 1.0, -3.0 });
-            A[5] = SparseElement.GetSparseElement(new double[] { -1.0, -2.0, 0.0, 0.0, 0.0, 6.0 });
+            SparseMatrix A = new SparseMatrix(6, 6);
+            A.Rows[0] = SparseVector.GetSparseElement(new double[] { 10.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+            A.Rows[1] = SparseVector.GetSparseElement(new double[] { 0.0, 10.0, -3.0, -1.0, 0.0, 0.0 });
+            A.Rows[2] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, 15.0, 0.0, 0.0, 0.0 });
+            A.Rows[3] = SparseVector.GetSparseElement(new double[] { -2.0, 0.0, 0.0, 10.0, -1.0, 0.0 });
+            A.Rows[4] = SparseVector.GetSparseElement(new double[] { -1.0, 0.0, 0.0, -5.0, 1.0, -3.0 });
+            A.Rows[5] = SparseVector.GetSparseElement(new double[] { -1.0, -2.0, 0.0, 0.0, 0.0, 6.0 });
                         
             double[] b = new double[] { 10.0, 7.0, 45.0, 33.0, -34.0, 31.0 };
             double[] x = new double[b.Length];
@@ -68,23 +83,89 @@ namespace TestPhysics
             }
 
             //symmetrize system
-            SparseElement[] At = SparseElement.Transpose(A);
-            SparseElement[] AA = SparseElement.Square(At);
-            double[] Ab = SparseElement.Multiply(At, b);
+            SparseMatrix At = SparseMatrix.Transpose(A);
+            //SparseMatrix AA = SparseMatrix.Square(At);
+            SparseMatrix AA = SparseMatrix.Multiply(At, A);
+            double[] Ab = SparseMatrix.Multiply(At, b);
 
 
             var out1 = solver.Solve(AA, Ab, x, 30000);
 
             var solver1 = new GMRES();
 
-            var out2 = solver1.Solve(A, b, x, 30, 2);
+            var out2 = solver1.Solve(A, b, x, 30, 6);
 
-            SolverParameters param = new SolverParameters(10, 1E-10, 1.0, 1);
-            var solver2 = new FisherNewton(param);
+            HouseholderQR hs = new HouseholderQR();
 
-            solver2.Solve(A, b, x, 1.0);
+            SparseMatrix B = new SparseMatrix(5, 3);
+            B.Rows[0] = SparseVector.GetSparseElement(new double[] { 12.0, -51.0, 4.0 });
+            B.Rows[1] = SparseVector.GetSparseElement(new double[] { 6.0, 167.0, -68.0 });
+            B.Rows[2] = SparseVector.GetSparseElement(new double[] { -4.0, 24.0, -41.0 });
+            B.Rows[3] = SparseVector.GetSparseElement(new double[] { -1.0, 1.0, 0.0 });
+            B.Rows[4] = SparseVector.GetSparseElement(new double[] { 2.0, 0.0, 3.0 });
 
+            hs.Householder(B);
+            hs.Solve(A, b);
 
+            Lemke lm = new Lemke();
+
+            SparseMatrix M = new SparseMatrix(3, 3);
+            M.Rows[0] = SparseVector.GetSparseElement(new double[] { 21.0, 0.0, 0.0 });
+            M.Rows[1] = SparseVector.GetSparseElement(new double[] { 28.0, 14.0, 0.0 });
+            M.Rows[2] = SparseVector.GetSparseElement(new double[] { 24.0, 24.0, 12.0 });
+
+            double[] q = new double[] { -1.0, -1.0, -1.0 };
+
+            lm.Solve(M, q, 10);
+
+            SparseMatrix M1 = new SparseMatrix(2, 2);
+            M1.Rows[0] = SparseVector.GetSparseElement(new double[] { 2.0, 1.0 });
+            M1.Rows[1] = SparseVector.GetSparseElement(new double[] { 1.0, 2.0 });
+
+            double[] q1 = new double[] { -5.0, -6.0 };
+
+            lm.Solve(M1, q1, 10);
+
+            double[] q2 = new double[] { 1.0, 2.0 };
+
+            lm.Solve(M1, q2, 10);
+
+            SparseMatrix M3 = new SparseMatrix(3, 3);
+            M3.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, 0.0, 2.0 });
+            M3.Rows[1] = SparseVector.GetSparseElement(new double[] { 3.0, 2.0, -1.0 });
+            M3.Rows[2] = SparseVector.GetSparseElement(new double[] { -2.0, 1.0, 0.0 });
+
+            double[] q3 = new double[] { - 1.0, 2.0, -3.0 };
+
+            lm.Solve(M3, q3, 10);
+
+            SparseMatrix M4 = new SparseMatrix(3, 3);
+            M4.Rows[0] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, 1.0 });
+            M4.Rows[1] = SparseVector.GetSparseElement(new double[] { 0.0, 2.0, 1.0 });
+            M4.Rows[2] = SparseVector.GetSparseElement(new double[] { -1.0, -1.0, 0.0 });
+
+            double[] q4 = new double[] { -6.0, 0.0, 4.0 };
+
+            lm.Solve(M4, q4, 10);
+
+            SparseMatrix M5 = new SparseMatrix(3, 3);
+            M5.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, 2.0, 0.0 });
+            M5.Rows[1] = SparseVector.GetSparseElement(new double[] { 0.0, 1.0, 2.0 });
+            M5.Rows[2] = SparseVector.GetSparseElement(new double[] { 2.0, 0.0, 1.0 });
+
+            double[] q5 = new double[] { -1.0, -1.0, -1.0 };
+
+            lm.Solve(M5, q5, 10);
+
+            SparseMatrix M6 = new SparseMatrix(4, 4);
+            M6.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, 1.0, 3.0, 4.0 });
+            M6.Rows[1] = SparseVector.GetSparseElement(new double[] { 5.0, 3.0, 1.0, 1.0 });
+            M6.Rows[2] = SparseVector.GetSparseElement(new double[] { 2.0, 1.0, 2.0, 2.0 });
+            M6.Rows[3] = SparseVector.GetSparseElement(new double[] { 1.0, 4.0, 1.0, 1.0 });
+
+            double[] q6 = new double[] { -1.0, 2.0, 1.0, 3.0 };
+
+            lm.Solve(M6, q6, 10);
         }
 
         //private static void TestKMeans()

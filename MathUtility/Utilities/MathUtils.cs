@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace SharpEngineMathUtility
 {
-    public static class GeneralMathUtils
+    public static class MathUtils
     {
         public static double Dot(double[] a, double[] b)
         {
@@ -48,7 +48,7 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double Normalize(double[] a)
+        public static double Module(double[] a)
         {
             if (a == null || a.Length == 0)
                 throw new Exception("Wrong vector length");
@@ -59,6 +59,20 @@ namespace SharpEngineMathUtility
                 result += a[i] * a[i];
 
             return Math.Sqrt(result);
+        }
+
+        public static double[] Normalize(double[] a)
+        {
+            if (a == null || a.Length == 0)
+                throw new Exception("Wrong vector length");
+
+            double[] result = new double[a.Length];
+            double module = 1.0 / Module(a);
+
+            for (int i = 0; i < a.Length; i++)
+                result[i]= a[i] *module;
+
+            return result;
         }
 
         public static double[] Multiply(
@@ -234,6 +248,51 @@ namespace SharpEngineMathUtility
                 res[i] = Math.Max(min, v[i]);
 
             return res;
+        }
+
+        public static double Max(double[] v, ref int idx)
+        {
+            var max = double.NegativeInfinity;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (v[i] > max)
+                {
+                    max = v[i];
+                    idx = i;
+                }
+            }
+            
+            return max;
+        }
+
+        public static double Min(double[] v, ref int idx)
+        {
+            var min = double.PositiveInfinity;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (v[i] < min)
+                {
+                    min = v[i];
+                    idx = i;
+                }
+            }
+
+            return min;
+        }
+
+        public static double Min(double[] v)
+        {
+            var min = double.PositiveInfinity;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (v[i] < min)
+                    min = v[i];
+            }
+
+            return min;
         }
 
         public static double[] SquareRoot(double[] a)

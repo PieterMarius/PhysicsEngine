@@ -32,6 +32,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		NonLinearConjugateGradient = 1,
         ProjectedConjugateGradient = 2,
         RedBlackProjectedGaussSeidel = 3,
+        FischerNewton = 4,
     }
 }
 

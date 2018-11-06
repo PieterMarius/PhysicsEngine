@@ -24,40 +24,22 @@
  *  
  *****************************************************************************/
 
-using SharpEngineMathUtility;
-using SharpPhysicsEngine.ShapeDefinition;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SharpPhysicsEngine.Helper
+namespace SharpEngineMathUtility
 {
-    internal struct LinearProblemBaseProperties
+    public struct QRDecomposition
     {
         #region Fields
 
-        public double[] B;
-        public double[] D;
-        public double[] InvD;
-        public ConstraintType[] ConstraintType;
-        public double[] ConstraintLimit;
-        public SparseMatrix M;
-        public int?[] ConstraintsArray;
-        public double[] StartValue;
+        public SparseMatrix Q;
+        public SparseMatrix R;
 
         #endregion
 
-        #region Constructor
-
-        public LinearProblemBaseProperties(int constraintLength)
-        {
-            B = new double[constraintLength];
-            D = new double[constraintLength];
-            InvD = new double[constraintLength];
-            ConstraintType = new ConstraintType[constraintLength];
-            ConstraintLimit = new double[constraintLength];
-            M = new SparseMatrix(constraintLength, constraintLength);
-            ConstraintsArray = new int?[constraintLength];
-            StartValue = new double[constraintLength];
-        }
-
-        #endregion
     }
 }

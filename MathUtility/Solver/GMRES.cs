@@ -25,7 +25,8 @@
  *****************************************************************************/
 
 using System;
-using static SharpEngineMathUtility.GeneralMathUtils;
+using static SharpEngineMathUtility.MathUtils;
+using static SharpEngineMathUtility.SparseMatrix;
 
 namespace SharpEngineMathUtility.Solver
 {
@@ -41,7 +42,7 @@ namespace SharpEngineMathUtility.Solver
         #region Public Methods
 
         public double[] Solve(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] b,
             int restrt)
         {
@@ -51,7 +52,7 @@ namespace SharpEngineMathUtility.Solver
         }
 
         public double[] Solve(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] b,
             double[] x,
             int maxIter,
@@ -60,12 +61,12 @@ namespace SharpEngineMathUtility.Solver
         {
             int i, j = 1, k;
 
-            double bnrm2 = Normalize(b);
+            double bnrm2 = Module(b);
             if (bnrm2 == 0.0)
                 bnrm2 = 1.0;
 
-            double[] r = Minus(b, SparseElement.Multiply(A, x));
-            double beta = Normalize(r);
+            double[] r = Minus(b, Multiply(A, x));
+            double beta = Module(r);
             double error = beta / bnrm2;
             if (error < tol)
                 return x;
@@ -88,7 +89,7 @@ namespace SharpEngineMathUtility.Solver
                 
                 for (i = 0; i < m && j <= maxIter; i++, j++)
                 {
-                    double[] w = SparseElement.Multiply(A, v[i]);
+                    double[] w = Multiply(A, v[i]);
 
                     for (k = 0; k <= i; k++)
                     {
@@ -96,7 +97,7 @@ namespace SharpEngineMathUtility.Solver
                         w = Minus(w, Multiply(H[k][i], v[k]));
                     }
 
-                    H[i + 1][i] = Normalize(w);
+                    H[i + 1][i] = Module(w);
                     v[i + 1] = Multiply(1.0 / H[i + 1][i], w);
                     
                     for (k = 0; k < i; k++)
@@ -128,8 +129,8 @@ namespace SharpEngineMathUtility.Solver
                 }
                 
                 x = Update(x, i - 1, H, s, v);
-                r = Minus(b, SparseElement.Multiply(A, x));
-                beta = Normalize(r);
+                r = Minus(b, Multiply(A, x));
+                beta = Module(r);
                 error = beta / bnrm2;
                 if (error <= tol)
                 {

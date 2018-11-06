@@ -186,7 +186,7 @@ namespace SharpPhysicsEngine.LCPSolver
             int index,
             ref double[] x)
         {
-            SparseElement m = input.M[index];
+            SparseVector m = input.M.Rows[index];
             double xValue = x[index];
 
             double sumBuffer = 0.0;

@@ -25,8 +25,8 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
-using static SharpEngineMathUtility.SparseElement;
-using static SharpEngineMathUtility.GeneralMathUtils;
+using static SharpEngineMathUtility.SparseMatrix;
+using static SharpEngineMathUtility.MathUtils;
 using System.Linq;
 using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
@@ -77,7 +77,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             double[] x = startValues;
            
-            SparseElement[] A = linearProblemProperties.GetOriginalSparseMatrix();
+            SparseMatrix A = linearProblemProperties.GetOriginalSparseMatrix();
             double[] r = GetDirection(A, linearProblemProperties.B, x);
 
             if (Dot(r, r) < 1E-50)
@@ -176,7 +176,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Private Methods
 
-        private double CheckErrorTest(double[] x, SparseElement[] A, LinearProblemProperties input)
+        private double CheckErrorTest(double[] x, SparseMatrix A, LinearProblemProperties input)
         {
             double[] xValue = x;
             double[] dir = GetDirection(A, input.B, xValue);
@@ -217,7 +217,7 @@ namespace SharpPhysicsEngine.LCPSolver
         /// <param name="x"></param>
         /// <returns></returns>
         private double[] GetDirection(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] b,
             double[] x)
         {

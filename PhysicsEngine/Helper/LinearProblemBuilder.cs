@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
 
-        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints)
+        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints, bool setLCP)
         {
             LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
 
@@ -248,10 +248,10 @@ namespace SharpPhysicsEngine.Helper
                             }
 
                             //Sparse Matrix
-                            baseProperties.M[indexVal] = new SparseElement(
+                            baseProperties.M.Rows[indexVal] = new SparseVector(
                                                                 values.ToArray(),
                                                                 index.ToArray(),
-                                                                baseProperties.M.Length);
+                                                                baseProperties.M.m);
 
                             UpdateGraph(ref graph, ref index, indexVal);
                         }
@@ -262,7 +262,8 @@ namespace SharpPhysicsEngine.Helper
                 baseProperties,
                 graph);
 
-            GetLCPFrictionMatrix(lp);
+            if (setLCP)
+                return GetLCPFrictionMatrix(lp);
 
             return new LinearProblemProperties(
                 baseProperties,
@@ -387,11 +388,11 @@ namespace SharpPhysicsEngine.Helper
                         }
                     });
 
-                SparseElement[] M = new SparseElement[constraint.Length];
+                SparseMatrix M = new SparseMatrix(constraint.Length, constraint.Length);
 
                 for (int i = 0; i < constraint.Length; i++)
                 {
-                    M[i] = new SparseElement(
+                    M.Rows[i] = new SparseVector(
                         value[i].ToArray(),
                         index[i].ToArray(),
                         constraint.Length);
@@ -412,6 +413,7 @@ namespace SharpPhysicsEngine.Helper
             return null;
         }
 
+        //TODO Refactor
         public LinearProblemProperties GetLCPFrictionMatrix(LinearProblemProperties linearProblem)
         {
             var collisionIndexes = linearProblem.ConstraintType
@@ -434,42 +436,41 @@ namespace SharpPhysicsEngine.Helper
                 var invD = linearProblem.InvD.ToList();
                 var constraintType = linearProblem.ConstraintType.ToList();
                 var constraintLimit = linearProblem.ConstraintLimit.ToList();
-                var m = linearProblem.M.ToList();
+                var m = linearProblem.M.Rows.ToList();
                 var constraintsArray = linearProblem.Constraints.ToList();
                 var startValue = linearProblem.StartImpulse.ToList();
                 var E_dim = numberOfCollision * EngineParameters.FrictionDirections;
-                var newRowLength = b.Count + numberOfCollision - 1;
+                var newRowLength = b.Count + numberOfCollision;
 
                 //Add fields to friction rows
                 for (int i = 0; i < numberOfCollision; i++)
                 {
                     var colIdx = collisionIndexes[i].index;
-                    var fIndexes = new List<int>();
-
-                    for (int j = 0; j < frictionIndexes.Count; j++)
-                    {
-                        if (fIndexes.Count >= EngineParameters.FrictionDirections)
-                            break;
-
-                        var fIdx = frictionIndexes[j].index;
-                        var ct = constraintsArray[fIdx];
-                        if (ct.HasValue && ct.Value == colIdx)
-                            fIndexes.Add(fIdx);
-                    }
-
+                    
+                    var fIndexes = constraintsArray.Select((constraint, index) => new { constraint, index })
+                                                   .Where(x => x.constraint.HasValue && x.constraint.Value == colIdx).ToList();
+                                        
+                    //Add elements to matrix M, friction values
+                    var rowIndexes = new List<int>() { collisionIndexes[i].index };
+                    var rowValues = new List<double>() { constraintLimit[frictionIndexes[0].index] };
+                                        
                     //Columns update
                     for (int j = 0; j < fIndexes.Count; j++)
                     {
-                        var mIdx = m[fIndexes[j]];
+                        var idx = fIndexes[j].index;
+                        var mIdx = m[idx];
                         var bufIndex = new List<int>(mIdx.Index);
                         var bufValue = new List<double>(mIdx.Value);
                         bufIndex.Add(mIdx.Length + i);
                         bufValue.Add(1.0);
 
-                        m[fIndexes[j]] = new SparseElement(
+                        m[idx] = new SparseVector(
                             bufValue.ToArray(),
                             bufIndex.ToArray(),
                             mIdx.Length + numberOfCollision);
+
+                        rowIndexes.Add(idx);
+                        rowValues.Add(-1.0);
                     }
 
                     //Rows Update
@@ -478,22 +479,9 @@ namespace SharpPhysicsEngine.Helper
                     d.Add(0.0);
                     invD.Add(0.0);
                     constraintLimit.Add(0.0);
-
-                    //Add elements to matrix M
-                    var rowIndexes = new List<int>();
-                    var rowValues = new List<double>();
-
-                    //Add friction value
-                    rowIndexes.Add(collisionIndexes[i].index);
-                    rowValues.Add(constraintLimit[frictionIndexes[0].index]);
-
-                    for (int j = 0; j < fIndexes.Count; j++)
-                    {
-                        rowIndexes.Add(fIndexes[j]);
-                        rowValues.Add(-1.0);
-                    }
-
-                    var sparseElement = new SparseElement(
+                    startValue.Add(0.0);                    
+                    
+                    var sparseElement = new SparseVector(
                         rowValues.ToArray(), 
                         rowIndexes.ToArray(), 
                         newRowLength);
@@ -501,9 +489,24 @@ namespace SharpPhysicsEngine.Helper
                     m.Add(sparseElement);
                 }
 
+                for (int i = 0; i < m.Count; i++)
+                {
+                    m[i] = new SparseVector(m[i].Value, m[i].Index, newRowLength);
+                    b[i] *= -1.0; 
+                }
+
+                baseProperties.B = b.ToArray();
+                baseProperties.D = d.ToArray();
+                baseProperties.InvD = invD.ToArray();
+                baseProperties.ConstraintType = constraintType.ToArray();
+                baseProperties.ConstraintLimit = constraintLimit.ToArray();
+                baseProperties.StartValue = startValue.ToArray();
+                baseProperties.M.Rows = m.ToArray();
+
                 var lcp = new LinearProblemProperties(baseProperties, null);
 
-                var test = lcp.GetOriginalMatrix();
+                //TODO Test
+                //var test = lcp.GetOriginalMatrix();
 
                 return lcp;
             }

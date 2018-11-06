@@ -1,0 +1,284 @@
+﻿/******************************************************************************
+ *
+ * The MIT License (MIT)
+ *
+ * PhysicsEngine, Copyright (c) 2018 Pieter Marius van Duin
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *  
+ *****************************************************************************/
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static SharpEngineMathUtility.MathUtils;
+using static SharpEngineMathUtility.SparseMatrix;
+
+namespace SharpEngineMathUtility.Solver
+{
+    public sealed class Lemke
+    {
+        #region Fields
+
+        const double threshold = 1E-5;
+
+        private HouseholderQR QRDecomposition;
+
+        #endregion
+
+        #region Constructor
+
+        public Lemke()
+        {
+            QRDecomposition = new HouseholderQR();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public double[] Solve(
+            SparseMatrix M,
+            double[] q,
+            int maxIter,
+            double[] z0 = null)
+        {
+            int n = q.Length;
+            double zero_tol = 1E-5;
+            double piv_tol = 1E-8;
+            double err = 0.0;
+            double[] _z = null; 
+
+            if (CheckPositiveValues(q))
+                return new double[n];
+
+            double[] z = new double[2 * n];
+            double ratio = 0.0;
+            int leaving = 0;
+
+            double[] x = new double[q.Length];
+            Array.Copy(q, x, q.Length);
+            List<int> bas = new List<int>();
+            List<int> nonbas = new List<int>();
+
+            int t = 2 * n;
+            int entering = t;
+
+            for (int i = 0; i < n; ++i)
+                nonbas.Add(i);
+
+            var B = GetSparseIdentityMatrix(n, n, -1.0);
+
+            if (bas.Count > 0)
+            {
+                //var BCopy = 
+            }
+
+            if (CheckPositiveValues(x))
+            {
+                //TODO
+                //var _z = new double[2 * n];
+                //for (int i = 0; i < bas.Count; i++)
+                //{
+                //    _z[bas[i]] = x[i];
+                //}
+            }
+
+            double[] minuxX = Multiply(-1.0, x);
+            int lvindex = -1;
+            double tval = Max(minuxX, ref lvindex);
+
+            for (int i = 0; i < nonbas.Count; ++i)
+                bas.Add(nonbas[i] + n);
+
+            leaving = bas[lvindex];
+            bas[lvindex] = t;
+
+            var U = new double[n];
+            for (int i = 0; i < n; ++i)
+            {
+                if (x[i] < 0.0)
+                    U[i] = 1.0;
+            }
+
+            var Be = Multiply(-1.0, Multiply(B, U));
+            x = Add(x, Multiply(tval, U));
+            x[lvindex] = tval;
+            SetColumn(ref B, Be, lvindex);
+
+            //Iteration region
+            int iter = 0;
+
+            for (iter = 0; iter < maxIter; ++iter)
+            {
+                if (leaving == t)
+                    break;
+                else if(leaving < n)
+                {
+                    entering = n + leaving;
+                    Be = new double[n];
+                    Be[leaving] = -1;
+                }
+                else
+                {
+                    entering = leaving - n;
+                    Be = GetColumn(M, entering);
+                }
+
+                var d = QRDecomposition.Solve(B, Be);
+
+                List<int> j = new List<int>();
+                for (int i = 0; i < n; ++i)
+                {
+                    if (d[i] > piv_tol)
+                        j.Add(i);
+                }
+
+                if(!j.Any())
+                {
+                    break;
+                }
+
+                int jSize = j.Count;
+                double[] minRatio = new double[jSize];
+
+                for (int i = 0; i < jSize; ++i)
+                {
+                    int index = j[i];
+                    minRatio[i] = (x[index] + zero_tol) / d[index];
+                }
+
+                double theta = Min(minRatio);
+
+                List<int> tmpJ = new List<int>();
+                List<double> tmpd = new List<double>();
+
+                for (int i = 0; i < jSize; ++i)
+                {
+                    int index = j[i];
+                    if (x[index] / d[index] <= theta)
+                    {
+                        tmpJ.Add(index);
+                        tmpd.Add(d[index]);
+                    }
+                }
+
+                j = tmpJ;
+                jSize = j.Count;
+                if (jSize == 0)
+                {
+                    break;
+                }
+
+                lvindex = -1;
+                for (int i = 0; i < jSize; i++)
+                {
+                    if (bas[j[i]] == t)
+                        lvindex = i;
+                }
+
+                if (lvindex != -1)
+                    lvindex = j[lvindex];
+                else
+                {
+                    theta = tmpd[0];
+                    lvindex = 0;
+                    for (int i = 0; i < jSize; ++i)
+                    {
+                        if (tmpd[i] - theta > piv_tol)
+                        {
+                            theta = tmpd[i];
+                            lvindex = i;
+                        }
+                    }
+                    lvindex = j[lvindex];
+                }
+
+                leaving = bas[lvindex];
+                ratio = x[lvindex] / d[lvindex];
+
+                x = Minus(x, Multiply(ratio, d));
+                x[lvindex] = ratio;
+                SetColumn(ref B, Be, lvindex);
+
+                bas[lvindex] = entering;
+            }
+
+            //End Iteration region
+
+            if (iter >= maxIter && leaving != t)
+                err = 1.0;
+
+            if (err == 0.0)
+            {
+                for (int i = 0; i < bas.Count; i++)
+                {
+                    if (bas[i] < z.Length)
+                        z[bas[i]] = x[i];
+                }
+                _z = new double[n];
+                Array.Copy(z, _z, n);
+
+                var validation = Validate(M, _z, q);
+            }
+
+            return _z;
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private bool CheckPositiveValues(double[] q)
+        {
+            var res = true;
+            for (int i = 0; i < q.Length; i++)
+            {
+                if (q[i] < 0.0)
+                {
+                    res = false;
+                    break;
+                }
+            }
+
+            return res;
+        }
+
+        private bool Validate(
+            SparseMatrix M,
+            double[] z,
+            double[] q)
+        {
+            var w = Add(q, Multiply(M, z));
+            for (int i = 0; i < M.n; i++)
+            {
+                if (w[i] < -threshold || z[i] < -threshold)
+                    return false;
+
+                if (Math.Abs(w[i] * z[i]) > threshold)
+                    return false;
+            }
+            return true;
+        }
+                
+        #endregion
+    }
+}

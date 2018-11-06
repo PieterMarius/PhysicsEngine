@@ -53,9 +53,13 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Solver\GMRES.cs" />
+    <Compile Include="Solver\HouseholderQR.cs" />
+    <Compile Include="Solver\Lemke.cs" />
     <Compile Include="Solver\MINRES.cs" />
+    <Compile Include="Struct\QRDecomposition.cs" />
+    <Compile Include="Struct\SparseMatrix.cs" />
     <Compile Include="Utilities\BreadthFirstSearch.cs" />
-    <Compile Include="Utilities\GeneralMathUtils.cs" />
+    <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Utilities\HashSetStruct.cs" />
     <Compile Include="Utilities\Line.cs" />
@@ -67,7 +71,7 @@
     <Compile Include="Struct\Quaternion.cs" />
     <Compile Include="Utilities\GeometryUtils.cs" />
     <Compile Include="Struct\Vertices.cs" />
-    <Compile Include="Struct\SparseElement.cs" />
+    <Compile Include="Struct\SparseVector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="DotNetCross.Memory.Unsafe">

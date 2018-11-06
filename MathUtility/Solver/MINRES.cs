@@ -25,8 +25,8 @@
  *****************************************************************************/
 
 using System;
-using static SharpEngineMathUtility.GeneralMathUtils;
-using static SharpEngineMathUtility.SparseElement;
+using static SharpEngineMathUtility.MathUtils;
+using static SharpEngineMathUtility.SparseMatrix;
 
 namespace SharpEngineMathUtility.Solver
 {
@@ -46,7 +46,7 @@ namespace SharpEngineMathUtility.Solver
         #region Public Methods
                 
         public double[] Solve(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] b,
             double[] x,
             int nIter,

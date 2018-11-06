@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static SharpEngineMathUtility.GeneralMathUtils;
+using static SharpEngineMathUtility.MathUtils;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    public class FisherNewton //: ISolver
+    internal class FischerNewton : ISolver
     {
 
         #region Fields
@@ -22,7 +22,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Constructor
 
-        public FisherNewton(SolverParameters solverParameters)
+        public FischerNewton(SolverParameters solverParameters)
         {
             SolverParameters = solverParameters;
             solver = new GMRES();
@@ -31,36 +31,24 @@ namespace SharpPhysicsEngine.LCPSolver
         #endregion
 
         #region Public Methods
-
-        public SolverParameters GetSolverParameters()
-        {
-            throw new NotImplementedException();
-        }
-
-        //public double[] Solve(
-        //    LinearProblemProperties linearProblemProperties,
-        //    double[] x)
-        //{
-        //    return null;
-        //}
-
+                       
         public double[] Solve(
-            //LinearProblemProperties linearProblemProperties, 
-            SparseElement[] A,
-            double[] b,
-            double[] x,
-            double lambda)
+            LinearProblemProperties linearProblemProperties, 
+            double[] x)
         {
+            double lambda = 1.0;
+            
+            var A = linearProblemProperties.GetOriginalSparseMatrix();
+            var b = linearProblemProperties.B;
             int N = b.Length;
-            //var A = linearProblemProperties.GetOriginalSparseMatrix();
-            //var b = linearProblemProperties.B;
+
             double gamma = 1E-28;
             double error = double.PositiveInfinity;
             double oldError = 0.0;
             
             for (int iter = 0; iter < SolverParameters.MaxIteration; iter++)
             {
-                double[] y = Add(SparseElement.Multiply(A, x, SolverParameters.MaxThreadNumber), b);
+                double[] y = Add(SparseMatrix.Multiply(A, x, SolverParameters.MaxThreadNumber), b);
                 double[] phi = PhiLambda(y, x, lambda);
                 oldError = error;
                 error = 0.5 * Dot(phi, phi);
@@ -70,7 +58,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 List<int> S = fnd.Item1;
                 List<int> I = fnd.Item2;
 
-                int restart = Math.Min(A.Length, 10);
+                int restart = Math.Min(A.n, 10);
 
                 double[] nablaPhi = null;
 
@@ -81,8 +69,12 @@ namespace SharpPhysicsEngine.LCPSolver
 
             }
 
-            throw new NotImplementedException();
+            return x;
+        }
 
+        public SolverParameters GetSolverParameters()
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -143,7 +135,7 @@ namespace SharpPhysicsEngine.LCPSolver
         }
 
         private double[] RandomFunc(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] x,
             double[] y,
             double[] phi,
@@ -158,8 +150,8 @@ namespace SharpPhysicsEngine.LCPSolver
             var pi = GetPIndexTransform(x, y, p, I);
             var J = GetJacobianMatrix(A, pi, qi, I);
             var b = Multiply(-1.0, phi);
-            nablaPhi = SparseElement.Multiply(J, phi);
-
+            nablaPhi = SparseMatrix.Multiply(J, phi);
+                        
             return solver.Solve(J, b, restart);
         }
 
@@ -170,7 +162,7 @@ namespace SharpPhysicsEngine.LCPSolver
             List<int> I)
         {
             var res = new double[I.Count];
-            Array.Copy(q, res, q.Length);
+            Array.Copy(q, res, res.Length);
 
             for (int i = 0; i < I.Count; i++)
             {
@@ -191,8 +183,8 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] p,
             List<int> I)
         {
-            var res = new double[p.Length];
-            Array.Copy(p, res, p.Length);
+            var res = new double[I.Count];
+            Array.Copy(p, res, res.Length);
 
             for (int i = 0; i < I.Count; i++)
             {
@@ -207,8 +199,8 @@ namespace SharpPhysicsEngine.LCPSolver
             return res;
         }
 
-        private SparseElement[] GetJacobianMatrix(
-            SparseElement[] A,
+        private SparseMatrix GetJacobianMatrix(
+            SparseMatrix A,
             double[] pi,
             double[] qi,
             List<int> I)
@@ -216,18 +208,18 @@ namespace SharpPhysicsEngine.LCPSolver
             return GetMatrixElements(A, qi, pi, I);
         }
         
-        private SparseElement[] GetMatrixElements(
-            SparseElement[] A,
+        private SparseMatrix GetMatrixElements(
+            SparseMatrix A,
             double[] mult,
             double[] add,
             List<int> I)
         {
-            SparseElement[] res = new SparseElement[I.Count];
+            SparseMatrix res = new SparseMatrix(I.Count, I.Count);
 
             for (int i = 0; i < I.Count; i++)
             {
                 var bidx = I[i];
-                var item = A[bidx];
+                var item = A.Rows[bidx];
                 var index = -1;
                 for (int j = 0; j < item.Index.Length; j++)
                 {
@@ -242,14 +234,14 @@ namespace SharpPhysicsEngine.LCPSolver
                 value[0] *= mult[i];
                 value[0] += add[i];
 
-                res[i] = new SparseElement(value,idx, I.Count);
+                res.Rows[i] = new SparseVector(value,idx, I.Count);
             }
 
             return res;
         }
         
         private double[] ArmijoBacktracking(
-            SparseElement[] A,
+            SparseMatrix A,
             double[] b,
             double[] x,
             double[] dx,
@@ -269,7 +261,7 @@ namespace SharpPhysicsEngine.LCPSolver
             while(true)
             {
                 xk = Max(0.0, Add(x, Multiply(tau, dx)));
-                var yk = Add(SparseElement.Multiply(A, xk, SolverParameters.MaxThreadNumber), b);
+                var yk = Add(SparseMatrix.Multiply(A, xk, SolverParameters.MaxThreadNumber), b);
                 var phyk = PhiLambda(yk, xk, lambda);
                 var fk = 0.5 * Dot(phyk, phyk);
 

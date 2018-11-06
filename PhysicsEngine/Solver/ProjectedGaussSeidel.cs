@@ -98,7 +98,7 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 double sumBuffer = sum[i];
 
-                SparseElement m = input.M[i];
+                SparseVector m = input.M.Rows[i];
 
                 double xValue = x[i];
 
@@ -153,10 +153,10 @@ namespace SharpPhysicsEngine.LCPSolver
 			//Avoid last row elaboration
 			if (i + 1 != input.Count)
             {
-                if (input.M[i].Index.Length > 0)
+                if (input.M.Rows[i].Index.Length > 0)
                 {
-                    double[] bufValue = input.M[i].Value;
-                    int[] bufIndex = input.M[i].Index;
+                    double[] bufValue = input.M.Rows[i].Value;
+                    int[] bufIndex = input.M.Rows[i].Index;
 
                     for (int j = 0; j < bufIndex.Length; j++)
                     {

@@ -133,7 +133,7 @@
     <Compile Include="ShapeDefinition\Shape\Properties\MassData.cs" />
     <Compile Include="ShapeDefinition\Shape\Shape.cs" />
     <Compile Include="ShapeDefinition\Shape\ShapeCommonUtilities.cs" />
-    <Compile Include="Solver\FisherNewton.cs" />
+    <Compile Include="Solver\FischerNewton.cs" />
     <Compile Include="Solver\NonLinearGaussSeidel.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="StackingUtilities\StackManager.cs" />
