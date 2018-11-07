@@ -26,9 +26,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SharpEngineMathUtility.MathUtils;
 using static SharpEngineMathUtility.SparseMatrix;
 
@@ -63,7 +60,7 @@ namespace SharpEngineMathUtility.Solver
 
             SparseMatrix z1 = new SparseMatrix();
 
-            for (int k = 0; k < n && k < m - 1; k++)
+            for (int k = 0; k < n && k < m - 1; ++k)
             {
                 double[] e = new double[m];
                 double[] x = new double[m];
@@ -126,13 +123,14 @@ namespace SharpEngineMathUtility.Solver
             for (int i = rows-2; i >= 0; i--)
             {
                 res[i] = vec[i];
+                var row = matrix.Rows[i].Elements;
 
                 for (int j = i + 1; j < rows; j++)
                 {
-                    if (matrix.Rows[i].Elements.TryGetValue(j, out double value))
+                    if (row.TryGetValue(j, out double value))
                         res[i] -= value * res[j];
                 }
-                if (matrix.Rows[i].Elements.TryGetValue(i, out double value1))
+                if (row.TryGetValue(i, out double value1))
                     res[i] = res[i] / value1;
             }
 
@@ -148,9 +146,11 @@ namespace SharpEngineMathUtility.Solver
             {
                 var index = new List<int>();
                 var value = new List<double>();
+                var row = mat.Rows[i].Elements;
+
                 for (int j = d; j < mat.m; j++)
                 {      
-                    if (mat.Rows[i].Elements.TryGetValue(j, out double val))
+                    if (row.TryGetValue(j, out double val))
                     {
                         index.Add(j);
                         value.Add(val);
@@ -178,13 +178,17 @@ namespace SharpEngineMathUtility.Solver
             {
                 var index = new List<int>();
                 var value = new List<double>();
+
                 for (int j = 0; j < n; j++)
                 {
-                    index.Add(j);
                     double val = -2.0 * v[i] * v[j];
-                    if (i == j)
-                        val += 1.0;
-                    value.Add(val);
+
+                    if (val != 0.0 || i == j)
+                    {
+                        index.Add(j);
+                        val += (i == j) ? 1.0 : 0.0;
+                        value.Add(val);
+                    }
                 }
 
                 mat.Rows[i] = new SparseVector(value.ToArray(), index.ToArray(), n);

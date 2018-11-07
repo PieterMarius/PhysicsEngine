@@ -82,25 +82,48 @@ namespace SharpEngineMathUtility.Solver
             int t = 2 * n;
             int entering = t;
 
-            for (int i = 0; i < n; ++i)
-                nonbas.Add(i);
+            if (z0 != null)
+            {
+                for (int i = 0; i < n; ++i)
+                {
+                    if (z0[i] <= 0.0)
+                        nonbas.Add(i);
+                    else
+                        bas.Add(i);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < n; ++i)
+                    nonbas.Add(i);
+            }
 
             var B = GetSparseIdentityMatrix(n, n, -1.0);
 
             if (bas.Count > 0)
             {
-                //TODO
-                //var BCopy = 
+                var BCopy = GetCopy(B);
+
+                for (int i = 0; i < bas.Count; i++)
+                    SetColumn(ref B, GetColumn(M, bas[i]), i);
+
+                for (int i = 0; i < nonbas.Count; i++)
+                    SetColumn(ref B, GetColumn(BCopy, nonbas[i]), bas.Count + i);
+
+                x = Multiply(-1.0, QRDecomposition.Solve(B, q));
             }
 
             if (CheckPositiveValues(x))
             {
-                //TODO
-                //var _z = new double[2 * n];
-                //for (int i = 0; i < bas.Count; i++)
-                //{
-                //    _z[bas[i]] = x[i];
-                //}
+                var __z = new double[2 * n];
+                for (int i = 0; i < bas.Count; ++i)
+                {
+                    __z[bas[i]] = x[i];
+                }
+
+                Array.Copy(__z, _z, n);
+
+                return _z;
             }
 
             double[] minuxX = Multiply(-1.0, x);
@@ -154,9 +177,7 @@ namespace SharpEngineMathUtility.Solver
                 }
 
                 if(!j.Any())
-                {
                     break;
-                }
 
                 int jSize = j.Count;
                 double[] minRatio = new double[jSize];
@@ -185,10 +206,8 @@ namespace SharpEngineMathUtility.Solver
                 j = tmpJ;
                 jSize = j.Count;
                 if (jSize == 0)
-                {
                     break;
-                }
-
+                
                 lvindex = -1;
                 for (int i = 0; i < jSize; i++)
                 {
@@ -226,7 +245,7 @@ namespace SharpEngineMathUtility.Solver
             //End Iteration region
 
             if (iter >= maxIter && leaving != t)
-                err = 1.0;
+                throw new Exception("Lemke solver failed to find solution.");
 
             if (err == 0.0)
             {
@@ -239,6 +258,9 @@ namespace SharpEngineMathUtility.Solver
                 Array.Copy(z, _z, n);
 
                 var validation = Validate(M, _z, q);
+
+                if (!validation)
+                    throw new Exception("Lemke solver failed to find solution.");
             }
 
             return _z;

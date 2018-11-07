@@ -115,10 +115,11 @@ namespace SharpEngineMathUtility
             
             for (int i = 0; i < v.Length; i++)
             {
-                if(Math.Abs(v[i]) > tol)
+                var item = v[i];
+                if(Math.Abs(item) > tol)
                 {
                     index.Add(i);
-                    value.Add(v[i]);
+                    value.Add(item);
                 }
             }
 
@@ -137,10 +138,10 @@ namespace SharpEngineMathUtility
         private Dictionary<int, double> GetDictionary()
         {
             var res = new Dictionary<int, double>();
+
             for (int i = 0; i < Index.Length; i++)
-            {
                 res.Add(Index[i], Value[i]);
-            }
+            
             return res;
         }
 

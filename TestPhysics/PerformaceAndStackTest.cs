@@ -164,7 +164,7 @@ namespace TestPhysics
             ShapeGeometry shapeGeometry = new ShapeGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             //ShapeGeometry shapeGeometry = new ShapeGeometry(geom1.VertexPoint);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 4; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1.0f);
@@ -189,7 +189,7 @@ namespace TestPhysics
 
             position = new Vector3d(3.0, 4.0, 0.0);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 4; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
@@ -215,7 +215,7 @@ namespace TestPhysics
 
             position = new Vector3d(-3.0, 1.7, 0.0);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 4; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
@@ -241,7 +241,7 @@ namespace TestPhysics
 
             position = new Vector3d(-3.0, 1.7, 3.0);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 4; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
@@ -267,7 +267,7 @@ namespace TestPhysics
 
             position = new Vector3d(-3.0, 1.7, -5.0);
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 4; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1);

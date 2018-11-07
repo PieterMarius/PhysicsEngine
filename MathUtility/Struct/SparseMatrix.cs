@@ -77,11 +77,11 @@ namespace SharpEngineMathUtility
                 double[] result = new double[matrix.n];
 
                 var rangePartitioner = Partitioner.Create(0, matrix.n);
-                ParallelOptions options = new ParallelOptions();
+                ParallelOptions options = new ParallelOptions() { MaxDegreeOfParallelism = 1 }; ;
 
                 if (maxThread.HasValue)
                 {
-                    options = new ParallelOptions() { MaxDegreeOfParallelism = maxThread.Value };
+                    options.MaxDegreeOfParallelism = maxThread.Value;
                     rangePartitioner = Partitioner.Create(0, matrix.n, Convert.ToInt32(matrix.n / maxThread.Value) + 1);
                 }
 
@@ -111,7 +111,7 @@ namespace SharpEngineMathUtility
 
             return null;
         }
-
+                
         public static SparseMatrix Multiply(
             SparseMatrix matrixA,
             SparseMatrix matrixB,
@@ -124,7 +124,7 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < matrixB.m; i++)
             {
-                var mul = Multiply(matrixA, GetColumn(matrixB, i));
+                var mul = Multiply(matrixA, GetColumn(matrixB, i), maxThread);
                 result.Rows[i] = GetSparseElement(mul);
             }
 
@@ -142,13 +142,10 @@ namespace SharpEngineMathUtility
 
                 for (int j = 0; j < matrix.m; j++)
                 {
-                    for (int w = 0; w < matrix.Rows[j].Index.Length; w++)
+                    if (matrix.Rows[j].Elements.TryGetValue(i, out double value))
                     {
-                        if (matrix.Rows[j].Index[w] == i)
-                        {
-                            idx.Add(j);
-                            val.Add(matrix.Rows[j].Value[w]);
-                        }
+                        idx.Add(j);
+                        val.Add(value);
                     }
                 }
 
@@ -166,7 +163,7 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < matrix.n; i++)
             {
-                var mul = Multiply(matrix, GetArray(matrix.Rows[i]));
+                var mul = Multiply(matrix, GetArray(matrix.Rows[i]), maxThread);
                 result.Rows[i] = GetSparseElement(mul);
             }
 
@@ -224,6 +221,17 @@ namespace SharpEngineMathUtility
                 res.Rows[i] = new SparseVector(val, idx, m);
             }
 
+            return res;
+        }
+
+        public static SparseMatrix GetCopy(SparseMatrix input)
+        {
+            var res = new SparseMatrix(input.n, input.m);
+
+            for (int i = 0; i < input.n; i++)
+            {
+                res.Rows[i] = new SparseVector(input.Rows[i].Value, input.Rows[i].Index, input.Rows[i].Length);
+            }
             return res;
         }
 
