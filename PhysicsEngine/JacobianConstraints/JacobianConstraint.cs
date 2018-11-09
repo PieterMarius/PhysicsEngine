@@ -43,10 +43,10 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		public readonly IShapeCommon ObjectB;
 
-		/// <summary>
-		/// The contact reference.
-		/// </summary>
-		public int? ContactReference;
+        /// <summary>
+        /// The contact reference (used by friction contact)
+        /// </summary>
+        public int? ContactReference;
 
 		/// <summary>
 		/// The linear component object A.
@@ -92,12 +92,7 @@ namespace SharpPhysicsEngine
 		/// The CFM (Constraint Force Mixing).
 		/// </summary>
 		public readonly double CFM;
-
-		/// <summary>
-		/// The index of the collision struct.
-		/// </summary>
-		public readonly StartImpulseProperties StartImpulse;
-
+        		
         #endregion
 
         #region Constructorv
@@ -114,8 +109,7 @@ namespace SharpPhysicsEngine
 			double B,
 			double correctionValue,
 			double cfm,
-			double constraintLimit,
-			StartImpulseProperties startImpulse)
+			double constraintLimit)
 		{
 			ObjectA = objectA;
 			ObjectB = objectB;
@@ -129,7 +123,6 @@ namespace SharpPhysicsEngine
 			CorrectionValue = correctionValue;
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
-			StartImpulse = startImpulse;
 		}
                
         public JacobianConstraint(
@@ -144,7 +137,7 @@ namespace SharpPhysicsEngine
             double correctionValue,
             double cfm,
             double constraintLimit)
-            : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, new StartImpulseProperties(0.0))
+            : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit)
         { }
 
         public JacobianConstraint(
@@ -157,8 +150,24 @@ namespace SharpPhysicsEngine
             double correctionValue,
             double cfm,
             double constraintLimit)
-            : this(objectA, objectB, null, null, null, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit, new StartImpulseProperties(0.0))
+            : this(objectA, objectB, null, null, null, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit)
         { }
+
+        public JacobianConstraint(JacobianConstraint jc)
+        {
+            ObjectA = jc.ObjectA;
+            ObjectB = jc.ObjectB;
+            ContactReference = jc.ContactReference;
+            LinearComponentA = jc.LinearComponentA;
+            LinearComponentB = jc.LinearComponentB;
+            AngularComponentA = jc.AngularComponentA;
+            AngularComponentB = jc.AngularComponentB;
+            Type = jc.Type;
+            B = jc.B;
+            CorrectionValue = jc.CorrectionValue;
+            CFM = jc.CFM;
+            ConstraintLimit = jc.ConstraintLimit;
+        }
 
         #endregion
 

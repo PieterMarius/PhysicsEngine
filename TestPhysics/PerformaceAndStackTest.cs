@@ -75,7 +75,7 @@ namespace TestPhysics
                         
             physicsEnvironment.CollisionEngineParam.SetBroadPhaseEngine(BroadPhaseEngineType.HierarchicalTree);
             physicsEnvironment.SetSolverType(SolverType.Lemke);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(30);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(500);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-6);
 
@@ -164,7 +164,7 @@ namespace TestPhysics
             ShapeGeometry shapeGeometry = new ShapeGeometry(geom1.VertexPoint, geom1.TriagleIdx);
             //ShapeGeometry shapeGeometry = new ShapeGeometry(geom1.VertexPoint);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 30; i++)
             {
                 ShapeFilename.Add(objName);
                 ShapeScale.Add(1.0f);

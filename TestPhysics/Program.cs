@@ -107,7 +107,7 @@ namespace TestPhysics
             hs.Householder(B);
             hs.Solve(A, b);
 
-            Lemke lm = new Lemke();
+            Lemke lm = new Lemke(SharpEngineMathUtility.Solver.SolverType.HouseHolderQR);
 
             SparseMatrix M = new SparseMatrix(3, 3);
             M.Rows[0] = SparseVector.GetSparseElement(new double[] { 21.0, 0.0, 0.0 });

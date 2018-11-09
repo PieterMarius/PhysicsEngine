@@ -114,8 +114,7 @@ namespace SharpPhysicsEngine.Helper
                             baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
                             baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
                             baseProperties.ConstraintType[indexVal] = contactA.Type;
-                            baseProperties.StartValue[indexVal] = contactA.StartImpulse.StartImpulseValue;
-
+                            
                             //Diagonal value
                             double mValue = GetLCPDiagonalValue(contactA) +
                                         contactA.CFM +
@@ -125,8 +124,8 @@ namespace SharpPhysicsEngine.Helper
                             baseProperties.D[indexVal] = mValue;
                             baseProperties.InvD[indexVal] = 1.0 / mValue;
 
-                                //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
-                                for (int j = 0; j < constraintValues.Value.Count; j++)
+                            //contactA_ID_A == contactB_ID_A && contactA_ID_B == contactB_ID_B
+                            for (int j = 0; j < constraintValues.Value.Count; j++)
                             {
                                 int innerIndex = constraintValues.Value[j].Index;
 
@@ -253,7 +252,7 @@ namespace SharpPhysicsEngine.Helper
                                                                 index.ToArray(),
                                                                 baseProperties.M.m);
 
-                            UpdateGraph(ref graph, ref index, indexVal);
+                            UpdateGraph(ref graph, index, indexVal);
                         }
                     }
                 });
@@ -313,8 +312,7 @@ namespace SharpPhysicsEngine.Helper
 
                         constraintsLimit[i] = contactA.ConstraintLimit;
                         constraintsType[i] = contactA.Type;
-                        startImpulse[i] = contactA.StartImpulse.StartImpulseValue;
-
+                        
                         double mValue = GetLCPDiagonalValue(contactA);
 
                         //Diagonal value
@@ -437,12 +435,11 @@ namespace SharpPhysicsEngine.Helper
                 var constraintType = linearProblem.ConstraintType.ToList();
                 var constraintLimit = linearProblem.ConstraintLimit.ToList();
                 var m = linearProblem.GetOriginalSparseMatrix().Rows.ToList();
-                //var m = linearProblem.M.Rows.ToList();
                 var constraintsArray = linearProblem.Constraints.ToList();
                 var startValue = linearProblem.StartImpulse.ToList();
                 var E_dim = numberOfCollision * EngineParameters.FrictionDirections;
                 var newRowLength = b.Count + numberOfCollision;
-
+                                
                 //Add fields to friction rows
                 for (int i = 0; i < numberOfCollision; i++)
                 {
@@ -455,7 +452,7 @@ namespace SharpPhysicsEngine.Helper
                     var rowIndexes = new List<int>() { collisionIndexes[i].index };
                     var rowValues = new List<double>() { constraintLimit[frictionIndexes[0].index] };
                                         
-                    //Columns update
+                    //Columns and rows update
                     for (int j = 0; j < fIndexes.Count; j++)
                     {
                         var idx = fIndexes[j].index;
@@ -521,11 +518,12 @@ namespace SharpPhysicsEngine.Helper
 
         private void UpdateGraph(
             ref Graph graph,
-            ref List<int> index,
+            List<int> index,
             int indexVal)
         {
-            index.Add(indexVal);
-            graph.AddEdge(indexVal, index);
+            var lst = new List<int>(index);
+            lst.Add(indexVal);
+            graph.AddEdge(indexVal, lst);
         }
 
         private void AddLCPValues(

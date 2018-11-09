@@ -138,8 +138,7 @@ namespace SharpPhysicsEngine
 			double cfm,
 			double constraintLimit,
 			ConstraintType type,
-            int? contactReference,
-			StartImpulseProperties startImpulseProperties)
+            int? contactReference)
 		{
 			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
 			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
@@ -147,10 +146,7 @@ namespace SharpPhysicsEngine
 			                               angularComponentB.Dot (simulationObjectB.AngularVelocity) -
                                            constraintValue;
 
-			if (startImpulseProperties == null)
-				startImpulseProperties = new StartImpulseProperties(0.0);
-
-            return new JacobianConstraint(
+			return new JacobianConstraint(
                 simulationObjectA,
                 simulationObjectB,
                 contactReference,
@@ -162,8 +158,7 @@ namespace SharpPhysicsEngine
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,
-                constraintLimit,
-                startImpulseProperties);
+                constraintLimit);
 		}
 
         public static JacobianConstraint GetDOF(
@@ -176,16 +171,12 @@ namespace SharpPhysicsEngine
             double cfm,
             double constraintLimit,
             ConstraintType type,
-            int? contactReference,
-            StartImpulseProperties startImpulseProperties)
+            int? contactReference)
         {
             double jacobianVelocityValue = angularComponentA.Dot(simulationObjectA.AngularVelocity) +
                                            angularComponentB.Dot(simulationObjectB.AngularVelocity) -
                                            constraintValue;
-
-            if (startImpulseProperties == null)
-                startImpulseProperties = new StartImpulseProperties(0.0);
-
+                        
             return new JacobianConstraint(
                 simulationObjectA,
                 simulationObjectB,
@@ -198,8 +189,7 @@ namespace SharpPhysicsEngine
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,
-                constraintLimit,
-                startImpulseProperties);
+                constraintLimit);
         }
 
         public static JacobianConstraint GetDOF(
@@ -223,7 +213,6 @@ namespace SharpPhysicsEngine
                 cfm,
                 constraintLimit,
                 type,
-                null,
                 null);
         }
 
@@ -252,7 +241,6 @@ namespace SharpPhysicsEngine
                 cfm,
                 constraintLimit,
                 type,
-                null,
                 null);
         }
 

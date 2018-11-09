@@ -45,8 +45,8 @@ namespace TestPhysics
             foreach (var obj in objects)
                 physicsEnvironment.AddShape(obj);
             
-            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SetSolverType(SolverType.Lemke);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-8);
 

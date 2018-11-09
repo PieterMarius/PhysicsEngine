@@ -121,7 +121,7 @@ namespace SharpPhysicsEngine.Helper
                                    distBA < minDistance)
                                 {
                                     minDistance = (distAA < distBA) ? distAA : distBA;
-                                    startImpulse = point.StartImpulseValue;
+                                    //startImpulse = point.StartImpulseValue;
                                 }
 
                                 /*
@@ -137,8 +137,7 @@ namespace SharpPhysicsEngine.Helper
                                 */
 
                             }
-
-                            value.SetStartImpulseValues(startImpulse, EngineParameters.WarmStartingValue);
+                                                        
                             k++;
                         //}
                        

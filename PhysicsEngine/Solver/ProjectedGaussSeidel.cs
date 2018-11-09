@@ -105,8 +105,8 @@ namespace SharpPhysicsEngine.LCPSolver
                 //Avoid first row elaboration
                 if (i != 0)
                 {
-                    double[] bufValue = m.Value;
-                    int[] bufIndex = m.Index;
+                    var bufValue = m.Value;
+                    var bufIndex = m.Index;
 
                     for (int j = 0; j < bufIndex.Length; j++)
                     {
@@ -155,8 +155,8 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 if (input.M.Rows[i].Index.Length > 0)
                 {
-                    double[] bufValue = input.M.Rows[i].Value;
-                    int[] bufIndex = input.M.Rows[i].Index;
+                    var bufValue = input.M.Rows[i].Value;
+                    var bufIndex = input.M.Rows[i].Index;
 
                     for (int j = 0; j < bufIndex.Length; j++)
                     {

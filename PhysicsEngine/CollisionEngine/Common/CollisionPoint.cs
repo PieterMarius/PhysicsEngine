@@ -39,8 +39,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         public double Distance { get; private set; }
         public bool Intersection { get; private set; }
         public Vector3d CollisionNormal { get; private set; }
-        public List<StartImpulseProperties> StartImpulseValue { get; private set; }
-
+        
         #region Constructor
 
         public CollisionPoint(
@@ -55,14 +54,6 @@ namespace SharpPhysicsEngine.CollisionEngine
             CollisionNormal = collisionNormal;
             Distance = distance;
             Intersection = intersection;
-
-            //Start Impulse Proprties respectively of Normal, Friction Axis1 and Friction Axis2
-            StartImpulseValue = new List<StartImpulseProperties>()
-            {
-                new StartImpulseProperties(0.0),
-                new StartImpulseProperties(0.0),
-                new StartImpulseProperties(0.0),
-            };
         }
 
         public CollisionPoint() { }
@@ -70,23 +61,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         #endregion
 
         #region Public Methods
-
-        public void RegularizeStartImpulseProperties(double regParam)
-        {
-            StartImpulseValue[0].SetStartValue(StartImpulseValue[0].StartImpulseValue * regParam);
-            StartImpulseValue[1].SetStartValue(StartImpulseValue[1].StartImpulseValue * regParam);
-            StartImpulseValue[2].SetStartValue(StartImpulseValue[2].StartImpulseValue * regParam);
-        }
-
-        public void SetStartImpulseValues(
-            List<StartImpulseProperties> startImpulses, 
-            double regParam)
-        {
-            StartImpulseValue[0].SetStartValue(startImpulses[0].StartImpulseValue * regParam);
-            StartImpulseValue[1].SetStartValue(startImpulses[1].StartImpulseValue * regParam);
-            StartImpulseValue[2].SetStartValue(startImpulses[2].StartImpulseValue * regParam);
-        }
-
+                        
         public void SetNormal(Vector3d normal)
         {
             CollisionNormal = normal;

@@ -47,7 +47,7 @@ namespace TestPhysics
 {
     public class TestWindow : GameWindow
     {
-        public TestWindow() : base(256, 256, new GraphicsMode(32, 24, 0, 4))
+        public TestWindow() : base(32, 32, new GraphicsMode(32, 24, 0, 4))
         {
         }
 
@@ -447,7 +447,7 @@ namespace TestPhysics
                     //    pause = true;
 
 
-                    pause = true;
+                    //pause = true;
                     //if (elapsedTime > 6.0)
                     //	Exit();
 

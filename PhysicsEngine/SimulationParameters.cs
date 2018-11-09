@@ -178,7 +178,7 @@ namespace SharpPhysicsEngine
             SleepingFrameLimit = 7;
             CollisionSORValue = 0.5;
             AngularVelocityMinLimit = 0.0;
-            FrictionDirections = 2;
+            FrictionDirections = 4;
         }
 
 		//TODO Update input parameters

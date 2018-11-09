@@ -27,8 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static SharpEngineMathUtility.MathUtils;
 using static SharpEngineMathUtility.SparseMatrix;
 
@@ -40,15 +38,19 @@ namespace SharpEngineMathUtility.Solver
 
         const double threshold = 1E-5;
 
-        private HouseholderQR QRDecomposition;
+        private HouseholderQR HouseholderQRSolver;
+        private GMRES GMRESSolver;
+
+        private readonly SolverType Type;
 
         #endregion
 
         #region Constructor
 
-        public Lemke()
+        public Lemke(SolverType type)
         {
-            QRDecomposition = new HouseholderQR();
+            Type = type;
+            InitSolverType(type);
         }
 
         #endregion
@@ -110,17 +112,15 @@ namespace SharpEngineMathUtility.Solver
                 for (int i = 0; i < nonbas.Count; i++)
                     SetColumn(ref B, GetColumn(BCopy, nonbas[i]), bas.Count + i);
 
-                x = Multiply(-1.0, QRDecomposition.Solve(B, q));
+                x = Multiply(-1.0, HouseholderQRSolver.Solve(B, q));
             }
 
             if (CheckPositiveValues(x))
             {
                 var __z = new double[2 * n];
                 for (int i = 0; i < bas.Count; ++i)
-                {
                     __z[bas[i]] = x[i];
-                }
-
+                
                 Array.Copy(__z, _z, n);
 
                 return _z;
@@ -154,8 +154,10 @@ namespace SharpEngineMathUtility.Solver
             for (iter = 0; iter < maxIter; ++iter)
             {
                 if (leaving == t)
+                {
                     break;
-                else if(leaving < n)
+                }
+                else if (leaving < n)
                 {
                     entering = n + leaving;
                     Be = new double[n];
@@ -167,7 +169,7 @@ namespace SharpEngineMathUtility.Solver
                     Be = GetColumn(M, entering);
                 }
 
-                var d = QRDecomposition.Solve(B, Be);
+                var d = ExecuteSolver(B, Be);
 
                 List<int> j = new List<int>();
                 for (int i = 0; i < n; ++i)
@@ -269,6 +271,39 @@ namespace SharpEngineMathUtility.Solver
         #endregion
 
         #region Private Methods
+
+        private void InitSolverType(SolverType type)
+        {
+            switch(type)
+            {
+                case SolverType.GMRES:
+                    GMRESSolver = new GMRES();
+                    break;
+                
+                case SolverType.HouseHolderQR:
+                default:
+                    HouseholderQRSolver = new HouseholderQR();
+                    break;
+            }
+        }
+
+        private double[] ExecuteSolver(
+            SparseMatrix A,
+            double[] b)
+        {
+            switch(Type)
+            {
+                case SolverType.HouseHolderQR:
+                    return HouseholderQRSolver.Solve(A, b);
+
+                case SolverType.GMRES:
+                    int maxIter = Math.Min(1000, 4000);
+                    return GMRESSolver.Solve(A, b, new double[b.Length], maxIter, 2 * b.Length);
+
+                default:
+                    return HouseholderQRSolver.Solve(A, b);
+            }
+        }
 
         private bool CheckPositiveValues(double[] q)
         {

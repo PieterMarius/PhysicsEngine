@@ -174,7 +174,6 @@ namespace SharpPhysicsEngine
                         simulationParameters.NormalCFM,
                         0.0,
                         ConstraintType.Collision,
-                        null,
                         null);
 
                     #endregion
@@ -190,7 +189,6 @@ namespace SharpPhysicsEngine
                             relativeVelocity,
                             ra,
                             rb,
-                            null,
                             softShapePoint);
 
                     #endregion
@@ -300,9 +298,7 @@ namespace SharpPhysicsEngine
                         simulationParameters.NormalCFM,
                         0.0,
                         ConstraintType.Collision,
-                        null,
-                        null//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue[0]
-                        );
+                        null);
 
                     #endregion
 
@@ -317,7 +313,6 @@ namespace SharpPhysicsEngine
                             relativeVelocity,
                             ra,
                             rb,
-                            null,//collisionPointStr.CollisionPointBase[h].CollisionPoint.StartImpulseValue,
                             softShapePoint);
 
                     #endregion
@@ -383,7 +378,7 @@ namespace SharpPhysicsEngine
 
         {
 			List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
-
+                        
 			double restitutionCoefficient =
 					(objectA.RestitutionCoeff +
 					 objectB.RestitutionCoeff) * 0.5;
@@ -453,8 +448,7 @@ namespace SharpPhysicsEngine
 						simulationParameters.NormalCFM,
 						0.0,
 						ConstraintType.Collision,
-						null,
-                        (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue[0] : null);
+						null);
 
                     #endregion
 
@@ -470,11 +464,10 @@ namespace SharpPhysicsEngine
                             linearComponentA,
                             relativeVelocity,
                             ra,
-                            rb,
-                            (collisionPoint.StartImpulseValue.Count > 0) ? collisionPoint.StartImpulseValue.ToArray() : null);
+                            rb);
 
                     #endregion
-
+                                                            
                     int normalIndex = contactConstraints.Count - 1;
                     foreach (JacobianConstraint fjc in frictionContact)
                     {
@@ -496,8 +489,7 @@ namespace SharpPhysicsEngine
 			Vector3d relativeVelocity,
 			Vector3d ra,
 			Vector3d rb,
-			StartImpulseProperties[] startImpulseProperties,
-            SoftShapePoint softShapePoint)
+			SoftShapePoint softShapePoint)
 		{
             JacobianConstraint[] friction = new JacobianConstraint[simulationParameters.FrictionDirections];
 
@@ -534,8 +526,7 @@ namespace SharpPhysicsEngine
                     simulationParameters.FrictionCFM,
                     constraintLimit,
                     ConstraintType.Friction,
-                    null,
-                    startImpulseProperties?[i]);
+                    null);
             }
 
             return friction;
@@ -548,8 +539,7 @@ namespace SharpPhysicsEngine
             Vector3d normal,
             Vector3d relativeVelocity,
             Vector3d ra,
-            Vector3d rb,
-            StartImpulseProperties[] startImpulseProperties)
+            Vector3d rb)
         {
             JacobianConstraint[] friction = new JacobianConstraint[simulationParameters.FrictionDirections];
 
@@ -586,8 +576,7 @@ namespace SharpPhysicsEngine
                     simulationParameters.FrictionCFM,
                     constraintLimit,
                     ConstraintType.Friction,
-                    null,
-                    startImpulseProperties?[i + 1]);
+                    null);
             }
             
             return friction;
@@ -612,9 +601,16 @@ namespace SharpPhysicsEngine
             //Polyhedron model friction
             if (nDirection > 2)
             {
-                double step = Math.PI / nDirection;
-                for (int i = 0; i < nDirection; i++)
-                    coneDirection[i] = Matrix3x3.GetRotationMatrix(normal, step * i) * tx;
+                double step = (2.0 * Math.PI) / nDirection;
+                coneDirection[0] = tx;
+                for (int i = 1; i < nDirection; i++)
+                {
+                    var angle = step * i;
+                    var cosAngle = Math.Cos(angle);
+                    coneDirection[i] = tx * cosAngle +
+                                       normal.Cross(tx) * Math.Sin(angle) +
+                                       normal * (normal.Dot(tx) * (1.0 - cosAngle));
+                }
             }
 
             return coneDirection;

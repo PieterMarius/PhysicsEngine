@@ -164,8 +164,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < M.n; i++)
             {
-                List<double> valueList = M.Rows[i].Value.ToList();
-                List<int> indexList = M.Rows[i].Index.ToList();
+                var valueList = M.Rows[i].Value.ToList();
+                var indexList = M.Rows[i].Index.ToList();
 
                 valueList.Add(D[i]);
                 indexList.Add(i);

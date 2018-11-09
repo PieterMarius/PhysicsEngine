@@ -255,12 +255,12 @@ namespace SharpPhysicsEngine.LCPSolver
                         break;
                     }
                 }
-                int[] idx = new int[] { bidx };
-                double[] value = new double[] { item.Value[index] };
+                var idx = new List<int> { bidx };
+                var value = new List<double> { item.Value[index] };
                 value[0] *= mult[i];
                 value[0] += add[i];
 
-                res.Rows[i] = new SparseVector(value,idx, I.Count);
+                res.Rows[i] = new SparseVector(value.ToArray(), idx.ToArray(), I.Count);
             }
 
             return res;

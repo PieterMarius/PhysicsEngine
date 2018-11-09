@@ -24,14 +24,6 @@
  *  
  *****************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpEngineMathUtility.Solver;
-using static SharpEngineMathUtility.MathUtils;
-
 namespace SharpPhysicsEngine.LCPSolver
 {
     internal class Lemke : ISolver
@@ -49,7 +41,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public Lemke(SolverParameters solverParameters)
         {
             SolverParameters = solverParameters;
-            solver = new SharpEngineMathUtility.Solver.Lemke();
+            solver = new SharpEngineMathUtility.Solver.Lemke(SharpEngineMathUtility.Solver.SolverType.GMRES);
         }
 
         #endregion

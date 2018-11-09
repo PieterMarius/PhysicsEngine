@@ -106,9 +106,6 @@ namespace SharpPhysicsEngine.SolutionIntegration
                                     ct.AngularComponentB,
                                     impulse,
                                     sync);
-
-                            if (ct.StartImpulse != null)
-                                ct.StartImpulse.SetStartValue(impulse);
                         }
                     }
                 });

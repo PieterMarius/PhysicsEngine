@@ -47,8 +47,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
                     if (input.ConstraintType[i] != ShapeDefinition.ConstraintType.Friction)
                     {
-                        double[] bufValue = m.Value;
-                        int[] bufIndex = m.Index;
+                        var bufValue = m.Value;
+                        var bufIndex = m.Index;
 
                         double bValue = (1.0 / input.InvD[i]) * x[i];
 

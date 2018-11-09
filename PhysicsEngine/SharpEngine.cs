@@ -825,7 +825,22 @@ namespace SharpPhysicsEngine
 
                             lock (sync)
                             {
+                                int idx = jacobianConstraints.Count;
+                                if (idx > 0)
+                                {
+                                    for (int j = 0; j < constraintsBuf.Count; j++)
+                                    {
+                                        var constraintBuf = constraintsBuf[j];
+                                        if (constraintBuf.Type == ConstraintType.Friction)
+                                        {
+                                            constraintBuf.ContactReference = constraintBuf.ContactReference + idx;
+                                            constraintsBuf[j] = new JacobianConstraint(constraintBuf);
+                                        }
+                                    }
+                                }
+
                                 jacobianConstraints.AddRange(constraintsBuf);
+
                             }
                         }
                     });
@@ -917,12 +932,7 @@ namespace SharpPhysicsEngine
 				Solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
 
 				double[]  solutionValues = Solver.Solve(linearProblemProperties, new double[linearProblemProperties.Count]);
-
-				for (int j = 0; j < contactConstraints.Length; j++)
-				{
-					contactConstraints[j].StartImpulse.SetStartValue(solutionValues[j]);
-				}
-
+                				
 				return solutionValues;
 			}
 

@@ -94,8 +94,8 @@ namespace SharpEngineMathUtility
                         {
                             SparseVector m = matrix.Rows[i];
 
-                            double[] bufValue = m.Value;
-                            int[] bufIndex = m.Index;
+                            var bufValue = m.Value;
+                            var bufIndex = m.Index;
 
                             double bValue = 0.0;
 
@@ -124,7 +124,8 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < matrixB.m; i++)
             {
-                var mul = Multiply(matrixA, GetColumn(matrixB, i), maxThread);
+                var column = GetColumn(matrixB, i);
+                var mul = Multiply(matrixA, column, maxThread);
                 result.Rows[i] = GetSparseElement(mul);
             }
 
@@ -178,8 +179,6 @@ namespace SharpEngineMathUtility
             {
                 if (mat.Rows[i].Elements.TryGetValue(c, out double val))
                     res[i] = val;
-                else
-                    res[i] = 0.0;
             }
             return res;
         }
@@ -216,9 +215,9 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < n; i++)
             {
-                var idx = new int[] { i };
-                var val = new double[] { value };
-                res.Rows[i] = new SparseVector(val, idx, m);
+                var idx = new List<int> { i };
+                var val = new List<double> { value };
+                res.Rows[i] = new SparseVector(val.ToArray(), idx.ToArray(), m);
             }
 
             return res;

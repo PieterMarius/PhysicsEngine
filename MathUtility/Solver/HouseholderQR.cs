@@ -33,6 +33,17 @@ namespace SharpEngineMathUtility.Solver
 {
     public sealed class HouseholderQR
     {
+        #region Fields
+                
+        #endregion
+
+
+        #region Constructor
+
+        public HouseholderQR()
+        { }
+
+        #endregion
 
         #region Public Methods
 
@@ -84,18 +95,16 @@ namespace SharpEngineMathUtility.Solver
                 var mod = Module(e);
 
                 if (mod != 0.0)
-                    e = Multiply(1.0 / Module(e), e);
+                    e = Multiply(1.0 / mod, e);
                 
                 qv.Add(ComputeHouseholderFactor(e));
 
-                z = Multiply(
-                    qv[qv.Count - 1],
-                    z1);
+                z = Multiply(qv[qv.Count - 1], z1);
             }
 
             var Q = qv[0];
 
-            for (int i = 1; i < n && i < m - 1; i++)
+            for (int i = 1; i < n && i < m - 1; ++i)
             {
                 z1 = Multiply(qv[i], Q);
                 Q = z1;
@@ -106,6 +115,69 @@ namespace SharpEngineMathUtility.Solver
             Q = Transpose(Q);
 
             return new QRDecomposition() { Q = Q, R = R };
+        }
+
+        public double[] LUSolve(SparseMatrix A, double[] b)
+        {
+            double[,] lu = new double[A.n, A.n];
+            double sum = 0.0;
+
+            for (int i = 0; i < A.n; i++)
+            {
+                for (int j = i; j < A.n; j++)
+                {
+                    sum = 0.0;
+                    for (int k = 0; k < i; k++)
+                        sum += lu[i, k] * lu[k, j];
+
+                    if (A.Rows[i].Elements.TryGetValue(j, out double val))
+                        lu[i, j] = val - sum;
+                    else
+                        lu[i, j] = -sum;
+                }
+
+                for (int j = i + 1; j < A.n; j++)
+                {
+                    sum = 0.0;
+                    for (int k = 0; k < i; k++)
+                        sum += lu[j, k] * lu[k, i];
+
+                    double v = 0.0;
+                    if (lu[i, i] != 0.0)
+                        v = 1.0 / lu[i, i];
+
+                    if (A.Rows[j].Elements.TryGetValue(i, out double val))
+                        lu[j, i] = v * (val - sum);
+                    else
+                        lu[j, i] = v * (-sum);
+                }
+            }
+
+            double[] y = new double[A.n];
+            for (int i = 0; i < A.n; i++)
+            {
+                sum = 0.0;
+                for (int k = 0; k < i; k++)
+                    sum += lu[i, k] * y[k];
+                y[i] = b[i] - sum;
+            }
+
+            double[] x = new double[A.n];
+            for (int i = A.n - 1; i >= 0; i--)
+            {
+                sum = 0.0;
+                for (int k = i + 1; k < A.n; k++)
+                    sum += lu[i, k] * x[k];
+
+                double v = 0.0;
+                if (lu[i, i] != 0.0)
+                    v = 1.0 / lu[i, i];
+
+                x[i] = v * (y[i] - sum);
+            }
+
+            return x;
+
         }
 
         #endregion
@@ -125,7 +197,7 @@ namespace SharpEngineMathUtility.Solver
                 res[i] = vec[i];
                 var row = matrix.Rows[i].Elements;
 
-                for (int j = i + 1; j < rows; j++)
+                for (int j = i + 1; j < rows; ++j)
                 {
                     if (row.TryGetValue(j, out double value))
                         res[i] -= value * res[j];
@@ -142,30 +214,34 @@ namespace SharpEngineMathUtility.Solver
         {
             var res = new SparseMatrix(mat.n, mat.m);
 
-            for (int i = d; i < mat.n; i++)
+            for (int i = d; i < mat.n; ++i)
             {
-                var index = new List<int>();
-                var value = new List<double>();
-                var row = mat.Rows[i].Elements;
+                var r = mat.Rows[i];
 
-                for (int j = d; j < mat.m; j++)
-                {      
-                    if (row.TryGetValue(j, out double val))
+                if (r.Index.Length > 0)
+                {
+                    var index = new List<int>();
+                    var value = new List<double>();
+                    var row = r.Elements;
+
+                    for (int j = d; j < mat.m; j++)
                     {
-                        index.Add(j);
-                        value.Add(val);
+                        if (row.TryGetValue(j, out double val))
+                        {
+                            index.Add(j);
+                            value.Add(val);
+                        }
                     }
+
+                    res.Rows[i] = new SparseVector(value.ToArray(), index.ToArray(), mat.m);
                 }
-
-                res.Rows[i] = new SparseVector(value.ToArray(), index.ToArray(), mat.m);   
+                else
+                    res.Rows[i] = new SparseVector(new double[0], new int[0], mat.m);   
             }
 
-            for (int i = 0; i < d; i++)
-            {
-                if (res.Rows[i].Length == 0)
-                    res.Rows[i] = new SparseVector(new double[] { 1.0 }, new int[] { i }, mat.m);
-            }
-
+            for (int i = 0; i < d; ++i)
+                res.Rows[i] = new SparseVector(new double[] { 1.0 }, new int[] { i }, mat.m);
+            
             return res;
         }
 
@@ -186,7 +262,7 @@ namespace SharpEngineMathUtility.Solver
                     if (val != 0.0 || i == j)
                     {
                         index.Add(j);
-                        val += (i == j) ? 1.0 : 0.0;
+                        val += (i != j) ? 0.0 : 1.0;
                         value.Add(val);
                     }
                 }
@@ -197,6 +273,28 @@ namespace SharpEngineMathUtility.Solver
             return mat;
         }
 
+        private double[] ForwardSubstitution(SparseMatrix matrix, double[] vec)
+        {
+            var res = new double[vec.Length];
+
+            for (int i = 0; i < matrix.n; i++)
+            {
+                var alpha = vec[i];
+                for (int j = 0; j < i; j++)
+                {
+                    if (matrix.Rows[i].Elements.TryGetValue(j, out double value))
+                        alpha -= value * res[j];
+                }
+
+                if (matrix.Rows[i].Elements.TryGetValue(i, out double value1))
+                    res[i] = alpha / value1;
+            }
+
+            return res;
+        }
+
+        
+        
         #endregion
     }
 }
