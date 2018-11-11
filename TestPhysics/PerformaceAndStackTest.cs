@@ -74,6 +74,7 @@ namespace TestPhysics
             //physicsEnvironment.RemoveShape(0);
                         
             physicsEnvironment.CollisionEngineParam.SetBroadPhaseEngine(BroadPhaseEngineType.HierarchicalTree);
+            physicsEnvironment.EngineParameters.SetFrictionDirection(7);
             physicsEnvironment.SetSolverType(SolverType.Lemke);
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(500);
             physicsEnvironment.SolverParameters.SetSOR(1.0);

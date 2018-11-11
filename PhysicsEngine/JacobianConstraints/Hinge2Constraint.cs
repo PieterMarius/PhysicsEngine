@@ -84,7 +84,7 @@ namespace SharpPhysicsEngine
             double errorReductionParam,
             double springCoefficientHingeAxis,
             double springCoefficient)
-            :base(shapeA,shapeB,errorReductionParam,springCoefficient)
+            : base(shapeA, shapeB, errorReductionParam, springCoefficient)
         {
             ExternalSyncShape = externalSyncShape;
             SpringCoefficientHingeAxis = springCoefficientHingeAxis;
@@ -130,8 +130,8 @@ namespace SharpPhysicsEngine
 
 			#region Init Angular
 
-			Vector3d hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
-			Vector3d rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
+			Vector3d hingeAxis = GetActualHingeAxis();
+			Vector3d rotationAxis = GetActualRotationAxis();
 
 			double k = hingeAxis.Dot (rotationAxis);
 			Vector3d tempPerpendicular = rotationAxis - k * hingeAxis;
@@ -213,7 +213,7 @@ namespace SharpPhysicsEngine
 
 			hinge2Constraints.Add (
 				JacobianCommon.GetDOF (
-                    	t1, 
+                    t1, 
 					-1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB,
@@ -296,21 +296,22 @@ namespace SharpPhysicsEngine
 			AngularLimitMax2 = angularLimitMax;
 		}
 
+        //TODO Da rivedere
 		public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-            Vector3d hingeAxis = ShapeA.RotationMatrix * HingeAxis;
-            Vector3d rotationAxis = ShapeB.RotationMatrix * RotationAxis;
+            Vector3d hingeAxis = GetActualHingeAxis();
+            Vector3d rotationAxis = GetActualRotationAxis();
 
             Vector3d torque = rotationAxis * torqueAxis2 + hingeAxis * torqueAxis1;
 
-            ShapeA.SetTorque(ShapeA.TorqueValue + torque);
+            //ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
         }
 
-        public void RotateAxis1(double angle)
+        public void RotateHingeAxis(double angle)
         {
-            Vector3d hingeAxis = ShapeA.RotationMatrix * HingeAxis;
-            Vector3d rotationAxis = ShapeB.RotationMatrix * RotationAxis;
+            Vector3d hingeAxis = GetActualHingeAxis();
+            Vector3d rotationAxis = GetActualRotationAxis();
 
             var rotationQuaternion = new Quaternion(hingeAxis, angle);
             var rt = (rotationQuaternion * ShapeB.RotationStatus).Normalize();
@@ -352,6 +353,16 @@ namespace SharpPhysicsEngine
                 double anglediff = AngularLimitMax1.Value - angle1;
                 ShapeB.Rotate(hingeAxis, anglediff);
             }            
+        }
+
+        public Vector3d GetActualHingeAxis()
+        {
+            return ShapeA.RotationMatrix * HingeAxis;
+        }
+
+        public Vector3d GetActualRotationAxis()
+        {
+            return ShapeB.RotationMatrix * RotationAxis;
         }
                 
         #region NotImplementedMethods

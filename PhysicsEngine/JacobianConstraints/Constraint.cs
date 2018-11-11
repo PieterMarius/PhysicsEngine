@@ -55,13 +55,13 @@ namespace SharpPhysicsEngine
             IShape shapeA,
             IShape shapeB,
             double restoreCoefficient,
-            double errorReductionParam)
+            double springCoeff)
         {
             ShapeA = shapeA;
             ShapeB = shapeB;
             KeyIndex = GetHashCode();
-            SpringCoefficient = errorReductionParam;
             ErrorReductionParam = restoreCoefficient;
+            SpringCoefficient = springCoeff;
         }
         
         #endregion

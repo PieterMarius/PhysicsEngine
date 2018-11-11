@@ -79,7 +79,12 @@ namespace TestPhysics
 
             //physicsEnvironment.RemoveShape(0);
 
-            physicsEnvironment.SetSolverType(SolverType.ProjectedConjugateGradient);
+            
+            physicsEnvironment.EngineParameters.SetFrictionDirection(2);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(700);
+            physicsEnvironment.SolverParameters.SetSOR(1.0);
+            physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
+            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
 
             return physicsEnvironment;
 		}
@@ -134,7 +139,7 @@ namespace TestPhysics
             #region Terrain Base
 
             ShapeFilename.Add("cube1.obj");
-			ShapeScale.Add(25);
+			ShapeScale.Add(60);
 			TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom0 = GetObjectGeometry(ShapeFilename[0], ShapeScale[0]);
@@ -146,7 +151,7 @@ namespace TestPhysics
             objects0.SetDynamicFrictionCoeff(1.0);
             objects0.SetStaticFrictionCoeff(1.0);
             objects0.ExcludeFromCollisionDetection(false);
-            objects0.SetErrorReductionParam(60.0);
+            objects0.SetErrorReductionParam(0.7);
 
             objects.Add(objects0);
 
@@ -170,13 +175,13 @@ namespace TestPhysics
             objects_0.SetDynamicFrictionCoeff(0.8);
             objects_0.SetStaticFrictionCoeff(0.9);
             objects_0.ExcludeFromCollisionDetection(false);
-            objects_0.SetErrorReductionParam(30.0);
+            objects_0.SetErrorReductionParam(0.3);
             objects.Add(objects_0);
 
             geom1 = GetObjectGeometry("wheel.obj", 1);
-            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
-
+            
             position = new Vector3d(-3.5, 4.6, -1.9);
+            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
 
             ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
@@ -190,7 +195,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetErrorReductionParam(30.0);
+            objects1.SetErrorReductionParam(0.3);
             objects.Add(objects1);
             
             position = new Vector3d(3.5, 4.6, -1.9);
@@ -208,7 +213,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetErrorReductionParam(30.0);
+            objects1.SetErrorReductionParam(0.3);
                 
             objects.Add(objects1);
 
@@ -227,7 +232,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetErrorReductionParam(30.0);
+            objects1.SetErrorReductionParam(0.3);
 
             objects.Add(objects1);
 
@@ -246,7 +251,7 @@ namespace TestPhysics
             objects1.SetDynamicFrictionCoeff(0.8);
             objects1.SetStaticFrictionCoeff(0.9);
             objects1.ExcludeFromCollisionDetection(false);
-            objects1.SetErrorReductionParam(30.0);
+            objects1.SetErrorReductionParam(0.3);
 
             objects.Add(objects1);
             
@@ -282,9 +287,9 @@ namespace TestPhysics
                                 new Vector3d(-3.5, -1.0, -1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
-                                13.2,
                                 1.0,
-                                0.0);
+                                1.0,
+                                0.01);
             
             constraints[0].SetAxis1AngularLimit(0.0, 0.0);
                         
@@ -295,9 +300,9 @@ namespace TestPhysics
                                 new Vector3d(3.5, -1.0, 1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
-                                13.2,
                                 1.0,
-                                0.0);
+                                1.0,
+                                0.01);
             
             constraints[1].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
             
@@ -308,9 +313,9 @@ namespace TestPhysics
                                 new Vector3d(3.5, -1.0, -1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
-                                13.2,
                                 1.0,
-                                0.0);
+                                1.0,
+                                0.01);
             
             constraints[2].SetAxis1AngularLimit(0.0, 0.0);
             
@@ -321,9 +326,9 @@ namespace TestPhysics
                                 new Vector3d(-3.5, -1.0, 1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
-                                13.2,
                                 1.0,
-                                0.0);
+                                1.0,
+                                0.01);
 
             constraints[3].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
             

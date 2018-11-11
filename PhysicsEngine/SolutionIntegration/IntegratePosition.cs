@@ -121,7 +121,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             IShape shape,
             double timeStep)
         {
-            var extAngularVelocity = shape.MassInfo.InertiaTensor * shape.TorqueValue;
+            var extAngularVelocity = shape.MassInfo.InverseInertiaTensor * shape.TorqueValue;
 
             shape.SetAngularVelocity(shape.AngularVelocity + extAngularVelocity);
         }

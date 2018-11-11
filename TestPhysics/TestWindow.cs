@@ -47,7 +47,7 @@ namespace TestPhysics
 {
     public class TestWindow : GameWindow
     {
-        public TestWindow() : base(32, 32, new GraphicsMode(32, 24, 0, 4))
+        public TestWindow() : base(256, 256, new GraphicsMode(32, 24, 0, 4))
         {
         }
 
@@ -235,7 +235,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new PerformaceAndStackTest();
+            var env = new BuildEnvironment2();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -364,7 +364,8 @@ namespace TestPhysics
             //DisplayConcaveShape(1);
             //DisplayConcaveShape(2);
             //displayBaseContact();
-            //displayJoint();
+            displayJoint();
+            displayHingeJoint();
             //displaySoftJoint();
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
@@ -643,8 +644,10 @@ namespace TestPhysics
             {
                 pause = true;
 
-                physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
-                physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
+                //physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
+                //physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(0.2);
+                ((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(0.2);
 
                 physicsEngine.Simulate();
 
@@ -655,8 +658,10 @@ namespace TestPhysics
             {
                 pause = true;
 
-                physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
-                physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
+                //physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
+                //physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(-0.2);
+                ((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.2);
 
                 physicsEngine.Simulate();
 
@@ -1084,6 +1089,32 @@ namespace TestPhysics
 
 			}
 		}
+
+        private void displayHingeJoint()
+        {
+            for (int i = 0; i < physicsEngine.JointsCount(); i++)
+            {
+                ICollisionJoint joint = physicsEngine.GetJoints(i);
+
+                if (joint is Hinge2Joint)
+                {
+
+                    GL.Color3(1.0f, 0.0, 0.0);
+                    var hingejoint = (Hinge2Joint)joint;
+
+                    var hingeAxis = hingejoint.GetActualHingeAxis();
+                    var hingeAxisPoint = joint.GetAnchorPosition() + hingeAxis;
+                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), hingeAxisPoint);
+
+                    var rotationAxis = hingejoint.GetActualRotationAxis();
+                    var rotationAxisPoint = joint.GetAnchorPosition() + rotationAxis;
+                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), rotationAxisPoint);
+
+                    GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+                }
+
+            }
+        }
 
         private void displaySoftJoint()
         {

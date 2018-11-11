@@ -45,7 +45,8 @@ namespace TestPhysics
             foreach (var obj in objects)
                 physicsEnvironment.AddShape(obj);
             
-            physicsEnvironment.SetSolverType(SolverType.Lemke);
+            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.EngineParameters.SetFrictionDirection(2);
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-8);
