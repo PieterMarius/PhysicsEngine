@@ -32,6 +32,7 @@ using SharpPhysicsEngine.ShapeDefinition;
 using System.Collections.Generic;
 using static SharpPhysicsEngine.LCPSolver.RedBlackProjectedGaussSeidel;
 using System;
+using SharpEngineMathUtility.Solver;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
@@ -70,104 +71,75 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties linearProblemProperties,
+            double[] x)
+        {
+            return null;
+        }
+
+        public double[] Solve(
+            LinearProblemProperties globalLP,
+            LinearProblemProperties contactLP,
+            LinearProblemProperties jointLP,
+            LinearProblemProperties jointWhitLimitLP,
             double[] startValues)
         {
             if (startValues == null)
-                startValues = new double[linearProblemProperties.Count];
+                startValues = new double[globalLP.Count];
 
             double[] x = startValues;
-           
-            SparseMatrix A = linearProblemProperties.GetOriginalSparseMatrix();
-            double[] r = GetDirection(A, linearProblemProperties.B, x);
+            double[] xOld = new double[globalLP.Count];
+            double[] xJoint = new double[(jointLP != null) ? jointLP.Count : 0];
+            double[] xContact = new double[(contactLP != null) ? contactLP.Count : 0];
+            double[] xJointWithLimit = new double[(jointWhitLimitLP != null) ? jointWhitLimitLP.Count : 0];
 
-            if (Dot(r, r) < 1E-50)
-                return startValues;
+            var CGSolver = new ConjugateGradient();
 
-            double[] p = r;
+            var gaussSeidelSolverParam = new SolverParameters(
+                                                          1,
+                                                          SolverParameters.ErrorTolerance,
+                                                          1.0,
+                                                          SolverParameters.MaxThreadNumber);
 
-            var checkBoundConstraints = linearProblemProperties.ConstraintType.Any(k =>
-                k == ConstraintType.Friction || k == ConstraintType.JointLimit || k == ConstraintType.JointMotor);
-            var checkUnboundConstraints = linearProblemProperties.ConstraintType.Any(k =>
-                k == ConstraintType.Joint || k == ConstraintType.SoftJoint);
+            var PGS = new ProjectedGaussSeidel(gaussSeidelSolverParam);
 
-            Dictionary<RedBlackEnum, List<int>> redBlackDictionary = null;
+            SparseMatrix A = new SparseMatrix();
 
-            //if (checkBoundConstraints)
-            redBlackDictionary = gaussSeidelSolver.GetRedBlackDictionary(linearProblemProperties);
-            gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(5);
-            x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
-            gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(2);
-
-            double[] xOld = new double[x.Length];
-            double sor = 1.1;
-            for (int i = 0; i < 45; i++)
+            if (jointLP != null)
             {
-                double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
+                A = jointLP.GetOriginalSparseMatrix();
+            }
+            
+            for (int i = 0; i < 50; i++)
+            {
+                //Solve Joint 
+                if (jointLP != null)
+                    xJoint = CGSolver.Solve(A, jointLP.B, xJoint, 10);
 
-                double alphaCG = GetAlphaCG(Ap, r, p);
-                
-                x = UpdateSolution(x, p, alphaCG);
-                //for (int j = 0; j < x.Length; j++)
-                //{
-                //    x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
+                //Solve Contact
+                if(contactLP != null)
+                    xContact = PGS.Solve(contactLP, xContact);
 
-                //}
-                //gaussSeidelSolver.SolverParameters.SetSOR(1.0);
-                //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
-                
-                //if (sor == 1.0)
-                //    sor = 1.1;
-                //else
-                //    sor = 1.0;
-                //var err = CheckErrorTest(x, A, linearProblemProperties);
+                //Solve Joint With Limit
+                if(jointWhitLimitLP != null)
+                    xJointWithLimit = PGS.Solve(jointWhitLimitLP, xJointWithLimit);
+
+                //Set Values
+                x = SetGlobalValues(globalLP.ConstraintType, x, xJoint, xContact, xJointWithLimit);
+
+                //Solve Global LP
+                x = PGS.Solve(globalLP, x);
+
+                //SetValues
+                SetSubsystemValues(globalLP.ConstraintType, x, ref xJoint, ref xContact, ref xJointWithLimit);
 
                 double actualSolverError = SolverHelper.ComputeSolverError(x, xOld);
+
                 if (actualSolverError < SolverParameters.ErrorTolerance)
                     return x;
 
                 Array.Copy(x, xOld, x.Length);
-
-                r = GetDirection(A, linearProblemProperties.B, x);
-
-                //double[] phiY = GetPhi(linearProblemProperties, x, r);
-                double[] phiY = r;
-                double[] partialValue = Ap;
-                double denom = Dot(p, partialValue);
-                double beta = 0.0;
-                if (denom != 0.0)
-                    beta = Dot(phiY, partialValue) / denom;
-
-                p = Minus(phiY, ParallelMultiply(beta, p, SolverParameters.MaxThreadNumber));
             }
-            //var erra = CheckErrorTest(x, A, linearProblemProperties);
-            //for (int j = 0; j < x.Length; j++)
-            //{
-            //    x[j] = ClampSolution.Clamp(linearProblemProperties, x[j], x, j);
-            //    //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);  
-            //}
-
-            //var errp = CheckErrorTest(x, A, linearProblemProperties);
-            //gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(25);
-            //x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
-            //var err = CheckErrorTest(x, A, linearProblemProperties);
-
-            //gaussSeidelSolver.SolverParameters.SetSolverMaxIteration(120);
-            //var y1 = new double[x.Length];
-            //var y = gaussSeidelSolver.Solve(linearProblemProperties, y1);
-            //var erry = CheckErrorTest(y, A, linearProblemProperties);
-            //double[] checkConvergence = Minus(x, xOld);
-
-            //if (Dot(checkConvergence, checkConvergence) > 1E-4)
-            //{
-            //    x = new double[x.Length];
-            //    x = gaussSeidelSolver.SolveExecute(linearProblemProperties, redBlackDictionary, x);
-            //}
-
-            //Console.WriteLine("Error diff " + Dot(test, test));
-
-
-
-            //Console.WriteLine("Conjugate gradient error: " + Math.Sqrt(CheckErrorTest(x, A, linearProblemProperties)));
+                       
 
             return x;
         }
@@ -175,109 +147,90 @@ namespace SharpPhysicsEngine.LCPSolver
         #endregion
 
         #region Private Methods
-
-        private double CheckErrorTest(double[] x, SparseMatrix A, LinearProblemProperties input)
-        {
-            double[] xValue = x;
-            double[] dir = GetDirection(A, input.B, xValue);
-
-            double error = 0.0;
-
-            for (int i = 0; i < dir.Length; i++)
-            {
-                if (input.ConstraintType[i] == ConstraintType.Collision)
-                    error += dir[i] * dir[i];
-                else if (input.ConstraintType[i] == ConstraintType.Joint)
-                    error += dir[i] * dir[i];
-
-                else if (input.ConstraintType[i] == ConstraintType.SoftJoint)
-                    error += dir[i] * dir[i];
-                //else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
-                //{
-                //    double? min = 0.0;
-                //    double? max = 0.0;
-
-                //    ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
-
-                //    if (min.HasValue && xValue[i] + 1E-9 < min)
-                //        error += 0.0;
-                //    else if (max.HasValue && xValue[i] - 1E-9 > max)
-                //        error += 0.0;
-                //}
-            }
-
-            return error;
-        }
-
-        /// <summary>
-        /// Ax - b
-        /// </summary>
-        /// <param name="A"></param>
-        /// <param name="b"></param>
-        /// <param name="x"></param>
-        /// <returns></returns>
-        private double[] GetDirection(
-            SparseMatrix A,
-            double[] b,
-            double[] x)
-        {
-            return Minus(Multiply(A, x, SolverParameters.MaxThreadNumber), b);
-        }
-
-        /// <summary>
-        /// (g^t * p) / (p^t *A * p)
-        /// </summary>
-        /// <param name="g"></param>
-        /// <param name="p"></param>
-        /// <param name="A"></param>
-        /// <returns></returns>
-        private double GetAlphaCG(
-            double[] Ap,
-            double[] g,
-            double[] p)
-        {
-            double den = Dot(Ap, p);
-            double alphaCG = 0.0;
-
-            if (den != 0)
-                return Dot(g, p) / den;
-
-            return alphaCG;
-        }
                 
-        /// <summary>
-        /// x - alpha * p
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="p"></param>
-        /// <param name="alpha"></param>
-        /// <returns></returns>
-        private double[] UpdateSolution(
+        private double[] SetGlobalValues(
+            ConstraintType[] constraintsType,
             double[] x,
-            double[] p,
-            double alpha)
+            double[] xJoint,
+            double[] xContact,
+            double[] xJointWithLimit)
         {
-            return Minus(x, ParallelMultiply(alpha, p, SolverParameters.MaxThreadNumber));
-        }
+            int ij = 0, ic = 0, ijl = 0;
 
-        private double[] GetPhi(
-            LinearProblemProperties input,
-            double[] x,
-            double[] g)
-        {
-            double[] result = new double[input.Count];
-
-            for (int i = 0; i < input.Count; i++)
+            for (int i = 0; i < constraintsType.Length; i++)
             {
-                if (!ClampSolution.GetIfClamped(input, x, i))
-                    result[i] = g[i];
-                else
-                    result[i] = 0.0;
-            }
+                if (constraintsType[i] == ConstraintType.Joint ||
+                    constraintsType[i] == ConstraintType.SoftJoint)
+                {
+                    x[i] = xJoint[ij];
+                    ij++;
+                    continue;
+                }
 
-            return result;
+                if (constraintsType[i] == ConstraintType.Collision ||
+                    constraintsType[i] == ConstraintType.Friction)
+                {
+                    x[i] = xContact[ic];
+                    ic++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.JointLimit ||
+                    constraintsType[i] == ConstraintType.JointMotor)
+                {
+                    x[i] = xJointWithLimit[ijl];
+                    ijl++;
+                    continue;
+                }
+            }
+            return x;
         }
-        
+
+        private void SetSubsystemValues(
+            ConstraintType[] constraintsType,
+            double[] x,
+            ref double[] xJoint,
+            ref double[] xContact,
+            ref double[] xJointWithLimit)
+        {
+            int ij = 0, ic = 0, ijl = 0;
+
+            for (int i = 0; i < constraintsType.Length; i++)
+            {
+                if (constraintsType[i] == ConstraintType.Joint ||
+                    constraintsType[i] == ConstraintType.SoftJoint)
+                {
+                    xJoint[ij] = x[i];
+                    ij++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.Collision ||
+                    constraintsType[i] == ConstraintType.Friction)
+                {
+                    xContact[ic] = xContact[i];
+                    ic++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.JointLimit ||
+                    constraintsType[i] == ConstraintType.JointMotor)
+                {
+                    xJointWithLimit[ijl] = x[i];
+                    ijl++;
+                    continue;
+                }
+            }
+        }
+
+        public static double ComputeSolverError(
+            double[] x,
+            double[] oldx)
+        {
+            double[] actualSolverErrorDiff = MathUtils.Minus(x, oldx);
+            return MathUtils.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
+        }
+
         #endregion
     }
 }

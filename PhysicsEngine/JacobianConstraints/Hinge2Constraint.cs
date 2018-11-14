@@ -130,8 +130,8 @@ namespace SharpPhysicsEngine
 
 			#region Init Angular
 
-			Vector3d hingeAxis = GetActualHingeAxis();
-			Vector3d rotationAxis = GetActualRotationAxis();
+			Vector3d hingeAxis = GetHingeAxis();
+			Vector3d rotationAxis = GetRotationAxis();
 
 			double k = hingeAxis.Dot (rotationAxis);
 			Vector3d tempPerpendicular = rotationAxis - k * hingeAxis;
@@ -299,19 +299,19 @@ namespace SharpPhysicsEngine
         //TODO Da rivedere
 		public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
-            Vector3d hingeAxis = GetActualHingeAxis();
-            Vector3d rotationAxis = GetActualRotationAxis();
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
 
             Vector3d torque = rotationAxis * torqueAxis2 + hingeAxis * torqueAxis1;
 
-            //ShapeA.SetTorque(ShapeA.TorqueValue + torque);
+            ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
         }
 
         public void RotateHingeAxis(double angle)
         {
-            Vector3d hingeAxis = GetActualHingeAxis();
-            Vector3d rotationAxis = GetActualRotationAxis();
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
 
             var rotationQuaternion = new Quaternion(hingeAxis, angle);
             var rt = (rotationQuaternion * ShapeB.RotationStatus).Normalize();
@@ -355,12 +355,12 @@ namespace SharpPhysicsEngine
             }            
         }
 
-        public Vector3d GetActualHingeAxis()
+        public Vector3d GetHingeAxis()
         {
             return ShapeA.RotationMatrix * HingeAxis;
         }
 
-        public Vector3d GetActualRotationAxis()
+        public Vector3d GetRotationAxis()
         {
             return ShapeB.RotationMatrix * RotationAxis;
         }

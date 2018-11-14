@@ -47,7 +47,7 @@ namespace TestPhysics
 {
     public class TestWindow : GameWindow
     {
-        public TestWindow() : base(256, 256, new GraphicsMode(32, 24, 0, 4))
+        public TestWindow() : base(32, 32, new GraphicsMode(32, 24, 0, 4))
         {
         }
 
@@ -235,7 +235,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new BuildEnvironment2();
+            var env = new PerformaceAndStackTest();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -1102,11 +1102,11 @@ namespace TestPhysics
                     GL.Color3(1.0f, 0.0, 0.0);
                     var hingejoint = (Hinge2Joint)joint;
 
-                    var hingeAxis = hingejoint.GetActualHingeAxis();
+                    var hingeAxis = hingejoint.GetHingeAxis();
                     var hingeAxisPoint = joint.GetAnchorPosition() + hingeAxis;
                     OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), hingeAxisPoint);
 
-                    var rotationAxis = hingejoint.GetActualRotationAxis();
+                    var rotationAxis = hingejoint.GetRotationAxis();
                     var rotationAxisPoint = joint.GetAnchorPosition() + rotationAxis;
                     OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), rotationAxisPoint);
 

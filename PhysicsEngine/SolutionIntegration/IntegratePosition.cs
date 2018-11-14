@@ -26,7 +26,6 @@
 
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -115,6 +114,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
                                 timeStep * EngineParameters.ExternalForce;
 
             shape.SetLinearVelocity(shape.LinearVelocity + externalForce);
+            shape.SetForce(new Vector3d());
         }
 
         private void UpdateAngularVelocity(
@@ -124,6 +124,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             var extAngularVelocity = shape.MassInfo.InverseInertiaTensor * shape.TorqueValue;
 
             shape.SetAngularVelocity(shape.AngularVelocity + extAngularVelocity);
+            shape.SetTorque(new Vector3d());
         }
 
         private void IntegrateExternalForce(
@@ -131,10 +132,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             double timeStep)
         {
             UpdateLinearVelocity(shape, timeStep);
-            shape.SetForce(new Vector3d());
-
             UpdateAngularVelocity(shape, timeStep);
-            shape.SetTorque(new Vector3d());
         }
 
         private void UpdateShapeProperties(IShape shape)

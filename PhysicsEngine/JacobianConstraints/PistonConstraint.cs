@@ -108,7 +108,7 @@ namespace SharpPhysicsEngine
             			
 			#region Init Linear
 
-			Vector3d sliderAxis = simulationObjectA.RotationMatrix * PistonAxis;
+			Vector3d sliderAxis = GetSliderAxis();
 
 			Vector3d t1 = GeometryUtils.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
@@ -300,6 +300,11 @@ namespace SharpPhysicsEngine
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
+
+        public Vector3d GetSliderAxis()
+        {
+            return ShapeA.RotationMatrix * PistonAxis;
+        }
                 
         #region NotImplementedMethod
 

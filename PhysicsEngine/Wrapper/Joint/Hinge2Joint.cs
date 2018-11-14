@@ -164,14 +164,14 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.RotateHingeAxis(angle);
         }
 
-        public Vector3d GetActualHingeAxis()
+        public Vector3d GetHingeAxis()
         {
-            return hinge2Constraint.GetActualHingeAxis();
+            return hinge2Constraint.GetHingeAxis();
         }
 
-        public Vector3d GetActualRotationAxis()
+        public Vector3d GetRotationAxis()
         {
-            return hinge2Constraint.GetActualRotationAxis();
+            return hinge2Constraint.GetRotationAxis();
         }
         
         #endregion

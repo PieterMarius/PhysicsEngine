@@ -139,12 +139,7 @@ namespace SharpPhysicsEngine
         /// Used for Continuos Collision Detection
         /// </summary>
         private double GlobalTimestep;
-
-        /// <summary>
-        /// Build LCP matrix for LCP solver
-        /// </summary>
-        private bool SetLCP = false;
-
+                
         /// <summary>
         /// Hierarchical Tree of Simulation Object
         /// </summary>
@@ -192,6 +187,8 @@ namespace SharpPhysicsEngine
         /// 
         /// </summary>
         private readonly ICCDEngine ccdEngine;
+
+        private SolverType solverType;
 
         #endregion
 
@@ -481,35 +478,36 @@ namespace SharpPhysicsEngine
 		{
 			switch (type)
 			{
-				case SolverType.ProjectedGaussSeidel:
-					Solver = new ProjectedGaussSeidel(SolverParameters);
-					break;
-
 				case SolverType.NonLinearConjugateGradient:
 					Solver = new NonLinearConjugateGradient(SolverParameters);
-					break;
+                    solverType = SolverType.NonLinearConjugateGradient;
+                    break;
 
 				case SolverType.ProjectedConjugateGradient:
 					Solver = new ProjectedConjugateGradient(SolverParameters);
-					break;
+                    solverType = SolverType.ProjectedConjugateGradient;
+                    break;
 
                 case SolverType.RedBlackProjectedGaussSeidel:
                     Solver = new RedBlackProjectedGaussSeidel(SolverParameters);
+                    solverType = SolverType.RedBlackProjectedGaussSeidel;
                     break;
 
                 case SolverType.FischerNewton:
                     Solver = new FischerNewton(SolverParameters);
-                    SetLCP = true;
+                    solverType = SolverType.FischerNewton;
                     break;
 
                 case SolverType.Lemke:
                     Solver = new Lemke(SolverParameters);
-                    SetLCP = true;
+                    solverType = SolverType.Lemke;
                     break;
 
+                case SolverType.ProjectedGaussSeidel:
                 default:
-					Solver = new ProjectedGaussSeidel(SolverParameters);
-					break;
+                    Solver = new ProjectedGaussSeidel(SolverParameters);
+                    solverType = SolverType.ProjectedGaussSeidel;
+                    break;
 			}
 		}
 
@@ -606,8 +604,9 @@ namespace SharpPhysicsEngine
 
                             if (jacobianConstraints.Length > 0)
                             {
-                                LinearProblemProperties LCP = LinearSystemBuilder.BuildLCP(jacobianConstraints, SetLCP);
+                                LinearProblemProperties LCP = GenerateLCP(jacobianConstraints);
                                 double[]  overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
+                                
                                 IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
                             }
                         }
@@ -793,11 +792,46 @@ namespace SharpPhysicsEngine
                                                             SoftShapes);
 		}
 
-		#endregion
+        #endregion
 
-		#region Jacobian Constraint
+        #region Jacobian Constraint
 
-		private List<JacobianConstraint> GetContactJacobianConstraints(
+        private JacobianConstraint[] GetJacobianConstraints(
+            CollisionPointStructure[] collisionPointsStruct,
+            List<IConstraint> simulationJointList,
+            IShape[] simulationObjs,
+            PhysicsEngineParameters simulationParameters)
+        {
+            List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
+
+            ////Collision Contact
+            jacobianConstraints.AddRange(
+                    GetCollisionConstraints(
+                        collisionPointsStruct,
+                        simulationObjs));
+
+            ////Joints
+            if (simulationJointList.Count > 0)
+            {
+                List<JacobianConstraint>[] jConstraints = new List<JacobianConstraint>[simulationJointList.Count];
+                var rangePartitioner = Partitioner.Create(0, simulationJointList.Count, Convert.ToInt32(simulationJointList.Count / EngineParameters.MaxThreadNumber) + 1);
+
+                Parallel.ForEach(
+                    rangePartitioner,
+                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
+                    (range, loopState) =>
+                    {
+                        for (int i = range.Item1; i < range.Item2; i++)
+                            jConstraints[i] = simulationJointList[i].BuildJacobian(TimeStep);
+                    });
+
+                jacobianConstraints.AddRange(jConstraints.SelectMany(f => f));
+            }
+
+            return jacobianConstraints.ToArray();
+        }
+
+        private List<JacobianConstraint> GetCollisionConstraints(
             CollisionPointStructure[] collisionPointsStruct,
             IShape[] simulationObjs)
         {
@@ -848,42 +882,24 @@ namespace SharpPhysicsEngine
            
            return jacobianConstraints;
         }
-                
-        private JacobianConstraint[] GetJacobianConstraints(
-            CollisionPointStructure[] collisionPointsStruct,
-            List<IConstraint> simulationJointList,
-            IShape[] simulationObjs,
-            PhysicsEngineParameters simulationParameters)
+
+        private LinearProblemProperties GenerateLCP(JacobianConstraint[] jacobianConstraints)
         {
-            List<JacobianConstraint> jacobianConstraints = new List<JacobianConstraint>();
-
-            ////Collision Contact
-            jacobianConstraints.AddRange(
-                    GetContactJacobianConstraints(
-                        collisionPointsStruct,
-                        simulationObjs));
-
-            ////Joints
-            if (simulationJointList.Count > 0)
+            switch(solverType)
             {
-                List<JacobianConstraint>[] jConstraints = new List<JacobianConstraint>[simulationJointList.Count];
-                var rangePartitioner = Partitioner.Create(0, simulationJointList.Count, Convert.ToInt32(simulationJointList.Count / EngineParameters.MaxThreadNumber) + 1);
-
-                Parallel.ForEach(
-                    rangePartitioner,
-                    new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
-                    (range, loopState) =>
-                    {
-                        for (int i = range.Item1; i < range.Item2; i++)
-                            jConstraints[i] = simulationJointList[i].BuildJacobian(TimeStep);
-                    });
-
-                jacobianConstraints.AddRange(jConstraints.SelectMany(f => f));
+                case SolverType.ProjectedGaussSeidel:
+                case SolverType.NonLinearConjugateGradient:
+                case SolverType.RedBlackProjectedGaussSeidel:
+                default:
+                    return LinearSystemBuilder.BuildLCP(jacobianConstraints);
+                    
+                case SolverType.Lemke:
+                    var baseLCP = LinearSystemBuilder.BuildLCP(jacobianConstraints);
+                    return LinearSystemBuilder.GetLCPFrictionMatrix(baseLCP);
             }
-            
-            return jacobianConstraints.ToArray();
         }
 
+        
         private List<JacobianConstraint> GetSoftBodyConstraints()
 		{
 			var constraints = new List<JacobianConstraint>();
@@ -921,8 +937,93 @@ namespace SharpPhysicsEngine
 		#endregion
 
 		#region Solver Matrix Builder
+                
+        
 
-		private double[] BuildMatrixAndExecuteSolver(
+        private double[] SetGlobalValues(
+            ConstraintType[] constraintsType,
+            double[] x,
+            double[] xJoint,
+            double[] xContact,
+            double[] xJointWithLimit)
+        {
+            int ij = 0, ic = 0, ijl = 0;
+
+            for (int i = 0; i < constraintsType.Length; i++)
+            {
+                if (constraintsType[i] == ConstraintType.Joint ||
+                    constraintsType[i] == ConstraintType.SoftJoint)
+                {
+                    x[i] = xJoint[ij];
+                    ij++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.Collision ||
+                    constraintsType[i] == ConstraintType.Friction)
+                {
+                    x[i] = xContact[ic];
+                    ic++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.JointLimit ||
+                    constraintsType[i] == ConstraintType.JointMotor)
+                {
+                    x[i] = xJointWithLimit[ijl];
+                    ijl++;
+                    continue;
+                }
+            }
+            return x;
+        }
+
+        private void SetSubsystemValues(
+            ConstraintType[] constraintsType,
+            double[] x,
+            ref double[] xJoint,
+            ref double[] xContact,
+            ref double[] xJointWithLimit)
+        {
+            int ij = 0, ic = 0, ijl = 0;
+
+            for (int i = 0; i < constraintsType.Length; i++)
+            {
+                if (constraintsType[i] == ConstraintType.Joint ||
+                    constraintsType[i] == ConstraintType.SoftJoint)
+                {
+                    xJoint[ij] = x[i];
+                    ij++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.Collision ||
+                    constraintsType[i] == ConstraintType.Friction)
+                {
+                    xContact[ic] = xContact[i];
+                    ic++;
+                    continue;
+                }
+
+                if (constraintsType[i] == ConstraintType.JointLimit ||
+                    constraintsType[i] == ConstraintType.JointMotor)
+                {
+                    xJointWithLimit[ijl] = x[i];
+                    ijl++;
+                    continue;
+                }
+            }
+        }
+
+        public static double ComputeSolverError(
+            double[] x,
+            double[] oldx)
+        {
+            double[] actualSolverErrorDiff = MathUtils.Minus(x, oldx);
+            return MathUtils.Dot(actualSolverErrorDiff, actualSolverErrorDiff);
+        }
+
+        private double[] BuildMatrixAndExecuteSolver(
 			JacobianConstraint[] contactConstraints,
 			LinearProblemProperties linearProblemProperties,
 			int nIterations)

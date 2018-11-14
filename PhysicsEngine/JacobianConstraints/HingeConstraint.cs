@@ -102,7 +102,7 @@ namespace SharpPhysicsEngine
             
             #region Init Linear
 
-			Vector3d axisRotated = simulationObjectA.RotationMatrix * HingeAxis;
+			Vector3d axisRotated = GetHingeAxis();
 
 			Vector3d t1 = GeometryUtils.GetPerpendicularVector (axisRotated).Normalize ();
 			Vector3d t2 = Vector3d.Cross (axisRotated, t1).Normalize ();
@@ -322,6 +322,11 @@ namespace SharpPhysicsEngine
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
 		}
+
+        public Vector3d GetHingeAxis()
+        {
+            return ShapeA.RotationMatrix* HingeAxis;
+        }
         
         #region NotImplementedMethods
 

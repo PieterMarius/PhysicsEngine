@@ -114,8 +114,8 @@ namespace SharpPhysicsEngine
 
             #region Init Angular
 
-            Vector3d hingeAxis = simulationObjectA.RotationMatrix * HingeAxis;
-            Vector3d rotationAxis = simulationObjectB.RotationMatrix * RotationAxis;
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
 
             double k = hingeAxis.Dot(rotationAxis);
             Vector3d tempPerpendicular = rotationAxis - k * hingeAxis;
@@ -184,6 +184,16 @@ namespace SharpPhysicsEngine
         public override JointType GetJointType()
         {
             return jointType;
+        }
+
+        public Vector3d GetHingeAxis()
+        {
+            return ShapeA.RotationMatrix * HingeAxis;
+        }
+
+        public Vector3d GetRotationAxis()
+        {
+            return ShapeB.RotationMatrix * RotationAxis;
         }
 
         public override void AddTorque(

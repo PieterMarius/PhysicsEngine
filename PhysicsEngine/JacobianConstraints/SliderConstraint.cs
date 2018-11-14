@@ -101,7 +101,7 @@ namespace SharpPhysicsEngine
             			
 			#region Init Linear
 
-			Vector3d sliderAxis = simulationObjectA.RotationMatrix * SliderAxis;
+			Vector3d sliderAxis = GetSliderAxis();
 
 			Vector3d t1 = GeometryUtils.GetPerpendicularVector (sliderAxis).Normalize ();
 			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
@@ -297,6 +297,11 @@ namespace SharpPhysicsEngine
 			LinearLimitMin = linearLimitMin;
 			LinearLimitMax = linearLimitMax;
 		}
+
+        public Vector3d GetSliderAxis()
+        {
+            return ShapeA.RotationMatrix * SliderAxis;
+        }
 
         #region NotImplementedMethods
 

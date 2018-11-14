@@ -54,7 +54,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
 
-        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints, bool setLCP)
+        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints)
         {
             LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
 
@@ -260,10 +260,7 @@ namespace SharpPhysicsEngine.Helper
             var lp = new LinearProblemProperties(
                 baseProperties,
                 graph);
-
-            if (setLCP)
-                return GetLCPFrictionMatrix(lp);
-
+                        
             return new LinearProblemProperties(
                 baseProperties,
                 graph);

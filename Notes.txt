@@ -69,3 +69,141 @@ private void WarmStarting(
 				}
 			}
 		}
+
+
+//private double[] ExecuteSolver(
+        //    JacobianConstraint[] jacobianConstraints)
+        //{            
+        //    switch(solverType)
+        //    {
+        //        case SolverType.ProjectedConjugateGradient:
+        //            return ExecuteProjectedConjugateGradient(jacobianConstraints);
+                    
+        //    }
+        //    return null;
+        //}
+
+        private double[] ExecuteProjectedConjugateGradient(
+            CollisionPointStructure[] collisionPointsStruct,
+            List<IConstraint> simulationJointList,
+            IShape[] simulationObjs,
+            PhysicsEngineParameters simulationParameters)
+        {
+            JacobianConstraint[] jacobianConstraints = GetJacobianConstraints(
+                                                                        collisionPointsStruct,
+                                                                        simulationJointList,
+                                                                        Shapes,
+                                                                        EngineParameters);
+
+            LinearProblemProperties globalLP = GetGlobalLinearProblem(jacobianConstraints);
+            LinearProblemProperties contactLP = GetContactLCP(jacobianConstraints);
+            LinearProblemProperties jointLP = GetJointsLinearProblem(jacobianConstraints);
+            LinearProblemProperties jointWhitLimitLP = GetJointsWithLimitLinearProblem(jacobianConstraints);
+
+            //if (startValues == null)
+            //    startValues = new double[globalLP.Count];
+
+            double[] x = new double[globalLP.Count];
+            double[] xOld = new double[globalLP.Count];
+            double[] xJoint = new double[(jointLP != null) ? jointLP.Count : 0];
+            double[] xContact = new double[(contactLP != null) ? contactLP.Count : 0];
+            double[] xJointWithLimit = new double[(jointWhitLimitLP != null) ? jointWhitLimitLP.Count : 0];
+
+            var CGSolver = new SharpEngineMathUtility.Solver.ConjugateGradient();
+
+            var gaussSeidelSolverParam = new SolverParameters(
+                                                          10,
+                                                          SolverParameters.ErrorTolerance,
+                                                          1.0,
+                                                          SolverParameters.MaxThreadNumber);
+
+            var PGS = new ProjectedGaussSeidel(gaussSeidelSolverParam);
+
+            SparseMatrix A = new SparseMatrix();
+
+            if (jointLP != null)
+            {
+                A = jointLP.GetOriginalSparseMatrix();
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                //Solve Contact
+                if (contactLP != null)
+                {
+                    xContact = PGS.Solve(contactLP, xContact);
+                    x = SetGlobalValues(globalLP.ConstraintType, x, xJoint, xContact, xJointWithLimit);
+                    IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, x);
+                    jacobianConstraints = GetJacobianConstraints(
+                                                            collisionPointsStruct,
+                                                            simulationJointList,
+                                                            Shapes,
+                                                            EngineParameters);
+
+                    globalLP = GetGlobalLinearProblem(jacobianConstraints);
+                }
+
+                //Set Values
+                //x = SetGlobalValues(globalLP.ConstraintType, x, xJoint, xContact, xJointWithLimit);
+
+                //Solve Global LP
+                //globalLP = GetGlobalLinearProblem(jacobianConstraints);
+                x = PGS.Solve(globalLP, x);
+                //SetValues
+                SetSubsystemValues(globalLP.ConstraintType, x, ref xJoint, ref xContact, ref xJointWithLimit);
+
+                IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, x);
+                jacobianConstraints = GetJacobianConstraints(
+                                                        collisionPointsStruct,
+                                                        simulationJointList,
+                                                        Shapes,
+                                                        EngineParameters);
+
+                //globalLP = GetGlobalLinearProblem(jacobianConstraints);
+
+                //Solve Joint 
+                if (jointLP != null)
+                {
+                    jointLP = GetJointsLinearProblem(jacobianConstraints);
+                    xJoint = CGSolver.Solve(A, jointLP.B, xJoint, 20);
+                    IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, x);
+                    jacobianConstraints = GetJacobianConstraints(
+                                                            collisionPointsStruct,
+                                                            simulationJointList,
+                                                            Shapes,
+                                                            EngineParameters);
+
+                }
+
+                //Solve Joint With Limit
+                if (jointWhitLimitLP != null)
+                {
+                    //SetValues
+                    //SetSubsystemValues(globalLP.ConstraintType, x, ref xJoint, ref xContact, ref xJointWithLimit);
+                    jointWhitLimitLP = GetJointsWithLimitLinearProblem(jacobianConstraints);
+                    xJointWithLimit = PGS.Solve(jointWhitLimitLP, xJointWithLimit);
+
+                    x = SetGlobalValues(globalLP.ConstraintType, x, xJoint, xContact, xJointWithLimit);
+
+                    IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, x);
+                    jacobianConstraints = GetJacobianConstraints(
+                                                            collisionPointsStruct,
+                                                            simulationJointList,
+                                                            Shapes,
+                                                            EngineParameters);
+                }
+
+                //SetValues
+                //SetSubsystemValues(globalLP.ConstraintType, x, ref xJoint, ref xContact, ref xJointWithLimit);
+
+                double actualSolverError = SolverHelper.ComputeSolverError(x, xOld);
+
+                if (actualSolverError < SolverParameters.ErrorTolerance)
+                    return x;
+
+                Array.Copy(x, xOld, x.Length);
+            }
+
+
+            return x;
+        }

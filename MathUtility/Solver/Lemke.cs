@@ -149,6 +149,10 @@ namespace SharpEngineMathUtility.Solver
             SetColumn(ref B, Be, lvindex);
 
             //Iteration region
+            var cyclingLst = new HashSet<int>();
+            var cycling = false;
+            var repeated = new List<int>();
+
             int iter = 0;
 
             for (iter = 0; iter < maxIter; ++iter)
@@ -160,12 +164,26 @@ namespace SharpEngineMathUtility.Solver
                 else if (leaving < n)
                 {
                     entering = n + leaving;
+                                       
                     Be = new double[n];
                     Be[leaving] = -1;
                 }
                 else
                 {
+                   
                     entering = leaving - n;
+                                        
+                    //if (!cyclingLst.Add(entering))
+                    //{
+                    //    cycling = true;
+                    //    int k = 1;
+                    //    while (cyclingLst.Contains(entering))
+                    //    {
+                    //        entering = (leaving - n + k) % n;
+                    //        k++;
+                    //    }
+                    //}
+
                     Be = GetColumn(M, entering);
                 }
 
@@ -175,12 +193,14 @@ namespace SharpEngineMathUtility.Solver
                 for (int i = 0; i < n; ++i)
                 {
                     if (d[i] > piv_tol)
+                    {
                         j.Add(i);
+                    }
                 }
 
-                if(!j.Any())
+                if (!j.Any())
                     break;
-
+                
                 int jSize = j.Count;
                 double[] minRatio = new double[jSize];
 

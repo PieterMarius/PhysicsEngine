@@ -52,6 +52,7 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Solver\ConjugateGradient.cs" />
     <Compile Include="Solver\GMRES.cs" />
     <Compile Include="Solver\HouseholderQR.cs" />
     <Compile Include="Solver\SolverType.cs" />

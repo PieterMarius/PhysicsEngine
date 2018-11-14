@@ -65,6 +65,7 @@ namespace TestPhysics
         private static void TestGmres()
         {
             var solver = new MINRES();
+            var cg = new ConjugateGradient();
 
             SparseMatrix A = new SparseMatrix(6, 6);
             A.Rows[0] = SparseVector.GetSparseElement(new double[] { 10.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
@@ -88,7 +89,7 @@ namespace TestPhysics
             SparseMatrix AA = SparseMatrix.Multiply(At, A);
             double[] Ab = SparseMatrix.Multiply(At, b);
 
-
+            var cgout = solver.Solve(AA, Ab, x, 10);
             var out1 = solver.Solve(AA, Ab, x, 30000);
 
             var solver1 = new GMRES();
@@ -166,6 +167,21 @@ namespace TestPhysics
             double[] q6 = new double[] { -1.0, 2.0, 1.0, 3.0 };
 
             lm.Solve(M6, q6, 10);
+
+            SparseMatrix M7 = new SparseMatrix(6, 6);
+            M7.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, -1.0, -1.0, 1.0, 0.0, 0.0 });
+            M7.Rows[1] = SparseVector.GetSparseElement(new double[] { -1.0, 1.0, 1.0, -1.0, 0.0, 0.0 });
+            M7.Rows[2] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, 1.0, -1.0, 1.0, -1.0 });
+            M7.Rows[3] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, -1.0, 1.0, -1.0, 1.0 });
+            M7.Rows[4] = SparseVector.GetSparseElement(new double[] { 1.0, -1.0, 0.0, 0.0, -1.0, 1.0 });
+            M7.Rows[5] = SparseVector.GetSparseElement(new double[] { -1.0, 1.0, 0.0, 0.0, 1.0, -1.0 });
+
+            double[] solution = new double[] { 1.0, 0.0, 1.0, 0.0, 1.0, 0.0 };
+            var ttt = SparseMatrix.Multiply(M7, solution);
+
+            double[] q7 = new double[] { 0.0, 0.0, -2.0, 2.0, 0.0, 0.0 };
+
+            lm.Solve(M7, q7, 10);
         }
 
         //private static void TestKMeans()
