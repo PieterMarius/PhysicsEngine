@@ -64,6 +64,8 @@ namespace TestPhysics
 
         private static void TestGmres()
         {
+            var luSolver = new LUSolver();
+
             var solver = new MINRES();
             var cg = new ConjugateGradient();
 
@@ -95,6 +97,7 @@ namespace TestPhysics
             var solver1 = new GMRES();
 
             var out2 = solver1.Solve(A, b, x, 30, 6);
+            var lout = luSolver.Solve(A, b, out bool valid);
 
             HouseholderQR hs = new HouseholderQR();
 
@@ -167,21 +170,16 @@ namespace TestPhysics
             double[] q6 = new double[] { -1.0, 2.0, 1.0, 3.0 };
 
             lm.Solve(M6, q6, 10);
+                        
+            SparseMatrix M8 = new SparseMatrix(6, 6);
+            M8.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 });
+            M8.Rows[1] = SparseVector.GetSparseElement(new double[] { 2.0, 4.0, 8.0, 16.0, 32.0, 64.0 });
+            M8.Rows[2] = SparseVector.GetSparseElement(new double[] { 3.0, 9.0, 27.0, 81.0, 243.0, 729.0 });
+            M8.Rows[3] = SparseVector.GetSparseElement(new double[] { 4.0, 16.0, 64.0, 256.0, 1024.0, 4096.0 });
+            M8.Rows[4] = SparseVector.GetSparseElement(new double[] { 5.0, 25.0, 125.0, 625.0, 3125.0, 15625.0 });
+            M8.Rows[5] = SparseVector.GetSparseElement(new double[] { 6.0, 36.0, 216.0, 1296.0, 7776.0, 46656.0 });
 
-            SparseMatrix M7 = new SparseMatrix(6, 6);
-            M7.Rows[0] = SparseVector.GetSparseElement(new double[] { 1.0, -1.0, -1.0, 1.0, 0.0, 0.0 });
-            M7.Rows[1] = SparseVector.GetSparseElement(new double[] { -1.0, 1.0, 1.0, -1.0, 0.0, 0.0 });
-            M7.Rows[2] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, 1.0, -1.0, 1.0, -1.0 });
-            M7.Rows[3] = SparseVector.GetSparseElement(new double[] { 0.0, 0.0, -1.0, 1.0, -1.0, 1.0 });
-            M7.Rows[4] = SparseVector.GetSparseElement(new double[] { 1.0, -1.0, 0.0, 0.0, -1.0, 1.0 });
-            M7.Rows[5] = SparseVector.GetSparseElement(new double[] { -1.0, 1.0, 0.0, 0.0, 1.0, -1.0 });
-
-            double[] solution = new double[] { 1.0, 0.0, 1.0, 0.0, 1.0, 0.0 };
-            var ttt = SparseMatrix.Multiply(M7, solution);
-
-            double[] q7 = new double[] { 0.0, 0.0, -2.0, 2.0, 0.0, 0.0 };
-
-            lm.Solve(M7, q7, 10);
+            var ll1 = luSolver.Solve(M8, new double[6], out bool valid1);
         }
 
         //private static void TestKMeans()

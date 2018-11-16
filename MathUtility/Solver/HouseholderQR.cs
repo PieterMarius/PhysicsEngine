@@ -116,70 +116,7 @@ namespace SharpEngineMathUtility.Solver
 
             return new QRDecomposition() { Q = Q, R = R };
         }
-
-        public double[] LUSolve(SparseMatrix A, double[] b)
-        {
-            double[,] lu = new double[A.n, A.n];
-            double sum = 0.0;
-
-            for (int i = 0; i < A.n; i++)
-            {
-                for (int j = i; j < A.n; j++)
-                {
-                    sum = 0.0;
-                    for (int k = 0; k < i; k++)
-                        sum += lu[i, k] * lu[k, j];
-
-                    if (A.Rows[i].Elements.TryGetValue(j, out double val))
-                        lu[i, j] = val - sum;
-                    else
-                        lu[i, j] = -sum;
-                }
-
-                for (int j = i + 1; j < A.n; j++)
-                {
-                    sum = 0.0;
-                    for (int k = 0; k < i; k++)
-                        sum += lu[j, k] * lu[k, i];
-
-                    double v = 0.0;
-                    if (lu[i, i] != 0.0)
-                        v = 1.0 / lu[i, i];
-
-                    if (A.Rows[j].Elements.TryGetValue(i, out double val))
-                        lu[j, i] = v * (val - sum);
-                    else
-                        lu[j, i] = v * (-sum);
-                }
-            }
-
-            double[] y = new double[A.n];
-            for (int i = 0; i < A.n; i++)
-            {
-                sum = 0.0;
-                for (int k = 0; k < i; k++)
-                    sum += lu[i, k] * y[k];
-                y[i] = b[i] - sum;
-            }
-
-            double[] x = new double[A.n];
-            for (int i = A.n - 1; i >= 0; i--)
-            {
-                sum = 0.0;
-                for (int k = i + 1; k < A.n; k++)
-                    sum += lu[i, k] * x[k];
-
-                double v = 0.0;
-                if (lu[i, i] != 0.0)
-                    v = 1.0 / lu[i, i];
-
-                x[i] = v * (y[i] - sum);
-            }
-
-            return x;
-
-        }
-
+        
         #endregion
 
         #region Private Methods

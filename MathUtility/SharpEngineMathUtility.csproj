@@ -55,6 +55,7 @@
     <Compile Include="Solver\ConjugateGradient.cs" />
     <Compile Include="Solver\GMRES.cs" />
     <Compile Include="Solver\HouseholderQR.cs" />
+    <Compile Include="Solver\LUSolver.cs" />
     <Compile Include="Solver\SolverType.cs" />
     <Compile Include="Solver\Lemke.cs" />
     <Compile Include="Solver\MINRES.cs" />

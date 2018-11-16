@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static SharpEngineMathUtility.MathUtils;
 using static SharpEngineMathUtility.SparseMatrix;
+using static SharpEngineMathUtility.GeometryUtils;
 
 namespace SharpEngineMathUtility.Solver
 {
@@ -40,6 +41,7 @@ namespace SharpEngineMathUtility.Solver
 
         private HouseholderQR HouseholderQRSolver;
         private GMRES GMRESSolver;
+        private LUSolver luSolver;
 
         private readonly SolverType Type;
 
@@ -65,7 +67,7 @@ namespace SharpEngineMathUtility.Solver
         {
             int n = q.Length;
             double zero_tol = 1E-5;
-            double piv_tol = 1E-8;
+            double piv_tol = 1E-12;
             double err = 0.0;
             double[] _z = null; 
 
@@ -147,12 +149,7 @@ namespace SharpEngineMathUtility.Solver
             x = Add(x, Multiply(tval, U));
             x[lvindex] = tval;
             SetColumn(ref B, Be, lvindex);
-
-            //Iteration region
-            var cyclingLst = new HashSet<int>();
-            var cycling = false;
-            var repeated = new List<int>();
-
+                       
             int iter = 0;
 
             for (iter = 0; iter < maxIter; ++iter)
@@ -166,24 +163,13 @@ namespace SharpEngineMathUtility.Solver
                     entering = n + leaving;
                                        
                     Be = new double[n];
-                    Be[leaving] = -1;
+                    Be[leaving] = -1.0;
                 }
                 else
                 {
                    
                     entering = leaving - n;
-                                        
-                    //if (!cyclingLst.Add(entering))
-                    //{
-                    //    cycling = true;
-                    //    int k = 1;
-                    //    while (cyclingLst.Contains(entering))
-                    //    {
-                    //        entering = (leaving - n + k) % n;
-                    //        k++;
-                    //    }
-                    //}
-
+                               
                     Be = GetColumn(M, entering);
                 }
 
@@ -243,15 +229,38 @@ namespace SharpEngineMathUtility.Solver
                 {
                     theta = tmpd[0];
                     lvindex = 0;
+                    
                     for (int i = 0; i < jSize; ++i)
                     {
-                        if (tmpd[i] - theta > piv_tol)
+                        var tdiff = tmpd[i] - theta;
+                        if (tdiff > piv_tol)
                         {
                             theta = tmpd[i];
                             lvindex = i;
+                            
                         }
                     }
-                    lvindex = j[lvindex];
+
+                    var theta1 = Max(d);
+                    var possibleLeave = new List<int>();
+                    for (int i = 0; i < jSize; i++)
+                    {
+                        int index = j[i];
+                        if (Math.Abs(d[index] - theta1) < zero_tol)
+                        {
+                            possibleLeave.Add(index);
+                        }
+                    }
+                    if (possibleLeave.Count > 1)
+                    {
+                        var count = GetRandom(0, possibleLeave.Count);
+                        lvindex = possibleLeave[count];
+                    }
+                    else
+                    {
+
+                        lvindex = j[lvindex];
+                    }
                 }
 
                 leaving = bas[lvindex];
@@ -299,7 +308,12 @@ namespace SharpEngineMathUtility.Solver
                 case SolverType.GMRES:
                     GMRESSolver = new GMRES();
                     break;
-                
+
+                case SolverType.LUSolver:
+                    luSolver = new LUSolver();
+                    GMRESSolver = new GMRES();
+                    break;
+
                 case SolverType.HouseHolderQR:
                 default:
                     HouseholderQRSolver = new HouseholderQR();
@@ -313,13 +327,23 @@ namespace SharpEngineMathUtility.Solver
         {
             switch(Type)
             {
-                case SolverType.HouseHolderQR:
-                    return HouseholderQRSolver.Solve(A, b);
-
                 case SolverType.GMRES:
                     int maxIter = Math.Min(1000, 4000);
-                    return GMRESSolver.Solve(A, b, new double[b.Length], maxIter, 2 * b.Length);
+                    return GMRESSolver.Solve(A, b, new double[b.Length], maxIter, b.Length);
 
+                case SolverType.LUSolver:
+
+                    var solution = luSolver.Solve(A, b, out bool valid);
+
+                    if (!valid)
+                    {
+                        int maxIter1 = Math.Min(1000, 4000);
+                        solution = GMRESSolver.Solve(A, b, solution, maxIter1, b.Length);
+                    }
+
+                    return solution;
+
+                case SolverType.HouseHolderQR:
                 default:
                     return HouseholderQRSolver.Solve(A, b);
             }

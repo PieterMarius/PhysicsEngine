@@ -41,7 +41,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public Lemke(SolverParameters solverParameters)
         {
             SolverParameters = solverParameters;
-            solver = new SharpEngineMathUtility.Solver.Lemke(SharpEngineMathUtility.Solver.SolverType.GMRES);
+            solver = new SharpEngineMathUtility.Solver.Lemke(SharpEngineMathUtility.Solver.SolverType.LUSolver);
         }
 
         #endregion

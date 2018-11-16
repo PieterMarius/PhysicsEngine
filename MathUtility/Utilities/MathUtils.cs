@@ -169,17 +169,24 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[] Minus(double[] a, double[] b)
+        public static double[] Minus(double[] a, double[] b, bool simd = false)
         {
             if (a.Length != b.Length)
                 throw new Exception("Wrong vector length");
 
-            double[] result = new double[a.Length];
+            if (simd)
+            {
+                return SimdUtils.SIMDArraySubtraction(a, b);
+            }
+            else
+            {
+                double[] result = new double[a.Length];
 
-            for (int i = 0; i < a.Length; i++)
-                result[i]= a[i] - b[i];
+                for (int i = 0; i < a.Length; i++)
+                    result[i] = a[i] - b[i];
 
-            return result;
+                return result;
+            }
         }
 
         public static double[] Minus(double[] a, double b)
@@ -263,6 +270,19 @@ namespace SharpEngineMathUtility
                 }
             }
             
+            return max;
+        }
+
+        public static double Max(double[] v)
+        {
+            var max = double.NegativeInfinity;
+
+            for (int i = 0; i < v.Length; i++)
+            {
+                if (v[i] > max)
+                    max = v[i];
+            }
+
             return max;
         }
 
