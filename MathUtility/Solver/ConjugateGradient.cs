@@ -40,7 +40,7 @@ namespace SharpEngineMathUtility.Solver
             double[] b,
             double[] x,
             int nIter,
-            double tol = 1E-10)
+            double tol = 1E-12)
         {
             double[] xi = x;
             double[] rNew = Minus(b, Multiply(A, x));

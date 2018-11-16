@@ -94,6 +94,16 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.AddTorque(torqueAxis1, torqueAxis2);
         }
 
+        public void AddTorqueShapeA(double torqueAxis1, double torqueAxis2)
+        {
+            hinge2Constraint.AddTorqueShapeA(torqueAxis1, torqueAxis2);
+        }
+        public void AddTorqueShapeB(double torqueAxis1, double torqueAxis2)
+        {
+            hinge2Constraint.AddTorqueShapeB(torqueAxis1, torqueAxis2);
+        }
+
+
         public Vector3d GetAnchorPosition()
         {
             return hinge2Constraint.GetAnchorPosition();

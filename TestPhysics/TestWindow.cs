@@ -235,7 +235,7 @@ namespace TestPhysics
 
         private void LoadEngineByBuilder()
         {
-            var env = new PerformaceAndStackTest();
+            var env = new BuildEnvironment2();
 
             physicsEngine = env.GetPhysicsEnvironment();
             displayList = env.GetOpenGLEnvironment();
@@ -425,7 +425,7 @@ namespace TestPhysics
 
                     collPoint.Clear();
 
-                    physicsEngine.Simulate();
+                    physicsEngine.Simulate(0.016);
 
                     //for (int i = 0; i < physicsEngine.JointsCount(); i++)
                     //{
@@ -621,10 +621,13 @@ namespace TestPhysics
             {
                 pause = true;
 
-                for (int i = 0; i < physicsEngine.JointsCount(); i++)
-                {
-                    physicsEngine.GetJoints(i).AddTorque(0.0, 2.5);
-                }
+                //for (int i = 0; i < physicsEngine.JointsCount(); i++)
+                //{
+                //    ((Hinge2Joint)physicsEngine.GetJoints(i)).AddTorqueShapeB(0.0, 2.5);
+                //}
+
+                ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, 2.5);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, 2.5);
                 physicsEngine.Simulate();
                 pause = false;
             }
@@ -632,12 +635,15 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Down])
             {
                 pause = true;
-                for (int i = 0; i < physicsEngine.JointsCount(); i++)
-                {
-                    physicsEngine.GetJoints(i).AddTorque(0.0, -2.5);
-                }
+                //for (int i = 0; i < physicsEngine.JointsCount(); i++)
+                //{
+                //    ((Hinge2Joint)physicsEngine.GetJoints(i)).AddTorqueShapeB(0.0, -2.5);
+                //}
+
+                ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, -2.5);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, -2.5);
                 physicsEngine.Simulate();
-                pause = false;
+                pause = false; 
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Left])
@@ -646,8 +652,8 @@ namespace TestPhysics
 
                 //physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
                 //physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
-                ((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(0.2);
-                ((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(0.2);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0,0.0);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(2.0,0.0);
 
                 physicsEngine.Simulate();
 
@@ -661,7 +667,7 @@ namespace TestPhysics
                 //physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
                 //physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(-0.2);
-                ((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.2);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.2);
 
                 physicsEngine.Simulate();
 

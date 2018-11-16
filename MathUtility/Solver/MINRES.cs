@@ -50,7 +50,7 @@ namespace SharpEngineMathUtility.Solver
             double[] b,
             double[] x,
             int nIter,
-            double tol = 1E-10)
+            double tol = 1E-12)
         {
             double[] v0 = new double[x.Length];
             double[] v1 = Minus(b, Multiply(A, x));
@@ -86,13 +86,18 @@ namespace SharpEngineMathUtility.Solver
 
                 //Calculate New Givens Rotations
                 c0 = c1;
-                c1 = lambda / p1;
-
                 s0 = s1;
-                s1 = betaN / p1;
+
+                double mult = 0.0;
+                if (p1 != 0.0)
+                {
+                    s1 = betaN / p1;
+                    c1 = lambda / p1;
+                    mult = 1.0 / p1;
+                }
 
                 //Update Solution
-                double[] w = Multiply((1.0 / p1), (Minus(Minus(v, Multiply(p3, w_1)), Multiply(p2, w0))));
+                double[] w = Multiply(mult, (Minus(Minus(v, Multiply(p3, w_1)), Multiply(p2, w0))));
 
                 x = Add(x, Multiply(c1, Multiply(n, w)));
                 

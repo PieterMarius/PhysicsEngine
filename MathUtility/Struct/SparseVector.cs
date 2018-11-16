@@ -126,6 +126,8 @@ namespace SharpEngineMathUtility
             return new SparseVector(value.ToArray(), index.ToArray(), v.Length);
         }
 
+        
+
         public HashSet<int> GetIndexHashset()
         {
             return new HashSet<int>(Index);

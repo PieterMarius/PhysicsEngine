@@ -97,7 +97,7 @@ namespace TestPhysics
             var solver1 = new GMRES();
 
             var out2 = solver1.Solve(A, b, x, 30, 6);
-            var lout = luSolver.Solve(A, b, out bool valid);
+            //var lout = luSolver.Solve(A, b, out bool valid);
 
             HouseholderQR hs = new HouseholderQR();
 

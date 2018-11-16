@@ -57,7 +57,7 @@ namespace SharpEngineMathUtility.Solver
             double[] x,
             int maxIter,
             int restrt,
-            double tol = 1E-15)
+            double tol = 1E-12)
         {
             int i, j = 1, k;
 

@@ -84,7 +84,7 @@ namespace TestPhysics
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
-            physicsEnvironment.SetSolverType(SolverType.ProjectedConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
 
             return physicsEnvironment;
 		}
@@ -166,7 +166,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom1 = GetObjectGeometry("cube1.obj", 2);
-            var objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 40.0);
+            var objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 40.0, true);
                       
             objects_0.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
             objects_0.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
@@ -286,9 +286,9 @@ namespace TestPhysics
                                 shape[3],
                                 new Vector3d(-3.5, -1.0, -1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
-                                new Vector3d(1.0, 0.0, 0.0),
+                                new Vector3d(-1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.0,
                                 0.01);
             
             constraints[0].SetAxis1AngularLimit(0.0, 0.0);
@@ -301,7 +301,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.0,
                                 0.01);
             
             constraints[1].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
@@ -314,7 +314,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.0,
                                 0.01);
             
             constraints[2].SetAxis1AngularLimit(0.0, 0.0);
@@ -325,9 +325,9 @@ namespace TestPhysics
                                 shape[4],
                                 new Vector3d(-3.5, -1.0, 1.9),
                                 new Vector3d(0.0, 1.0, 0.0),
-                                new Vector3d(1.0, 0.0, 0.0),
+                                new Vector3d(-1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.0,
                                 0.01);
 
             constraints[3].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);

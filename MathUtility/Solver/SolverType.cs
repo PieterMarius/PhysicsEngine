@@ -32,5 +32,6 @@ namespace SharpEngineMathUtility.Solver
         MINRES = 1,
         HouseHolderQR = 2,
         LUSolver = 3,
+        ConjugateGradient = 4,
     }
 }

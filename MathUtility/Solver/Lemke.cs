@@ -42,6 +42,7 @@ namespace SharpEngineMathUtility.Solver
         private HouseholderQR HouseholderQRSolver;
         private GMRES GMRESSolver;
         private LUSolver luSolver;
+        private ConjugateGradient CG;
 
         private readonly SolverType Type;
 
@@ -314,6 +315,10 @@ namespace SharpEngineMathUtility.Solver
                     GMRESSolver = new GMRES();
                     break;
 
+                case SolverType.ConjugateGradient:
+                    CG = new ConjugateGradient();
+                    break;
+
                 case SolverType.HouseHolderQR:
                 default:
                     HouseholderQRSolver = new HouseholderQR();
@@ -328,7 +333,7 @@ namespace SharpEngineMathUtility.Solver
             switch(Type)
             {
                 case SolverType.GMRES:
-                    int maxIter = Math.Min(1000, 4000);
+                    int maxIter = 2000;
                     return GMRESSolver.Solve(A, b, new double[b.Length], maxIter, b.Length);
 
                 case SolverType.LUSolver:
@@ -342,6 +347,14 @@ namespace SharpEngineMathUtility.Solver
                     }
 
                     return solution;
+
+                case SolverType.ConjugateGradient:
+                    SparseMatrix At = Transpose(A);
+                    
+                    SparseMatrix AA = Multiply(At, A);
+                    double[] bt = Multiply(At, b);
+                    
+                    return CG.Solve(AA, bt, new double[bt.Length], 1000);
 
                 case SolverType.HouseHolderQR:
                 default:

@@ -296,8 +296,7 @@ namespace SharpPhysicsEngine
 			AngularLimitMax2 = angularLimitMax;
 		}
 
-        //TODO Da rivedere
-		public override void AddTorque(double torqueAxis1, double torqueAxis2)
+        public override void AddTorque(double torqueAxis1, double torqueAxis2)
 		{
             Vector3d hingeAxis = GetHingeAxis();
             Vector3d rotationAxis = GetRotationAxis();
@@ -306,6 +305,26 @@ namespace SharpPhysicsEngine
 
             ShapeA.SetTorque(ShapeA.TorqueValue + torque);
             ShapeB.SetTorque(ShapeB.TorqueValue - torque);
+        }
+
+        public void AddTorqueShapeA(double torqueAxis1, double torqueAxis2)
+        {
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
+
+            Vector3d torque = rotationAxis * torqueAxis2 + hingeAxis * torqueAxis1;
+
+            ShapeA.SetTorque(ShapeA.TorqueValue + torque);
+        }
+
+        public void AddTorqueShapeB(double torqueAxis1, double torqueAxis2)
+        {
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
+
+            Vector3d torque = rotationAxis * torqueAxis2 + hingeAxis * torqueAxis1;
+
+            ShapeB.SetTorque(ShapeB.TorqueValue + torque);
         }
 
         public void RotateHingeAxis(double angle)
@@ -569,7 +588,7 @@ namespace SharpPhysicsEngine
             if (ExternalSyncShape != null)
             {
                 var rotationAxisExt = ExternalSyncShape.RotationMatrix * RotationAxis;
-                var hingeAxisExt = hingeAxis;
+                var hingeAxisExt = ExternalSyncShape.RotationMatrix * HingeAxis;
 
                 syncConstraints.Add(JacobianCommon.GetDOF(
                     -1.0 * rotationAxisExt,
@@ -582,20 +601,20 @@ namespace SharpPhysicsEngine
                     0.0,
                     ConstraintType.Joint));
 
-                var ax = hingeAxis.Cross(rotationAxis).Normalize();
-                var ax1 = hingeAxisExt.Cross(rotationAxisExt).Normalize();
-                double error = (ax - ax1).Length() * errorReduction;
+                //var ax = hingeAxis.Cross(rotationAxis).Normalize();
+                //var ax1 = hingeAxisExt.Cross(rotationAxisExt).Normalize();
+                //double error = (ax + ax1).Length() * 10.0;
 
-                syncConstraints.Add(JacobianCommon.GetDOF(
-                    -1.0 * hingeAxis,
-                    hingeAxis,
-                    ExternalSyncShape,
-                    ShapeB,
-                    0.0,
-                    error,
-                    SpringCoefficientHingeAxis,
-                    0.0,
-                    ConstraintType.Joint));
+                //syncConstraints.Add(JacobianCommon.GetDOF(
+                //    -1.0 * hingeAxisExt,
+                //    hingeAxis,
+                //    ExternalSyncShape,
+                //    ShapeB,
+                //    0.0,
+                //    error,
+                //    SpringCoefficientHingeAxis,
+                //    0.0,
+                //    ConstraintType.Joint));
             }
 
             return syncConstraints;
