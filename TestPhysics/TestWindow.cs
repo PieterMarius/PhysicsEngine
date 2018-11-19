@@ -652,10 +652,16 @@ namespace TestPhysics
 
                 //physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
                 //physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
+                
+
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0,0.0);
                 //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(2.0,0.0);
 
                 physicsEngine.Simulate();
+                var angle = ((Hinge2Joint)physicsEngine.GetJoints(1)).GetAxis1Angle();
+
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(angle, angle);
 
                 pause = false;
             }
@@ -666,10 +672,14 @@ namespace TestPhysics
 
                 //physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
                 //physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
-                ((Hinge2Joint)physicsEngine.GetJoints(1)).RotateAxis1(-0.2);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(-2.0, 0.0);
                 //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.2);
 
                 physicsEngine.Simulate();
+                var angle = ((Hinge2Joint)physicsEngine.GetJoints(1)).GetAxis1Angle();
+
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(angle, angle);
 
                 pause = false;
             }

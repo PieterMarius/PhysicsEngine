@@ -107,9 +107,9 @@ namespace SharpPhysicsEngine
         public abstract Vector3d GetAnchorPosition();
         public abstract JointType GetJointType();
         public abstract void AddTorque(double torqueAxis1, double torqueAxis2);
-        public abstract void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);
+        public abstract void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax);
         public abstract void SetAxis1Motor(double speedValue, double forceLimit);
-        public abstract void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
+        public abstract void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax);
         public abstract void SetAxis2Motor(double speedValue, double forceLimit);
         public abstract void SetLinearLimit(double linearLimitMin, double linearLimitMax);
               

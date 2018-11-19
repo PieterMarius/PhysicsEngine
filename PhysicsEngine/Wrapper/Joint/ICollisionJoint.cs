@@ -43,8 +43,8 @@ namespace SharpPhysicsEngine.Wrapper.Joint
         #region Set Methods
 
         void SetLinearLimit(double linearLimitMin, double linearLimitMax);
-        void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax);
-        void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax);
+        void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax);
+        void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax);
         void SetAxis1Motor(double speedValue, double forceLimit);
         void SetAxis2Motor(double speedValue, double forceLimit);
         void AddTorque(double torqueAxis1, double torqueAxis2);

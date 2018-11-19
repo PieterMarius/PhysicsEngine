@@ -92,7 +92,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             return ballAndSocketConstraint.GetObjectIndexB();
         }
 
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }
@@ -102,7 +102,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             throw new NotSupportedException();
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }

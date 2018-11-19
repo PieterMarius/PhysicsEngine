@@ -338,12 +338,12 @@ namespace SharpPhysicsEngine
             throw new NotSupportedException();
         }
 
-        void IConstraint.SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        void IConstraint.SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }
 
-        void IConstraint.SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        void IConstraint.SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }

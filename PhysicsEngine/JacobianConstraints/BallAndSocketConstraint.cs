@@ -202,12 +202,12 @@ namespace SharpPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-        public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}
 
-        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}

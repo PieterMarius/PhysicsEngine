@@ -261,7 +261,7 @@ namespace SharpPhysicsEngine
                     ShapeA.Position;
         }
 
-		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin = angularLimitMin;
 			AngularLimitMax = angularLimitMax;
@@ -308,7 +308,7 @@ namespace SharpPhysicsEngine
                 
         #region NotImplementedMethod
 
-        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}

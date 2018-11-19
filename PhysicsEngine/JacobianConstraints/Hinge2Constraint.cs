@@ -284,13 +284,13 @@ namespace SharpPhysicsEngine
 			ForceRotationAxisLimit = forceLimit;
 		}
 
-		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin1 = angularLimitMin;
 			AngularLimitMax1 = angularLimitMax;
 		}
 
-		public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin2 = angularLimitMin;
 			AngularLimitMax2 = angularLimitMax;
@@ -382,6 +382,32 @@ namespace SharpPhysicsEngine
         public Vector3d GetRotationAxis()
         {
             return ShapeB.RotationMatrix * RotationAxis;
+        }
+
+        public double GetAxis1Angle()
+        {
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
+
+            return GetAngle1(
+                hingeAxis,
+                rotationAxis,
+                HingeAxis,
+                ShapeA.RotationStatus,
+                RelativeOrientation1);
+        }
+
+        public double GetAxis2Angle()
+        {
+            Vector3d hingeAxis = GetHingeAxis();
+            Vector3d rotationAxis = GetRotationAxis();
+
+            return GetAngle1(
+                hingeAxis,
+                rotationAxis,
+                RotationAxis,
+                ShapeB.RotationStatus,
+                RelativeOrientation2);
         }
                 
         #region NotImplementedMethods
@@ -588,7 +614,7 @@ namespace SharpPhysicsEngine
             if (ExternalSyncShape != null)
             {
                 var rotationAxisExt = ExternalSyncShape.RotationMatrix * RotationAxis;
-                var hingeAxisExt = ExternalSyncShape.RotationMatrix * HingeAxis;
+                var hingeAxisExt = hingeAxis;
 
                 syncConstraints.Add(JacobianCommon.GetDOF(
                     -1.0 * rotationAxisExt,
@@ -600,21 +626,17 @@ namespace SharpPhysicsEngine
                     SpringCoefficientHingeAxis,
                     0.0,
                     ConstraintType.Joint));
-
-                //var ax = hingeAxis.Cross(rotationAxis).Normalize();
-                //var ax1 = hingeAxisExt.Cross(rotationAxisExt).Normalize();
-                //double error = (ax + ax1).Length() * 10.0;
-
-                //syncConstraints.Add(JacobianCommon.GetDOF(
-                //    -1.0 * hingeAxisExt,
-                //    hingeAxis,
-                //    ExternalSyncShape,
-                //    ShapeB,
-                //    0.0,
-                //    error,
-                //    SpringCoefficientHingeAxis,
-                //    0.0,
-                //    ConstraintType.Joint));
+                                
+                syncConstraints.Add(JacobianCommon.GetDOF(
+                    -1.0 * hingeAxisExt,
+                    hingeAxis,
+                    ExternalSyncShape,
+                    ShapeB,
+                    0.0,
+                    0.0,
+                    SpringCoefficientHingeAxis,
+                    0.0,
+                    ConstraintType.Joint));
             }
 
             return syncConstraints;

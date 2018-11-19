@@ -98,7 +98,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             return universalConstraint.GetObjectIndexB();
         }
 
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             universalConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
@@ -108,7 +108,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             universalConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             universalConstraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
         }

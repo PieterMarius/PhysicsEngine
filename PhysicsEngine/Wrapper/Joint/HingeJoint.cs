@@ -97,7 +97,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             return hingeConstraint.GetObjectIndexB();
         }
 
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             hingeConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
@@ -107,7 +107,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hingeConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }

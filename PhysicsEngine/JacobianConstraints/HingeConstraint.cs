@@ -307,7 +307,7 @@ namespace SharpPhysicsEngine
 			ForceLimit = forceLimit;
 		}
 
-		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin = angularLimitMin;
 			AngularLimitMax = angularLimitMax;
@@ -335,7 +335,7 @@ namespace SharpPhysicsEngine
 			throw new NotSupportedException();
 		}
 
-        public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public override void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			throw new NotSupportedException();
 		}

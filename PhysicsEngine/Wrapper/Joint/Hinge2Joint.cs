@@ -103,6 +103,15 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.AddTorqueShapeB(torqueAxis1, torqueAxis2);
         }
 
+        public double GetAxis1Angle()
+        {
+            return hinge2Constraint.GetAxis1Angle();
+        }
+
+        public double GetAxis2Angle()
+        {
+            return hinge2Constraint.GetAxis2Angle();
+        }
 
         public Vector3d GetAnchorPosition()
         {
@@ -134,7 +143,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             return hinge2Constraint.GetObjectIndexB();
         }
 
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             hinge2Constraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
@@ -144,7 +153,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             hinge2Constraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             hinge2Constraint.SetAxis2AngularLimit(angularLimitMin, angularLimitMax);
         }

@@ -265,13 +265,13 @@ namespace SharpPhysicsEngine
                    ShapeA.Position; 
 		}
 
-		public override void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin1 = angularLimitMin;
 			AngularLimitMax1 = angularLimitMax;
 		}
 
-		public override void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+		public override void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
 		{
 			AngularLimitMin2 = angularLimitMin;
 			AngularLimitMax2 = angularLimitMax;

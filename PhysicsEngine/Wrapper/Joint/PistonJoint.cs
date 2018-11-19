@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             return pistonConstraint.GetObjectIndexB();
         }
 
-        public void SetAxis1AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis1AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             pistonConstraint.SetAxis1AngularLimit(angularLimitMin, angularLimitMax);
         }
@@ -110,7 +110,7 @@ namespace SharpPhysicsEngine.Wrapper.Joint
             pistonConstraint.SetAxis1Motor(speedValue, forceLimit);
         }
 
-        public void SetAxis2AngularLimit(double angularLimitMin, double angularLimitMax)
+        public void SetAxis2AngularLimit(double? angularLimitMin, double? angularLimitMax)
         {
             throw new NotSupportedException();
         }
