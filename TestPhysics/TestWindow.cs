@@ -620,12 +620,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
                 pause = true;
-
-                //for (int i = 0; i < physicsEngine.JointsCount(); i++)
-                //{
-                //    ((Hinge2Joint)physicsEngine.GetJoints(i)).AddTorqueShapeB(0.0, 2.5);
-                //}
-
+                                
                 ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, 2.5);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, 2.5);
                 physicsEngine.Simulate();
@@ -635,11 +630,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Down])
             {
                 pause = true;
-                //for (int i = 0; i < physicsEngine.JointsCount(); i++)
-                //{
-                //    ((Hinge2Joint)physicsEngine.GetJoints(i)).AddTorqueShapeB(0.0, -2.5);
-                //}
-
+               
                 ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, -2.5);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, -2.5);
                 physicsEngine.Simulate();
@@ -649,10 +640,6 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Left])
             {
                 pause = true;
-
-                //physicsEngine.GetJoints(1).AddTorque(2.0, 0.0);
-                //physicsEngine.GetJoints(3).AddTorque(2.0, 0.0);
-                
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0,0.0);
@@ -669,9 +656,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Right])
             {
                 pause = true;
-
-                //physicsEngine.GetJoints(1).AddTorque(-2.0, 0.0);
-                //physicsEngine.GetJoints(3).AddTorque(-2.0, 0.0);
+                                
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(-2.0, 0.0);
                 //((Hinge2Joint)physicsEngine.GetJoints(3)).RotateAxis1(-0.2);

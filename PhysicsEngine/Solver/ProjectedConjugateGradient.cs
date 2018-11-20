@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             double[] xOld = new double[x.Length];
             
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
                 double[] Ap = Multiply(A, p, SolverParameters.MaxThreadNumber);
 

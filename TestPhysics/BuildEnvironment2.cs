@@ -65,14 +65,28 @@ namespace TestPhysics
 		{
 			var physicsEnvironment = new SharpEngine();
 
-			List<ICollisionShape> objects = GetSimulationObjects();
+			List<ICollisionShape> objects = BuildBaseAndCarShapes();
 
 			foreach(var obj in objects)
 				physicsEnvironment.AddShape(obj);
 
-            ICollisionJoint[] constraints = getConstraint(objects);
+            ICollisionJoint[] constraints = GetCarConstraints(objects);
 
             foreach (var item in constraints)
+            {
+                physicsEnvironment.AddJoint(item);
+            }
+
+            var bridge = BuildBridge();
+
+            var bridgeConstraints = GetBridgeConstraints(bridge);
+
+            foreach (var item in bridge)
+            {
+                physicsEnvironment.AddShape(item);
+            }
+
+            foreach (var item in bridgeConstraints)
             {
                 physicsEnvironment.AddJoint(item);
             }
@@ -81,10 +95,10 @@ namespace TestPhysics
 
             
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(200);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
-            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.RedBlackProjectedGaussSeidel);
 
             return physicsEnvironment;
 		}
@@ -132,7 +146,7 @@ namespace TestPhysics
 
 
 
-        private List<ICollisionShape> GetSimulationObjects()
+        private List<ICollisionShape> BuildBaseAndCarShapes()
 		{
 			List<ICollisionShape> objects = new List<ICollisionShape>();
 
@@ -166,7 +180,7 @@ namespace TestPhysics
             TextureFilename.Add("texture/woodbox.bmp");
 
             GeometryProperties geom1 = GetObjectGeometry("cube1.obj", 2);
-            var objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 40.0, false);
+            var objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 50.0, false);
                       
             objects_0.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
             objects_0.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
@@ -177,18 +191,17 @@ namespace TestPhysics
             objects_0.ExcludeFromCollisionDetection(false);
             objects_0.SetErrorReductionParam(0.3);
             objects.Add(objects_0);
-
-            geom1 = GetObjectGeometry("wheel.obj", 1);
-            
+                                    
             position = new Vector3d(-3.5, 4.6, -1.9);
-            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
-
+            
             ShapeFilename.Add("wheel.obj");
             ShapeScale.Add(1);
             TextureFilename.Add("texture/woodbox.bmp");
 
-            objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
             geom1 = GetObjectGeometry("wheel.obj", 1);
+            var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+
+            objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
             objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
             objects1.SetRestitutionCoeff(0.1);
@@ -273,8 +286,120 @@ namespace TestPhysics
             return objects;
 		}
 
-        private ICollisionJoint[] getConstraint(
-            List<ICollisionShape> shape)
+        private List<ICollisionShape> BuildBridge()
+        {
+            List<ICollisionShape> objects = new List<ICollisionShape>();
+
+            Vector3d position = new Vector3d(0.0, 0.0, 12.5);
+
+            ShapeFilename.Add("cube.obj");
+            ShapeScale.Add(1.5f);
+            TextureFilename.Add("texture/woodbox.bmp");
+
+            GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1.5f);
+            var objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 0.0, true);
+
+            objects_0.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects_0.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects_0.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects_0.SetRestitutionCoeff(0.1);
+            objects_0.SetDynamicFrictionCoeff(0.8);
+            objects_0.SetStaticFrictionCoeff(0.9);
+            objects_0.ExcludeFromCollisionDetection(false);
+            objects_0.SetErrorReductionParam(0.3);
+            objects.Add(objects_0);
+
+            position = new Vector3d(0.0, 1.2, 9.5);
+
+            for (int i = 0; i < 9; i++)
+            {
+                ShapeFilename.Add("cube1.obj");
+                ShapeScale.Add(1);
+                TextureFilename.Add("texture/woodbox.bmp");
+
+                var geom = GetObjectGeometry("cube1.obj", 1);
+                var objects_1 = new ConvexShape(geom.VertexPoint, geom.TriagleIdx, position, 1.0, false);
+
+                objects_1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+                objects_1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+                objects_1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
+                objects_1.SetRestitutionCoeff(0.1);
+                objects_1.SetDynamicFrictionCoeff(0.8);
+                objects_1.SetStaticFrictionCoeff(0.9);
+                objects_1.ExcludeFromCollisionDetection(false);
+                objects_1.SetErrorReductionParam(0.3);
+                objects.Add(objects_1);
+
+                position = position - new Vector3d(0.0, 0.0, 2.5);
+            }
+
+            position = new Vector3d(0.0, 0.0, -13.5);
+            ShapeFilename.Add("cube.obj");
+            ShapeScale.Add(1.5f);
+            TextureFilename.Add("texture/woodbox.bmp");
+
+            geom1 = GetObjectGeometry("cube.obj", 1.5f);
+            objects_0 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 0.0, true);
+
+            objects_0.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+            objects_0.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects_0.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
+            objects_0.SetRestitutionCoeff(0.1);
+            objects_0.SetDynamicFrictionCoeff(0.8);
+            objects_0.SetStaticFrictionCoeff(0.9);
+            objects_0.ExcludeFromCollisionDetection(false);
+            objects_0.SetErrorReductionParam(0.3);
+            objects.Add(objects_0);
+
+
+            return objects;
+        }
+
+        private ICollisionJoint[] GetBridgeConstraints(List<ICollisionShape> shape)
+        {
+            ICollisionJoint[] constraints = new ICollisionJoint[30];
+
+            int idx = 0;
+            double zValue = -1.8;
+            double yValue = 1.2;
+            for (int i = 0; i < 10; i++)
+            {
+                
+                constraints[idx] = new BallAndSocketJoint(
+                    shape[i],
+                    shape[i + 1],
+                    new Vector3d(0.5, yValue, zValue),
+                    0.85,
+                    0.00016);
+                idx++;
+
+                constraints[idx] = new BallAndSocketJoint(
+                    shape[i],
+                    shape[i + 1],
+                    new Vector3d(-0.5, yValue, zValue),
+                    0.85,
+                    0.00016);
+                idx++;
+                                
+                constraints[idx] = new AngularJoint(
+                    shape[i],
+                    shape[i + 1],
+                    new Vector3d(-0.5, yValue, zValue),
+                    new Vector3d(1.0, 0.0, 0.0),
+                    new Vector3d(0.0, 1.0, 0.0),
+                    0.16,
+                    0.008,
+                    0.008);
+                idx++;
+
+                zValue = -1.25;
+                yValue = 0.0;
+            }
+
+            return constraints;
+        }
+
+        private ICollisionJoint[] GetCarConstraints(List<ICollisionShape> shape)
         {
             ICollisionJoint[] constraints = new ICollisionJoint[4];
 
@@ -288,7 +413,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.5,
                                 0.01);
             
             constraints[0].SetAxis1AngularLimit(0.0, 0.0);
@@ -301,7 +426,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.5,
                                 0.01);
             
             constraints[1].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
@@ -314,7 +439,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.5,
                                 0.01);
             
             constraints[2].SetAxis1AngularLimit(0.0, 0.0);
@@ -327,7 +452,7 @@ namespace TestPhysics
                                 new Vector3d(0.0, 1.0, 0.0),
                                 new Vector3d(1.0, 0.0, 0.0),
                                 1.0,
-                                1.0,
+                                0.5,
                                 0.01);
 
             constraints[3].SetAxis1AngularLimit(-0.78539816339, 0.78539816339);

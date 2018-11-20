@@ -56,21 +56,24 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x)
         {
             double[] oldX = new double[x.Length];
+            double[] result = new double[x.Length];
+            Array.Copy(x, result, x.Length);
+            double actualSolverError = 0.0;
             
             var rangePartitioner = Partitioner.Create(0, input.Count, Convert.ToInt32(input.Count / SolverParameters.MaxThreadNumber) + 1);
             for (int k = 0; k < SolverParameters.MaxIteration; k++)
             {
-                ElaborateUpperTriangularMatrix(input, rangePartitioner, ref x);
+                ElaborateUpperTriangularMatrix(input, rangePartitioner, ref result);
 
-                double actualSolverError = SolverHelper.ComputeSolverError(x, oldX);
+                actualSolverError = SolverHelper.ComputeSolverError(result, oldX);
 
                 if (actualSolverError < SolverParameters.ErrorTolerance)
-                    return x;
+                    return result;
 
-                Array.Copy(x, oldX, x.Length);
+                Array.Copy(result, oldX, result.Length);
             }
             
-            return x;
+            return result;
         }
 
         public void SetSuccessiveOverRelaxation(double SOR)

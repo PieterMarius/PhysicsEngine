@@ -122,6 +122,9 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] x)
         {
             double[] oldX = new double[x.Length];
+            double[] result = new double[x.Length];
+            Array.Copy(x, result, x.Length);
+            double actualSolverError = 0.0;
 
             redBlackDictionary.TryGetValue(RedBlackEnum.Red, out List<int> red);
             redBlackDictionary.TryGetValue(RedBlackEnum.Black, out List<int> black);
@@ -148,7 +151,7 @@ namespace SharpPhysicsEngine.LCPSolver
                             (range, loopState) =>
                             {
                                 for (int i = range.Item1; i < range.Item2; i++)
-                                    ExecuteKernel(input, red[i], ref x);
+                                    ExecuteKernel(input, red[i], ref result);
                             });
                     }
 
@@ -161,23 +164,23 @@ namespace SharpPhysicsEngine.LCPSolver
                             (range, loopState) =>
                             {
                                 for (int i = range.Item1; i < range.Item2; i++)
-                                    ExecuteKernel(input, black[i], ref x);
+                                    ExecuteKernel(input, black[i], ref result);
                             });
                     }
 
-                    double actualSolverError = SolverHelper.ComputeSolverError(x, oldX);
+                    actualSolverError = SolverHelper.ComputeSolverError(result, oldX);
                                                            
                     if (actualSolverError < SolverParameters.ErrorTolerance)
-                        return x;
+                        return result;
 
-                    Array.Copy(x, oldX, x.Length);
+                    Array.Copy(result, oldX, x.Length);
                 }
             }
             catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return x;
+            return result;
             
         }
                                

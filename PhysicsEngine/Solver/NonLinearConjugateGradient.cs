@@ -69,6 +69,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] searchDirection = NegateArray(delta);
 
             double[] Xk1 = new double[input.Count];
+            double actualSolverError = 0.0;
 
             for (int i = 0; i < solverParam.MaxIteration; i++)
             {
@@ -94,8 +95,13 @@ namespace SharpPhysicsEngine.LCPSolver
 						betaK);
                 }
 
+                actualSolverError = SolverHelper.ComputeSolverError(Xk1, Xk);
+
+                if (actualSolverError < solverParam.ErrorTolerance)
+                    return Xk1;
+
                 Array.Copy(Xk1, Xk, Xk1.Length);
-                Array.Copy(deltaK, delta, deltaK.Length);
+                Array.Copy(deltaK, delta, deltaK.Length); 
             }
             return Xk1;
         }
@@ -118,14 +124,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] a,
             double[] b)
         {
-			if (a.Length < 0 ||
-				b.Length < 0 ||
-				b.Length != a.Length)
-			{
-				throw new Exception("Different array size.");
-			}
-
-            double[] result = new double[a.Length];
+			double[] result = new double[a.Length];
 
             for (int i = 0; i < a.Length; i++)
                 result[i] = -(a[i] - b[i]);

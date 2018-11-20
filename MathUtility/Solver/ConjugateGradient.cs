@@ -24,7 +24,6 @@
  *  
  *****************************************************************************/
 
-using System;
 using static SharpEngineMathUtility.MathUtils;
 using static SharpEngineMathUtility.SparseMatrix;
 
