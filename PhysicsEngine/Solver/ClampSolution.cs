@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 using System;
-using System.Linq;
 using SharpEngineMathUtility;
 using SharpPhysicsEngine.ShapeDefinition;
 
@@ -36,7 +35,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public static double Clamp(
             LinearProblemProperties input,
             double xValue,
-            double[] X,
+            ref double[] X,
             int i)
         {
 

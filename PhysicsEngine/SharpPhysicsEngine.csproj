@@ -136,6 +136,7 @@
     <Compile Include="Solver\FischerNewton.cs" />
     <Compile Include="Solver\Lemke.cs" />
     <Compile Include="Solver\NonLinearGaussSeidel.cs" />
+    <Compile Include="Solver\ProjectedRestarted.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="StackingUtilities\StackManager.cs" />
     <Compile Include="Terrain\HeightMapMesh.cs" />
@@ -190,7 +191,6 @@
     <Compile Include="ContactPartitioning\ContactGroupType.cs" />
     <Compile Include="ConstraintHelper.cs" />
     <Compile Include="Solver\ClampSolution.cs" />
-    <Compile Include="Solver\ProjectedConjugateGradient.cs" />
     <Compile Include="Solver\ISolver.cs" />
     <Compile Include="Solver\LinearProblemProperties.cs" />
     <Compile Include="Solver\NonLinearConjugateGradient.cs" />

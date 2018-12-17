@@ -99,7 +99,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The piston joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian()
 		{
 			var pistonConstraints = new List<JacobianConstraint> ();
 
@@ -131,9 +131,8 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoefficient;
 
             #region Base Constraints
 
@@ -149,7 +148,7 @@ namespace SharpPhysicsEngine
 
 			pistonConstraints.Add (
 				JacobianCommon.GetDOF (
-					1.0 * t1, 
+					t1, 
 					-1.0 * t1, 
 					simulationObjectA, 
 					simulationObjectB,
@@ -166,7 +165,7 @@ namespace SharpPhysicsEngine
 
 			pistonConstraints.Add (
 				JacobianCommon.GetDOF (
-                    	1.0 * t2, 
+                    t2, 
 					-1.0 * t2, 
 					simulationObjectA, 
 					simulationObjectB,

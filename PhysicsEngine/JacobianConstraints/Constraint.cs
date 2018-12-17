@@ -103,7 +103,7 @@ namespace SharpPhysicsEngine
             return SpringCoefficient;
         }
 
-        public abstract List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null);
+        public abstract List<JacobianConstraint> BuildJacobian();
         public abstract Vector3d GetAnchorPosition();
         public abstract JointType GetJointType();
         public abstract void AddTorque(double torqueAxis1, double torqueAxis2);

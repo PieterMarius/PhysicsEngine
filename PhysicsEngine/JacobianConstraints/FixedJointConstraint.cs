@@ -83,7 +83,7 @@ namespace SharpPhysicsEngine
         /// </summary>
         /// <returns>The fixed joint.</returns>
         /// <param name="simulationObjs">Simulation objects.</param>
-        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian()
 		{
 			var fixedConstraints = new List<JacobianConstraint> ();
 
@@ -119,16 +119,15 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoefficient;
 
             ConstraintType constraintType = ConstraintType.Joint;
 
 			if (SpringCoefficient > 0)
 				constraintType = ConstraintType.SoftJoint;
 
-			double restoreCoeff = baumStabilization ?? errorReduction;
+			double restoreCoeff = errorReduction;
 
 			double constraintLimit = restoreCoeff * linearError.x;
 

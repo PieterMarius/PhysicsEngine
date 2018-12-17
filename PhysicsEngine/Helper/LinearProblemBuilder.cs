@@ -54,7 +54,9 @@ namespace SharpPhysicsEngine.Helper
 
         #region Public Methods
 
-        public LinearProblemProperties BuildLCP(JacobianConstraint[] constraints)
+        public LinearProblemProperties BuildLCP(
+            JacobianConstraint[] constraints,
+            double timeStep)
         {
             LinearProblemBaseProperties baseProperties = new LinearProblemBaseProperties(constraints.Length);
 
@@ -84,6 +86,8 @@ namespace SharpPhysicsEngine.Helper
                 dictionaryArray.Length,
                 Convert.ToInt32(dictionaryArray.Length / EngineParameters.MaxThreadNumber) + 1);
 
+            double timeFreq = 1.0 / timeStep;
+
             Parallel.ForEach(
                 rangePartitioner,
                 new ParallelOptions { MaxDegreeOfParallelism = EngineParameters.MaxThreadNumber },
@@ -106,18 +110,20 @@ namespace SharpPhysicsEngine.Helper
 
                             int indexVal = constraintValues.Value[w].Index;
 
-                            double correctionValue = (contactA.CorrectionValue) < 0 ?
-                                                     Math.Max(contactA.CorrectionValue, -EngineParameters.MaxCorrectionValue) :
-                                                     Math.Min(contactA.CorrectionValue, EngineParameters.MaxCorrectionValue);
+                            double correctionVal = contactA.CorrectionValue * timeFreq;
+
+                            double correctionValue = (correctionVal) < 0 ?
+                                                     Math.Max(correctionVal, -EngineParameters.MaxCorrectionValue) :
+                                                     Math.Min(correctionVal, EngineParameters.MaxCorrectionValue);
 
                             baseProperties.B[indexVal] = correctionValue - contactA.B;
                             baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
                             baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
                             baseProperties.ConstraintType[indexVal] = contactA.Type;
-                            
+
                             //Diagonal value
                             double mValue = GetLCPDiagonalValue(contactA) +
-                                        contactA.CFM +
+                                        (contactA.CFM * timeFreq) +
                                         EngineParameters.CFM +
                                         1E-40;
 
@@ -151,8 +157,8 @@ namespace SharpPhysicsEngine.Helper
                                 }
                             }
 
-                                //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
-                                var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
+                            //contactA_ID_A == contactB_ID_B && contactA_ID_B == contactB_ID_A
+                            var symmetricHashSet = new HashSetStruct(contactA_ID_B, contactA_ID_A);
                             if (constraintsDictionary.TryGetValue(symmetricHashSet, out List<DictionaryConstraintValue> symmetricList))
                             {
                                 foreach (var item in symmetricList)
@@ -182,8 +188,8 @@ namespace SharpPhysicsEngine.Helper
                                 }
                             }
 
-                                //contactA_ID_A == contactB_ID_A
-                                foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
+                            //contactA_ID_A == contactB_ID_A
+                            foreach (var constraintCheckItem in key_ID_A[contactA_ID_A])
                             {
                                 AddLCPValues(
                                     ref index,
@@ -198,8 +204,8 @@ namespace SharpPhysicsEngine.Helper
                                     true);
                             }
 
-                                //contactA_ID_A == contactB_ID_B
-                                foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
+                            //contactA_ID_A == contactB_ID_B
+                            foreach (var constraintCheckItem in key_ID_B[contactA_ID_A])
                             {
                                 AddLCPValues(
                                     ref index,
@@ -214,8 +220,8 @@ namespace SharpPhysicsEngine.Helper
                                     false);
                             }
 
-                                //contactA_ID_B == contactB_ID_A
-                                foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
+                            //contactA_ID_B == contactB_ID_A
+                            foreach (var constraintCheckItem in key_ID_A[contactA_ID_B])
                             {
                                 AddLCPValues(
                                     ref index,
@@ -230,8 +236,8 @@ namespace SharpPhysicsEngine.Helper
                                     true);
                             }
 
-                                //contactA_ID_B == contactB_ID_B
-                                foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
+                            //contactA_ID_B == contactB_ID_B
+                            foreach (var constraintCheckItem in key_ID_B[contactA_ID_B])
                             {
                                 AddLCPValues(
                                     ref index,
@@ -615,7 +621,7 @@ namespace SharpPhysicsEngine.Helper
             double mValue,
             int innerIndex)
         {
-            if (Math.Abs(mValue) > 1E-32)
+            if (Math.Abs(mValue) > 1E-16)
             {
                 index.Add(innerIndex);
                 values.Add(mValue);

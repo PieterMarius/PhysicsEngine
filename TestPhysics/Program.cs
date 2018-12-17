@@ -28,7 +28,10 @@ using SharpEngineMathUtility;
 using SharpEngineMathUtility.Solver;
 using SharpPhysicsEngine.LCPSolver;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 
 namespace TestPhysics
 {
@@ -43,13 +46,51 @@ namespace TestPhysics
                 //test.VSync = VSyncMode.Adaptive;
                 //MultiplyMat();
                 //TestGmres();
+                //TestDelegate();
                 test.Run(0.0, 0.0);
 
             }
 		}
 
+        public class MyClass
+        {
+
+            public int Number { get; set; }
+        }
+
+        private static void TestDelegate()
+        {
+            List<MyClass> myClassList = Enumerable.Repeat(new MyClass(), 100000000).ToList();
+
+            Action<MyClass, int> setter = (Action<MyClass, int>)Delegate.CreateDelegate(typeof(Action<MyClass, int>), typeof(MyClass).GetProperty("Number").GetSetMethod());
+
+            Func<MyClass, int> getter = (Func<MyClass, int>)Delegate.CreateDelegate(typeof(Func<MyClass, int>), typeof(MyClass).GetProperty("Number").GetGetMethod());
+
+            object aux = 0;
+
+            PropertyInfo info = typeof(MyClass).GetProperty("Number");
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            foreach (var obj in myClassList)
+            {
+                aux = getter(obj);
+                //setter(obj, 3);
+
+                //aux = info.GetValue(obj);
+                //info.SetValue(obj, 3);
+            }
+
+            stopwatch.Stop();
+            Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            Console.ReadLine();
+        }
+
         private static void MultiplyMat()
         {
+            
             SparseMatrix A = new SparseMatrix(2, 3);
             A.Rows[0] = SparseVector.GetSparseElement(new double[] { 1, 2, 3 });
             A.Rows[1] = SparseVector.GetSparseElement(new double[] { 4, 5, 6 });

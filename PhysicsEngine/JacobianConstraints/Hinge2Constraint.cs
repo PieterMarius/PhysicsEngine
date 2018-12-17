@@ -106,7 +106,7 @@ namespace SharpPhysicsEngine
         /// </summary>
         /// <returns>The Universal joint.</returns>
         /// <param name="simulationObjs">Simulation objects.</param>
-        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian()
 		{
 			var hinge2Constraints = new List<JacobianConstraint> ();
 
@@ -141,20 +141,19 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoefficient;
 
             #region Base Constraint
 
             ConstraintType constraintType = ConstraintType.Joint;
 
-			if (SpringCoefficient > 0)
+			if (SpringCoefficient > 0.0)
 				constraintType = ConstraintType.SoftJoint;
 
-			//DOF 1
+            //DOF 1
 
-			double constraintLimit = errorReduction * Vector3d.Dot (t1,linearError);
+            double constraintLimit = errorReduction * Vector3d.Dot(t1, linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
 				t1,
@@ -192,7 +191,7 @@ namespace SharpPhysicsEngine
 			if (SpringCoefficientHingeAxis > 0)
 				hingeAxisConstraintType = ConstraintType.SoftJoint;
 
-			constraintLimit = errorReduction * Vector3d.Dot (hingeAxis,linearError);
+            constraintLimit = errorReduction * Vector3d.Dot(hingeAxis, linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 hingeAxis,
@@ -225,8 +224,7 @@ namespace SharpPhysicsEngine
 
             hinge2Constraints.AddRange(GetSyncConstraintsExternalShape(
                 hingeAxis, 
-                rotationAxis,
-                errorReduction));
+                rotationAxis));
             
             #endregion
 
@@ -606,8 +604,7 @@ namespace SharpPhysicsEngine
 
         private List<JacobianConstraint> GetSyncConstraintsExternalShape(
             Vector3d hingeAxis,
-            Vector3d rotationAxis,
-            double errorReduction)
+            Vector3d rotationAxis)
         {
             var syncConstraints = new List<JacobianConstraint>();
 

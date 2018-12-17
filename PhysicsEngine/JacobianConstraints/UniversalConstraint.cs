@@ -111,7 +111,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The Universal joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian()
 		{
 			var universalConstraints = new List<JacobianConstraint> ();
 
@@ -155,9 +155,8 @@ namespace SharpPhysicsEngine
 
             #region Base Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoefficient;
 
             ConstraintType constraintType = ConstraintType.Joint;
 

@@ -124,7 +124,7 @@ namespace SharpPhysicsEngine
         /// </summary>
         /// <returns>The fixed joint.</returns>
         /// <param name="simulationObjs">Simulation objects.</param>
-        public List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+        public List<JacobianConstraint> BuildJacobian()
         {
             var softConstraints = new List<JacobianConstraint>();
 
@@ -157,9 +157,8 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoeff * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoeff;
             
             ConstraintType constraintType = ConstraintType.SoftJoint;
 
@@ -216,8 +215,8 @@ namespace SharpPhysicsEngine
 
             if (ActivateAngularConstraint)
             {
-                double angErrorReduction = AngularErrorReductionParam * freq;
-                double angSpringCoefficient = AngularSpringCoeff * freq;
+                double angErrorReduction = AngularErrorReductionParam;
+                double angSpringCoefficient = AngularSpringCoeff;
 
                 //DOF 4
 

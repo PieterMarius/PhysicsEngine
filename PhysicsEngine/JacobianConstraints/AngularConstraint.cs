@@ -100,17 +100,16 @@ namespace SharpPhysicsEngine
         #region Public Methods
 
         #region IConstraintBuilder
-        public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+        public override List<JacobianConstraint> BuildJacobian()
         {
             var angularConstraints = new List<JacobianConstraint>();
 
             IShape simulationObjectA = ShapeA;
             IShape simulationObjectB = ShapeB;
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficientHingeAxis = SpringCoefficientHingeAxis * freq;
-            double springCoefficientRotationAxis = SpringCoefficientRotationAxis * freq;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficientHingeAxis = SpringCoefficientHingeAxis;
+            double springCoefficientRotationAxis = SpringCoefficientRotationAxis;
 
             #region Init Angular
 

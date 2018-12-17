@@ -151,21 +151,29 @@ namespace SharpPhysicsEngine.ShapeDefinition
 
         private void SetInertiaTensor()
         {
-            InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
-                Vertices,
-                ObjectGeometry.BaseGeometry.Triangle,
-                MassInfo.Mass);
-
-            Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
+            if (!IsStatic)
+            {
+                InitCenterOfMass = ShapeCommonUtilities.CalculateCenterOfMass(
                     Vertices,
                     ObjectGeometry.BaseGeometry.Triangle,
-                    InitCenterOfMass,
-                    MassInfo.Mass).InertiaTensor;
+                    MassInfo.Mass);
 
-            MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+                Matrix3x3 baseTensors = ShapeCommonUtilities.GetInertiaTensor(
+                        Vertices,
+                        ObjectGeometry.BaseGeometry.Triangle,
+                        InitCenterOfMass,
+                        MassInfo.Mass).InertiaTensor;
 
-            MassInfo.InverseInertiaTensor = (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
-                                             Matrix3x3.Transpose(RotationMatrix);
+                MassInfo.InverseBaseInertiaTensor = Matrix3x3.Invert(baseTensors);
+
+                MassInfo.InverseInertiaTensor = (RotationMatrix * MassInfo.InverseBaseInertiaTensor) *
+                                                 Matrix3x3.Transpose(RotationMatrix);
+            }
+            else
+            {
+                MassInfo.InverseBaseInertiaTensor = Matrix3x3.IdentityMatrix(0.0);
+                MassInfo.InverseInertiaTensor = Matrix3x3.IdentityMatrix(0.0);
+            }
         }
 
         #endregion

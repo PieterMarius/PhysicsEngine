@@ -75,10 +75,11 @@ namespace TestPhysics
                         
             physicsEnvironment.CollisionEngineParam.SetBroadPhaseEngine(BroadPhaseEngineType.HierarchicalTree);
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);
-            physicsEnvironment.SetSolverType(SolverType.ProjectedConjugateGradient);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(2000);
-            physicsEnvironment.SolverParameters.SetSOR(1.0);
-            physicsEnvironment.SolverParameters.SetErrorTolerance(1E-6);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SolverParameters.SetSOR(1.3);
+            physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
+            
 
             return physicsEnvironment;
 		}
@@ -179,7 +180,7 @@ namespace TestPhysics
                 objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.2);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetErrorReductionParam(0.3);
@@ -205,7 +206,7 @@ namespace TestPhysics
                 objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetErrorReductionParam(0.3);
@@ -231,7 +232,7 @@ namespace TestPhysics
                 objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetErrorReductionParam(0.3);
@@ -257,7 +258,7 @@ namespace TestPhysics
                 objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetErrorReductionParam(0.3);
@@ -283,7 +284,7 @@ namespace TestPhysics
                 objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
                 objects1.SetErrorReductionParam(0.3);

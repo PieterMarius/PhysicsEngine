@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading.Tasks;
 using SharpEngineMathUtility;
 
@@ -55,25 +56,16 @@ namespace SharpPhysicsEngine.LCPSolver
             LinearProblemProperties input,
             double[] x)
         {
-            double[] oldX = new double[x.Length];
-            double[] result = new double[x.Length];
-            Array.Copy(x, result, x.Length);
-            double actualSolverError = 0.0;
-            
-            var rangePartitioner = Partitioner.Create(0, input.Count, Convert.ToInt32(input.Count / SolverParameters.MaxThreadNumber) + 1);
-            for (int k = 0; k < SolverParameters.MaxIteration; k++)
-            {
-                ElaborateUpperTriangularMatrix(input, rangePartitioner, ref result);
+            var solverOrder = Enumerable.Range(0, x.Length).ToArray();
+            return Execute(input, x, solverOrder);
+        }
 
-                actualSolverError = SolverHelper.ComputeSolverError(result, oldX);
-
-                if (actualSolverError < SolverParameters.ErrorTolerance)
-                    return result;
-
-                Array.Copy(result, oldX, result.Length);
-            }
-            
-            return result;
+        public double[] Solve(
+            LinearProblemProperties input,
+            double[] x,
+            int[] solverOrder)
+        {
+            return Execute(input, x, solverOrder);
         }
 
         public void SetSuccessiveOverRelaxation(double SOR)
@@ -90,23 +82,56 @@ namespace SharpPhysicsEngine.LCPSolver
 
         #region Private Methods
 
-        private void ElaborateUpperTriangularMatrix(
+        private double[] Execute(
             LinearProblemProperties input,
-            OrderablePartitioner<Tuple<int, int>> rangePartitioner,
-            ref double[] x)
+            double[] x,
+            int[] solverOrder)
         {
-            double[] sum = ElaborateLowerTriangularMatrix(input, x, rangePartitioner);
+            double[] oldX = new double[x.Length];
+            double[] result = new double[x.Length];
+            Array.Copy(x, result, x.Length);
+            double actualSolverError = 0.0;
+                       
+            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+            {
+                var sum = ElaborateLowerTriangularMatrix(input, result);
+
+                actualSolverError = ElaborateUpperTriangularMatrix(
+                    input, 
+                    sum, 
+                    solverOrder, 
+                    ref result, 
+                    ref oldX);
+
+                if (actualSolverError < SolverParameters.ErrorTolerance)
+                    break;
+            }
+
+            return result;
+        }
+
+        private double ElaborateUpperTriangularMatrix(
+            LinearProblemProperties input,
+            double[] sum,
+            int[] solverOrder,
+            ref double[] x,
+            ref double[] oldX)
+        {
+            double error = 0.0;
 
             for (int i = 0; i < input.Count; i++)
             {
-                double sumBuffer = sum[i];
+                int index = solverOrder[i];
 
-                SparseVector m = input.M.Rows[i];
+                double sumBuffer = sum[index];
 
-                double xValue = x[i];
+                SparseVector m = input.M.Rows[index];
+                ShapeDefinition.ConstraintType cType = input.ConstraintType[index];
+
+                double xValue = x[index];
 
                 //Avoid first row elaboration
-                if (i != 0)
+                if (index != 0 && m.Index.Length > 0)
                 {
                     var bufValue = m.Value;
                     var bufIndex = m.Index;
@@ -114,35 +139,44 @@ namespace SharpPhysicsEngine.LCPSolver
                     for (int j = 0; j < bufIndex.Length; j++)
                     {
                         int idx = bufIndex[j];
-                        if (idx < i)
+                        if (idx < index)
                             sumBuffer += bufValue[j] * x[idx];
                     }
                 }
 
-                sumBuffer = (input.B[i] - sumBuffer) * input.InvD[i];
+                sumBuffer = (input.B[index] - sumBuffer) * input.InvD[index];
 
-                xValue += (sumBuffer - xValue) * SolverParameters.SOR;
+                double sor = SolverParameters.SOR;
 
-                x[i] = ClampSolution.Clamp(input, xValue, x, i);
+                // Constraints with limit diverge with sor > 1.0
+                if (sor > 1.0 &&
+                    (cType == ShapeDefinition.ConstraintType.Friction ||
+                    cType == ShapeDefinition.ConstraintType.JointMotor ||
+                    cType == ShapeDefinition.ConstraintType.JointLimit))
+                    sor = 1.0;
+                
+                xValue += (sumBuffer - xValue) * sor;
+
+                x[index] = ClampSolution.Clamp(input, xValue, ref x, index);
+
+                //Compute error
+                double diff = x[index] - oldX[index];
+                error += diff * diff;
+                oldX[index] = x[index];
             }
+
+            return error;
         }
 
         private double[] ElaborateLowerTriangularMatrix(
             LinearProblemProperties input,
-            double[] x,
-            OrderablePartitioner<Tuple<int, int>> rangePartitioner)
+            double[] x)
         {
             double[] sum = new double[input.Count];
-                        
-            Parallel.ForEach(
-                    rangePartitioner,
-                    new ParallelOptions { MaxDegreeOfParallelism = SolverParameters.MaxThreadNumber },
-                    (range, loopState) =>
-                {
-                    for (int i = range.Item1; i < range.Item2; i++)
-                        sum[i] = Kernel(input, x, i);
-                });
 
+            for (int i = 0; i < input.Count; i++)
+                sum[i] = Kernel(input, x, i);
+            
             return sum;
         }
 
@@ -154,19 +188,17 @@ namespace SharpPhysicsEngine.LCPSolver
 			double sumBuffer = 0.0;
 
 			//Avoid last row elaboration
-			if (i + 1 != input.Count)
+			if (i + 1 != input.Count &&
+                input.M.Rows[i].Index.Length > 0)
             {
-                if (input.M.Rows[i].Index.Length > 0)
-                {
-                    var bufValue = input.M.Rows[i].Value;
-                    var bufIndex = input.M.Rows[i].Index;
+                var bufValue = input.M.Rows[i].Value;
+                var bufIndex = input.M.Rows[i].Index;
 
-                    for (int j = 0; j < bufIndex.Length; j++)
-                    {
-                        int idx = bufIndex[j];
-                        if (idx > i)
-                            sumBuffer += bufValue[j] * x[idx];
-                    }
+                for (int j = 0; j < bufIndex.Length; j++)
+                {
+                    int idx = bufIndex[j];
+                    if (idx > i)
+                        sumBuffer += bufValue[j] * x[idx];
                 }
 			}
             return sumBuffer;

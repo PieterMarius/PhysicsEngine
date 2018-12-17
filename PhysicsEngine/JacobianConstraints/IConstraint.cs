@@ -53,7 +53,7 @@ namespace SharpPhysicsEngine
         void SetSpringCoefficient(double springCoefficient);
         double GetErrorReductionParam();
         double GetSpringCoefficient();
-        List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null);
+        List<JacobianConstraint> BuildJacobian();
 
         #endregion
     }

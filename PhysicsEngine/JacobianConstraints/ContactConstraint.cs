@@ -55,7 +55,6 @@ namespace SharpPhysicsEngine
 
         public List<JacobianConstraint> BuildContactConstraint(
             CollisionPointStructure collisionPointStr,
-            double timeStep,
             IShape objectA,
             IShape objectB)
         {
@@ -64,16 +63,16 @@ namespace SharpPhysicsEngine
             if (objectA is ISoftShape && 
                 !(objectB is SimSoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB, timeStep));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, (ISoftShape)objectA, objectB));
             }
             else if (objectB is ISoftShape && 
                     !(objectA is SimSoftShape))
             {
-                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, objectA, (ISoftShape)objectB, timeStep));
+                contactConstraints.AddRange(BuildSoftBodyVSRigidBodyCollisionConstraints(collisionPointStr, objectA, (ISoftShape)objectB));
             }
             else
             {
-                contactConstraints.AddRange(BuildRigidBodyCollisionConstraints(collisionPointStr, objectA, objectB, timeStep));
+                contactConstraints.AddRange(BuildRigidBodyCollisionConstraints(collisionPointStr, objectA, objectB));
             }
 
             return contactConstraints;
@@ -86,8 +85,7 @@ namespace SharpPhysicsEngine
         private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
             CollisionPointStructure collisionPointStr,
             ISoftShape objectA,
-            IShape objectB,
-            double timeStep)
+            IShape objectB)
         {
             List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
 
@@ -95,7 +93,7 @@ namespace SharpPhysicsEngine
 
             double restitutionCoeff = GetRestitutionCoeff(iSoftShape, objectB);
 
-            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectB, timeStep);
+            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectB);
                                     
             for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
             {
@@ -139,6 +137,7 @@ namespace SharpPhysicsEngine
                     Vector3d relativeVelocity = velocityB - velocityA;
 
 
+
                     if (relativeVelocity.Length() < 1E-12 &&
                         collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection &&
                         collisionPointStr.CollisionPointBase[h].CollisionPoint.Distance < 1E-10)
@@ -149,6 +148,10 @@ namespace SharpPhysicsEngine
                     double linearComponent = linearComponentA.Dot(relativeVelocity);
 
                     double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent);
+
+                    if (uCollision <= 0.0 &&
+                       !collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection)
+                        continue;
 
                     double correctionParameter = 0.0;
 
@@ -210,8 +213,7 @@ namespace SharpPhysicsEngine
         private List<JacobianConstraint> BuildSoftBodyVSRigidBodyCollisionConstraints(
             CollisionPointStructure collisionPointStr,
             IShape objectA,
-            ISoftShape objectB,
-            double timeStep)
+            ISoftShape objectB)
         {
             List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
 
@@ -219,7 +221,7 @@ namespace SharpPhysicsEngine
 
             double restitutionCoeff = GetRestitutionCoeff(iSoftShape, objectA);
 
-            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectA, timeStep);
+            double baumgarteStabValue = GetBaumgarteStabilizationValue(iSoftShape, objectA);
             
             for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
             {
@@ -273,6 +275,10 @@ namespace SharpPhysicsEngine
                     double linearComponent = linearComponentA.Dot(relativeVelocity);
 
                     double uCollision = restitutionCoeff * Math.Max(0.0, linearComponent);
+
+                    if (uCollision <= 0.0 &&
+                       !collisionPointStr.CollisionPointBase[h].CollisionPoint.Intersection)
+                        continue;
 
                     double correctionParameter = 0.0;
 
@@ -360,22 +366,19 @@ namespace SharpPhysicsEngine
 
         private double GetBaumgarteStabilizationValue(
             IShape softShape,
-            IShape shape,
-            double timeStep)
+            IShape shape)
         {
             double baumgarteStabilizationValue =
                     (softShape.RestoreCoeff +
                      shape.RestoreCoeff) * 0.5;
 
-            return baumgarteStabilizationValue / timeStep;
+            return baumgarteStabilizationValue;
         }
 
         private List<JacobianConstraint> BuildRigidBodyCollisionConstraints(
 			CollisionPointStructure collisionPointStr,
             IShape objectA,
-			IShape objectB,
-            double timeStep)
-
+			IShape objectB)
         {
 			List<JacobianConstraint> contactConstraints = new List<JacobianConstraint>();
                         
@@ -386,9 +389,7 @@ namespace SharpPhysicsEngine
 			double baumgarteStabilizationValue =
 				(objectA.RestoreCoeff +
 				 objectB.RestoreCoeff) * 0.5;
-
-            baumgarteStabilizationValue = baumgarteStabilizationValue / timeStep;
-
+                        
 			for (int h = 0; h < collisionPointStr.CollisionPointBase.Length; h++)
 			{
                 var collisionPointBase = collisionPointStr.CollisionPointBase[h];
@@ -423,11 +424,15 @@ namespace SharpPhysicsEngine
 
 					double linearComponent = linearComponentA.Dot(relativeVelocity);
 
-					double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
+                    double uCollision = restitutionCoefficient * Math.Max(0.0, linearComponent);
 
-					double correctionParameter = 0.0;
+                    if (uCollision <= 0.0 &&
+                       !collisionPointBase.CollisionPoint.Intersection)
+                        continue;
 
-					if (collisionPointBase.CollisionPoint.Intersection)
+                    double correctionParameter = 0.0;
+
+                    if (collisionPointBase.CollisionPoint.Intersection)
 					{
                         //Limit the Baum stabilization jitter effect 
                         correctionParameter = Math.Max(Math.Max(collisionPointBase.CollisionPoint.Distance - simulationParameters.CompenetrationTolerance, 0.0) *

@@ -50,7 +50,7 @@ namespace SharpPhysicsEngine.LCPSolver
 			var gaussSeidelSolverParam = new SolverParameters (
 				                                          1,
 				                                          solverParam.ErrorTolerance,
-				                                          1.0,
+				                                          solverParam.SOR,
 				                                          solverParam.MaxThreadNumber);
 			
 			gaussSeidelSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
@@ -69,7 +69,8 @@ namespace SharpPhysicsEngine.LCPSolver
             double[] searchDirection = NegateArray(delta);
 
             double[] Xk1 = new double[input.Count];
-            double actualSolverError = 0.0;
+            double modDeltak = 0.0;
+            double oldModDeltak = 0.0;
 
             for (int i = 0; i < solverParam.MaxIteration; i++)
             {
@@ -77,32 +78,29 @@ namespace SharpPhysicsEngine.LCPSolver
                                 
                 double[] deltaK = CalculateDelta(Xk1, Xk);
 
-                deltaErrorCheck = ArraySquareModule(delta);
-                
-                double betaK = 1.1;
-				if (Math.Abs(deltaErrorCheck) > 1E-40)
-                    betaK = ArraySquareModule(deltaK) / deltaErrorCheck;
+                modDeltak = ArraySquareModule(deltaK);
 
+                if (modDeltak < solverParam.ErrorTolerance)
+                    break;
+                
+                double betaK = (modDeltak * modDeltak) / 
+                               (oldModDeltak * oldModDeltak);
+                                
 				if (betaK > 1.0)
 					searchDirection = new double[searchDirection.Length];
                 else
-                {
-					Xk1 = CalculateDirection (
+                    Xk1 = CalculateDirection (
 						input,
 						Xk1, 
 						deltaK, 
 						ref searchDirection, 
 						betaK);
-                }
-
-                actualSolverError = SolverHelper.ComputeSolverError(Xk1, Xk);
-
-                if (actualSolverError < solverParam.ErrorTolerance)
-                    return Xk1;
-
+                                                
                 Array.Copy(Xk1, Xk, Xk1.Length);
-                Array.Copy(deltaK, delta, deltaK.Length); 
+                oldModDeltak = modDeltak;
             }
+
+            deltaErrorCheck = modDeltak;
             return Xk1;
         }
 
@@ -145,8 +143,7 @@ namespace SharpPhysicsEngine.LCPSolver
             return result;
         }
 
-        private double ArraySquareModule(
-            double[] a)
+        private double ArraySquareModule(double[] a)
         {
             double mod = 0.0;
             double buf;
@@ -155,7 +152,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 buf = a[i];
                 mod += buf * buf; 
             }
-            return mod;
+            return Math.Sqrt(mod);
         }
 
         private double[] CalculateDirection(
@@ -175,7 +172,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 searchDirection[i] = bDirection - deltaK[i];
 
-                result[i] = ClampSolution.Clamp(input, result[i], result, i);
+                result[i] = ClampSolution.Clamp(input, result[i], ref result, i);
             }
 
             return result;

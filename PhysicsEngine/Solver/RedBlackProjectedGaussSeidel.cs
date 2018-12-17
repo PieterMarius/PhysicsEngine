@@ -25,6 +25,7 @@
  *****************************************************************************/
 
 using SharpEngineMathUtility;
+using SharpPhysicsEngine.ShapeDefinition;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -139,9 +140,11 @@ namespace SharpPhysicsEngine.LCPSolver
 
                 if (red.Any())
                     rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
-
+                                
                 for (int k = 0; k < SolverParameters.MaxIteration; k++)
                 {
+                    var sync = new object();
+
                     if (red.Any())
                     {
                         //Execute Red
@@ -151,7 +154,7 @@ namespace SharpPhysicsEngine.LCPSolver
                             (range, loopState) =>
                             {
                                 for (int i = range.Item1; i < range.Item2; i++)
-                                    ExecuteKernel(input, red[i], ref result);
+                                    ExecuteKernel(input, red[i], ref result, sync);
                             });
                     }
 
@@ -164,14 +167,14 @@ namespace SharpPhysicsEngine.LCPSolver
                             (range, loopState) =>
                             {
                                 for (int i = range.Item1; i < range.Item2; i++)
-                                    ExecuteKernel(input, black[i], ref result);
+                                    ExecuteKernel(input, black[i], ref result, sync);
                             });
                     }
 
                     actualSolverError = SolverHelper.ComputeSolverError(result, oldX);
-                                                           
+
                     if (actualSolverError < SolverParameters.ErrorTolerance)
-                        return result;
+                        break;
 
                     Array.Copy(result, oldX, x.Length);
                 }
@@ -187,7 +190,8 @@ namespace SharpPhysicsEngine.LCPSolver
         private void ExecuteKernel(
             LinearProblemProperties input,
             int index,
-            ref double[] x)
+            ref double[] x,
+            object sync)
         {
             SparseVector m = input.M.Rows[index];
             double xValue = x[index];
@@ -205,9 +209,83 @@ namespace SharpPhysicsEngine.LCPSolver
             
             sumBuffer = (input.B[index] - sumBuffer) * input.InvD[index];
 
-            xValue += (sumBuffer - xValue) * SolverParameters.SOR;
+            double sor = SolverParameters.SOR;
 
-            x[index] = ClampSolution.Clamp(input, xValue, x, index);
+            // Constraints with limit diverge with sor > 1.0
+            if (sor > 1.0 &&
+                (input.ConstraintType[index] == ConstraintType.Friction ||
+                input.ConstraintType[index] == ConstraintType.JointMotor ||
+                input.ConstraintType[index] == ConstraintType.JointLimit))
+                sor = 1.0;
+
+            xValue += (sumBuffer - xValue) * sor;
+
+            x[index] = SetValue(input, xValue, ref x, index, sync);
+        }
+
+        private double SetValue(
+            LinearProblemProperties input,
+            double value,
+            ref double[] x,
+            int i,
+            object sync)
+        {
+            lock (sync)
+            {
+                switch (input.ConstraintType[i])
+                {
+                    case ConstraintType.Collision:
+                    case ConstraintType.JointLimit:
+                        return (value < 0.0) ?
+                            0.0 :
+                            value;
+
+                    case ConstraintType.Friction:
+
+                        //Isotropic friction -> sqrt(c1^2+c2^2) <= fn*U
+                        int normalIndex = input.Constraints[i].Value;
+                        double frictionLimit = x[normalIndex] * input.ConstraintLimit[i];
+
+                        if (frictionLimit == 0.0)
+                        {
+                            x[normalIndex + 1] = 0.0;
+                            x[normalIndex + 2] = 0.0;
+
+                            return 0.0;
+                        }
+
+                        double directionA = x[normalIndex + 1];
+                        double directionB = x[normalIndex + 2];
+                        double frictionValue = Math.Sqrt(directionA * directionA + directionB * directionB);
+
+                        if (frictionValue > frictionLimit)
+                        {
+                            Vector2d frictionNormal = new Vector2d(directionA / frictionValue, directionB / frictionValue);
+
+                            x[normalIndex + 1] = frictionNormal.x * frictionLimit;
+                            x[normalIndex + 2] = frictionNormal.y * frictionLimit;
+
+                            return (i - normalIndex == 1) ?
+                                    x[normalIndex + 1] :
+                                    x[normalIndex + 2];
+                        }
+
+                        return value;
+
+                    case ConstraintType.JointMotor:
+                        double limit = input.ConstraintLimit[i];
+
+                        if (value < -limit)
+                            return -limit;
+                        if (value > limit)
+                            return limit;
+
+                        return value;
+
+                    default:
+                        return value;
+                }
+            }
         }
 
         private Dictionary<RedBlackEnum, List<int>> GetRedBlackDictionary(Dictionary<int, bool> nodeDictionary)

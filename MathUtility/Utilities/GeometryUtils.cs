@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpEngineMathUtility
 {
@@ -211,6 +212,21 @@ namespace SharpEngineMathUtility
 				return random.Next (min, max);
 			}
 		}
+
+        public static int[] GetRandomWithoutRepetitions(int max)                    
+        {
+            var possible = Enumerable.Range(0, max).ToList();
+            var results = new int[max];
+
+            for (int i = 0; i < max; i++)
+            {
+                int index = random.Next(0, possible.Count);
+                results[i] = possible[index];
+                possible.RemoveAt(index);
+            }
+
+            return results;
+        }
 
 		public static void Shuffle<T>(this IList<T> list)
 		{

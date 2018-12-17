@@ -145,7 +145,15 @@ namespace SharpEngineMathUtility
 				0.0, 0.0, 1.0);
 		}
 
-		public static Matrix3x3 operator *(Matrix3x3 a, Matrix3x3 b)
+        public static Matrix3x3 IdentityMatrix(double value)
+        {
+            return new Matrix3x3(
+                value, 0.0, 0.0,
+                0.0, value, 0.0,
+                0.0, 0.0, value);
+        }
+
+        public static Matrix3x3 operator *(Matrix3x3 a, Matrix3x3 b)
 		{
 			double r1x = (a.r1c1 * b.r1c1) + (a.r1c2 * b.r2c1) + (a.r1c3 * b.r3c1);
 			double r1y = (a.r1c1 * b.r1c2) + (a.r1c2 * b.r2c2) + (a.r1c3 * b.r3c2);

@@ -92,7 +92,7 @@ namespace SharpPhysicsEngine
 		/// </summary>
 		/// <returns>The slider joint.</returns>
 		/// <param name="simulationObjs">Simulation objects.</param>
-		public override List<JacobianConstraint> BuildJacobian(double timeStep, double? baumStabilization = null)
+		public override List<JacobianConstraint> BuildJacobian()
 		{
 			var sliderConstraints = new List<JacobianConstraint> ();
 
@@ -130,9 +130,9 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            double freq = 1.0 / timeStep;
-            double errorReduction = ErrorReductionParam * freq;
-            double springCoefficient = SpringCoefficient * freq;
+            ///double freq = 1.0 / timeStep;
+            double errorReduction = ErrorReductionParam;
+            double springCoefficient = SpringCoefficient;
 
             #region Base Constraints
 
