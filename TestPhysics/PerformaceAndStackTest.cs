@@ -75,7 +75,7 @@ namespace TestPhysics
                         
             physicsEnvironment.CollisionEngineParam.SetBroadPhaseEngine(BroadPhaseEngineType.HierarchicalTree);
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(50);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(20);
             physicsEnvironment.SolverParameters.SetSOR(1.3);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
             physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
@@ -292,86 +292,86 @@ namespace TestPhysics
 
                 objects.Add(objects1);
             }
-            /*
-            position = new Vector3(-3.0, 1.7, 0.0);
+            
+            position = new Vector3d(-3.0, 1.7, 8.0);
 
             for (int i = 0; i < 5; i++)
             {
-                ShapeFilename.Add("cube.obj");
+                ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                var objects1 = new RigidCollisionShape();
-                objects1.SetMass(1.0);
-                objects1.SetPosition(position);
-                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
-                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+
+                //GeometryProperties geom1 = GetObjectGeometry(objName, 1, 0.0);
+                //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                var objects1 = new ConvexShape(shapeGeometry, position, 1.0, false);
+                objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+                //objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(0.5);
+                objects1.SetErrorReductionParam(0.3);
                 position = position + shift;
 
                 objects.Add(objects1);
             }
 
 
-            position = new Vector3(0.0, 1.7, -3.0);
+            position = new Vector3d(0.0, 1.7, -3.0);
 
             for (int i = 0; i < 10; i++)
             {
-                ShapeFilename.Add("cube.obj");
+                ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                var objects1 = new RigidCollisionShape();
-                objects1.SetMass(1.0);
-                objects1.SetPosition(position);
-                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
-                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+
+                //GeometryProperties geom1 = GetObjectGeometry(objName, 1, 0.0);
+                //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                var objects1 = new ConvexShape(shapeGeometry, position, 1.0, false);
+                objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+                //objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(0.5);
+                objects1.SetErrorReductionParam(0.3);
                 position = position + shift;
 
                 objects.Add(objects1);
             }
 
-            position = new Vector3(0.0, 1.7, 3.0);
+            position = new Vector3d(0.0, 1.7, 3.0);
 
             for (int i = 0; i < 10; i++)
             {
-                ShapeFilename.Add("cube.obj");
+                ShapeFilename.Add(objName);
                 ShapeScale.Add(1);
                 TextureFilename.Add("texture/woodbox.bmp");
 
-                var objects1 = new RigidCollisionShape();
-                objects1.SetMass(1.0);
-                objects1.SetPosition(position);
-                objects1.SetRotationStatus(new Quaternion(new Vector3(0.0, 0.0, 0.0), 0.0));
-                GeometryProperties geom1 = GetObjectGeometry("cube.obj", 1);
-                objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
-                objects1.SetLinearVelocity(new Vector3(0.0, 0.0, 0.0));
-                objects1.SetAngularVelocity(new Vector3(0.0, 0.0, 0.0));
+
+                //GeometryProperties geom1 = GetObjectGeometry(objName, 1, 0.0);
+                //var objects1 = new ConvexShape(geom1.VertexPoint, geom1.TriagleIdx, position, 1.0);
+                var objects1 = new ConvexShape(shapeGeometry, position, 1.0, false);
+                objects1.SetRotationStatus(new Quaternion(new Vector3d(0.0, 0.0, 0.0), 0.0));
+                //objects1.SetGeometry(geom1.VertexPoint, geom1.TriagleIdx);
+                objects1.SetLinearVelocity(new Vector3d(0.0, 0.0, 0.0));
+                objects1.SetAngularVelocity(new Vector3d(0.0, 0.0, 0.0));
                 objects1.SetRestitutionCoeff(0.1);
-                objects1.SetDynamicFrictionCoeff(0.8);
+                objects1.SetDynamicFrictionCoeff(0.3);
                 objects1.SetStaticFrictionCoeff(0.9);
                 objects1.ExcludeFromCollisionDetection(false);
-                objects1.SetErrorReductionParam(0.5);
+                objects1.SetErrorReductionParam(0.3);
                 position = position + shift;
 
                 objects.Add(objects1);
             }
-            */
+            
 
             //TextureFilename[3] = new string[1] { "texture/woodbox.bmp" };
             //TODO rimuovere

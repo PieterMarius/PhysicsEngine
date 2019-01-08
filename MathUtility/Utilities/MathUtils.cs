@@ -176,7 +176,7 @@ namespace SharpEngineMathUtility
 
             if (simd)
             {
-                return SimdUtils.SIMDArraySubtraction(a, b);
+                return SIMDUtils.SIMDArraySubtraction(a, b);
             }
             else
             {

@@ -28,7 +28,7 @@ using System.Numerics;
 
 namespace SharpEngineMathUtility
 {
-    public static class SimdUtils
+    public static class SIMDUtils
     {
 
         public static double[] SIMDArrayAddition(double[] lhs, double[] rhs)
@@ -87,7 +87,7 @@ namespace SharpEngineMathUtility
             {
                 result[i] = lhs[i] * rhs[i];
             }
-
+            
             return result;
         }
 

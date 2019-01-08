@@ -130,7 +130,6 @@ namespace SharpPhysicsEngine
 
             #region Jacobian Constraint
 
-            ///double freq = 1.0 / timeStep;
             double errorReduction = ErrorReductionParam;
             double springCoefficient = SpringCoefficient;
 

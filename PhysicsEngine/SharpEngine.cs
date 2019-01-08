@@ -776,8 +776,11 @@ namespace SharpPhysicsEngine
 
         private void UpdateHierarchicalTree()
         {
-            for (int i = 0; i < Shapes.Length; i++)
-                CollisionEngine.UpdateShape(Shapes[i]);
+            foreach(var shape in Shapes)
+            {
+                if (!shape.IsStatic)
+                    CollisionEngine.UpdateShape(shape);
+            }
         }
 
 		#endregion

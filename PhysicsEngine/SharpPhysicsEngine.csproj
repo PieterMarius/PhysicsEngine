@@ -84,6 +84,7 @@
     <Compile Include="CollisionEngine\NarrowPhaseEngine\INarrowPhase.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\NarrowPhase.cs" />
     <Compile Include="CollisionEngine\NarrowPhaseEngine\ConvexBodyNarrowPhase.cs" />
+    <Compile Include="CollisionEngine\Ray Casting\RayCastingEngine.cs" />
     <Compile Include="ContactPartitioning\Partition.cs" />
     <Compile Include="ContinuosCollisionDetection\ConservativeAdvancement.cs" />
     <Compile Include="ContinuosCollisionDetection\ICCDEngine.cs" />

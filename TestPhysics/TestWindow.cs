@@ -91,40 +91,44 @@ namespace TestPhysics
 
         void TestNumeric()
         {
-            int nvalue = 30000000;
+            Console.WriteLine("Hardware accellerate " + System.Numerics.Vector.IsHardwareAccelerated);
+            int nvalue = 3000000;
             stopwatch.Reset();
-            stopwatch.Start();
+            
 
-            System.Numerics.Vector3[] testVector = new System.Numerics.Vector3[nvalue];
+            System.Numerics.Vector<double>[] testVector = new System.Numerics.Vector<double>[nvalue];
 
             //double[] vv = new double[] { 0.0, 0.0, 0.0, 0.0 };
             for (int i = 0; i < nvalue; i++)
-                testVector[i] = new System.Numerics.Vector3(2, 3, 5);
+                testVector[i] = new System.Numerics.Vector<double>(new double[] { 2.0, 3.0, 5.0, 0.0 });
 
-            System.Numerics.Vector3 test;
+            stopwatch.Start();
+            System.Numerics.Vector<double> test;
+            double test1;
             for (int i = 0; i < nvalue; i++)
-                test = testVector[i] * 2.0f;
+                test1 = System.Numerics.Vector.Dot(testVector[i], testVector[i]);
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
             stopwatch.Reset();
-            stopwatch.Start();
+            
 
             SharpEngineMathUtility.Vector3d[] testVector1 = new SharpEngineMathUtility.Vector3d[nvalue];
 
             for (int i = 0; i < nvalue; i++)
                 testVector1[i] = new SharpEngineMathUtility.Vector3d(2.0, 3.0, 5.0);
 
-            SharpEngineMathUtility.Vector3d test1;
+            stopwatch.Start();
+            //SharpEngineMathUtility.Vector3d test1;
+            //double test2;
             for (int i = 0; i < nvalue; i++)
-                test1 = testVector1[i] * 2.0;
+                test1 = testVector1[i].Dot(testVector1[i]);
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-            stopwatch.Reset();
-            stopwatch.Start();
+            
 
             //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
 
@@ -151,14 +155,15 @@ namespace TestPhysics
 
 
             }
+            stopwatch.Reset();
+            stopwatch.Start();
 
-            test2 = SimdUtils.SIMDArrayProductScalar(test3.ToArray(), 2.0);
+            test2 = SIMDUtils.SIMDArrayProductScalar(test3.ToArray(), 2.0);
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
 
-            stopwatch.Reset();
-            stopwatch.Start();
+            
 
             //System.Numerics.Vector<double>[] testVector2 = new System.Numerics.Vector<double>[nvalue];
 
@@ -169,27 +174,31 @@ namespace TestPhysics
 
 
             //System.Numerics.Vector<double> tt = new System.Numerics.Vector<double>(new SharpEngineMathUtility.Vector3(1.0, 0.0, 0.0));
-            List<double> test4 = new List<double>();
-            //double[] test4 = new double[nvalue * 3];
+            //List<double> test4 = new List<double>();
+            ////double[] test4 = new double[nvalue * 3];
 
-            for (int i = 0; i < nvalue; i++)
+            //for (int i = 0; i < nvalue; i++)
+            //{
+            //    // int index = (i * 3);
+            //    test4.AddRange(testVector1[i].ToList);
+            //    //test4[index] = testVector1[i].x;
+            //    //test4[index +1] = testVector1[i].y;
+            //    //test4[index +2] = testVector1[i].z;
+
+            //    //test3.AddRange(testVector1[i].Array);
+            //    //test3.Add(0);
+
+
+            //}
+
+            stopwatch.Reset();
+            stopwatch.Start();
+
+            double[] out4 = new double[test3.Count];
+            for (int i = 0; i < test3.Count; i++)
             {
                 // int index = (i * 3);
-                test4.AddRange(testVector1[i].ToList);
-                //test4[index] = testVector1[i].x;
-                //test4[index +1] = testVector1[i].y;
-                //test4[index +2] = testVector1[i].z;
-
-                //test3.AddRange(testVector1[i].Array);
-                //test3.Add(0);
-
-
-            }
-            double out4 = 0.0;
-            for (int i = 0; i < test4.Count; i++)
-            {
-                // int index = (i * 3);
-                out4 = test4[i] * 2.0;
+                out4[i] = test3[i] * 2.0;
                 //test4[index] = testVector1[i].x;
                 //test4[index +1] = testVector1[i].y;
                 //test4[index +2] = testVector1[i].z;
@@ -203,6 +212,7 @@ namespace TestPhysics
 
             stopwatch.Stop();
             Console.WriteLine("Engine Elapsed={0}", stopwatch.ElapsedMilliseconds);
+            Console.ReadLine();
 
 
         }
@@ -378,7 +388,7 @@ namespace TestPhysics
             //displayAABB();
             //displayVertex(0);
             //displayVertex(1);
-            //displayVertex(2);
+            displayVertex(73);
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)
                 SetOpenGLObjectMatrixAndDisplayObject(i);
@@ -392,7 +402,7 @@ namespace TestPhysics
 
 
         }
-        double timeStep = 0.01;
+        double timeStep = 0.015;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);

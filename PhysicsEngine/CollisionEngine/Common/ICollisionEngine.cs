@@ -25,7 +25,6 @@
  *****************************************************************************/
 
 using System.Collections.Generic;
-using SharpEngineMathUtility;
 using SharpPhysicsEngine.CollisionEngine.Dynamic_Bounding_Tree;
 using SharpPhysicsEngine.ShapeDefinition;
 
