@@ -340,6 +340,61 @@ namespace SharpPhysicsEngine.CollisionEngine
             return vertexPosition;
         }
 
+        public static Vector3d[][] GetVertexPosition1(IShape shape)
+        {
+            if (shape is ICompoundShape compoundShape)
+            {
+                var vp = new Vector3d[compoundShape.CompoundingConvexObjCount][];
+                for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
+                {
+                    vp[i] = compoundShape.ShapesGeometry[i].GetVertices();
+                }
+                return vp;
+            }
+            else
+            {
+                var vp = new Vector3d[1][];
+                vp[0] = shape.Vertices;
+                return vp;
+            }
+        }
+
+        public static TriangleMesh[][] GetTriangles(IShape shape)
+        {
+            if (shape is IConvexShape convexShape)
+            {
+                var tMesh = new TriangleMesh[1][];
+                tMesh[0] = convexShape.ObjectGeometry.BaseGeometry.Triangle;
+                return tMesh;
+            }
+
+            else if (shape is IConcaveShape concaveShape)
+            {
+                var tMesh = new TriangleMesh[1][];
+                tMesh[0] = concaveShape.ObjectGeometry.BaseGeometry.Triangle;
+                return tMesh;
+            }
+
+            else if (shape is ISoftShape softShape)
+            {
+                var tMesh = new TriangleMesh[1][];
+                tMesh[0] = softShape.Triangle;
+                return tMesh;
+            }
+
+            else if(shape is ICompoundShape compoundShape)
+            {
+                var tMesh = new TriangleMesh[compoundShape.CompoundingConvexObjCount][];
+                for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
+                {
+                    tMesh[i] = compoundShape.ShapesGeometry[i].BaseGeometry.Triangle;
+                }
+                return tMesh;
+            }
+            
+            return null;
+        }
+
         public static bool TestBoxes(
             AABB a,
             AABB b,

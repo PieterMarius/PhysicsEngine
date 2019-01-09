@@ -584,9 +584,12 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.P])
             {
                 selectedObjIndex = -1;
-                if (pause) {
+                if (pause)
+                {
                     pause = false;
-                } else {
+                }
+                else
+                {
                     pause = true;
                 }
             }
@@ -640,7 +643,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Up])
             {
                 pause = true;
-                                
+
                 ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, 5);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, 5);
                 physicsEngine.Simulate(timeStep);
@@ -650,11 +653,11 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Down])
             {
                 pause = true;
-               
+
                 ((Hinge2Joint)physicsEngine.GetJoints(0)).AddTorqueShapeB(0.0, -5);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(0.0, -5);
                 physicsEngine.Simulate(timeStep);
-                pause = false; 
+                pause = false;
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Left])
@@ -663,7 +666,7 @@ namespace TestPhysics
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
-                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0,0.0);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0, 0.0);
                 //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(2.0,0.0);
 
                 physicsEngine.Simulate(timeStep);
@@ -671,14 +674,14 @@ namespace TestPhysics
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(angle, angle);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(angle, angle);
-                
+
                 pause = false;
             }
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.Right])
             {
                 pause = true;
-                                
+
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(-2.0, 0.0);
@@ -689,7 +692,7 @@ namespace TestPhysics
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(angle, angle);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(angle, angle);
-                
+
                 pause = false;
             }
 
@@ -701,7 +704,22 @@ namespace TestPhysics
                 pause = false;
             }
 
+            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.F])
+            {
+                var origin = new SharpEngineMathUtility.Vector3d(xpos, ypos, zpos);
+                Matrix4 modelViewMatrix;
+                GL.GetFloat(GetPName.ModelviewMatrix, out modelViewMatrix);
+
+
+                var direction = new SharpEngineMathUtility.Vector3d(
+                    modelViewMatrix.M31,
+                    modelViewMatrix.M32,
+                    modelViewMatrix.M33).Normalize();
+                
+                var ID = physicsEngine.RayCastShape(origin, direction);
             }
+
+        }
 
         //private void UpdateVertexPosition(int index)
         //{

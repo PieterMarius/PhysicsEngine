@@ -152,8 +152,7 @@ namespace SharpPhysicsEngine.SolutionIntegration
             {
                 Vector3d angularImpuse = X * angularComponent;
 
-                Vector3d angularVelocity = simObj.MassInfo.InverseInertiaTensor *
-                                          angularImpuse;
+                Vector3d angularVelocity = simObj.MassInfo.InverseInertiaTensor * angularImpuse;
 
                 //Critical Section
                 lock (sync)

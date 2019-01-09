@@ -33,55 +33,30 @@ namespace SharpPhysicsEngine.ShapeDefinition
         #region Fields
 
         public double RestoreCoeff { get; protected set; }
-
         public double DynamicFrictionCoeff { get; protected set; }
-
         public bool ExcludeFromCollisionDetection { get; protected set; }
-
         public double RestitutionCoeff { get; protected set; }
-
         public Quaternion RotationStatus { get; protected set; }
-
         public int SleepingFrameCount { get; protected set; }
-
         public Vector3d InitCenterOfMass { get; protected set; }
-
         public double StaticFrictionCoeff { get; protected set; }
-
         public Vector3d TorqueValue { get; protected set; }
-
         public int ID { get; protected set; }
-
         public ObjectType ObjectType { get; protected set; }
-
         public Vector3d Position { get; protected set; }
-
         abstract public Vector3d[] Vertices { get; }
-
         public Vector3d[] VerticesRelPos { get; protected set; }
-
         public Vector3d LinearVelocity { get; protected set; }
-
         public Vector3d AngularVelocity { get; protected set; }
-
         public MassData MassInfo { get; protected set; }
-
         public Matrix3x3 RotationMatrix { get; protected set; }
-                
         public Vector3d TempAngularVelocity { get; protected set; }
-
         public Vector3d TempLinearVelocity { get; protected set; }
-
         public Vector3d ForceValue { get; protected set; }
-
         public bool IsStatic { get; protected set; }
-
         public AABB AABBox { get; protected set; }
-
         public Vector3d FarthestPoint { get; protected set; }
-
         public bool ActiveCCD { get; protected set; }
-
         public bool IsSleeping { get; protected set; }
 
         #endregion

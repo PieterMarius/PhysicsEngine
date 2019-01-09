@@ -186,6 +186,11 @@ namespace SharpPhysicsEngine
         /// <summary>
         /// 
         /// </summary>
+        private readonly RayCastingEngine rayCastEngine;
+
+        /// <summary>
+        /// 
+        /// </summary>
         private readonly ICCDEngine ccdEngine;
 
         private SolverType solverType;
@@ -205,6 +210,7 @@ namespace SharpPhysicsEngine
             CollisionEngineParam = collisionEngineParameters;
             EngineParameters = simulationParameters;
 
+            // Default solver
             SetSolverType(SolverType.ProjectedGaussSeidel);
 
             Shapes = new IShape[0];
@@ -223,6 +229,7 @@ namespace SharpPhysicsEngine
             IntegrateVelocityEngine = new IntegrateVelocity(EngineParameters);
 			IntegratePositionEngine = new IntegratePosition(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
+            rayCastEngine = new RayCastingEngine();
             warmStartEngine = new WarmStartEngine(EngineParameters);
             ccdEngine = new ConservativeAdvancement();
         }
@@ -464,6 +471,20 @@ namespace SharpPhysicsEngine
 			
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
+
+        public int? RayCastShape(
+            Vector3d origin,
+            Vector3d direction)
+        {
+            foreach (var shape in Shapes)
+            {
+                var hit = rayCastEngine.Execute(shape, origin, direction, true);
+                if (hit.HasValue)
+                    return shape.ID;
+            }
+
+            return null;
+        }
         
 		#endregion
 

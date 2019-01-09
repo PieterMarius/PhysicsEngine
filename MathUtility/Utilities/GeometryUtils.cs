@@ -658,28 +658,40 @@ namespace SharpEngineMathUtility
 			return resNormal;
 		}
 
-		public static Vector3d? RayTriangleIntersection(
+
+        /// <summary>
+        /// Calculate ray triangle intersection position, return null if it can't find intersection.
+        /// </summary>
+        /// <param name="v0"></param>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="rayOrigin"></param>
+        /// <param name="rayDirection"></param>
+        /// <param name="bothDirection"></param>
+        /// <returns></returns>
+		public static Vector3d? RayIntersectTriangle(
 			Vector3d v0,
 			Vector3d v1,
 			Vector3d v2,
-			Vector3d point,
-			Vector3d direction,
-			bool bothDirection = false)
+			Vector3d rayOrigin,
+			Vector3d rayDirection)
 		{
-			Vector3d e1 = v1 - v0;
+            const double EPSILON = 0.000001;
+
+            Vector3d e1 = v1 - v0;
 			Vector3d e2 = v2 - v0;
 
-			Vector3d h = direction.Cross(e2);
+			Vector3d h = rayDirection.Cross(e2);
 
             double a = e1.Dot(h);
 
-			if (a > -0.000001 &&
-				a < 0.000001)
+			if (a > -EPSILON &&
+				a < EPSILON)
 				return null;
 
 			double f = 1.0 / a;
 
-			Vector3d s = point - v0;
+			Vector3d s = rayOrigin - v0;
 
 			double u = f * s.Dot(h);
 
@@ -687,16 +699,15 @@ namespace SharpEngineMathUtility
 				return null;
 
 			Vector3d q = s.Cross(e1);
-            double v = f * direction.Dot(q);
+            double v = f * rayDirection.Dot(q);
 
 			if (v < 0.0 || u + v > 1.0)
 				return null;
 
 			double t = f * e2.Dot(q);
 
-			if (t > 0.000001 || 
-				(bothDirection && t < -0.000001))
-			    return point + t * direction;
+			if (t > EPSILON)
+			    return rayOrigin + t * rayDirection;
 			else
 				return null;
 		}
@@ -726,13 +737,11 @@ namespace SharpEngineMathUtility
             var result = new Vector3d[input.Length];
 
             for (int i = 0; i < input.Length; i++)
-            {
                 result[i] = new Vector3d(input[i]);
-            }
-
+            
             return result;
         }
-
+               
         #endregion
 
     }
