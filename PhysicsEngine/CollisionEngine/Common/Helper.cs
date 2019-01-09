@@ -369,7 +369,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 			for (int i = 0; i < edge.Count; i++)
 			{
-                var normal = GeometryUtils.CalculateNormal(edge[i].A.s, edge[i].B.s, p.s);
+                var normal = GeometryUtils.CalculateTriangleNormal(edge[i].A.s, edge[i].B.s, p.s);
 
                 var tri = new SupportTriangle(
 									  edge[i].A,
@@ -416,7 +416,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 			Support b,
 			Support c)
 		{
-            var normal = GeometryUtils.CalculateNormal(a.s, b.s, c.s);
+            var normal = GeometryUtils.CalculateTriangleNormal(a.s, b.s, c.s);
 
             var epaTriangle = new SupportTriangle(
 				a,

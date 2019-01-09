@@ -120,7 +120,7 @@ namespace SharpPhysicsEngine.ShapeDefinition
                 // Get cross product of edges and normal vector.
                 Vector3d V1mV0 = v1 - v0;
                 Vector3d V2mV0 = v2 - v0;
-                Vector3d N = Vector3d.Cross(V1mV0, V2mV0);
+                Vector3d N = V1mV0.Cross(V2mV0);
 
                 // Compute integral terms.
                 double tmp0, tmp1, tmp2;

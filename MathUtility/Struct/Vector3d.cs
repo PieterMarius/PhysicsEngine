@@ -249,9 +249,9 @@ namespace SharpEngineMathUtility
         public static Vector3d Random(double min, double max)
         {
             return new Vector3d(
-                GeometryUtils.GetRandom(min, max), 
-                GeometryUtils.GetRandom(min, max), 
-                GeometryUtils.GetRandom(min, max));
+                MathUtils.GetRandom(min, max),
+                MathUtils.GetRandom(min, max),
+                MathUtils.GetRandom(min, max));
         }
 
 		public static Vector3d Normalize(Vector3d a)

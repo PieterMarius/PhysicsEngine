@@ -49,7 +49,7 @@ namespace SharpPhysicsEngine.Wrapper
         {
             IConvexHullEngine convexHullEngine = new ConvexHullEngine();
 
-            var inputVertex = MathUtils.GetVector3ArrayFromMatrix(vertex);
+            var inputVertex = GeometryUtils.GetVector3ArrayFromMatrix(vertex);
 
             ConvexHullData convexHullData = convexHullEngine.GetConvexHull(inputVertex);
 

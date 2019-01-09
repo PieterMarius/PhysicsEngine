@@ -111,7 +111,7 @@ namespace SharpPhysicsEngine
 			Vector3d sliderAxis = GetSliderAxis();
 
 			Vector3d t1 = GeometryUtils.GetPerpendicularVector (sliderAxis).Normalize ();
-			Vector3d t2 = Vector3d.Cross (sliderAxis, t1).Normalize ();
+            Vector3d t2 = sliderAxis.Cross(t1).Normalize();
 
 			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
@@ -177,13 +177,13 @@ namespace SharpPhysicsEngine
 
 			//DOF 3
 
-			double constraintLimit = errorReduction * Vector3d.Dot (t1,linearError);
+			double constraintLimit = errorReduction * t1.Dot(linearError);
 
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t1,
 				-1.0 * t1,
-				Vector3d.Cross (r1, t1),
-				-1.0 * Vector3d.Cross (r2, t1),
+				r1.Cross(t1),
+				-1.0 * r2.Cross(t1),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -199,8 +199,8 @@ namespace SharpPhysicsEngine
 			pistonConstraints.Add (JacobianCommon.GetDOF (
                 t2,
 				-1.0 * t2,
-				Vector3d.Cross (r1, t2),
-				-1.0 * Vector3d.Cross (r2, t2),
+				r1.Cross(t2),
+				-1.0 * r2.Cross(t2),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,

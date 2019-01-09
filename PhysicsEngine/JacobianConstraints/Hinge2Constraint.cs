@@ -153,13 +153,13 @@ namespace SharpPhysicsEngine
 
             //DOF 1
 
-            double constraintLimit = errorReduction * Vector3d.Dot(t1, linearError);
+            double constraintLimit = errorReduction * t1.Dot(linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
 				t1,
 				-1.0 * t1,
-				Vector3d.Cross (r1, t1),
-				-1.0 * Vector3d.Cross (r2, t1),
+				r1.Cross(t1),
+				-1.0 * r2.Cross(t1),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -175,8 +175,8 @@ namespace SharpPhysicsEngine
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 tempPerpendicular,
 				-1.0 * tempPerpendicular,
-				Vector3d.Cross (r1, tempPerpendicular),
-				-1.0 * Vector3d.Cross (r2, tempPerpendicular),
+				r1.Cross(tempPerpendicular),
+				-1.0 * r2.Cross(tempPerpendicular),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,
@@ -191,13 +191,13 @@ namespace SharpPhysicsEngine
 			if (SpringCoefficientHingeAxis > 0)
 				hingeAxisConstraintType = ConstraintType.SoftJoint;
 
-            constraintLimit = errorReduction * Vector3d.Dot(hingeAxis, linearError);
+            constraintLimit = errorReduction * hingeAxis.Dot(linearError);
 
 			hinge2Constraints.Add (JacobianCommon.GetDOF (
                 hingeAxis,
 				-1.0 * hingeAxis,
-				Vector3d.Cross (r1, hingeAxis),
-				-1.0 * Vector3d.Cross (r2, hingeAxis),
+				r1.Cross(hingeAxis),
+				-1.0 * r2.Cross(hingeAxis),
 				simulationObjectA,
 				simulationObjectB,
 				0.0,

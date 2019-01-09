@@ -105,7 +105,7 @@ namespace SharpPhysicsEngine
 			Vector3d axisRotated = GetHingeAxis();
 
 			Vector3d t1 = GeometryUtils.GetPerpendicularVector (axisRotated).Normalize ();
-			Vector3d t2 = Vector3d.Cross (axisRotated, t1).Normalize ();
+			Vector3d t2 = axisRotated.Cross(t1).Normalize ();
 
 			Vector3d r1 = simulationObjectA.RotationMatrix *
 										  StartErrorAxis1;
@@ -200,34 +200,34 @@ namespace SharpPhysicsEngine
 			double angularLimit = errorReduction *
 				t1.Dot(angularError);
 
-			hingeConstraints.Add (
-				JacobianCommon.GetDOF (
-                    	-1.0 * t1, 
-					1.0 * t1, 
-					simulationObjectA, 
-					simulationObjectB,
-					0.0,
-					angularLimit,
+            hingeConstraints.Add(
+                JacobianCommon.GetDOF(
+                    -1.0 * t1,
+                    1.0 * t1,
+                    simulationObjectA,
+                    simulationObjectB,
+                    0.0,
+                    angularLimit,
                     springCoefficient,
-					0.0,
-					constraintType));
+                    0.0,
+                    constraintType));
 
 			//DOF 5
 
 			angularLimit = errorReduction *
 				t2.Dot(angularError);
 
-			hingeConstraints.Add (
-				JacobianCommon.GetDOF (
-                    	-1.0 * t2, 
-					1.0 * t2, 
-					simulationObjectA, 
-					simulationObjectB, 
-					0.0,
-					angularLimit,
+            hingeConstraints.Add(
+                JacobianCommon.GetDOF(
+                    -1.0 * t2,
+                    1.0 * t2,
+                    simulationObjectA,
+                    simulationObjectB,
+                    0.0,
+                    angularLimit,
                     springCoefficient,
-					0.0,
-					constraintType));
+                    0.0,
+                    constraintType));
 
 			#endregion
 
@@ -266,7 +266,7 @@ namespace SharpPhysicsEngine
 			{
 				hingeConstraints.Add (
 					JacobianCommon.GetDOF (
-                        	-1.0 * axisRotated, 
+                        -1.0 * axisRotated, 
 						1.0 * axisRotated, 
 						simulationObjectA, 
 						simulationObjectB, 

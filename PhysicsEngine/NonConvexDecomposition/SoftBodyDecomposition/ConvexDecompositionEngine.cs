@@ -49,7 +49,7 @@ namespace SharpPhysicsEngine.NonConvexDecomposition.SoftBodyDecomposition
 
         #endregion
 
-        private const double perturbationValue =  1E-5;
+        private const double perturbationValue = 1E-5;
 
         private readonly double DecompositionValue;
 

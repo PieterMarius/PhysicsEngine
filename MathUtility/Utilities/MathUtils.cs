@@ -27,6 +27,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,6 +36,15 @@ namespace SharpEngineMathUtility
 {
     public static class MathUtils
     {
+        #region Private Static Fields
+
+        static readonly Random random = new Random();
+        static readonly object syncLock = new object();
+
+        #endregion
+
+        #region Public Methods
+
         public static double Dot(double[] a, double[] b)
         {
             if (a.Length != b.Length)
@@ -390,38 +400,6 @@ namespace SharpEngineMathUtility
             return result;
         }
 
-        public static double[][] GetArrayFromVector2(Vector2d[] array)
-        {
-            var result = new double[array.Length][];
-
-            for (int i = 0; i < array.Length; i++)
-                result[i] = array[i].Array;
-            
-            return result;
-        }
-
-        public static double[][][] GetMatrixFromVector2Matrix(Vector2d[][] matrix)
-        {
-            var result = new double[matrix.Length][][];
-
-            for (int i = 0; i < matrix.Length; i++)
-                result[i] = GetArrayFromVector2(matrix[i]);
-            
-            return result;
-        }
-
-        public static Vector3d[] GetVector3ArrayFromMatrix(double[][] input)
-        {
-            var result = new Vector3d[input.Length];
-
-            for (int i = 0; i < input.Length; i++)
-            {
-                result[i] = new Vector3d(input[i]);
-            }
-
-            return result;
-        }
-
         public static T[] FlattenArray<T>(T[][] matrix)
         {
             var rows = matrix.Length;
@@ -456,6 +434,20 @@ namespace SharpEngineMathUtility
             return result;
         }
 
+        /// <summary>
+		/// Gets random int.
+		/// </summary>
+		/// <returns>The random.</returns>
+		/// <param name="min">Minimum.</param>
+		/// <param name="max">Max.</param>
+		public static int GetRandom(int min, int max)
+        {
+            lock (syncLock)
+            {
+                return random.Next(min, max);
+            }
+        }
+
         public static double[] GetRandom(
             double min,
             double max,
@@ -464,10 +456,68 @@ namespace SharpEngineMathUtility
             var res = new double[length];
             for (int i = 0; i < length; i++)
             {
-                res[i] = GeometryUtils.GetRandom(0.0, 1.0);
+                res[i] = GetRandom(0.0, 1.0);
             }
 
             return res;
         }
+
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = random.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+        }
+
+        /// <summary>
+		/// Clamp the specified v, max and min.
+		/// </summary>
+		/// <param name="v">V.</param>
+		/// <param name="max">Max.</param>
+		/// <param name="min">Minimum.</param>
+		public static double Clamp(
+            double v,
+            double max,
+            double min)
+        {
+            return (v > max) ? max : ((v < min) ? min : v);
+        }
+
+        /// <summary>
+		/// Gets random double.
+		/// </summary>
+		/// <returns>The random.</returns>
+		/// <param name="min">Minimum.</param>
+		/// <param name="max">Max.</param>
+		public static double GetRandom(double min, double max)
+        {
+            lock (syncLock)
+            {
+                return random.NextDouble() * (max - min) + min;
+            }
+        }
+
+        public static int[] GetRandomWithoutRepetitions(int max)
+        {
+            var possible = Enumerable.Range(0, max).ToList();
+            var results = new int[max];
+
+            for (int i = 0; i < max; i++)
+            {
+                int index = random.Next(0, possible.Count);
+                results[i] = possible[index];
+                possible.RemoveAt(index);
+            }
+
+            return results;
+        }
+
+        #endregion
     }
 }

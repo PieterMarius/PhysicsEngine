@@ -25,20 +25,13 @@
  *****************************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace SharpEngineMathUtility
 {
 	public static class GeometryUtils
 	{
-		#region Private Static Fields
-
-		static readonly Random random = new Random();
-		static readonly object syncLock = new object();
-
-		#endregion
-
+		
 		#region Public Static Methods
 		
 		/// <summary>
@@ -58,7 +51,7 @@ namespace SharpEngineMathUtility
 			Vector3d c = b - a;
 			Vector3d d = p - a;
 			double mod = Vector3d.Length(c);
-			t = Vector3d.Dot(c, d) / (mod * mod);
+            t = c.Dot(d) / (mod * mod);
 
 			if (t < 0.0) 
 				return a;
@@ -109,11 +102,11 @@ namespace SharpEngineMathUtility
 				Math.Abs(p21.z) < ConstValues.precision) 
 				return false;
 			
-			d1343 = Vector3d.Dot(p13, p43);
-			d4321 = Vector3d.Dot(p43, p21);
-			d1321 = Vector3d.Dot(p13, p21);
-			d4343 = Vector3d.Dot(p43, p43);
-			d2121 = Vector3d.Dot(p21, p21);
+			d1343 = p13.Dot(p43);
+			d4321 = p43.Dot(p21);
+			d1321 = p13.Dot(p21);
+			d4343 = p43.Dot(p43);
+            d2121 = p21.Dot(p21);
 
 			denom = (d2121 * d4343) - (d4321 * d4321);
 			if (Math.Abs(denom) < ConstValues.precision) 
@@ -137,7 +130,7 @@ namespace SharpEngineMathUtility
 		/// <param name="a">The alpha component.</param>
 		/// <param name="b">The blue component.</param>
 		/// <param name="c">C.</param>
-		public static Vector3d CalculateNormal(
+		public static Vector3d CalculateTriangleNormal(
 			Vector3d a,
 			Vector3d b,
 			Vector3d c)
@@ -186,65 +179,11 @@ namespace SharpEngineMathUtility
 			a = a.Normalize();
 			b = normal.Cross(a).Normalize();
 		}
-			
-		/// <summary>
-		/// Gets random double.
-		/// </summary>
-		/// <returns>The random.</returns>
-		/// <param name="min">Minimum.</param>
-		/// <param name="max">Max.</param>
-		public static double GetRandom(double min, double max)
-		{
-			lock (syncLock) {
-				return random.NextDouble () * (max - min) + min;
-			}
-		}
-
-		/// <summary>
-		/// Gets random int.
-		/// </summary>
-		/// <returns>The random.</returns>
-		/// <param name="min">Minimum.</param>
-		/// <param name="max">Max.</param>
-		public static int GetRandom(int min, int max)
-		{
-			lock (syncLock) {
-				return random.Next (min, max);
-			}
-		}
-
-        public static int[] GetRandomWithoutRepetitions(int max)                    
-        {
-            var possible = Enumerable.Range(0, max).ToList();
-            var results = new int[max];
-
-            for (int i = 0; i < max; i++)
-            {
-                int index = random.Next(0, possible.Count);
-                results[i] = possible[index];
-                possible.RemoveAt(index);
-            }
-
-            return results;
-        }
-
-		public static void Shuffle<T>(this IList<T> list)
-		{
-			int n = list.Count;
-			while (n > 1)
-			{
-				n--;
-				int k = random.Next(n + 1);
-				T value = list[k];
-				list[k] = list[n];
-				list[n] = value;
-			}
-		}
-
+                        		
 		public static Vector3d GetRandomDirection()
 		{
-			double angle = GetRandom(0.0, ConstValues.PI2);
-			double z = GetRandom(-1.0, 1.0);
+			double angle = MathUtils.GetRandom(0.0, ConstValues.PI2);
+			double z = MathUtils.GetRandom(-1.0, 1.0);
 			double sqrt = Math.Sqrt(1.0 - z * z);
 
 			return new Vector3d(
@@ -252,21 +191,7 @@ namespace SharpEngineMathUtility
 				sqrt * Math.Sin(angle),
 				z);
 		}
-
-		/// <summary>
-		/// Clamp the specified v, max and min.
-		/// </summary>
-		/// <param name="v">V.</param>
-		/// <param name="max">Max.</param>
-		/// <param name="min">Minimum.</param>
-		public static double Clamp(
-			double v,
-			double max,
-			double min)
-		{
-			return (v > max) ? max : ((v < min) ? min : v);
-		}
-			
+        					
 		/// <summary>
 		/// Gets the point triangle intersection, return null if it can't find correct solution.
 		/// </summary>
@@ -288,11 +213,11 @@ namespace SharpEngineMathUtility
 			Vector3d diff = p - v1;
 			Vector3d edge0 = v2 - v1;
 			Vector3d edge1 = v3 - v1;
-			double a00 = Vector3d.Dot(edge0, edge0);
-			double a01 = Vector3d.Dot(edge0, edge1);
-			double a11 = Vector3d.Dot(edge1, edge1);
-			double b0 = -Vector3d.Dot(diff, edge0);
-			double b1 = -Vector3d.Dot(diff, edge1);
+			double a00 = edge0.Dot(edge0);
+			double a01 = edge0.Dot(edge1);
+			double a11 = edge1.Dot(edge1);
+			double b0 = -diff.Dot(edge0);
+			double b1 = -diff.Dot(edge1);
 			double det = a00 * a11 - a01 * a01;
 			t0 = a01 * b1 - a11 * b0;
 			t1 = a01 * b0 - a00 * b1;
@@ -496,7 +421,7 @@ namespace SharpEngineMathUtility
 			Vector3d d = b - a;
 			Vector3d e = c - a;
 
-			Vector3d f = Vector3d.Cross (d, e);
+			Vector3d f =  d.Cross(e);
 			if (Math.Abs (f.x) < ConstValues.collinearityTolerance &&
 				Math.Abs (f.y) < ConstValues.collinearityTolerance &&
 				Math.Abs (f.z) < ConstValues.collinearityTolerance)
@@ -532,11 +457,11 @@ namespace SharpEngineMathUtility
 			Vector3d b,
 			Vector3d normal)
 		{
-			Vector3d c = Vector3d.Cross (a, b);
+			Vector3d c = a.Cross(b);
 
-			double angle = Math.Atan2 (Vector3d.Length (c), Vector3d.Dot (a, b));
+			double angle = Math.Atan2 (c.Length(), a.Dot(b));
 
-			return Vector3d.Dot (c, normal) < 0.0 ? -angle : angle; 
+			return c.Dot(normal) < 0.0 ? -angle : angle; 
 
 		}
 
@@ -616,15 +541,15 @@ namespace SharpEngineMathUtility
 				Vector3d p1 = projectP1  - point;
 				Vector3d p2 = projectP2 - point;
 
-				m1 = Vector3d.Length(p1);
-				m2 = Vector3d.Length(p2);
+				m1 = p1.Length();
+				m2 = p2.Length();
 				double prod = m1 * m2;
 
-				//We are on a node, consider this inside 
-				if(prod <= ConstValues.precision)
-					return 2.0 * ConstValues.PI;
-				else 
-					costheta = Vector3d.Dot( p1, p2 ) / prod;
+                //We are on a node, consider this inside 
+                if (prod <= ConstValues.precision)
+                    return 2.0 * ConstValues.PI;
+                else
+                    costheta = p1.Dot(p2) / prod;
 
 				anglesum += Math.Acos(costheta);
 			}
@@ -744,9 +669,9 @@ namespace SharpEngineMathUtility
 			Vector3d e1 = v1 - v0;
 			Vector3d e2 = v2 - v0;
 
-			Vector3d h = Vector3d.Cross(direction, e2);
+			Vector3d h = direction.Cross(e2);
 
-			double a = Vector3d.Dot(e1, h);
+            double a = e1.Dot(h);
 
 			if (a > -0.000001 &&
 				a < 0.000001)
@@ -756,18 +681,18 @@ namespace SharpEngineMathUtility
 
 			Vector3d s = point - v0;
 
-			double u = f * Vector3d.Dot(s, h);
+			double u = f * s.Dot(h);
 
 			if (u < 0.0 || u > 1.0)
 				return null;
 
-			Vector3d q = Vector3d.Cross(s, e1);
-			double v = f * Vector3d.Dot(direction, q);
+			Vector3d q = s.Cross(e1);
+            double v = f * direction.Dot(q);
 
 			if (v < 0.0 || u + v > 1.0)
 				return null;
 
-			double t = f * Vector3d.Dot(e2, q);
+			double t = f * e2.Dot(q);
 
 			if (t > 0.000001 || 
 				(bothDirection && t < -0.000001))
@@ -776,8 +701,40 @@ namespace SharpEngineMathUtility
 				return null;
 		}
 
-		#endregion
+        public static double[][] GetArrayFromVector2(Vector2d[] array)
+        {
+            var result = new double[array.Length][];
 
-	}
+            for (int i = 0; i < array.Length; i++)
+                result[i] = array[i].Array;
+
+            return result;
+        }
+
+        public static double[][][] GetMatrixFromVector2Matrix(Vector2d[][] matrix)
+        {
+            var result = new double[matrix.Length][][];
+
+            for (int i = 0; i < matrix.Length; i++)
+                result[i] = GetArrayFromVector2(matrix[i]);
+
+            return result;
+        }
+
+        public static Vector3d[] GetVector3ArrayFromMatrix(double[][] input)
+        {
+            var result = new Vector3d[input.Length];
+
+            for (int i = 0; i < input.Length; i++)
+            {
+                result[i] = new Vector3d(input[i]);
+            }
+
+            return result;
+        }
+
+        #endregion
+
+    }
 }
 

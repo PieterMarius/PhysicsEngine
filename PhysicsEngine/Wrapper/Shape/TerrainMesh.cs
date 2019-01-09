@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine.Wrapper
 
         public double[][][] GetTextureCoordMatrix()
         {
-            return MathUtils.GetMatrixFromVector2Matrix(terrain.GetTextureCoords());
+            return GeometryUtils.GetMatrixFromVector2Matrix(terrain.GetTextureCoords());
         }
 
         public double[][][] GetConvexShapeList()

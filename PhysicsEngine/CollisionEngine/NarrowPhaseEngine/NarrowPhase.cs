@@ -291,13 +291,13 @@ namespace SharpPhysicsEngine.CollisionEngine
             var shapeB = (IShape)softShapeB;
 
             var convexDecompositionA = new ConvexDecompositionEngine(
-                shapeB.AABBox,
+                shapeA.AABBox,
                 Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
                 softShapeA.DecompositionParameter);
 
             var convexDecompositionB = new ConvexDecompositionEngine(
                 shapeB.AABBox,
-                Array.ConvertAll(softShapeA.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
+                Array.ConvertAll(softShapeB.ShapePoints, item => new Vertex3Index(item.Position, item.TriangleIndex, item.ID)),
                 softShapeB.DecompositionParameter);
 
             List<ShapeDecompositionOutput> decompConvexShapeA = convexDecompositionA.Execute().GetConvexShapeList(true);

@@ -327,8 +327,8 @@ namespace SharpPhysicsEngine
 				return GetDOF (
 					sliderAxis, 
 					-1.0 * sliderAxis, 
-					-1.0 * Vector3d.Cross (r1, sliderAxis), 
-					Vector3d.Cross (r2, sliderAxis), 
+					-1.0 * r1.Cross(sliderAxis), 
+					r2.Cross(sliderAxis), 
 					simulationObjectA, 
 					simulationObjectB,
 					0.0,
@@ -342,18 +342,18 @@ namespace SharpPhysicsEngine
 				double linearLimit = K *
 					(sliderDistance - linearLimitMax);
 
-				return GetDOF (
-                    -1.0 * sliderAxis, 
-					sliderAxis, 
-					Vector3d.Cross (r1, sliderAxis), 
-					-1.0 * Vector3d.Cross (r2, sliderAxis), 
-					simulationObjectA, 
-					simulationObjectB,
-					0.0,
-					linearLimit,
-					C,
-					0.0,
-					ConstraintType.JointLimit);
+                return GetDOF(
+                    -1.0 * sliderAxis,
+                    sliderAxis,
+                    r1.Cross(sliderAxis),
+                    -1.0 * r2.Cross(sliderAxis),
+                    simulationObjectA,
+                    simulationObjectB,
+                    0.0,
+                    linearLimit,
+                    C,
+                    0.0,
+                    ConstraintType.JointLimit);
 			}
 
 			return new JacobianConstraint ();

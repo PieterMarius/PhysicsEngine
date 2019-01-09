@@ -65,7 +65,7 @@
     <Compile Include="Utilities\MathUtils.cs" />
     <Compile Include="Utilities\Graph.cs" />
     <Compile Include="Utilities\HashSetStruct.cs" />
-    <Compile Include="Utilities\Line.cs" />
+    <Compile Include="Struct\Line.cs" />
     <Compile Include="Utilities\SimdUtils.cs" />
     <Compile Include="Struct\Vector2d.cs" />
     <Compile Include="Struct\Vector3d.cs" />

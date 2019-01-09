@@ -258,6 +258,16 @@ namespace TestPhysics
             //TerrainShapes = terrain.GetConvexShapeList();
             //InitTerrain();
 
+            //string softObject = "sph.obj";
+
+            //var objects3 = BuildSoftBody(softObject, 1, new SharpEngineMathUtility.Vector3(0.0, 8.0, 1.5));
+            //objects3.SetStaticFrictionCoeff(0.4);
+            //objects3.SetDynamicFrictionCoeff(0.3);
+            //objects3.SetRestitutionCoeff(1.0);
+            //objects3.SetErrorReductionParam(1.0);
+
+            //physicsEngine.AddShape(objects3);
+
             pause = true;
 
             collPoint = new List<CollisionPointStructure>();

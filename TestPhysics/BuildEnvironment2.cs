@@ -97,11 +97,11 @@ namespace TestPhysics
                 physicsEnvironment.AddShape(item);
             }
 
-            var jenga = BuildJenga();
-            foreach (var item in jenga)
-            {
-                physicsEnvironment.AddShape(item);
-            }
+            //var jenga = BuildJenga();
+            //foreach (var item in jenga)
+            //{
+            //    physicsEnvironment.AddShape(item);
+            //}
 
 
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);

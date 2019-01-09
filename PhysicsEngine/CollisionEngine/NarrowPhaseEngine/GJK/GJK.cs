@@ -85,12 +85,12 @@ namespace SharpPhysicsEngine.CollisionEngine
 
 		private Vector3d GetDirectionOnSimplex2(Simplex simplex)
 		{
-			Vector3d simplexAB = simplex.Support [1].s - simplex.Support [0].s;
-			Vector3d simplexAO = simplex.Support [0].s * - 1.0;
+			Vector3d AB = simplex.Support [1].s - simplex.Support [0].s;
+			Vector3d AO = simplex.Support [0].s * - 1.0;
 
 			return Vector3d.Cross(
-					Vector3d.Cross(simplexAB, simplexAO), 
-					simplexAB);
+					AB.Cross(AO), 
+					AB);
 		}
 
 		private Vector3d GetMinDistance(
@@ -183,7 +183,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 				return -1.0;
 
 			//Quarto punto del simplex
-			direction = Vector3d.Normalize(GeometryUtils.CalculateNormal(
+			direction = Vector3d.Normalize(GeometryUtils.CalculateTriangleNormal(
 				simplex.Support[0].s,
 				simplex.Support[1].s,
 				simplex.Support[2].s));

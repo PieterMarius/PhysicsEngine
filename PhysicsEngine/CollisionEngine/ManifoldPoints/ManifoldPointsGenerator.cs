@@ -100,7 +100,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             if(collisionPoints.Count > 2)
             {
-                var normal = GeometryUtils.CalculateNormal(
+                var normal = GeometryUtils.CalculateTriangleNormal(
                     collisionPoints[0].CollisionPointA.Vertex, 
                     collisionPoints[1].CollisionPointA.Vertex,
                     collisionPoints[2].CollisionPointA.Vertex);
@@ -491,7 +491,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             Vector3d CA = C - A;
             Vector3d CB = C - B;
-            return Math.Abs(0.5 * Vector3d.Dot(Vector3d.Cross(CA, CB), normal));
+            return Math.Abs(0.5 * Vector3d.Dot(CA.Cross(CB), normal));
         }
 
         private CollisionPoint TestEdgesIntersection(
