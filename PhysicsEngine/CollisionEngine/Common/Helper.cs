@@ -486,6 +486,78 @@ namespace SharpPhysicsEngine.CollisionEngine
 			return epaTriangle;
 		}
 
-		#endregion 
-	}
+        public static Vector3d? HitBoundingBox(
+            Vector3d minB,
+            Vector3d maxB,
+            Vector3d origin,
+            Vector3d dir)
+        {
+            bool inside = true;
+            var quadrant = new int[3];
+            int whichPlane = 0;
+            var maxT = new double[3];
+            var candidatePlane = new double[3];
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (origin[i] < minB[i])
+                {
+                    quadrant[i] = 1; //LEFT
+                    candidatePlane[i] = minB[i];
+                    inside = false;
+                }
+                else if (origin[i] > maxB[i])
+                {
+                    quadrant[i] = 0; //RIGHT
+                    candidatePlane[i] = maxB[i];
+                    inside = false;
+                }
+                else
+                    quadrant[i] = 2; //MIDDLE
+            }
+
+            // Ray origin inside bounding box
+            if (inside)
+                return origin;
+
+            // Calculate T distances to candidate plane
+            for (int i = 0; i < 3; i++)
+            {
+                maxT[i] = (quadrant[i] != 2 && dir[i] != 0.0) ?
+                    (candidatePlane[i] - origin[i]) / dir[i] :
+                    -1;
+            }
+
+            // Get largest of the maxT's for final choice of intersection
+            for (int i = 1; i < 3; i++)
+            {
+                if (maxT[whichPlane] < maxT[i])
+                    whichPlane = i;
+            }
+
+            // Check final candidate actually inside box
+            if (maxT[whichPlane] < 0.0)
+                return null;
+
+            var coord = new double[3];
+            for (int i = 0; i < 3; i++)
+            {
+                if (whichPlane != i)
+                {
+                    coord[i] = origin[i] + maxT[whichPlane] * dir[i];
+                    if (coord[i] < minB[i] || coord[i] > maxB[i])
+                        return null;
+                }
+                else
+                {
+                    coord[i] = candidatePlane[i];
+                }
+            }
+
+            // Ray hits box
+            return new Vector3d(coord);
+        }
+
+        #endregion
+    }
 }

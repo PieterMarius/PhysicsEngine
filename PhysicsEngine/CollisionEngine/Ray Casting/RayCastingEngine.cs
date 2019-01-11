@@ -41,10 +41,10 @@ namespace SharpPhysicsEngine.CollisionEngine
             IShape shape,
             Vector3d origin, 
             Vector3d direction,
-            bool selectShape = false)
+            bool selectShape)
         {
             var boundingBox = shape.AABBox;
-            var hitBB = HitBoundingBox(
+            var hitBB = Helper.HitBoundingBox(
                 boundingBox.Min,
                 boundingBox.Max,
                 origin,
@@ -76,7 +76,7 @@ namespace SharpPhysicsEngine.CollisionEngine
 
                             var dst = (origin - intersection.Value).Length();
 
-                            if(dst < distance)
+                            if (dst < distance)
                             {
                                 distance = dst;
                                 result = intersection.Value;
@@ -91,82 +91,59 @@ namespace SharpPhysicsEngine.CollisionEngine
             return null;
         }
 
+        public Vector3d? Execute(
+            IShape[] shapes,
+            Vector3d origin,
+            Vector3d direction)
+        {
+            var minDistance = double.MaxValue;
+            Vector3d? res = null;
+            foreach (var shape in shapes)
+            {
+                var hit = Execute(shape, origin, direction, false);
+
+                if (hit.HasValue)
+                {
+                    var dist = (origin - hit.Value).Length();
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        res = hit.Value;
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        public int? ExecuteWithID(
+            IShape[] shapes,
+            Vector3d origin,
+            Vector3d direction)
+        {
+            var minDistance = double.MaxValue;
+            int? res = null;
+            foreach (var shape in shapes)
+            {
+                var hit = Execute(shape, origin, direction, true);
+
+                if (hit.HasValue)
+                {
+                    var dist = (origin - hit.Value).Length();
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        res = shape.ID;
+                    }
+                }
+            }
+
+            return res;
+        }
+
         #endregion
 
         #region Private Methods
-
-        private Vector3d? HitBoundingBox(
-            Vector3d minB,
-            Vector3d maxB,
-            Vector3d origin,
-            Vector3d dir)
-        {
-            bool inside = true;
-            var quadrant = new int[3];
-            int whichPlane = 0;
-            var maxT = new double[3];
-            var candidatePlane = new double[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-                if (origin[i] < minB[i])
-                {
-                    quadrant[i] = 1; //LEFT
-                    candidatePlane[i] = minB[i];
-                    inside = false;
-                }
-                else if (origin[i] > maxB[i])
-                {
-                    quadrant[i] = 0; //RIGHT
-                    candidatePlane[i] = maxB[i];
-                    inside = false;
-                }
-                else
-                    quadrant[i] = 2; //MIDDLE
-            }
-
-            // Ray origin inside bounding box
-            if (inside)
-                return origin;
-
-            // Calculate T distances to candidate plane
-            for (int i = 0; i < 3; i++)
-            {
-                if (quadrant[i] != 2 && dir[i] != 0.0)
-                    maxT[i] = (candidatePlane[i] - origin[i]) / dir[i];
-                else
-                    maxT[i] = -1;
-            }
-            
-            // Get largest of the maxT's for final choice of intersection
-            for (int i = 1; i < 3; i++)
-            {
-                if (maxT[whichPlane] < maxT[i])
-                    whichPlane = i;
-            }
-
-            // Check final candidate actually inside box
-            if (maxT[whichPlane] < 0.0)
-                return null;
-
-            var coord = new double[3];
-            for (int i = 0; i < 3; i++)
-            {
-                if (whichPlane != i)
-                {
-                    coord[i] = origin[i] + maxT[whichPlane] * dir[i];
-                    if (coord[i] < minB[i] || coord[i] > maxB[i])
-                        return null;
-                }
-                else
-                {
-                    coord[i] = candidatePlane[i];
-                }
-            }
-            
-            // Ray hits box
-            return new Vector3d(coord);
-        }
 
         #endregion
     }

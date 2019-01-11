@@ -472,35 +472,32 @@ namespace SharpPhysicsEngine
 			return new List<CollisionPointStructure>(collisionPoints);
 		}
 
-        public int? RayCastShape(
+
+        /// <summary>
+        /// Return the nearest shape ID, if ray doesn't collide returns null
+        /// </summary>
+        /// <param name="origin"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        public int? RayCastShapeID(
             Vector3d origin,
             Vector3d direction)
         {
-            var minDistance = double.MaxValue;
-            int? res = null; 
-            foreach (var shape in Shapes)
-            {
-                var hit = rayCastEngine.Execute(shape, origin, direction, true);
-
-                if (hit.HasValue)
-                {
-                    var dist = (origin - hit.Value).Length();
-                    if (dist < minDistance)
-                    {
-                        minDistance = dist;
-                        res = shape.ID;
-                    }
-                }
-            }
-
-            return res;
+            return rayCastEngine.ExecuteWithID(Shapes, origin, direction);
         }
-        
-		#endregion
 
-		#region Solver
+        public Vector3d? RayCastShape(
+            Vector3d origin,
+            Vector3d direction)
+        {
+            return rayCastEngine.Execute(Shapes, origin, direction);
+        }
 
-		public double GetSolverError()
+        #endregion
+
+        #region Solver
+
+        public double GetSolverError()
 		{
 			return solverError;
 		}

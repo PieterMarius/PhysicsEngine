@@ -37,8 +37,19 @@ namespace Utility
 {
 	public static class OpenGLUtilities
 	{
-		
-		public static LoadResult LoadObjSolid(string fileName)
+
+        static readonly Random random = new Random();
+        static readonly object syncLock = new object();
+
+        public static double GetRandomNumber(double minimum, double maximum)
+        {
+            lock (syncLock)
+            {
+                return random.NextDouble() * (maximum - minimum) + minimum;
+            }
+        }
+
+        public static LoadResult LoadObjSolid(string fileName)
 		{
 			var objLoaderFactory = new ObjLoaderFactory ();
 			var objLoader = objLoaderFactory.Create ();
