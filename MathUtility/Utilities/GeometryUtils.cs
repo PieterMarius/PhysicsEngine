@@ -676,7 +676,7 @@ namespace SharpEngineMathUtility
 			Vector3d rayOrigin,
 			Vector3d rayDirection)
 		{
-            const double EPSILON = 0.000001;
+            const double EPSILON = 0.0000001;
 
             Vector3d e1 = v1 - v0;
 			Vector3d e2 = v2 - v0;

@@ -344,6 +344,7 @@ namespace SharpPhysicsEngine.CollisionEngine
         {
             if (shape is ICompoundShape compoundShape)
             {
+                // TODO update vertices position
                 var vp = new Vector3d[compoundShape.CompoundingConvexObjCount][];
                 for (int i = 0; i < compoundShape.CompoundingConvexObjCount; i++)
                 {
@@ -354,7 +355,8 @@ namespace SharpPhysicsEngine.CollisionEngine
             else
             {
                 var vp = new Vector3d[1][];
-                vp[0] = shape.Vertices;
+                vp[0] = GetVertexPosition(shape);
+                                
                 return vp;
             }
         }

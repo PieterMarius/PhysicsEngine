@@ -84,8 +84,8 @@ namespace TestPhysics
         float xrot = 0.0f;
         float yrot = 0.0f;
         float xpos = 0.0f;
-        float ypos = -4.0f;
-        float zpos = -7.0f;
+        float ypos = 0.0f;//-4.0f;
+        float zpos = 0.0f;//-7.0f;
 
         #endregion
 
@@ -251,6 +251,7 @@ namespace TestPhysics
             displayList = env.GetOpenGLEnvironment();
             textureID = env.LoadTexture();
 
+            redTexture = OpenGLUtilities.LoadTexture("red.bmp");
 
             //TerrainMesh terrain = new TerrainMesh();
             //TerrainPositions = terrain.GetPositions();
@@ -373,9 +374,14 @@ namespace TestPhysics
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
             GL.DepthFunc(DepthFunction.Lequal);
 
+            GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadIdentity();
-
+           
             MoveCamera();
+
+            cameraDirection = GetCameraDirection();
+            
+
             //displayTerrain(TerrainPositions, TerrainTexture, 256, 256);
             //displayOrigin ();
             displayContact();
@@ -386,6 +392,8 @@ namespace TestPhysics
             //displayBaseContact();
             displayJoint();
             displayHingeJoint();
+
+            DrawCameraDirection(cameraDirection);
             //displaySoftJoint();
             //displaySphere(testConvexDecomp.basePoint);
             //DisplayObject();
@@ -398,7 +406,8 @@ namespace TestPhysics
             //displayAABB();
             //displayVertex(0);
             //displayVertex(1);
-            displayVertex(73);
+            //displayVertex(73);
+
 
             for (int i = 0; i < physicsEngine.ShapesCount(); i++)
                 SetOpenGLObjectMatrixAndDisplayObject(i);
@@ -514,11 +523,14 @@ namespace TestPhysics
 
         #endregion
 
+        SharpEngineMathUtility.Vector3d cameraDirection = new SharpEngineMathUtility.Vector3d();
+
         protected void MoveCamera()
         {
             GL.Rotate(xrot, 1.0, 0.0, 0.0);  //rotate 
             GL.Rotate(yrot, 0.0, 1.0, 0.0);  //rotate 
             GL.Translate(xpos, ypos, zpos); //translate the screen
+            
         }
 
         #region Mouse Input
@@ -533,8 +545,26 @@ namespace TestPhysics
                 int ydelta = current.Y - previous.Y;
                 xrot += Convert.ToSingle(ydelta);
                 yrot += Convert.ToSingle(xdelta);
+                if (xrot > 90.0f) xrot = 90.0f;
+                if (yrot < -90.0f) yrot = -90.0f;
             }
             previous = current;
+
+
+            if(OpenTK.Input.Mouse.GetState()[OpenTK.Input.MouseButton.Left])
+            {
+                var origin = new SharpEngineMathUtility.Vector3d(-xpos, -ypos, -zpos);
+                var direction = cameraDirection;
+                var ID = physicsEngine.RayCastShape(origin, direction);
+
+                selectedObjIndex = -1;
+
+                if (ID.HasValue)
+                {
+                    selectedObjIndex = ID.Value;
+
+                }
+            }
         }
 
         #endregion
@@ -557,8 +587,8 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.S])
             {
                 float xrotrad, yrotrad;
-                yrotrad = (yrot / 180 * 3.141592654f);
-                xrotrad = (xrot / 180 * 3.141592654f);
+                yrotrad = (yrot / 180.0f * 3.141592654f);
+                xrotrad = (xrot / 180.0f * 3.141592654f);
                 xpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
                 zpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
                 ypos += Convert.ToSingle(Math.Sin(xrotrad)) * 0.1f;
@@ -567,7 +597,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.D])
             {
                 float yrotrad;
-                yrotrad = (yrot / 180 * 3.141592654f);
+                yrotrad = (yrot / 180.0f * 3.141592654f);
                 xpos += Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
                 zpos += Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
             }
@@ -575,7 +605,7 @@ namespace TestPhysics
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.A])
             {
                 float yrotrad;
-                yrotrad = (yrot / 180 * 3.141592654f);
+                yrotrad = (yrot / 180.0f * 3.141592654f);
                 xpos -= Convert.ToSingle(Math.Cos(yrotrad)) * 0.1f;
                 zpos -= Convert.ToSingle(Math.Sin(yrotrad)) * 0.1f;
             }
@@ -600,11 +630,11 @@ namespace TestPhysics
                 OnLoad(null);
             }
 
-            if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.F])
-            {
-                pause = true;
-                selectedObjIndex = Convert.ToInt32(Console.ReadLine());
-            }
+            //if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.F])
+            //{
+            //    pause = true;
+            //    selectedObjIndex = Convert.ToInt32(Console.ReadLine());
+            //}
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.KeypadPlus])
             {
@@ -706,17 +736,7 @@ namespace TestPhysics
 
             if (OpenTK.Input.Keyboard.GetState()[OpenTK.Input.Key.F])
             {
-                var origin = new SharpEngineMathUtility.Vector3d(xpos, ypos, zpos);
-                Matrix4 modelViewMatrix;
-                GL.GetFloat(GetPName.ModelviewMatrix, out modelViewMatrix);
-
-
-                var direction = new SharpEngineMathUtility.Vector3d(
-                    modelViewMatrix.M31,
-                    modelViewMatrix.M32,
-                    modelViewMatrix.M33).Normalize();
                 
-                var ID = physicsEngine.RayCastShape(origin, direction);
             }
 
         }
@@ -756,6 +776,38 @@ namespace TestPhysics
         //        }
         //    }
         //}
+
+        private SharpEngineMathUtility.Vector3d GetCameraDirection()
+        {
+            Matrix4 mdl;
+
+            GL.GetFloat(GetPName.ModelviewMatrix, out mdl);
+            
+            return new SharpEngineMathUtility.Vector3d(
+                -mdl.M13,
+                -mdl.M23,
+                -mdl.M33).Normalize();
+        }
+
+        private void DrawCameraDirection(SharpEngineMathUtility.Vector3d cameraDirection)
+        {
+            
+            var origin = new SharpEngineMathUtility.Vector3d(-xpos, -ypos, -zpos);
+
+            //var direction = cameraDirection;
+            //Console.WriteLine("direction {0}, {1}, {2}", direction.x, direction.y, direction.z);
+            //Console.WriteLine("origin {0}, {1}, {2}", origin.x, origin.y, origin.z);
+
+            GL.Color3(0.0, 1.0f, 0.0);
+            GL.PointSize(3.0f);
+            GL.Begin(PrimitiveType.Points);
+            var tt = origin + cameraDirection * 1.1;
+            //Console.WriteLine("origin {0}, {1}, {2}", tt.x, tt.y, tt.z);
+            GL.Vertex3(tt.x, tt.y, tt.z);
+            GL.End();
+            GL.PointSize(1.0f);
+            GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
+        }
 
         private void SetOpenGLObjectMatrixAndDisplayObject(int id)
         {
@@ -1155,11 +1207,11 @@ namespace TestPhysics
 
                     var hingeAxis = hingejoint.GetHingeAxis();
                     var hingeAxisPoint = joint.GetAnchorPosition() + hingeAxis;
-                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), hingeAxisPoint);
+                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), hingeAxisPoint, 1.0f);
 
                     var rotationAxis = hingejoint.GetRotationAxis();
                     var rotationAxisPoint = joint.GetAnchorPosition() + rotationAxis;
-                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), rotationAxisPoint);
+                    OpenGLUtilities.DrawLine(joint.GetAnchorPosition(), rotationAxisPoint, 1.0f);
 
                     GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
                 }
@@ -1266,20 +1318,20 @@ namespace TestPhysics
                 SharpEngineMathUtility.Vector3d b7 = new SharpEngineMathUtility.Vector3d(b2.x, b1.y, b2.z);
                 SharpEngineMathUtility.Vector3d b8 = new SharpEngineMathUtility.Vector3d(b2.x, b2.y, b1.z);
 
-                OpenGLUtilities.DrawLine(b6, b2);
-                OpenGLUtilities.DrawLine(b2, b8);
-                OpenGLUtilities.DrawLine(b8, b4);
-                OpenGLUtilities.DrawLine(b4, b6);
+                OpenGLUtilities.DrawLine(b6, b2, 1.0f);
+                OpenGLUtilities.DrawLine(b2, b8, 1.0f);
+                OpenGLUtilities.DrawLine(b8, b4, 1.0f);
+                OpenGLUtilities.DrawLine(b4, b6, 1.0f);
 
-                OpenGLUtilities.DrawLine(b3, b7);
-                OpenGLUtilities.DrawLine(b7, b5);
-                OpenGLUtilities.DrawLine(b5, b1);
-                OpenGLUtilities.DrawLine(b1, b3);
+                OpenGLUtilities.DrawLine(b3, b7, 1.0f);
+                OpenGLUtilities.DrawLine(b7, b5, 1.0f);
+                OpenGLUtilities.DrawLine(b5, b1, 1.0f);
+                OpenGLUtilities.DrawLine(b1, b3, 1.0f);
 
-                OpenGLUtilities.DrawLine(b6, b3);
-                OpenGLUtilities.DrawLine(b2, b7);
-                OpenGLUtilities.DrawLine(b8, b5);
-                OpenGLUtilities.DrawLine(b4, b1);
+                OpenGLUtilities.DrawLine(b6, b3, 1.0f);
+                OpenGLUtilities.DrawLine(b2, b7, 1.0f);
+                OpenGLUtilities.DrawLine(b8, b5, 1.0f);
+                OpenGLUtilities.DrawLine(b4, b1, 1.0f);
             }
         }
 
@@ -1325,7 +1377,7 @@ namespace TestPhysics
         private void displayOctree()
 		{
 			foreach (var item in octTreeLine)
-				OpenGLUtilities.DrawLine(item.a, item.b);
+				OpenGLUtilities.DrawLine(item.a, item.b, 1.0f);
 		}
 
         private void DisplayConcaveShape(int index)
@@ -1377,7 +1429,7 @@ namespace TestPhysics
 			foreach (var item in ll)
 			{
 				GL.Color3(System.Drawing.Color.Red);
-				OpenGLUtilities.DrawLine(item.a, item.b);
+				OpenGLUtilities.DrawLine(item.a, item.b, 1.0f);
 				GL.Color4(1.0f, 1.0f, 1.0f, 1.0f);
 			}
 

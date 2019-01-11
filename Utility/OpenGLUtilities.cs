@@ -489,13 +489,17 @@ namespace Utility
 
 		public static void DrawLine(
 			Vector3d a,
-			Vector3d b)
+			Vector3d b,
+            float width)
 		{
-			GL.Begin(PrimitiveType.Lines);
+            GL.LineWidth(width);
+            GL.Begin(PrimitiveType.Lines);
+            
 			GL.Vertex3(a.x, a.y, a.z);
 			GL.Vertex3(b.x, b.y, b.z);
 			GL.End();
-		}
+            GL.LineWidth(1.0f);
+        }
 
 		#region "Private methods"
 

@@ -476,14 +476,24 @@ namespace SharpPhysicsEngine
             Vector3d origin,
             Vector3d direction)
         {
+            var minDistance = double.MaxValue;
+            int? res = null; 
             foreach (var shape in Shapes)
             {
                 var hit = rayCastEngine.Execute(shape, origin, direction, true);
+
                 if (hit.HasValue)
-                    return shape.ID;
+                {
+                    var dist = (origin - hit.Value).Length();
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        res = shape.ID;
+                    }
+                }
             }
 
-            return null;
+            return res;
         }
         
 		#endregion
