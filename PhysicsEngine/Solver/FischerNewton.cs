@@ -59,7 +59,8 @@ namespace SharpPhysicsEngine.LCPSolver
         #region Public Methods
                        
         public double[] Solve(
-            LinearProblemProperties linearProblemProperties, 
+            LinearProblemProperties linearProblemProperties,
+            JacobianConstraint[] constraints,
             double[] x)
         {
             double lambda = 1.0;

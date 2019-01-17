@@ -62,6 +62,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties input,
+            JacobianConstraint[] constraints,
             double[] x)
         {
             var redBlackDictionary = GetRedBlackDictionary(input);

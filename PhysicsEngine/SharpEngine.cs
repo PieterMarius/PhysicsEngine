@@ -161,7 +161,7 @@ namespace SharpPhysicsEngine
         /// <summary>
         /// Build the linear system: Ax = b (symmetric)
         /// </summary>
-		private readonly LinearProblemBuilder LinearSystemBuilder;
+		private readonly LinearProblemBuilderEngine LinearSystemBuilder;
 
         /// <summary>
         /// Update objects position and integrate external forces
@@ -225,7 +225,7 @@ namespace SharpPhysicsEngine
             CollisionJoints = new List<ICollisionJoint>();
 			Joints = new List<IConstraint> ();
 			HsGenerator = new HashGenerator();
-			LinearSystemBuilder = new LinearProblemBuilder(EngineParameters);
+			LinearSystemBuilder = new LinearProblemBuilderEngine(EngineParameters);
             IntegrateVelocityEngine = new IntegrateVelocity(EngineParameters);
 			IntegratePositionEngine = new IntegratePosition(EngineParameters);
 			contactConstraintBuilder = new ContactConstraintBuilder(EngineParameters);
@@ -526,9 +526,14 @@ namespace SharpPhysicsEngine
                     solverType = SolverType.Lemke;
                     break;
 
-                case SolverType.ProjectedRestarted:
-                    Solver = new ProjectedRestarted(SolverParameters);
-                    solverType = SolverType.ProjectedRestarted;
+                case SolverType.ProjectedSymmetricGS:
+                    Solver = new ProjectedSymmetricGS(SolverParameters, LinearSystemBuilder);
+                    solverType = SolverType.ProjectedSymmetricGS;
+                    break;
+
+                case SolverType.NonLinearGaussSeidel:
+                    Solver = new NonLinearGaussSeidel(SolverParameters, LinearSystemBuilder, IntegrateVelocityEngine);
+                    solverType = SolverType.NonLinearGaussSeidel;
                     break;
 
                 case SolverType.ProjectedGaussSeidel:
@@ -633,7 +638,7 @@ namespace SharpPhysicsEngine
                             if (jacobianConstraints.Length > 0)
                             {
                                 LinearProblemProperties LCP = GenerateLCP(jacobianConstraints);
-                                double[]  overallSolution = Solver.Solve(LCP, LCP.StartImpulse);
+                                double[]  overallSolution = Solver.Solve(LCP, jacobianConstraints, LCP.StartImpulse);
                                 //double[] overallSolution = Solve(jacobianConstraints);
 
                                 IntegrateVelocityEngine.UpdateVelocity(jacobianConstraints, overallSolution);
@@ -646,7 +651,7 @@ namespace SharpPhysicsEngine
 
             #region Position and Velocity integration
                         
-            IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep);
+            IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, true);
             UpdateHierarchicalTree();
 
             #endregion
@@ -926,7 +931,7 @@ namespace SharpPhysicsEngine
                     var baseLCP = LinearSystemBuilder.BuildLCP(jacobianConstraints, TimeStep);
                     return LinearSystemBuilder.GetLCPFrictionMatrix(baseLCP);
 
-                case SolverType.ProjectedRestarted:
+                case SolverType.ProjectedSymmetricGS:
                 case SolverType.ProjectedGaussSeidel:
                 case SolverType.NonLinearConjugateGradient:
                 case SolverType.RedBlackProjectedGaussSeidel:
@@ -948,7 +953,7 @@ namespace SharpPhysicsEngine
             for (int i = 0; i < 15; i++)
             {
                 overallSolution = MathUtils.Add(overallSolution, partialSolution);
-                partialSolution = Solver.Solve(LCP, overallSolution);
+                partialSolution = Solver.Solve(LCP, jacobianConstraints, overallSolution);
 
                 
             }
@@ -1017,7 +1022,7 @@ namespace SharpPhysicsEngine
 			{
 				Solver.GetSolverParameters().SetSolverMaxIteration(nIterations);
 
-				double[]  solutionValues = Solver.Solve(linearProblemProperties, new double[linearProblemProperties.Count]);
+				double[]  solutionValues = Solver.Solve(linearProblemProperties, contactConstraints, new double[linearProblemProperties.Count]);
                 				
 				return solutionValues;
 			}

@@ -122,7 +122,7 @@
     <Compile Include="JacobianConstraints\SliderConstraint.cs" />
     <Compile Include="JacobianConstraints\SoftConstraint.cs" />
     <Compile Include="JacobianConstraints\UniversalConstraint.cs" />
-    <Compile Include="Helper\LinearProblemBuilder.cs" />
+    <Compile Include="Helper\LinearProblemBuilderEngine.cs" />
     <Compile Include="NonConvexDecomposition\ConvexDecompositionEngine.cs" />
     <Compile Include="NonConvexDecomposition\Particle\NonConvexSphereDecomposition.cs" />
     <Compile Include="NonConvexDecomposition\SoftBodyDecomposition\IShapeConvexDecomposition.cs" />
@@ -137,7 +137,7 @@
     <Compile Include="Solver\FischerNewton.cs" />
     <Compile Include="Solver\Lemke.cs" />
     <Compile Include="Solver\NonLinearGaussSeidel.cs" />
-    <Compile Include="Solver\ProjectedRestarted.cs" />
+    <Compile Include="Solver\ProjectedSymmetricGS.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
     <Compile Include="StackingUtilities\StackManager.cs" />
     <Compile Include="Terrain\HeightMapMesh.cs" />

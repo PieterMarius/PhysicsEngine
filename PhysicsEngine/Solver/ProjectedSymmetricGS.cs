@@ -34,33 +34,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpPhysicsEngine.ShapeDefinition;
+using SharpPhysicsEngine.Helper;
 
 namespace SharpPhysicsEngine.LCPSolver
 {
-    internal sealed class ProjectedRestarted : ISolver
+    internal sealed class ProjectedSymmetricGS : ISolver
     {
         #region Fields
 
         public readonly SolverParameters SolverParameters;
-        private readonly GMRES solver;
-        private readonly RedBlackProjectedGaussSeidel rbSolver;
+        private readonly ProjectedGaussSeidel gsSolver;
+        private readonly LinearProblemBuilderEngine lcpEngine;
 
         #endregion
 
         #region Constructor
 
-        public ProjectedRestarted(SolverParameters solverParameters)
+        public ProjectedSymmetricGS(
+            SolverParameters solverParameters,
+            LinearProblemBuilderEngine lcpEngine)
         {
             SolverParameters = solverParameters;
-            solver = new GMRES();
-
+           
             var gaussSeidelSolverParam = new SolverParameters(
                                                           1,
                                                           SolverParameters.ErrorTolerance,
                                                           1.0,
                                                           SolverParameters.MaxThreadNumber);
 
-            rbSolver = new RedBlackProjectedGaussSeidel(gaussSeidelSolverParam);
+            gsSolver = new ProjectedGaussSeidel(gaussSeidelSolverParam);
+            this.lcpEngine = lcpEngine; 
         }
 
         #endregion
@@ -72,40 +75,29 @@ namespace SharpPhysicsEngine.LCPSolver
             return SolverParameters;
         }
 
-        public double[] Solve(LinearProblemProperties linearProblemProperties, double[] x)
+        public double[] Solve(
+            LinearProblemProperties linearProblemProperties, 
+            JacobianConstraint[] constraints, 
+            double[] x)
         {
-            var A = linearProblemProperties.GetOriginalSparseMatrix();
-            var b = linearProblemProperties.B;
-            double[] r = GetDirection(A, b, x);
+            JacobianConstraint[] constraintsRev = new JacobianConstraint[constraints.Length];
+            Array.Copy(constraints, constraintsRev, constraints.Length);
+            Array.Reverse(constraintsRev);
+            var symLCP = lcpEngine.BuildLCP(constraintsRev, 0.015);
 
-            var results = new double[x.Length];
-            Array.Copy(x, results, x.Length);
-            double actualSolverError = 0.0;
             double[] oldX = new double[x.Length];
-            Array.Copy(x, oldX, x.Length);
+            double[] result = new double[x.Length];
+            Array.Copy(x, result, x.Length);
+            double actualSolverError = 0.0;
 
             for (int i = 0; i < SolverParameters.MaxIteration; i++)
             {
-                var w = solver.Solve(A, r, new double[r.Length], 100, r.Length);
-                results = Add(results, Multiply(1.0, w));
-                Clamp(linearProblemProperties, ref results);
-                results = rbSolver.Solve(linearProblemProperties, results);
-                //Clamp(linearProblemProperties, ref results);
-
-                actualSolverError = SolverHelper.ComputeSolverError(results, oldX);
-
-                if (actualSolverError < SolverParameters.ErrorTolerance)
-                    return results;
-
-                Array.Copy(results, oldX, results.Length);
-                //double errp1 = CheckErrorTest(results, A, linearProblemProperties);
-
-                r = GetDirection(A, b, results);
+                
             }
 
             
 
-            return results;
+            return null;
         }
 
         #endregion

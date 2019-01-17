@@ -33,7 +33,8 @@ namespace SharpPhysicsEngine.LCPSolver
         RedBlackProjectedGaussSeidel = 3,
         Lemke = 4,
         FischerNewton = 5,
-        ProjectedRestarted = 6,
+        ProjectedSymmetricGS = 6,
+        NonLinearGaussSeidel = 7,
     }
 }
 

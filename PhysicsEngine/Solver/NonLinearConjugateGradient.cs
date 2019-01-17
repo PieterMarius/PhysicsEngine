@@ -62,9 +62,10 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties input,
+            JacobianConstraint[] constraints,
             double[] x)
         {
-            double[] Xk = gaussSeidelSolver.Solve(input, x);
+            double[] Xk = gaussSeidelSolver.Solve(input, constraints, x);
             double[] delta = CalculateDelta(Xk, x);
             double[] searchDirection = NegateArray(delta);
 
@@ -74,7 +75,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             for (int i = 0; i < solverParam.MaxIteration; i++)
             {
-                Xk1 = gaussSeidelSolver.Solve(input, Xk);
+                Xk1 = gaussSeidelSolver.Solve(input, constraints, Xk);
                                 
                 double[] deltaK = CalculateDelta(Xk1, Xk);
 

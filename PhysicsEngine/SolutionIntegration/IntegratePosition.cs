@@ -55,33 +55,36 @@ namespace SharpPhysicsEngine.SolutionIntegration
         /// </summary>
         public void IntegrateObjectsPosition(
             ref IShape[] shapes,
-            double timeStep)
+            double timeStep,
+            bool addExtForce)
         {
             var dynamicShapes = shapes.Where(x => !x.IsStatic).ToList();
 
             foreach (var shape in dynamicShapes.OfType<ISoftShape>())
-                IntegrateSoftShapePosition(shape, timeStep, true);
+                IntegrateSoftShapePosition(shape, timeStep, addExtForce);
 
-            foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+            if(addExtForce)
             {
-                IntegrateRigidShapePosition(shape, timeStep);
-                IntegrateExternalForce(shape, timeStep);
-                UpdateShapeProperties(shape);
+                foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+                    UpdateRigidShapePositionWithExtForce(shape, timeStep);
+                
+                foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+                    UpdateRigidShapePositionWithExtForce(shape, timeStep);
+                    
+                foreach (var shape in dynamicShapes.OfType<ConcaveShape>())
+                    UpdateRigidShapePositionWithExtForce(shape, timeStep);     
             }
-
-            foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+            else
             {
-                IntegrateRigidShapePosition(shape, timeStep);
-                IntegrateExternalForce(shape, timeStep);
-                UpdateShapeProperties(shape);
-            }
-
-            foreach (var shape in dynamicShapes.OfType<ConcaveShape>())
-            {
-                IntegrateRigidShapePosition(shape, timeStep);
-                IntegrateExternalForce(shape, timeStep);
-                UpdateShapeProperties(shape);
-            }
+                foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+                    UpdateRigidShapePosition(shape, timeStep);
+                
+                foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+                    UpdateRigidShapePosition(shape, timeStep);
+                
+                foreach (var shape in dynamicShapes.OfType<ConcaveShape>())
+                    UpdateRigidShapePosition(shape, timeStep);
+            } 
         }
 
 
@@ -105,6 +108,23 @@ namespace SharpPhysicsEngine.SolutionIntegration
         #endregion
 
         #region Private Methods
+
+        private void UpdateRigidShapePositionWithExtForce(
+            IShape shape,
+            double timeStep)
+        {
+            IntegrateRigidShapePosition(shape, timeStep);
+            IntegrateExternalForce(shape, timeStep);
+            UpdateShapeProperties(shape);
+        }
+
+        private void UpdateRigidShapePosition(
+            IShape shape,
+            double timeStep)
+        {
+            IntegrateRigidShapePosition(shape, timeStep);
+            UpdateShapeProperties(shape);
+        }
 
         private void UpdateLinearVelocity(
             IShape shape,

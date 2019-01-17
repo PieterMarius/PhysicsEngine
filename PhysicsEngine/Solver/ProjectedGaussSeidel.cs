@@ -54,6 +54,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public double[] Solve(
             LinearProblemProperties input,
+            JacobianConstraint[] constraints,
             double[] x)
         {
             var solverOrder = Enumerable.Range(0, x.Length).ToArray();

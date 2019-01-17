@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 
 namespace SharpPhysicsEngine.Helper
 {
-    internal sealed class LinearProblemBuilder
+    internal sealed class LinearProblemBuilderEngine
     {
         #region Fields
 
@@ -45,7 +45,7 @@ namespace SharpPhysicsEngine.Helper
 
         #region Constructor
 
-        public LinearProblemBuilder(PhysicsEngineParameters engineParameters)
+        public LinearProblemBuilderEngine(PhysicsEngineParameters engineParameters)
         {
             EngineParameters = engineParameters;
         }
@@ -53,7 +53,7 @@ namespace SharpPhysicsEngine.Helper
         #endregion
 
         #region Public Methods
-
+                
         public LinearProblemProperties BuildLCP(
             JacobianConstraint[] constraints,
             double timeStep)
@@ -116,7 +116,7 @@ namespace SharpPhysicsEngine.Helper
                                                      Math.Max(correctionVal, -EngineParameters.MaxCorrectionValue) :
                                                      Math.Min(correctionVal, EngineParameters.MaxCorrectionValue);
 
-                            baseProperties.B[indexVal] = correctionValue - contactA.B;
+                            baseProperties.B[indexVal] = correctionValue - contactA.JacobianVelocity - contactA.ConstraintValue;
                             baseProperties.ConstraintsArray[indexVal] = contactA.ContactReference;
                             baseProperties.ConstraintLimit[indexVal] = contactA.ConstraintLimit;
                             baseProperties.ConstraintType[indexVal] = contactA.Type;

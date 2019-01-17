@@ -229,8 +229,10 @@ namespace SharpEngineMathUtility
 
             for (int i = 0; i < input.n; i++)
             {
-                res.Rows[i] = new SparseVector(input.Rows[i].Value, input.Rows[i].Index, input.Rows[i].Length);
+                var row = input.Rows[i];
+                res.Rows[i] = new SparseVector(row.Value, row.Index, row.Length);
             }
+            
             return res;
         }
 

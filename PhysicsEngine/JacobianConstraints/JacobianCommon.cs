@@ -140,11 +140,10 @@ namespace SharpPhysicsEngine
 			ConstraintType type,
             int? contactReference)
 		{
-			double jacobianVelocityValue = linearComponentA.Dot (simulationObjectA.LinearVelocity) +
-			                               linearComponentB.Dot (simulationObjectB.LinearVelocity) +
-			                               angularComponentA.Dot (simulationObjectA.AngularVelocity) +
-			                               angularComponentB.Dot (simulationObjectB.AngularVelocity) -
-                                           constraintValue;
+            double jacobianVelocityValue = linearComponentA.Dot(simulationObjectA.LinearVelocity) +
+                                           linearComponentB.Dot(simulationObjectB.LinearVelocity) +
+                                           angularComponentA.Dot(simulationObjectA.AngularVelocity) +
+                                           angularComponentB.Dot(simulationObjectB.AngularVelocity);
 
 			return new JacobianConstraint(
                 simulationObjectA,
@@ -155,6 +154,7 @@ namespace SharpPhysicsEngine
                 angularComponentA,
                 angularComponentB,
                 type,
+                constraintValue,
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,
@@ -174,8 +174,7 @@ namespace SharpPhysicsEngine
             int? contactReference)
         {
             double jacobianVelocityValue = angularComponentA.Dot(simulationObjectA.AngularVelocity) +
-                                           angularComponentB.Dot(simulationObjectB.AngularVelocity) -
-                                           constraintValue;
+                                           angularComponentB.Dot(simulationObjectB.AngularVelocity);
                         
             return new JacobianConstraint(
                 simulationObjectA,
@@ -186,6 +185,7 @@ namespace SharpPhysicsEngine
                 angularComponentA,
                 angularComponentB,
                 type,
+                constraintValue,
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,
@@ -261,9 +261,7 @@ namespace SharpPhysicsEngine
                                            linearComponentB.Dot(softShapePointB.LinearVelocity) +
                                            angularComponentA.Dot(softShapePointA.AngularVelocity) +
                                            angularComponentB.Dot(softShapePointB.AngularVelocity);
-
-            jacobianVelocityValue -= constraintValue;
-                        
+                                                
             return new JacobianConstraint(
                 softShapePointA,
                 softShapePointB,
@@ -272,6 +270,7 @@ namespace SharpPhysicsEngine
                 angularComponentA,
                 angularComponentB,
                 type,
+                constraintValue,
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,
@@ -291,15 +290,14 @@ namespace SharpPhysicsEngine
         {
             double jacobianVelocityValue = angularComponentA.Dot(softShapePointA.AngularVelocity) +
                                            angularComponentB.Dot(softShapePointB.AngularVelocity);
-
-            jacobianVelocityValue -= constraintValue;
-
+                        
             return new JacobianConstraint(
                 softShapePointA,
                 softShapePointB,
                 angularComponentA,
                 angularComponentB,
                 type,
+                constraintValue,
                 jacobianVelocityValue,
                 correctionValue,
                 cfm,

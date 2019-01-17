@@ -159,7 +159,7 @@ namespace SharpPhysicsEngine
 
         public PhysicsEngineParameters()
         {
-            TimeStep = 0.016;
+            TimeStep = 0.015;
             CFM = 1E-07;
             NormalCFM = 0.0;
             FrictionCFM = 0.0;

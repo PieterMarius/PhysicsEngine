@@ -108,7 +108,7 @@ namespace TestPhysics
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
-            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.NonLinearGaussSeidel);
 
             return physicsEnvironment;
 		}

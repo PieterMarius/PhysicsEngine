@@ -76,7 +76,7 @@ namespace SharpPhysicsEngine
 		/// <summary>
 		/// The expeceted known value.
 		/// </summary>
-		public readonly double B;
+		public readonly double JacobianVelocity;
 
 		/// <summary>
 		/// The correction value.
@@ -87,6 +87,11 @@ namespace SharpPhysicsEngine
 		/// The constraint limit.
 		/// </summary>
 		public readonly double ConstraintLimit;
+
+        /// <summary>
+        /// The Constraint expected value
+        /// </summary>
+        public readonly double ConstraintValue;
 
 		/// <summary>
 		/// The CFM (Constraint Force Mixing).
@@ -106,7 +111,8 @@ namespace SharpPhysicsEngine
 			Vector3d angularComponentA,
 			Vector3d angularComponentB,
 			ConstraintType type,
-			double B,
+            double constraintValue,
+			double jacobianVelocity,
 			double correctionValue,
 			double cfm,
 			double constraintLimit)
@@ -119,7 +125,8 @@ namespace SharpPhysicsEngine
 			AngularComponentA = angularComponentA;
 			AngularComponentB = angularComponentB;
 			Type = type;
-			this.B = B;
+            ConstraintValue = constraintValue;
+			JacobianVelocity = jacobianVelocity;
 			CorrectionValue = correctionValue;
 			CFM = cfm;
 			ConstraintLimit = constraintLimit;
@@ -133,11 +140,12 @@ namespace SharpPhysicsEngine
             Vector3d angularComponentA,
             Vector3d angularComponentB,
             ConstraintType type,
-            double B,
+            double constraintValue,
+            double jacobianVelocity,
             double correctionValue,
             double cfm,
             double constraintLimit)
-            : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit)
+            : this(objectA, objectB, null, linearComponentA, linearComponentB, angularComponentA, angularComponentB, type, constraintValue, jacobianVelocity, correctionValue, cfm, constraintLimit)
         { }
 
         public JacobianConstraint(
@@ -146,11 +154,12 @@ namespace SharpPhysicsEngine
             Vector3d angularComponentA,
             Vector3d angularComponentB,
             ConstraintType type,
-            double B,
+            double constraintValue,
+            double jacobianVelocity,
             double correctionValue,
             double cfm,
             double constraintLimit)
-            : this(objectA, objectB, null, null, null, angularComponentA, angularComponentB, type, B, correctionValue, cfm, constraintLimit)
+            : this(objectA, objectB, null, null, null, angularComponentA, angularComponentB, type, constraintValue, jacobianVelocity, correctionValue, cfm, constraintLimit)
         { }
 
         public JacobianConstraint(JacobianConstraint jc)
@@ -163,7 +172,9 @@ namespace SharpPhysicsEngine
             AngularComponentA = jc.AngularComponentA;
             AngularComponentB = jc.AngularComponentB;
             Type = jc.Type;
-            B = jc.B;
+            JacobianVelocity = jc.JacobianVelocity;
+            ConstraintValue = jc.ConstraintValue;
+            JacobianVelocity = jc.JacobianVelocity;
             CorrectionValue = jc.CorrectionValue;
             CFM = jc.CFM;
             ConstraintLimit = jc.ConstraintLimit;

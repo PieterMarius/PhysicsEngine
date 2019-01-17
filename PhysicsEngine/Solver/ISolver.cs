@@ -30,6 +30,7 @@ namespace SharpPhysicsEngine.LCPSolver
 	{
 		double[] Solve(
             LinearProblemProperties linearProblemProperties,
+            JacobianConstraint[] constraints,
             double[] x);
         		
 		SolverParameters GetSolverParameters();
