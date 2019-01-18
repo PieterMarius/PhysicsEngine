@@ -58,7 +58,7 @@ namespace SharpPhysicsEngine.LCPSolver
             JacobianConstraint[] constraints, 
             double[] x)
         {
-            return solver.Solve(linearProblemProperties.M, linearProblemProperties.B, SolverParameters.MaxIteration);
+            return solver.Solve(linearProblemProperties.M, linearProblemProperties.B, SolverParameters.MaxIterations);
 
         }
 

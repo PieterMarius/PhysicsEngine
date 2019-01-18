@@ -142,7 +142,7 @@ namespace SharpPhysicsEngine.LCPSolver
                 if (red.Any())
                     rangePartitionerRed = Partitioner.Create(0, red.Count, Convert.ToInt32(red.Count / SolverParameters.MaxThreadNumber) + 1);
                                 
-                for (int k = 0; k < SolverParameters.MaxIteration; k++)
+                for (int k = 0; k < SolverParameters.MaxIterations; k++)
                 {
                     var sync = new object();
 

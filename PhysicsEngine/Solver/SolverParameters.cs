@@ -34,7 +34,7 @@ namespace SharpPhysicsEngine.LCPSolver
 		/// Gets the max iteration.
 		/// </summary>
 		/// <value>The max iteration.</value>
-		public int MaxIteration { get; private set; }
+		public int MaxIterations { get; private set; }
 
 		/// <summary>
 		/// Gets the error tolerance.
@@ -53,17 +53,23 @@ namespace SharpPhysicsEngine.LCPSolver
 		/// </summary>
 		/// <value>The max thread number.</value>
 		public int MaxThreadNumber { get; private set; }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int NewtonStepInterations { get; private set; }
+
         #endregion
 
         #region Constructors
 
         public SolverParameters ()
 		{
-			MaxIteration = 30;
+			MaxIterations = 30;
 			ErrorTolerance = 1E-5;
 			SOR = 1.0;
 			MaxThreadNumber = 4;
+            NewtonStepInterations = 1;
         }
 
 		public SolverParameters (
@@ -72,7 +78,7 @@ namespace SharpPhysicsEngine.LCPSolver
 			double sor,
 			int maxThreadNumber)
 		{
-			MaxIteration = maxIteration;
+			MaxIterations = maxIteration;
 			ErrorTolerance = errorTolerance;
 			SOR = sor;
 			MaxThreadNumber = maxThreadNumber;
@@ -84,7 +90,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
 		public void SetSolverMaxIteration(int maxIteration)
 		{
-			MaxIteration = maxIteration;
+			MaxIterations = maxIteration;
 		}
 
 		public void SetErrorTolerance(double errorTolerance)
@@ -96,7 +102,12 @@ namespace SharpPhysicsEngine.LCPSolver
 		{
 			SOR = successiveOverRelaxation;
 		}
-        		
+
+        public void SetNewtonStepIterations(int iterations)
+        {
+            NewtonStepInterations = iterations;
+        }
+
 		#endregion
 	}
 }

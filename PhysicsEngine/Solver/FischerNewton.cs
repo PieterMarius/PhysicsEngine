@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double error = double.PositiveInfinity;
             double oldError = 0.0;
             
-            for (int iter = 0; iter < SolverParameters.MaxIteration; iter++)
+            for (int iter = 0; iter < SolverParameters.MaxIterations; iter++)
             {
                 double[] y = Add(SparseMatrix.Multiply(A, x, SolverParameters.MaxThreadNumber), b);
                 double[] phi = PhiLambda(y, x, lambda);

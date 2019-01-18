@@ -83,7 +83,7 @@ namespace SharpPhysicsEngine.LCPSolver
 
             result = gaussSeidelSolver.Solve(input, constraints, oldX);
             
-            for (int i = 0; i < solverParam.MaxIteration; i++)
+            for (int i = 0; i < solverParam.MaxIterations; i++)
             {
                 velocityIntegration.UpdateVelocity(constraints, result);
 

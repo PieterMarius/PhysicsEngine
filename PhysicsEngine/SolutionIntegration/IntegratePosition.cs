@@ -105,6 +105,22 @@ namespace SharpPhysicsEngine.SolutionIntegration
             shape.SetAABB();
         }
 
+        public void AddExternalForce(
+            ref IShape[] shapes,
+            double timeStep)
+        {
+            var dynamicShapes = shapes.Where(x => !x.IsStatic).ToList();
+
+            foreach (var shape in dynamicShapes.OfType<ConvexShape>())
+                IntegrateExternalForce(shape, timeStep);
+
+            foreach (var shape in dynamicShapes.OfType<CompoundShape>())
+                IntegrateExternalForce(shape, timeStep);
+
+            foreach (var shape in dynamicShapes.OfType<ConcaveShape>())
+                IntegrateExternalForce(shape, timeStep);
+        }
+
         #endregion
 
         #region Private Methods

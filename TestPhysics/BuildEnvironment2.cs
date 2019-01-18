@@ -105,10 +105,11 @@ namespace TestPhysics
 
 
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);
-            physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
+            physicsEnvironment.SolverParameters.SetSolverMaxIteration(1);
             physicsEnvironment.SolverParameters.SetSOR(1.0);
             physicsEnvironment.SolverParameters.SetErrorTolerance(1E-10);
-            physicsEnvironment.SetSolverType(SolverType.NonLinearGaussSeidel);
+            physicsEnvironment.SolverParameters.SetNewtonStepIterations(10);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedGaussSeidel);
 
             return physicsEnvironment;
 		}

@@ -24,15 +24,7 @@
  *  
  *****************************************************************************/
 
-using SharpEngineMathUtility;
-using SharpEngineMathUtility.Solver;
 using System;
-using static SharpEngineMathUtility.SparseMatrix;
-using static SharpEngineMathUtility.MathUtils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpPhysicsEngine.ShapeDefinition;
 using SharpPhysicsEngine.Helper;
 
@@ -57,7 +49,7 @@ namespace SharpPhysicsEngine.LCPSolver
             SolverParameters = solverParameters;
            
             var gaussSeidelSolverParam = new SolverParameters(
-                                                          1,
+                                                          2,
                                                           SolverParameters.ErrorTolerance,
                                                           1.0,
                                                           SolverParameters.MaxThreadNumber);
@@ -84,82 +76,60 @@ namespace SharpPhysicsEngine.LCPSolver
             Array.Copy(constraints, constraintsRev, constraints.Length);
             Array.Reverse(constraintsRev);
             var symLCP = lcpEngine.BuildLCP(constraintsRev, 0.015);
+            UpdateFrictionConstraints(symLCP);
 
             double[] oldX = new double[x.Length];
             double[] result = new double[x.Length];
+            double[] resultRev = new double[x.Length];
             Array.Copy(x, result, x.Length);
             double actualSolverError = 0.0;
 
-            for (int i = 0; i < SolverParameters.MaxIteration; i++)
+            for (int i = 0; i < SolverParameters.MaxIterations; i++)
             {
+                result = gsSolver.Solve(linearProblemProperties, constraints, result);
                 
+                Array.Reverse(result);
+
+                result = gsSolver.Solve(symLCP, constraints, result);
+
+                Array.Reverse(result);
+
+                actualSolverError = SolverHelper.ComputeSolverError(result, oldX);
+
+                if (actualSolverError < SolverParameters.ErrorTolerance)
+                    break;
+
+                Array.Copy(result, oldX, x.Length);
             }
-
             
-
-            return null;
+            return result;
         }
 
         #endregion
 
         #region Private Methods
 
-        private double CheckErrorTest(double[] x, SparseMatrix A, LinearProblemProperties input)
+        private void UpdateFrictionConstraints(LinearProblemProperties lcp)
         {
-            double[] xValue = x;
-            double[] dir = GetDirection(A, input.B, xValue);
+            var frictionRes = new int?[lcp.Count];
 
-            double error = 0.0;
-
-            for (int i = 0; i < dir.Length; i++)
+            for (int i = 0; i < lcp.Constraints.Length; i++)
             {
-                if (input.ConstraintType[i] == ConstraintType.Collision)
+                if (lcp.ConstraintType[i] == ConstraintType.Collision)
                 {
-                    //error += dir[i] * dir[i];
+                    for (int j = 0; j < lcp.FrictionDirections; j++)
+                    {
+                        frictionRes[i - j - 1] = -i;
+                        
+                    }
+                    
                 }
-                else if (input.ConstraintType[i] == ConstraintType.Joint)
-                    error += dir[i] * dir[i];
-
-                else if (input.ConstraintType[i] == ConstraintType.SoftJoint)
-                    error += dir[i] * dir[i];
-                //else if (input.ConstraintType[i] == ShapeDefinition.ConstraintType.Friction)
-                //{
-                //    double? min = 0.0;
-                //    double? max = 0.0;
-
-                //    ClampSolution.GetConstraintValues(input, x, i, ref min, ref max);
-
-                //    if (min.HasValue && xValue[i] + 1E-9 < min)
-                //        error += 0.0;
-                //    else if (max.HasValue && xValue[i] - 1E-9 > max)
-                //        error += 0.0;
-                //}
             }
+            lcp.SetConstraints(frictionRes);
 
-            return error;
         }
 
-        private double[] GetDirection(
-            SparseMatrix A,
-            double[] b,
-            double[] x)
-        {
-            //return Minus(Multiply(A, x, SolverParameters.MaxThreadNumber), b);
-            return Minus(b, Multiply(A, x, SolverParameters.MaxThreadNumber));
-        }
-
-        private void Clamp(
-            LinearProblemProperties linearProblemProperties,
-            ref double[] x)
-        {
-            for (int i = 0; i < linearProblemProperties.Count; i++)
-            {
-
-                ClampSolution.Clamp(linearProblemProperties, x[i], ref x, i);
-                //if (x[i] < 0.0)
-                //    x[i] = 0.0;
-            }
-        }
+        
 
         #endregion
     }

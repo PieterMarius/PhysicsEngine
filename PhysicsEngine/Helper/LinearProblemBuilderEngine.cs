@@ -265,11 +265,10 @@ namespace SharpPhysicsEngine.Helper
 
             var lp = new LinearProblemProperties(
                 baseProperties,
-                graph);
-                        
-            return new LinearProblemProperties(
-                baseProperties,
-                graph);
+                graph,
+                EngineParameters.FrictionDirections);
+
+            return lp;
         }
 
         //TODO Refactor
@@ -362,7 +361,7 @@ namespace SharpPhysicsEngine.Helper
                 baseProperties.StartValue = startValue.ToArray();
                 baseProperties.M.Rows = m.ToArray();
 
-                var lcp = new LinearProblemProperties(baseProperties, null);
+                var lcp = new LinearProblemProperties(baseProperties, null, EngineParameters.FrictionDirections);
 
                 //TODO Test
                 //var test = lcp.GetOriginalMatrix();

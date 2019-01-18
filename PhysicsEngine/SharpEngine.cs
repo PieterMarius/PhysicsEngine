@@ -581,9 +581,33 @@ namespace SharpPhysicsEngine
 
         private void ExecuteFlow()
         {
-            CollisionDetection();
-            PartitionEngineExecute();
-            PhysicsExecutionFlow();
+            if (SolverParameters.NewtonStepInterations > 1)
+            {
+                double newtonTimeStep = GlobalTimestep / SolverParameters.NewtonStepInterations;
+                TimeStep = newtonTimeStep;
+
+                for (int i = 0; i < SolverParameters.NewtonStepInterations; i++)
+                {
+                    // Newton Iteration Step
+                    CollisionDetection();
+                    PartitionEngineExecute();
+                    SolveVelocityConstraints();
+                    IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, false);
+
+                    if (i + 1 == SolverParameters.NewtonStepInterations)
+                        IntegratePositionEngine.AddExternalForce(ref Shapes, GlobalTimestep);
+                    
+                    UpdateHierarchicalTree();
+                }
+            }
+            else
+            {
+                CollisionDetection();
+                PartitionEngineExecute();
+                SolveVelocityConstraints();
+                IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, true);
+                UpdateHierarchicalTree();
+            }
         }
                 
         private JacobianConstraint[] ContactSorting(JacobianConstraint[] jacobianContact)
@@ -607,16 +631,14 @@ namespace SharpPhysicsEngine
             return sortedContact;
 		}
 
-		private void PhysicsExecutionFlow()
+		private void SolveVelocityConstraints()
 		{
             #region Contact and Joint elaboration
 
-            SaveShapePreviousProperties(collisionPoints);
+            //SaveShapePreviousProperties(collisionPoints);
             
             if (Partitions != null && Partitions.Any()) 
 			{
-                Console.WriteLine("nPartitions " + Partitions.Count);
-
                 var rangePartitioner = Partitioner.Create(
                     0,
                     Partitions.Count,
@@ -648,14 +670,6 @@ namespace SharpPhysicsEngine
 			}
 
             #endregion
-
-            #region Position and Velocity integration
-                        
-            IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, true);
-            UpdateHierarchicalTree();
-
-            #endregion
-
         }
 
 		#region Collision Detection

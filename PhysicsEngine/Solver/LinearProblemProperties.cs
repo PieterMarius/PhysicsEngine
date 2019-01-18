@@ -59,7 +59,7 @@ namespace SharpPhysicsEngine.LCPSolver
         public ConstraintType[] ConstraintType { get; private set; }
 
         //Constraint joint
-        public readonly int?[] Constraints;
+        public int?[] Constraints { get; private set; }
 
         //Constraints connection graph
         public readonly Graph ConstrGraph;
@@ -99,7 +99,8 @@ namespace SharpPhysicsEngine.LCPSolver
 
         public LinearProblemProperties(
             LinearProblemBaseProperties baseProperties,
-            Graph constrGraph)
+            Graph constrGraph,
+            int frictionDirections)
         {
             M = baseProperties.M;
             B = baseProperties.B;
@@ -111,6 +112,7 @@ namespace SharpPhysicsEngine.LCPSolver
             ConstrGraph = constrGraph;
             Count = B.Length;
             StartImpulse = baseProperties.StartValue;
+            FrictionDirections = frictionDirections;
         }
 
         //public LinearProblemProperties(
@@ -131,6 +133,11 @@ namespace SharpPhysicsEngine.LCPSolver
         #endregion
 
         #region Public Methods
+
+        public void SetConstraints(int?[] constraints)
+        {
+            Array.Copy(constraints, Constraints, constraints.Length);
+        }
 
         public double[][] GetOriginalMatrix()
         {

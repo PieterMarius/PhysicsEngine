@@ -73,7 +73,7 @@ namespace SharpPhysicsEngine.LCPSolver
             double modDeltak = 0.0;
             double oldModDeltak = 0.0;
 
-            for (int i = 0; i < solverParam.MaxIteration; i++)
+            for (int i = 0; i < solverParam.MaxIterations; i++)
             {
                 Xk1 = gaussSeidelSolver.Solve(input, constraints, Xk);
                                 

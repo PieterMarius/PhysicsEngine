@@ -93,7 +93,7 @@ namespace SharpPhysicsEngine.LCPSolver
             Array.Copy(x, result, x.Length);
             double actualSolverError = 0.0;
                        
-            for (int k = 0; k < SolverParameters.MaxIteration; k++)
+            for (int k = 0; k < SolverParameters.MaxIterations; k++)
             {
                 var sum = ElaborateLowerTriangularMatrix(input, result);
 

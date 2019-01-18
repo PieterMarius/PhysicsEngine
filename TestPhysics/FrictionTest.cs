@@ -45,7 +45,7 @@ namespace TestPhysics
             foreach (var obj in objects)
                 physicsEnvironment.AddShape(obj);
             
-            physicsEnvironment.SetSolverType(SolverType.NonLinearConjugateGradient);
+            physicsEnvironment.SetSolverType(SolverType.ProjectedSymmetricGS);
             physicsEnvironment.EngineParameters.SetFrictionDirection(2);
             physicsEnvironment.SolverParameters.SetSolverMaxIteration(100);
             physicsEnvironment.SolverParameters.SetSOR(1.0);

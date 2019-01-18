@@ -50,31 +50,36 @@ namespace SharpPhysicsEngine.LCPSolver
                 case ConstraintType.Friction:
 
                     //Isotropic friction -> sqrt(c1^2+c2^2) <= fn*U
-                    int normalIndex = input.Constraints[i].Value;
+
+                    int sign = (input.Constraints[i].Value < 0) ? -1 : 1;
+                    
+                    int normalIndex = sign * input.Constraints[i].Value;
                     double frictionLimit = X[normalIndex] * input.ConstraintLimit[i];
+                    int idx1 = normalIndex + sign;
+                    int idx2 = normalIndex + sign * 2;
 
                     if (frictionLimit == 0.0)
                     {
-                        X[normalIndex + 1] = 0.0;
-                        X[normalIndex + 2] = 0.0;
+                        X[idx1] = 0.0;
+                        X[idx2] = 0.0;
 
                         return 0.0;
                     }
 
-                    double directionA = X[normalIndex + 1];
-                    double directionB = X[normalIndex + 2];
+                    double directionA = X[idx1];
+                    double directionB = X[idx2];
                     double frictionValue = Math.Sqrt(directionA * directionA + directionB * directionB);
 
                     if (frictionValue > frictionLimit)
                     {
                         Vector2d frictionNormal = new Vector2d(directionA / frictionValue, directionB / frictionValue);
 
-                        X[normalIndex + 1] = frictionNormal.x * frictionLimit;
-                        X[normalIndex + 2] = frictionNormal.y * frictionLimit;
+                        X[idx1] = frictionNormal.x * frictionLimit;
+                        X[idx2] = frictionNormal.y * frictionLimit;
 
-                        return (i - normalIndex == 1) ?
-                                X[normalIndex + 1] :
-                                X[normalIndex + 2];
+                        return (Math.Abs(i - normalIndex) == 1) ?
+                                X[idx1] :
+                                X[idx2];
                     }
 
                     return xValue;
