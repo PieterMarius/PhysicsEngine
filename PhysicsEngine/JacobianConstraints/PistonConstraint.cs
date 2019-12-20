@@ -412,8 +412,6 @@ namespace SharpPhysicsEngine
 			   AngularSpeedValue.HasValue)
 			{
 				motorConstraints.Add(JacobianCommon.GetDOF(
-					new Vector3d(),
-					new Vector3d(),
 					sliderAxis,
 					-1.0 * sliderAxis,
 					simulationObjectA,

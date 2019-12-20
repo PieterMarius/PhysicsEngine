@@ -568,10 +568,8 @@ namespace SharpPhysicsEngine
 			{
 				motorConstraint.Add(
 					JacobianCommon.GetDOF(
-                        new Vector3d(),
-						new Vector3d(),
 						-1.0 * hingeAxis,
-						1.0 * hingeAxis,
+						hingeAxis,
 						simulationObjectA,
 						simulationObjectB,
 						SpeedHingeAxisLimit.Value,
@@ -586,10 +584,8 @@ namespace SharpPhysicsEngine
 			{
 				motorConstraint.Add(
 					JacobianCommon.GetDOF(
-                        new Vector3d(),
-						new Vector3d(),
 						-1.0 * rotationAxis,
-						1.0 * rotationAxis,
+						rotationAxis,
 						simulationObjectA,
 						simulationObjectB,
 						SpeedRotationAxisLimit.Value,

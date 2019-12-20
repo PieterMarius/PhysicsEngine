@@ -53,6 +53,35 @@ namespace SharpPhysicsEngine.Helper
         #endregion
 
         #region Public Methods
+
+        public LinearProblemProperties UpdateConstantsTerm(
+            JacobianConstraint[] constraints,
+            LinearProblemProperties input)
+        {
+            for (int i = 0; i < constraints.Length; i++)
+            {
+                var constraint = constraints[i];
+                double correctionVal = constraint.CorrectionValue * EngineParameters.TimeStep;
+
+                double correctionValue = (correctionVal) < 0 ?
+                                         Math.Max(correctionVal, -EngineParameters.MaxCorrectionValue) :
+                                         Math.Min(correctionVal, EngineParameters.MaxCorrectionValue);
+
+                double jacobianVelocityValue = 0.0;
+
+                if (constraint.LinearComponentA.HasValue)
+                    jacobianVelocityValue += constraint.LinearComponentA.Value.Dot(constraint.ObjectA.LinearVelocity);
+                if(constraint.LinearComponentB.HasValue)
+                    jacobianVelocityValue += constraint.LinearComponentB.Value.Dot(constraint.ObjectA.LinearVelocity);
+
+                jacobianVelocityValue += constraint.AngularComponentA.Dot(constraint.ObjectA.AngularVelocity) +
+                                         constraint.AngularComponentB.Dot(constraint.ObjectB.AngularVelocity);
+
+                input.B[i] = correctionValue - jacobianVelocityValue - constraint.ConstraintValue;
+            }
+                        
+            return input;
+        }
                 
         public LinearProblemProperties BuildLCP(
             JacobianConstraint[] constraints,

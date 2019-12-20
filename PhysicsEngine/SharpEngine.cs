@@ -586,25 +586,31 @@ namespace SharpPhysicsEngine
                 double newtonTimeStep = GlobalTimestep / SolverParameters.NewtonStepInterations;
                 TimeStep = newtonTimeStep;
 
-                for (int i = 0; i < SolverParameters.NewtonStepInterations; i++)
-                {
-                    // Newton Iteration Step
-                    CollisionDetection();
-                    PartitionEngineExecute();
-                    SolveVelocityConstraints();
-                    IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, false);
+                CollisionDetection();
+                PartitionEngineExecute();
+                SolveConstraints();
+                IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, true);
 
-                    if (i + 1 == SolverParameters.NewtonStepInterations)
-                        IntegratePositionEngine.AddExternalForce(ref Shapes, GlobalTimestep);
-                    
-                    UpdateHierarchicalTree();
-                }
+
+                //for (int i = 0; i < SolverParameters.NewtonStepInterations; i++)
+                //{
+                //    // Newton Iteration Step
+                //    CollisionDetection();
+                //    PartitionEngineExecute();
+                //    SolveConstraints();
+                //    IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, false);
+
+                //    if (i + 1 == SolverParameters.NewtonStepInterations)
+                //        IntegratePositionEngine.AddExternalForce(ref Shapes, GlobalTimestep);
+
+                //    UpdateHierarchicalTree();
+                //}
             }
             else
             {
                 CollisionDetection();
                 PartitionEngineExecute();
-                SolveVelocityConstraints();
+                SolveConstraints();
                 IntegratePositionEngine.IntegrateObjectsPosition(ref Shapes, TimeStep, true);
                 UpdateHierarchicalTree();
             }
@@ -631,7 +637,7 @@ namespace SharpPhysicsEngine
             return sortedContact;
 		}
 
-		private void SolveVelocityConstraints()
+		private void SolveConstraints()
 		{
             #region Contact and Joint elaboration
 

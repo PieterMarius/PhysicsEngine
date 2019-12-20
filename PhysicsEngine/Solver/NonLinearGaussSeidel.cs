@@ -59,7 +59,7 @@ namespace SharpPhysicsEngine.LCPSolver
             this.velocityIntegration = velocityIntegration;
 
             var gaussSeidelSolverParam = new SolverParameters(
-                                                          5,
+                                                          1,
                                                           solverParam.ErrorTolerance,
                                                           solverParam.SOR,
                                                           solverParam.MaxThreadNumber);
@@ -87,7 +87,7 @@ namespace SharpPhysicsEngine.LCPSolver
             {
                 velocityIntegration.UpdateVelocity(constraints, result);
 
-                //input = lcpEngine.UpdateVelocity(constraints, input);
+                input = lcpEngine.UpdateConstantsTerm(constraints, input);
 
                 result = gaussSeidelSolver.Solve(input, constraints, new double[x.Length]);
 

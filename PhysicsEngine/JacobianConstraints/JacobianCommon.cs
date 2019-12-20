@@ -374,8 +374,6 @@ namespace SharpPhysicsEngine
 					(angle - angularLimitMax);
 
 				return GetDOF (
-                    new Vector3d (), 
-					new Vector3d (), 
 					rotationAxis, 
 					-1.0 * rotationAxis, 
 					simulationObjectA, 
@@ -396,8 +394,6 @@ namespace SharpPhysicsEngine
 					(angularLimitMin - angle);
 
 				return GetDOF (
-                    new Vector3d (), 
-					new Vector3d (), 
 					-1.0 * rotationAxis, 
 					rotationAxis, 
 					simulationObjectA, 

@@ -139,6 +139,7 @@
     <Compile Include="Solver\NonLinearGaussSeidel.cs" />
     <Compile Include="Solver\ProjectedSymmetricGS.cs" />
     <Compile Include="Solver\RedBlackProjectedGaussSeidel.cs" />
+    <Compile Include="Solver\SubspaceMinimization.cs" />
     <Compile Include="StackingUtilities\StackManager.cs" />
     <Compile Include="Terrain\HeightMapMesh.cs" />
     <Compile Include="Wrapper\Shape\CompoundRigidShape.cs" />

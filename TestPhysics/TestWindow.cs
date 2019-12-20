@@ -424,7 +424,7 @@ namespace TestPhysics
 
 
         }
-        double timeStep = 0.015;
+        double timeStep = 0.007;
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             base.OnUpdateFrame(e);
@@ -458,11 +458,6 @@ namespace TestPhysics
                     collPoint.Clear();
 
                     physicsEngine.Simulate(timeStep);
-
-                    //for (int i = 0; i < physicsEngine.JointsCount(); i++)
-                    //{
-                    //    physicsEngine.GetJoints(i).AddTorque(physicsEngine.GetSimulationObjectArray(), 0.0, 0.4);
-                    //}
 
                     stopwatch.Stop();
 
@@ -706,8 +701,8 @@ namespace TestPhysics
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
-                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(2.0, 0.0);
-                //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(2.0,0.0);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(1.5, 0.0);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(1.5,0.0);
 
                 physicsEngine.Simulate(timeStep);
                 var angle = ((Hinge2Joint)physicsEngine.GetJoints(1)).GetAxis1Angle();
@@ -724,8 +719,8 @@ namespace TestPhysics
 
                 ((Hinge2Joint)physicsEngine.GetJoints(1)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
                 ((Hinge2Joint)physicsEngine.GetJoints(3)).SetAxis1AngularLimit(-0.78539816339, 0.78539816339);
-                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(-2.0, 0.0);
-                //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(-2.0, 0.0);
+                ((Hinge2Joint)physicsEngine.GetJoints(1)).AddTorqueShapeB(-1.5, 0.0);
+                //((Hinge2Joint)physicsEngine.GetJoints(3)).AddTorqueShapeB(-1.5, 0.0);
 
                 physicsEngine.Simulate(timeStep);
                 var angle = ((Hinge2Joint)physicsEngine.GetJoints(1)).GetAxis1Angle();
